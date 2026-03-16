@@ -151,6 +151,7 @@ static bool g_windowOutlineOverlap = false;
 static bool g_hideTitleBar = false;
 static bool g_isKeepAbove = false;
 static bool g_colorizeWindowOutlineWithButton = true;
+static bool g_activeWindowShadowsOnly = false;
 static std::shared_ptr<KDecoration3::DecorationShadow> g_sShadow;
 static std::shared_ptr<KDecoration3::DecorationShadow> g_sShadowInactive;
 
@@ -1727,7 +1728,8 @@ void Decoration::updateShadow(const bool forceUpdateCache, bool noCache, const b
 
     // Animated case, no cached shadow object
     if ((m_shadowAnimation->state() == QAbstractAnimation::Running) && (m_shadowOpacity != 0.0) && (m_shadowOpacity != 1.0)) {
-        QColor shadowColor = KColorUtils::mix(m_decorationColors->inactive()->shadow, m_decorationColors->active()->shadow, m_shadowOpacity);
+        QColor inactiveColor = m_internalSettings->activeWindowShadowsOnly() ? Qt::transparent : m_decorationColors->inactive()->shadow;
+        QColor shadowColor = KColorUtils::mix(inactiveColor, m_decorationColors->active()->shadow, m_shadowOpacity);
         setWindowOutlineColor();
         setShadow(createShadowObject(shadowColor, isWindowOutlineOverride));
         return;
@@ -1750,7 +1752,8 @@ void Decoration::updateShadow(const bool forceUpdateCache, bool noCache, const b
             || g_windowOutlineThickness != m_internalSettings->windowOutlineThickness() || g_nextScale != c->nextScale()
             || g_windowOutlineSnapToWholePixel != m_internalSettings->windowOutlineSnapToWholePixel()
             || g_windowOutlineOverlap != m_internalSettings->windowOutlineOverlap() || g_hideTitleBar != hideTitleBar() || g_isKeepAbove != c->isKeepAbove()
-            || g_colorizeWindowOutlineWithButton != m_internalSettings->colorizeWindowOutlineWithButton())) {
+            || g_colorizeWindowOutlineWithButton != m_internalSettings->colorizeWindowOutlineWithButton()
+            || g_activeWindowShadowsOnly != m_internalSettings->activeWindowShadowsOnly())) {
         g_sShadow.reset();
         g_sShadowInactive.reset();
         g_shadowSizeEnum = m_internalSettings->shadowSize();
@@ -1770,6 +1773,7 @@ void Decoration::updateShadow(const bool forceUpdateCache, bool noCache, const b
         g_hideTitleBar = hideTitleBar();
         g_isKeepAbove = c->isKeepAbove();
         g_colorizeWindowOutlineWithButton = m_internalSettings->colorizeWindowOutlineWithButton();
+        g_activeWindowShadowsOnly = m_internalSettings->activeWindowShadowsOnly();
     }
 
     std::shared_ptr<KDecoration3::DecorationShadow> nonCachedShadow;
@@ -1803,11 +1807,14 @@ std::shared_ptr<KDecoration3::DecorationShadow> Decoration::createShadowObject(Q
                  || (!c->isActive() && m_internalSettings->windowOutlineStyle(false) == InternalSettings::EnumWindowOutlineStyle::WindowOutlineNone))))
         && (!(c->isKeepAbove() && m_internalSettings->colorizeWindowOutlineWithButton()));
 
-    if (m_internalSettings->shadowSize() == InternalSettings::EnumShadowSize::ShadowNone && windowOutlineNone && !isWindowOutlineOverride) {
+    const bool effectiveShadowNone = (m_internalSettings->shadowSize() == InternalSettings::EnumShadowSize::ShadowNone)
+        || (m_internalSettings->activeWindowShadowsOnly() && !c->isActive());
+
+    if (effectiveShadowNone && windowOutlineNone && !isWindowOutlineOverride) {
         return nullptr;
     }
 
-    const CompositeShadowParams params = lookupShadowParams(m_internalSettings->shadowSize());
+    const CompositeShadowParams params = lookupShadowParams(effectiveShadowNone ? InternalSettings::EnumShadowSize::ShadowNone : m_internalSettings->shadowSize());
     qreal shadow1Radius = params.shadow1.radius;
     qreal shadow2Radius = params.shadow2.radius;
 

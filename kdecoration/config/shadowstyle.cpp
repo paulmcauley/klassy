@@ -27,6 +27,7 @@ ShadowStyle::ShadowStyle(KSharedConfig::Ptr config, KSharedConfig::Ptr presetsCo
     connect(m_ui->shadowSize, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
     connect(m_ui->shadowStrength, SIGNAL(valueChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
     connect(m_ui->shadowColor, &KColorButton::changed, this, &ShadowStyle::updateChanged, Qt::ConnectionType::DirectConnection);
+    connect(m_ui->activeWindowShadowsOnly, &QAbstractButton::clicked, this, &ShadowStyle::updateChanged, Qt::ConnectionType::DirectConnection);
 
     connect(m_ui->buttonBox->button(QDialogButtonBox::RestoreDefaults), &QAbstractButton::clicked, this, &ShadowStyle::defaults);
     connect(m_ui->buttonBox->button(QDialogButtonBox::Reset), &QAbstractButton::clicked, this, &ShadowStyle::load);
@@ -56,6 +57,7 @@ void ShadowStyle::load()
 
     m_ui->shadowStrength->setValue(qRound(qreal(m_internalSettings->shadowStrength() * 100) / 255));
     m_ui->shadowColor->setColor(m_internalSettings->shadowColor());
+    m_ui->activeWindowShadowsOnly->setChecked(m_internalSettings->activeWindowShadowsOnly());
 
     setChanged(false);
 
@@ -73,6 +75,7 @@ void ShadowStyle::save(const bool reloadKwinConfig)
     m_internalSettings->setShadowSize(m_ui->shadowSize->currentIndex());
     m_internalSettings->setShadowStrength(qRound(qreal(m_ui->shadowStrength->value() * 255) / 100));
     m_internalSettings->setShadowColor(m_ui->shadowColor->color());
+    m_internalSettings->setActiveWindowShadowsOnly(m_ui->activeWindowShadowsOnly->isChecked());
 
     m_internalSettings->save();
     setChanged(false);
@@ -97,6 +100,7 @@ void ShadowStyle::defaults()
     m_ui->shadowSize->setCurrentIndex(m_internalSettings->shadowSize());
     m_ui->shadowStrength->setValue(qRound(qreal(m_internalSettings->shadowStrength() * 100) / 255));
     m_ui->shadowColor->setColor(m_internalSettings->shadowColor());
+    m_ui->activeWindowShadowsOnly->setChecked(m_internalSettings->activeWindowShadowsOnly());
 
     setChanged(!isDefaults());
 
@@ -154,6 +158,8 @@ void ShadowStyle::updateChanged()
     else if (qRound(qreal(m_ui->shadowStrength->value() * 255) / 100) != m_internalSettings->shadowStrength())
         modified = true;
     else if (m_ui->shadowColor->color() != m_internalSettings->shadowColor())
+        modified = true;
+    else if (m_ui->activeWindowShadowsOnly->isChecked() != m_internalSettings->activeWindowShadowsOnly())
         modified = true;
 
     setChanged(modified);

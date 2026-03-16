@@ -1095,6 +1095,10 @@
     <entry name="ShadowColor" type = "Color">
     <default>0, 0, 0</default>
     </entry>
+
+    <entry name="ActiveWindowShadowsOnly" type = "Bool">
+    <default>false</default>
+    </entry>
   </group>
 
 
