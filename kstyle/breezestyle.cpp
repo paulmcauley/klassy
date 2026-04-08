@@ -5139,7 +5139,7 @@ bool Style::drawPanelItemViewItemPrimitive(const QStyleOption *option, QPainter 
     const bool enabled(state & State_Enabled);
     const bool active(state & State_Active);
 
-    const bool hasCustomBackground = viewItemOption->backgroundBrush.style() != Qt::NoBrush;
+    const bool hasCustomBackground = viewItemOption->backgroundBrush.style() != Qt::NoBrush && !selected;
     const bool hasSolidBackground = !hasCustomBackground || viewItemOption->backgroundBrush.style() == Qt::SolidPattern;
     const bool hasAlternateBackground(viewItemOption->features & QStyleOptionViewItem::Alternate);
 
