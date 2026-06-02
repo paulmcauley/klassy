@@ -5143,12 +5143,7 @@ bool Style::drawPanelItemViewItemPrimitive(const QStyleOption *option, QPainter 
     // render custom background
     if (hasCustomBackground && !hasSolidBackground) {
         painter->setBrushOrigin(viewItemOption->rect.topLeft());
-        _helper->renderViewItemPosition(painter,
-                                        viewItemPosition,
-                                        viewItemOption->direction,
-                                        viewItemOption->rect,
-                                        viewItemOption->backgroundBrush.color(),
-                                        QColor());
+        _helper->renderViewItemPosition(painter, viewItemPosition, viewItemOption->direction, viewItemOption->rect, viewItemOption->backgroundBrush, QColor());
         return true;
     }
 

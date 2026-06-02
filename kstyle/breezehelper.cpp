@@ -421,15 +421,11 @@ void Helper::renderDebugFrame(QPainter *painter, const QRectF &rect) const
 }
 
 //______________________________________________________________________________
-void Helper::renderFocusRect(QPainter *painter, const QRectF &rect, const QColor &color, const QColor &outline, Sides sides) const
+void Helper::renderFocusRect(QPainter *painter, const QRectF &rect, const QBrush &brush, const QColor &outline, Sides sides) const
 {
-    if (!color.isValid()) {
-        return;
-    }
-
     painter->save();
     painter->setRenderHints(QPainter::Antialiasing);
-    painter->setBrush(color);
+    painter->setBrush(brush);
 
     if (!(outline.isValid() && sides)) {
         painter->setPen(Qt::NoPen);
@@ -1747,7 +1743,7 @@ void Helper::renderViewItemPosition(QPainter *painter,
                                     const QStyleOptionViewItem::ViewItemPosition &pos,
                                     const Qt::LayoutDirection direction,
                                     const QRectF &rect,
-                                    const QColor &bg,
+                                    const QBrush &bg,
                                     const QColor &outline) const
 {
     painter->save();

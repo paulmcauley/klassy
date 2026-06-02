@@ -205,7 +205,7 @@ public:
     void renderDebugFrame(QPainter *, const QRectF &) const;
 
     //* focus rect
-    void renderFocusRect(QPainter *, const QRectF &, const QColor &, const QColor &outline = QColor(), Sides = {}) const;
+    void renderFocusRect(QPainter *, const QRectF &, const QBrush &, const QColor &outline = QColor(), Sides = {}) const;
 
     //* focus line
     void renderFocusLine(QPainter *, const QRectF &, const QColor &) const;
@@ -356,7 +356,7 @@ public:
                                 const QStyleOptionViewItem::ViewItemPosition &pos,
                                 const Qt::LayoutDirection direction,
                                 const QRectF &rect,
-                                const QColor &bg,
+                                const QBrush &bg,
                                 const QColor &outline) const;
 
     //@}
