@@ -1045,7 +1045,7 @@ QRect Style::subElementRect(SubElement element, const QStyleOption *option, cons
                 // Move from right to left either right aligned icons on ltr layouts or left aligned on rtl layouts
                 const auto adjustment = baseRect.right() - margins.right() - Metrics::ItemView_ItemPaddingWidth + marginAdjust;
                 if (viewOption->rect.width() > adjustment) {
-                    baseRect.moveLeft(adjustment);
+                    baseRect.moveRight(adjustment);
                 }
 
             } else {
