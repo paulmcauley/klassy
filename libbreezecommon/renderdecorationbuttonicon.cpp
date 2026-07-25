@@ -193,6 +193,10 @@ void RenderDecorationButtonIcon::renderIcon(DecorationButtonType type, bool chec
         renderContextHelpIcon();
         break;
 
+    case DecorationButtonType::ExcludeFromCapture:
+        renderExcludeFromCaptureIcon();
+        break;
+
     default:
         break;
     }

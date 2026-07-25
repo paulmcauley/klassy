@@ -108,9 +108,53 @@ enum class DecorationButtonType {
      * The Spacer button provides some space between buttons.
      */
     Spacer,
-
-    COUNT
+    /**
+     * The ExcludeFromCapture button toggles the DecoratedWindow's visibility
+     * for screen capture and displays the current exclusion state.
+     *
+     * By default this button is only visible when the window is excluded from capture,
+     * but it can be made always visible via settings.
+     **/
+    ExcludeFromCapture,
 };
+
+inline DecorationButtonType buttonTypeFromKcfgColorIndex(int index)
+{
+    static const QList<DecorationButtonType> kcfgIndexToButtonType{
+        DecorationButtonType::Menu,
+        DecorationButtonType::ApplicationMenu,
+        DecorationButtonType::OnAllDesktops,
+        DecorationButtonType::Minimize,
+        DecorationButtonType::Maximize,
+        DecorationButtonType::Close,
+        DecorationButtonType::ContextHelp,
+        DecorationButtonType::Shade,
+        DecorationButtonType::KeepBelow,
+        DecorationButtonType::KeepAbove,
+        DecorationButtonType::ExcludeFromCapture,
+    };
+    if (index < 0 || index >= kcfgIndexToButtonType.length())
+        return DecorationButtonType::Custom;
+    return kcfgIndexToButtonType[index];
+}
+
+inline int buttonTypeToKcfgColorIndex(DecorationButtonType type)
+{
+    static const QMap<DecorationButtonType, int> buttonTypeToKcfgIndex{
+        {DecorationButtonType::Menu, 0},
+        {DecorationButtonType::ApplicationMenu, 1},
+        {DecorationButtonType::OnAllDesktops, 2},
+        {DecorationButtonType::Minimize, 3},
+        {DecorationButtonType::Maximize, 4},
+        {DecorationButtonType::Close, 5},
+        {DecorationButtonType::ContextHelp, 6},
+        {DecorationButtonType::Shade, 7},
+        {DecorationButtonType::KeepBelow, 8},
+        {DecorationButtonType::KeepAbove, 9},
+        {DecorationButtonType::ExcludeFromCapture, 10},
+    };
+    return buttonTypeToKcfgIndex[type];
+}
 
 // list of keys used for window decoration exceptions
 static QStringList windecoExceptionKeys = {

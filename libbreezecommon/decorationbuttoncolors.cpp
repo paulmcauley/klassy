@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
  */
 #include "decorationbuttoncolors.h"
+#include "breeze.h"
 #include "colortools.h"
 #include <KColorUtils>
 #include <QJsonArray>
@@ -61,9 +62,11 @@ void DecorationButtonPalette::decodeButtonOverrideColors(const bool active)
     buttonOverrideColors.clear();
     buttonOverrideColorsPresent = false;
 
+    const int buttonType = buttonTypeToKcfgColorIndex(_buttonType);
+
     bool overrideButtonTypeValid = false;
     for (int i = 0; i < InternalSettings::EnumButtonOverrideColorsActiveButtonType::COUNT; i++) {
-        if (static_cast<int>(_buttonType) == i) {
+        if (buttonType == i) {
             overrideButtonTypeValid = true;
             break;
         }
@@ -72,8 +75,8 @@ void DecorationButtonPalette::decodeButtonOverrideColors(const bool active)
         return;
     }
 
-    QByteArray overrideColorsSetting = active ? _decorationSettings->buttonOverrideColorsActive(static_cast<int>(_buttonType)).toUtf8()
-                                              : _decorationSettings->buttonOverrideColorsInactive(static_cast<int>(_buttonType)).toUtf8();
+    QByteArray overrideColorsSetting =
+        active ? _decorationSettings->buttonOverrideColorsActive(buttonType).toUtf8() : _decorationSettings->buttonOverrideColorsInactive(buttonType).toUtf8();
     if (overrideColorsSetting.isEmpty()) {
         return;
     }

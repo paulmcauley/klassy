@@ -37,6 +37,7 @@ protected:
     virtual void renderKeepInFrontIcon() override;
     virtual void renderApplicationMenuIcon() override;
     virtual void renderContextHelpIcon() override;
+    virtual void renderExcludeFromCaptureIcon() override;
 
     void renderCloseIconAtSquareMaximizeSize();
     std::pair<QRectF, qreal> renderSquareMaximizeIcon(bool returnSizeOnly = false, qreal cornerRelativePercent = 0.025, bool showArrows = false);

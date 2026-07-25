@@ -393,6 +393,7 @@ void Decoration::init()
     connect(s.get(), &KDecoration3::DecorationSettings::decorationButtonsLeftChanged, this, &Decoration::updateButtonsGeometryDelayed);
     connect(s.get(), &KDecoration3::DecorationSettings::decorationButtonsRightChanged, this, &Decoration::updateButtonsGeometryDelayed);
     connect(s.get(), &KDecoration3::DecorationSettings::onAllDesktopsAvailableChanged, this, &Decoration::updateButtonsGeometryDelayed);
+    connect(c, &KDecoration3::DecoratedWindow::excludeFromCaptureChanged, this, &Decoration::updateButtonsGeometryDelayed);
 
     // full reconfiguration
     connect(s.get(), &KDecoration3::DecorationSettings::reconfigured, this, &Decoration::reconfigure);

@@ -600,13 +600,13 @@ void ButtonColors::loadMain(const bool assignUiValuesOnly)
     for (int i = 0; i < InternalSettings::EnumButtonOverrideColorsActiveButtonType::COUNT; i++) {
         if (decodeOverrideColorsAndLoadTableColumn(
                 m_internalSettings->buttonOverrideColorsActive(i).toUtf8(),
-                static_cast<ConfigWidget *>(m_parent)->m_allCustomizableButtonsOrder.indexOf(static_cast<DecorationButtonType>(i)),
+                static_cast<ConfigWidget *>(m_parent)->m_allCustomizableButtonsOrder.indexOf(buttonTypeFromKcfgColorIndex(i)),
                 true)) {
             m_overrideColorsLoaded.active = true;
         }
         if (decodeOverrideColorsAndLoadTableColumn(
                 m_internalSettings->buttonOverrideColorsInactive(i).toUtf8(),
-                static_cast<ConfigWidget *>(m_parent)->m_allCustomizableButtonsOrder.indexOf(static_cast<DecorationButtonType>(i)),
+                static_cast<ConfigWidget *>(m_parent)->m_allCustomizableButtonsOrder.indexOf(buttonTypeFromKcfgColorIndex(i)),
                 false)) {
             m_overrideColorsLoaded.inactive = true;
         }
@@ -667,12 +667,12 @@ void ButtonColors::save(const bool reloadKwinConfig)
     for (int i = 0; i < InternalSettings::EnumButtonOverrideColorsActiveButtonType::COUNT; i++) {
         m_internalSettings->setButtonOverrideColorsActive(
             i,
-            encodeColorOverrideTableColumn(static_cast<ConfigWidget *>(m_parent)->m_allCustomizableButtonsOrder.indexOf(static_cast<DecorationButtonType>(i)),
+            encodeColorOverrideTableColumn(static_cast<ConfigWidget *>(m_parent)->m_allCustomizableButtonsOrder.indexOf(buttonTypeFromKcfgColorIndex(i)),
                                            true,
                                            resetActive));
         m_internalSettings->setButtonOverrideColorsInactive(
             i,
-            encodeColorOverrideTableColumn(static_cast<ConfigWidget *>(m_parent)->m_allCustomizableButtonsOrder.indexOf(static_cast<DecorationButtonType>(i)),
+            encodeColorOverrideTableColumn(static_cast<ConfigWidget *>(m_parent)->m_allCustomizableButtonsOrder.indexOf(buttonTypeFromKcfgColorIndex(i)),
                                            false,
                                            resetInactive));
     }
@@ -818,10 +818,9 @@ void ButtonColors::updateChanged()
     if (!modified) {
         bool resetActive = !m_ui->buttonColorOverrideToggleActive->isChecked();
         for (int i = 0; i < InternalSettings::EnumButtonOverrideColorsActiveButtonType::COUNT; i++) {
-            if (encodeColorOverrideTableColumn(
-                    static_cast<ConfigWidget *>(m_parent)->m_allCustomizableButtonsOrder.indexOf(static_cast<DecorationButtonType>(i)),
-                    true,
-                    resetActive)
+            if (encodeColorOverrideTableColumn(static_cast<ConfigWidget *>(m_parent)->m_allCustomizableButtonsOrder.indexOf(buttonTypeFromKcfgColorIndex(i)),
+                                               true,
+                                               resetActive)
                 != m_internalSettings->buttonOverrideColorsActive(i).toUtf8()) {
                 modified = true;
                 break;
@@ -831,10 +830,9 @@ void ButtonColors::updateChanged()
     if (!modified) {
         bool resetInactive = !m_ui->buttonColorOverrideToggleInactive->isChecked();
         for (int i = 0; i < InternalSettings::EnumButtonOverrideColorsActiveButtonType::COUNT; i++) {
-            if (encodeColorOverrideTableColumn(
-                    static_cast<ConfigWidget *>(m_parent)->m_allCustomizableButtonsOrder.indexOf(static_cast<DecorationButtonType>(i)),
-                    false,
-                    resetInactive)
+            if (encodeColorOverrideTableColumn(static_cast<ConfigWidget *>(m_parent)->m_allCustomizableButtonsOrder.indexOf(buttonTypeFromKcfgColorIndex(i)),
+                                               false,
+                                               resetInactive)
                 != m_internalSettings->buttonOverrideColorsInactive(i).toUtf8()) {
                 modified = true;
                 break;

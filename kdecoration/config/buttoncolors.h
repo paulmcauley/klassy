@@ -179,6 +179,7 @@ private:
         {DecorationButtonType::OnAllDesktops, i18n("All desktops")},
         {DecorationButtonType::KeepBelow, i18n("Keep behind")},
         {DecorationButtonType::KeepAbove, i18n("Keep in front")},
+        {DecorationButtonType::ExcludeFromCapture, i18n("Exclude from capture")},
         {DecorationButtonType::ApplicationMenu, i18n("Application menu")},
         {DecorationButtonType::Menu, i18n("Window menu")},
     };

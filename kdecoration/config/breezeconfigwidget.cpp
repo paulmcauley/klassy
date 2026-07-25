@@ -829,6 +829,7 @@ void ConfigWidget::getButtonsOrderFromKwinConfig()
     buttonNames[DecorationButtonType::Maximize] = QChar('A');
     buttonNames[DecorationButtonType::Close] = QChar('X');
     buttonNames[DecorationButtonType::Spacer] = QChar('_');
+    buttonNames[DecorationButtonType::ExcludeFromCapture] = QChar('E');
 
     QString buttonsOnLeft;
     QString buttonsOnRight;

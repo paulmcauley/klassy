@@ -100,6 +100,11 @@ void SystemIconTheme::systemIconNames(DecorationButtonType type, QString &system
         systemIconCheckedName = systemIconName;
         break;
 
+    case DecorationButtonType::ExcludeFromCapture:
+        systemIconName = isSystemIconNameAvailable(QStringLiteral("view-private-symbolic"), QStringLiteral("view-private"));
+        systemIconCheckedName = systemIconName;
+        break;
+
     default:
         break;
     }
