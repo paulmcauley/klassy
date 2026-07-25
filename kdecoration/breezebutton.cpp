@@ -718,7 +718,6 @@ void Button::paintFullHeightButtonBackground(QPainter *painter) const
     }
 
     QRectF backgroundBoundingRect = (QRectF(geometry().topLeft(), m_backgroundVisibleSize));
-    backgroundBoundingRect = KDecoration3::snapToPixelGrid(backgroundBoundingRect, m_devicePixelRatio);
     painter->setClipRect(backgroundBoundingRect);
     QPainterPath background;
     QPainterPath outline;
