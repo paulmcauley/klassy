@@ -1362,4 +1362,43 @@ void RenderDecorationButtonIcon18By18::renderContextHelpIcon()
         m_painter->drawEllipse(QRectF(8.25, 14.25, 1.5, 1.5));
 }
 
+void RenderDecorationButtonIcon18By18::renderExcludeFromCaptureIcon()
+{
+    QPen pen = m_painter->pen();
+    if ((!m_fromKstyle) && m_boldButtonIcons) {
+        // thicker pen in titlebar
+        pen.setWidthF(pen.widthF() * 1.6);
+    }
+
+    pen.setJoinStyle(Qt::RoundJoin);
+    m_painter->setPen(pen);
+
+    QPainterPath path;
+
+    // Fedora brim
+    path.moveTo(0.5, 8);
+    path.lineTo(17.5, 8);
+
+    // Fedora crown with center crease
+    path.moveTo(3, 7.5);
+    path.quadTo(3, 2, 6, 2);
+    path.cubicTo(7, 2, 8, 3, 9, 3.5);
+    path.cubicTo(10, 3, 11, 2, 12, 2);
+    path.quadTo(15, 2, 15, 7.5);
+    path.closeSubpath();
+
+    // Glasses
+    path.addEllipse(QRectF(1.5, 9.5, 6, 6));
+    path.addEllipse(QRectF(10.5, 9.5, 6, 6));
+    path.moveTo(7.5, 12.5);
+    path.lineTo(10.5, 12.5);
+    if (m_strokeToFilledPath) {
+        QPainterPathStroker stroker(m_painter->pen());
+        path = stroker.createStroke(path);
+
+        m_painter->setPen(Qt::NoPen);
+        m_painter->setBrush(pen.color());
+    }
+    m_painter->drawPath(path);
+}
 }

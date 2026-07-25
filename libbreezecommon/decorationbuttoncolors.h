@@ -31,6 +31,7 @@ const QList<DecorationButtonType> coloredWindowDecorationButtonTypes{
     DecorationButtonType::KeepBelow,
     DecorationButtonType::KeepAbove,
     DecorationButtonType::Custom,
+    DecorationButtonType::ExcludeFromCapture,
 };
 
 const QList<DecorationButtonType> coloredAppStyleDecorationButtonTypes{

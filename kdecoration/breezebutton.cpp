@@ -134,6 +134,16 @@ Button *Button::create(KDecoration3::DecorationButtonType type, KDecoration3::De
             });
             break;
 
+        case KDecoration3::DecorationButtonType::ExcludeFromCapture:
+            b->setVisible(decoration->settings()->isAlwaysShowExcludeFromCapture() || c->isExcludedFromCapture());
+            QObject::connect(decoration->settings().get(), &KDecoration3::DecorationSettings::alwaysShowExcludeFromCaptureChanged, b, [b, c](bool alwaysShow) {
+                b->setVisible(alwaysShow || c->isExcludedFromCapture());
+            });
+            QObject::connect(c, &KDecoration3::DecoratedWindow::excludeFromCaptureChanged, b, [b, decoration](bool excluded) {
+                b->setVisible(decoration->settings()->isAlwaysShowExcludeFromCapture() || excluded);
+            });
+            break;
+
         default:
             break;
         }
@@ -327,10 +337,7 @@ QColor Button::foregroundColor(const bool getNonAnimatedColor) const
     // return a variant of normal, hover and press colours, depending on state
     if (isPressed()) {
         return foregroundPressActiveStateAnimated(active, getNonAnimatedColor);
-    } else if (isChecked()
-               && (type() == KDecoration3::DecorationButtonType::KeepBelow || type() == KDecoration3::DecorationButtonType::KeepAbove
-                   || type() == KDecoration3::DecorationButtonType::Shade
-                   || (type() == KDecoration3::DecorationButtonType::OnAllDesktops && !m_titlebarTextPinnedInversion))) {
+    } else if (isChecked() && isCheckable()) {
         if (m_d->internalSettings()->buttonStateChecked(active) == InternalSettings::EnumButtonStateChecked::Hover) {
             return foregroundHoverActiveStateAnimated(active, getNonAnimatedColor);
         } else {
@@ -424,10 +431,7 @@ QColor Button::backgroundColor(const bool getNonAnimatedColor) const
     // return a variant of normal, hover and press colours, depending on state
     if (isPressed()) {
         return backgroundPressActiveStateAnimated(active, getNonAnimatedColor);
-    } else if (isChecked()
-               && (type() == KDecoration3::DecorationButtonType::KeepBelow || type() == KDecoration3::DecorationButtonType::KeepAbove
-                   || type() == KDecoration3::DecorationButtonType::Shade
-                   || (type() == KDecoration3::DecorationButtonType::OnAllDesktops && !m_titlebarTextPinnedInversion))) {
+    } else if (isChecked() && isCheckable()) {
         if (m_d->internalSettings()->buttonStateChecked(active) == InternalSettings::EnumButtonStateChecked::Hover) {
             return backgroundHoverActiveStateAnimated(active, getNonAnimatedColor);
         } else {
@@ -520,10 +524,7 @@ QColor Button::outlineColor(const bool getNonAnimatedColor) const
     // return a variant of normal, hover and press colours, depending on state
     if (isPressed()) {
         return outlinePressActiveStateAnimated(active, getNonAnimatedColor);
-    } else if (isChecked()
-               && (type() == KDecoration3::DecorationButtonType::KeepBelow || type() == KDecoration3::DecorationButtonType::KeepAbove
-                   || type() == KDecoration3::DecorationButtonType::Shade
-                   || (type() == KDecoration3::DecorationButtonType::OnAllDesktops && !m_titlebarTextPinnedInversion))) {
+    } else if (isChecked() && isCheckable()) {
         if (m_d->internalSettings()->buttonStateChecked(active) == InternalSettings::EnumButtonStateChecked::Hover) {
             return outlineHoverActiveStateAnimated(active, getNonAnimatedColor);
         } else {
@@ -1177,6 +1178,14 @@ bool Button::isSystemIconAvailable() const
         else
             return true;
     }
+}
+
+bool Button::isCheckable() const
+{
+    return (type() == KDecoration3::DecorationButtonType::KeepBelow || type() == KDecoration3::DecorationButtonType::KeepAbove
+            || type() == KDecoration3::DecorationButtonType::Shade
+            || (type() == KDecoration3::DecorationButtonType::ExcludeFromCapture && m_d->settings()->isAlwaysShowExcludeFromCapture())
+            || (type() == KDecoration3::DecorationButtonType::OnAllDesktops && !m_titlebarTextPinnedInversion));
 }
 
 bool Button::hovered() const // for unison hovering

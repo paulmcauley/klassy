@@ -215,6 +215,8 @@ private:
 
     bool isSystemIconAvailable() const;
 
+    bool isCheckable() const;
+
     void setDevicePixelRatio(QPainter *painter);
     void setShouldDrawBoldButtonIcons();
     void setStandardScaledPenWidth();

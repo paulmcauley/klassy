@@ -115,6 +115,7 @@ protected:
     virtual void renderKeepInFrontIcon() = 0;
     virtual void renderApplicationMenuIcon() = 0;
     virtual void renderContextHelpIcon() = 0;
+    virtual void renderExcludeFromCaptureIcon() = 0;
 
     /**
      *@brief Multiplies the pen width by the bolding factor, and rounds it. Also returns whether the integer-rounded bold pen with is an even or odd number of

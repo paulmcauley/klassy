@@ -447,6 +447,7 @@
                 <value>Shade</value>
                 <value>KeepBelow</value>
                 <value>KeepAbove</value>
+                <value>ExcludeFromCapture</value>
             </values>
         </parameter>
     </entry>
@@ -464,6 +465,7 @@
                 <value>Shade</value>
                 <value>KeepBelow</value>
                 <value>KeepAbove</value>
+                <value>ExcludeFromCapture</value>
             </values>
         </parameter>
     </entry>
