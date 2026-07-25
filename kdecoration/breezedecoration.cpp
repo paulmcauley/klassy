@@ -424,7 +424,9 @@ void Decoration::init()
 
     connect(c, &KDecoration3::DecoratedWindow::widthChanged, this, &Decoration::updateButtonsGeometry);
     connect(c, &KDecoration3::DecoratedWindow::maximizedChanged, this, &Decoration::updateButtonsGeometry);
+    connect(c, &KDecoration3::DecoratedWindow::maximizedChanged, this, &Decoration::updateShadowOnChange);
     connect(c, &KDecoration3::DecoratedWindow::adjacentScreenEdgesChanged, this, &Decoration::updateButtonsGeometry);
+    connect(c, &KDecoration3::DecoratedWindow::adjacentScreenEdgesChanged, this, &Decoration::updateShadowOnChange);
     connect(c, &KDecoration3::DecoratedWindow::shadedChanged, this, &Decoration::updateButtonsGeometry);
 
     connect(c, &KDecoration3::DecoratedWindow::nextScaleChanged, this, &Decoration::updateNextScale);
@@ -1721,18 +1723,17 @@ void Decoration::updateShadow(const bool forceUpdateCache, bool noCache, const b
     // The preset exception may modify the shadow, so in this case there is a "noCache" property set - we don't want to cache the exception shadow as it may
     // corrupt the shadow cache for normal non-exception decoration windows For shaded windows the shadow/outline has a potentially different shape so do not
     // use the shadow cache when shaded
-    if (m_internalSettings->property("noCacheException").toBool() || c->isShaded()) {
+    // also don't want to cache the shadow with a partial outline for when it is at a screen edge
+    if (m_internalSettings->property("noCacheException").toBool() || c->isShaded() || isTopEdge() || isRightEdge() || isBottomEdge() || isLeftEdge()) {
         noCache = true;
     }
-
+    setWindowOutlineColor();
     // Animated case, no cached shadow object
     if ((m_shadowAnimation->state() == QAbstractAnimation::Running) && (m_shadowOpacity != 0.0) && (m_shadowOpacity != 1.0)) {
         QColor shadowColor = KColorUtils::mix(m_decorationColors->inactive()->shadow, m_decorationColors->active()->shadow, m_shadowOpacity);
-        setWindowOutlineColor();
         setShadow(createShadowObject(shadowColor, isWindowOutlineOverride));
         return;
     }
-    setWindowOutlineColor();
 
     // TODO: Potentially make the kdecoration configwidget more intelligent and send a dbus signal which is aware of whether to update the shadow or not, so
     // there is less processing here
@@ -1907,12 +1908,43 @@ std::shared_ptr<KDecoration3::DecorationShadow> Decoration::createShadowObject(Q
             else
                 cornerRadius = m_scaledCornerRadius + halfOutlinePenWidth; // else round corner slightly more to account for pen width
 
-            if (hasNoBorders() && !m_internalSettings->roundAllCornersWhenNoBorders() && !c->isShaded()) {
-                if (hideTitleBar()) {
-                    outlinePath.addRect(outlineRect);
-                } else {
-                    outlinePath = GeometryTools::roundedPath(outlineRect, CornersTop, cornerRadius);
+            Sides outlineSides;
+            if (!isTopEdge()) {
+                outlineSides |= SideTop;
+            }
+            if (!isLeftEdge()) {
+                outlineSides |= SideLeft;
+            }
+            if (!isBottomEdge()) {
+                outlineSides |= SideBottom;
+            }
+            if (!isRightEdge()) {
+                outlineSides |= SideRight;
+            }
+
+            if (!c->isShaded()) {
+                Corners outlineCorners;
+
+                if (!isBottomEdge() && !(hasNoBorders() && !m_internalSettings->roundAllCornersWhenNoBorders())) {
+                    if (!isLeftEdge()) {
+                        outlineCorners |= CornerBottomLeft;
+                    }
+                    if (!isRightEdge()) {
+                        outlineCorners |= CornerBottomRight;
+                    }
                 }
+
+                if (!isTopEdge() && !(hideTitleBar() && hasNoBorders() && !m_internalSettings->roundAllCornersWhenNoBorders())) {
+                    if (!isLeftEdge()) {
+                        outlineCorners |= CornerTopLeft;
+                    }
+                    if (!isRightEdge()) {
+                        outlineCorners |= CornerTopRight;
+                    }
+                }
+
+                outlinePath = GeometryTools::roundedPath(outlineRect, outlineCorners, cornerRadius, outlineSides, outlinePenWidth);
+
             } else {
                 outlinePath.addRoundedRect(outlineRect, cornerRadius, cornerRadius);
             }

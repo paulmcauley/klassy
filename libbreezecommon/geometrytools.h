@@ -21,7 +21,7 @@ namespace Breeze
 class BREEZECOMMON_EXPORT GeometryTools
 {
 public:
-    static QPainterPath roundedPath(const QRectF &rect, Corners corners, qreal radius);
+    static QPainterPath roundedPath(const QRectF &rect, Corners corners, qreal radius, Sides sides = AllSides, qreal penProtrusion = 0);
 };
 
 }
