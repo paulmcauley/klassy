@@ -12,6 +12,7 @@
 #include "stylekisweet.h"
 #include "stylekite.h"
 #include "styleklasse.h"
+#include "stylematerial.h"
 #include "stylemetro.h"
 #include "styleoxygen.h"
 #include "stylesuessigkite.h"
@@ -32,8 +33,16 @@ std::pair<std::unique_ptr<RenderDecorationButtonIcon>, int> RenderDecorationButt
                                                                                                 const bool forceEvenSquares)
 {
     switch (internalSettings->buttonIconStyle()) {
-    case InternalSettings::EnumButtonIconStyle::StyleKite:
+    case InternalSettings::EnumButtonIconStyle::StyleMaterial:
     default:
+        return {std::make_unique<RenderStyleMaterial18By18>(painter,
+                                                            fromKstyle,
+                                                            boldButtonIcons,
+                                                            devicePixelRatio,
+                                                            deviceOffsetFromZeroReference,
+                                                            forceEvenSquares),
+                18};
+    case InternalSettings::EnumButtonIconStyle::StyleKite:
         return {
             std::make_unique<RenderStyleKite18By18>(painter, fromKstyle, boldButtonIcons, devicePixelRatio, deviceOffsetFromZeroReference, forceEvenSquares),
             18};

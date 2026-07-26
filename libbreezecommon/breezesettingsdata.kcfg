@@ -20,6 +20,7 @@
     <entry name="ButtonIconStyle" type="Enum">
       <choices>
           <choice name="StyleSystemIconTheme" />
+          <choice name="StyleMaterial" />
           <choice name="StyleKite" />
           <choice name="StyleSuessigKite" />
           <choice name="StyleOxygen" />

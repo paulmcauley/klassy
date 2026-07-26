@@ -16,6 +16,7 @@ set(breezecommon_LIB_SRCS
     stylearkopalleft.cpp
     styleklasse.cpp
     stylekite.cpp
+    stylematerial.cpp
     styleoxygen.cpp
     stylesuessigkite.cpp
     styletraditional.cpp
