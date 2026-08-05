@@ -53,6 +53,13 @@ enum class AppMenuStyle {
     Disabled,
 };
 
+enum class AppMenuPosition {
+    Left,
+    Center,
+    CenterFullWidth,
+    Right,
+};
+
 class AppMenuButtonGroup : public KDecoration3::DecorationButtonGroup
 {
     Q_OBJECT
@@ -88,6 +95,7 @@ public:
     Q_PROPERTY(bool hovered READ hovered WRITE setHovered NOTIFY hoveredChanged)
     Q_PROPERTY(qreal opacity READ opacity WRITE setOpacity NOTIFY opacityChanged)
     Q_PROPERTY(int overflowing READ overflowing WRITE setOverflowing NOTIFY overflowingChanged)
+    Q_PROPERTY(AppMenuPosition position READ position WRITE setPosition NOTIFY positionChanged)
     Q_PROPERTY(bool showing READ showing WRITE setShowing NOTIFY showingChanged)
     Q_PROPERTY(AppMenuStyle style READ style WRITE setStyle NOTIFY styleChanged)
 
@@ -158,6 +166,18 @@ public:
         return m_overflowing;
     }
 
+    void setPosition(AppMenuPosition value)
+    {
+        if (m_position == value)
+            return;
+        m_position = value;
+        Q_EMIT positionChanged(value);
+    }
+    AppMenuPosition position()
+    {
+        return m_position;
+    };
+
     AppMenuStyle style() const
     {
         return m_style;
@@ -200,14 +220,15 @@ signals:
     void menuUpdated();
     void requestActivateOverflow();
 
-    void currentIndexChanged();
-    void overflowingChanged();
-    void hoveredChanged(bool);
-    void showingChanged(bool);
     void animationEnabledChanged(bool);
     void animationDurationChanged(int);
+    void currentIndexChanged();
+    void hoveredChanged(bool);
     void opacityChanged(qreal);
+    void positionChanged(AppMenuPosition);
+    void showingChanged(bool);
     void styleChanged(AppMenuStyle);
+    void overflowingChanged();
 
 protected:
     bool eventFilter(QObject *watched, QEvent *event) override;
@@ -264,7 +285,8 @@ private:
     bool m_hovered = false;
     bool m_showing = true;
     bool m_animationEnabled = true;
-    AppMenuStyle m_style;
+    AppMenuStyle m_style = AppMenuStyle::Always;
+    AppMenuPosition m_position = AppMenuPosition::Left;
     QVariantAnimation *m_animation;
     qreal m_opacity = 1;
     qreal m_visibleWidth = 0;
