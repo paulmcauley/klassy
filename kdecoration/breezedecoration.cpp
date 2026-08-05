@@ -1412,7 +1412,7 @@ void Decoration::updateButtonsGeometry()
                 m_integratedMenuButtons->setPos(availableRect.topLeft());
             }
 
-            m_integratedMenuButtons->setSpacing(0);
+            m_integratedMenuButtons->setSpacing(m_internalSettings->menuButtonHorzMargin());
         }
     }
 
