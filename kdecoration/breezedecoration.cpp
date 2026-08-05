@@ -987,7 +987,7 @@ void Decoration::setupIntegratedMenu()
     m_integratedMenuButtons = new AppMenuButtonGroup(this);
     connect(m_integratedMenuButtons, &AppMenuButtonGroup::menuUpdated, this, &Decoration::updateButtonsGeometry);
     connect(m_integratedMenuButtons, &AppMenuButtonGroup::opacityChanged, this, repaintTitleBar);
-    connect(m_integratedMenuButtons, &AppMenuButtonGroup::alwaysShowChanged, this, repaintTitleBar);
+    connect(m_integratedMenuButtons, &AppMenuButtonGroup::styleChanged, this, repaintTitleBar);
     m_integratedMenuButtons->updateAppMenuModel();
     m_integratedMenuButtons->setHamburgerMenu(m_internalSettings->hamburgerMenu());
 }
@@ -1794,7 +1794,7 @@ QPair<QRectF, Qt::Alignment> Decoration::captionRect() const
         qreal leftOffset = m_leftButtons->buttons().isEmpty() ? m_scaledTitleSidePadding : m_leftButtons->geometry().x() + m_leftButtons->geometry().width() + m_scaledTitleSidePadding;
         qreal rightOffset = m_rightButtons->buttons().isEmpty() ? m_scaledTitleSidePadding : size().width() - m_rightButtons->geometry().x() + m_scaledTitleSidePadding;
 
-        if (m_integratedMenuButtons && !m_integratedMenuButtons->buttons().isEmpty() && m_integratedMenuButtons->alwaysShow()) {
+        if (m_integratedMenuButtons && !m_integratedMenuButtons->buttons().isEmpty() && m_integratedMenuButtons->takesSpace()) {
             const qreal menuWidth = m_integratedMenuButtons->visibleWidth() + m_scaledTitleSidePadding;
             if (isMenuOnRight()) {
                 rightOffset += menuWidth;
