@@ -569,7 +569,7 @@ void AppMenuButtonGroup::updateOverflow(QRectF availableRect)
 
     qreal fixedWidth = 0;
     if (m_searchButton && m_searchButton->isVisible()) {
-        fixedWidth += m_searchButton->geometry().width();
+        fixedWidth += m_searchButton->geometry().width() + spacing();
     }
 
     bool showOverflow = false;
@@ -588,7 +588,7 @@ void AppMenuButtonGroup::updateOverflow(QRectF availableRect)
         bool allFit = true;
         for (auto &tb : std::as_const(m_textButtons)) {
             if (tb && tb->isEnabled()) {
-                totalTextWidth += tb->geometry().width();
+                totalTextWidth += tb->geometry().width() + spacing();
                 enabledCount++;
                 if (fixedWidth + totalTextWidth > availableWidth) {
                     allFit = false;
@@ -608,7 +608,7 @@ void AppMenuButtonGroup::updateOverflow(QRectF availableRect)
             }
         } else if (enabledCount > 0) {
             showOverflow = true;
-            const qreal overflowBtnWidth = m_overflowButton ? m_overflowButton->geometry().width() : 0;
+            const qreal overflowBtnWidth = m_overflowButton ? m_overflowButton->geometry().width() + spacing() : 0;
             qreal remainingWidth = availableWidth - fixedWidth - overflowBtnWidth;
 
             // Second pass: apply visibility and calculate final width
@@ -618,7 +618,7 @@ void AppMenuButtonGroup::updateOverflow(QRectF availableRect)
                     continue;
                 }
                 if (fits && tb->isEnabled()) {
-                    const qreal w = tb->geometry().width();
+                    const qreal w = tb->geometry().width() + spacing();
                     if (w <= remainingWidth) {
                         tb->setVisible(true);
                         currentVisibleWidth += w;
@@ -641,7 +641,7 @@ void AppMenuButtonGroup::updateOverflow(QRectF availableRect)
     if (m_overflowButton) {
         m_overflowButton->setVisible(showOverflow);
         if (showOverflow) {
-            currentVisibleWidth += m_overflowButton->geometry().width();
+            currentVisibleWidth += m_overflowButton->geometry().width() + spacing();
         }
     }
     setOverflowing(showOverflow);
