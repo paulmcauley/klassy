@@ -21,6 +21,8 @@
 
 #pragma once
 
+#include "breezedecoration.h"
+
 // Qt
 #include <QAction>
 #include <QDBusServiceWatcher>
@@ -43,7 +45,7 @@ class AppMenuModel : public QObject
     Q_OBJECT
 
 public:
-    explicit AppMenuModel(QObject *parent = nullptr);
+    explicit AppMenuModel(QObject *parent, QStyle *menuStyle);
     ~AppMenuModel() override;
 
 public:
@@ -94,6 +96,7 @@ private:
     QString m_menuObjectPath;
 
     QPointer<KDBusMenuImporter> m_importer;
+    QStyle *m_menuStyle;
 };
 
 } // namespace Breeze

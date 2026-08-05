@@ -49,8 +49,9 @@ namespace Breeze
 class KDBusMenuImporter : public DBusMenuImporter
 {
 public:
-    KDBusMenuImporter(const QString &service, const QString &path, QObject *parent)
+    KDBusMenuImporter(QStyle *menuStyle, const QString &service, const QString &path, QObject *parent)
         : DBusMenuImporter(service, path, parent)
+        , m_menuStyle(menuStyle)
     {
     }
 
@@ -62,13 +63,17 @@ protected:
 
     QMenu *createMenu(QWidget *parent) override
     {
-        return new NavigableMenu(parent);
+        return new NavigableMenu(parent, m_menuStyle);
     }
+
+private:
+    QStyle *m_menuStyle;
 };
 
-AppMenuModel::AppMenuModel(QObject *parent)
+AppMenuModel::AppMenuModel(QObject *parent, QStyle *menuStyle)
     : QObject(parent)
     , m_serviceWatcher(new QDBusServiceWatcher(this))
+    , m_menuStyle(menuStyle)
 {
     m_serviceWatcher->setConnection(QDBusConnection::sessionBus());
     // If our current DBus connection gets lost, close the menu
@@ -152,7 +157,7 @@ void AppMenuModel::updateApplicationMenu(const QString &serviceName, const QStri
         m_importer->deleteLater();
     }
 
-    m_importer = new KDBusMenuImporter(serviceName, menuObjectPath, this);
+    m_importer = new KDBusMenuImporter(m_menuStyle, serviceName, menuObjectPath, this);
     QMetaObject::invokeMethod(m_importer.data(), qOverload<>(&DBusMenuImporter::updateMenu), Qt::QueuedConnection);
 
     connect(m_importer.data(), &DBusMenuImporter::menuUpdated, this, &AppMenuModel::onMenuUpdated);
