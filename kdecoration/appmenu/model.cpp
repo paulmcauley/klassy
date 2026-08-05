@@ -28,6 +28,7 @@
 // own
 #include "appmenu/model.h"
 #include "appmenu/navigablemenu.h"
+#include "breezedecoration.h"
 
 // Qt
 #include <QAction>
@@ -49,9 +50,9 @@ namespace Breeze
 class KDBusMenuImporter : public DBusMenuImporter
 {
 public:
-    KDBusMenuImporter(QStyle *menuStyle, const QString &service, const QString &path, QObject *parent)
+    KDBusMenuImporter(Decoration *decoration, const QString &service, const QString &path, QObject *parent)
         : DBusMenuImporter(service, path, parent)
-        , m_menuStyle(menuStyle)
+        , m_decoration(decoration)
     {
     }
 
@@ -63,17 +64,17 @@ protected:
 
     QMenu *createMenu(QWidget *parent) override
     {
-        return new NavigableMenu(parent, m_menuStyle);
+        return new NavigableMenu(parent, m_decoration);
     }
 
 private:
-    QStyle *m_menuStyle;
+    Decoration *m_decoration;
 };
 
-AppMenuModel::AppMenuModel(QObject *parent, QStyle *menuStyle)
+AppMenuModel::AppMenuModel(QObject *parent, Decoration *decoration)
     : QObject(parent)
     , m_serviceWatcher(new QDBusServiceWatcher(this))
-    , m_menuStyle(menuStyle)
+    , m_decoration(decoration)
 {
     m_serviceWatcher->setConnection(QDBusConnection::sessionBus());
     // If our current DBus connection gets lost, close the menu
@@ -157,7 +158,7 @@ void AppMenuModel::updateApplicationMenu(const QString &serviceName, const QStri
         m_importer->deleteLater();
     }
 
-    m_importer = new KDBusMenuImporter(m_menuStyle, serviceName, menuObjectPath, this);
+    m_importer = new KDBusMenuImporter(m_decoration, serviceName, menuObjectPath, this);
     QMetaObject::invokeMethod(m_importer.data(), qOverload<>(&DBusMenuImporter::updateMenu), Qt::QueuedConnection);
 
     connect(m_importer.data(), &DBusMenuImporter::menuUpdated, this, &AppMenuModel::onMenuUpdated);

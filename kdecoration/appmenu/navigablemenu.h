@@ -22,6 +22,7 @@
 
 #pragma once
 
+#include "breezedecoration.h"
 #include <QMenu>
 
 namespace Breeze
@@ -32,7 +33,7 @@ class NavigableMenu : public QMenu
     Q_OBJECT
 
 public:
-    explicit NavigableMenu(QWidget *parent, QStyle *style);
+    explicit NavigableMenu(QWidget *parent, Decoration *decoration);
     ~NavigableMenu() override = default;
 
 Q_SIGNALS:
@@ -42,6 +43,9 @@ Q_SIGNALS:
 protected:
     void keyPressEvent(QKeyEvent *event) override;
     void showEvent(QShowEvent *event) override;
+
+private:
+    Decoration *m_decoration;
 };
 
 } // namespace Breeze

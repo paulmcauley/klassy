@@ -219,6 +219,9 @@
         <default>RoundedRectangle</default>
     </entry>
 
+    <entry name="IntegratedMenuEnableBlur" type="Bool">
+        <default>true</default>
+    </entry>
   </group>
 
 
