@@ -15,7 +15,7 @@ class AppMenuButtonGroup;
 class AppMenuSearchButton : public AppMenuIconButton
 {
 public:
-    AppMenuSearchButton(QStyle *menuStyle, Decoration *decoration, const int buttonIndex, AppMenuButtonGroup *parent);
+    AppMenuSearchButton(Decoration *decoration, const int buttonIndex, AppMenuButtonGroup *parent);
 
     void reconfigure() override;
 
