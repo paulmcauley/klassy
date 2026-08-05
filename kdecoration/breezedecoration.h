@@ -234,6 +234,8 @@ private Q_SLOTS:
 protected:
     void hoverMoveEvent(QHoverEvent *event) override; // override decoration hover events for Unison hovering
     void hoverLeaveEvent(QHoverEvent *event) override;
+    void mousePressEvent(QMouseEvent *event) override;
+    void mouseReleaseEvent(QMouseEvent *event) override;
 
 private:
     //* return the rect in which caption will be drawn

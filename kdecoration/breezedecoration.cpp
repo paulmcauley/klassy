@@ -40,6 +40,7 @@
 #include <QDBusPendingCallWatcher>
 #include <QDBusPendingReply>
 #include <QHoverEvent>
+#include <QMouseEvent>
 #include <QPainter>
 #include <QTextStream>
 #include <QTimer>
@@ -2192,7 +2193,41 @@ void Decoration::setButtonUnisonHovered(bool value)
     emit buttonUnisonHoveredChanged(value);
 }
 
-// for unison hovering
+void Decoration::hoverLeaveEvent(QHoverEvent *event)
+{
+    if (m_internalSettings->unisonHovering()) {
+        setButtonUnisonHovered(false);
+    }
+
+    if (m_integratedMenuButtons) {
+        m_integratedMenuButtons->setHovered(false);
+        m_integratedMenuButtons->updateShowing();
+    }
+    KDecoration3::Decoration::hoverLeaveEvent(event);
+}
+
+void Decoration::mousePressEvent(QMouseEvent *event)
+{
+    KDecoration3::Decoration::mousePressEvent(event);
+
+    if (!m_internalSettings->dragFromIntegratedMenuEnabled() || !m_integratedMenuButtons) {
+        return;
+    }
+
+    const QPoint pos = event->position().toPoint();
+    if (m_integratedMenuButtons->geometry().contains(pos) && event->button() == Qt::LeftButton) {
+        m_integratedMenuButtons->startDragMove(pos);
+        event->setAccepted(false);
+    }
+}
+
+void Decoration::mouseReleaseEvent(QMouseEvent *event)
+{
+    KDecoration3::Decoration::mouseReleaseEvent(event);
+    if (m_integratedMenuButtons)
+        m_integratedMenuButtons->resetDragMove();
+}
+
 void Decoration::hoverMoveEvent(QHoverEvent *event)
 {
     if (m_internalSettings->unisonHovering()) {
@@ -2200,30 +2235,18 @@ void Decoration::hoverMoveEvent(QHoverEvent *event)
         setButtonUnisonHovered(groupContains);
     }
 
-    // update menu button hover state based on titlebar hover
+    // Update integrated menu button showing state based on titlebar hover
     if (m_integratedMenuButtons) {
         const bool titleBarHovered = titleBar().contains(event->position());
         m_integratedMenuButtons->setHovered(titleBarHovered);
         m_integratedMenuButtons->updateShowing();
-    }
-
-    if (m_integratedMenuButtons && m_integratedMenuButtons->geometry().contains(event->position())) {
-        m_integratedMenuButtons->handleHoverMove(event->position());
+        if (m_integratedMenuButtons->geometry().contains(event->position()))
+            m_integratedMenuButtons->handleHoverMove(event->position());
+        if (m_integratedMenuButtons->dragMoveTick(event->position().toPoint()))
+            return;
     }
 
     KDecoration3::Decoration::hoverMoveEvent(event);
-}
-
-void Decoration::hoverLeaveEvent(QHoverEvent *event)
-{
-    if (m_internalSettings->unisonHovering()) {
-        setButtonUnisonHovered(false);
-    }
-    if (m_integratedMenuButtons) {
-        m_integratedMenuButtons->setHovered(false);
-        m_integratedMenuButtons->updateShowing();
-    }
-    KDecoration3::Decoration::hoverLeaveEvent(event);
 }
 
 } // namespace

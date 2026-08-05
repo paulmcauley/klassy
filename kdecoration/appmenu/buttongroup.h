@@ -112,6 +112,11 @@ public:
     void updateOverflow(QRectF availableRect);
     void updateShowing();
 
+    // Drag-from-buttons support
+    void startDragMove(const QPoint &pos);
+    void resetDragMove();
+    bool dragMoveTick(const QPoint &pos);
+
 private:
     void onMenuReadyForSearch();
     void triggerOverflow();
@@ -158,7 +163,7 @@ private:
 
     KDecoration3::DecorationButton *buttonAt(QPoint pos) const;
 
-    void unPressAllButtons();
+    void unpressAllButtons();
 
     void trigger(int index);
 
@@ -176,6 +181,7 @@ private:
     Decoration *m_decoration;
     QPointer<AppMenuMenuStyle> m_menuStyle;
     AppMenuModel *m_appMenuModel;
+    QPoint m_pressedPoint;
     int m_currentIndex;
     int m_overflowIndex;
     int m_searchIndex;
