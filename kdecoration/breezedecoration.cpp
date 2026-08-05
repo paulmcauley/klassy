@@ -988,13 +988,6 @@ QPoint Decoration::windowPos() const
 }
 
 //________________________________________________________________
-bool Decoration::isMenuOnRight() const
-{
-    const auto buttonsRight = settings()->decorationButtonsRight();
-    return buttonsRight.contains(KDecoration3::DecorationButtonType::ApplicationMenu);
-}
-
-//________________________________________________________________
 void Decoration::updateButtonsGeometryDelayed()
 {
     QTimer::singleShot(0, this, &Decoration::updateButtonsGeometry);
@@ -1743,7 +1736,7 @@ QPair<QRectF, Qt::Alignment> Decoration::captionRect() const
 
         if (m_integratedMenuButtons && !m_integratedMenuButtons->buttons().isEmpty() && m_integratedMenuButtons->takesSpace()) {
             const qreal menuWidth = m_integratedMenuButtons->visibleWidth() + padding;
-            if (isMenuOnRight()) {
+            if (m_integratedMenuButtons->position() == AppMenuPosition::Right) {
                 rightOffset += menuWidth;
             } else {
                 leftOffset += menuWidth;
