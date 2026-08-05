@@ -333,19 +333,20 @@ QColor Button::foregroundColor(const bool getNonAnimatedColor) const
 
     auto c = m_d->window();
     const bool active = c->isActive();
+    const auto animation = getNonAnimatedColor ? nullptr : m_d->activeStateChangeAnimation();
 
     // return a variant of normal, hover and press colours, depending on state
     if (isPressed()) {
-        return foregroundPressActiveStateAnimated(active, getNonAnimatedColor);
+        return m_buttonPalette->foregroundPressActiveStateAnimated(active, animation);
     } else if (isChecked() && isCheckable()) {
         if (m_d->internalSettings()->buttonStateChecked(active) == InternalSettings::EnumButtonStateChecked::Hover) {
-            return foregroundHoverActiveStateAnimated(active, getNonAnimatedColor);
+            return m_buttonPalette->foregroundHoverActiveStateAnimated(active, animation);
         } else {
-            return foregroundPressActiveStateAnimated(active, getNonAnimatedColor);
+            return m_buttonPalette->foregroundPressActiveStateAnimated(active, animation);
         }
     } else if (m_animation->state() == QAbstractAnimation::Running && !getNonAnimatedColor) { // button hover animation
-        QColor foregroundNormal = foregroundNormalActiveStateAnimated(active, getNonAnimatedColor);
-        QColor foregroundHover = foregroundHoverActiveStateAnimated(active, getNonAnimatedColor);
+        QColor foregroundNormal = m_buttonPalette->foregroundNormalActiveStateAnimated(active, animation);
+        QColor foregroundHover = m_buttonPalette->foregroundHoverActiveStateAnimated(active, animation);
         if (foregroundNormal.isValid() && foregroundHover.isValid()) {
             return KColorUtils::mix(foregroundNormal, foregroundHover, m_opacity);
         } else if (foregroundHover.isValid()) {
@@ -353,68 +354,9 @@ QColor Button::foregroundColor(const bool getNonAnimatedColor) const
         } else
             return QColor();
     } else if (this->hovered()) {
-        return foregroundHoverActiveStateAnimated(active, getNonAnimatedColor);
+        return m_buttonPalette->foregroundHoverActiveStateAnimated(active, animation);
     } else {
-        return foregroundNormalActiveStateAnimated(active, getNonAnimatedColor);
-    }
-}
-
-QColor Button::foregroundNormalActiveStateAnimated(const bool active, const bool getNonAnimatedColor) const
-{
-    if (!getNonAnimatedColor && m_d->activeStateChangeAnimation()->state() == QAbstractAnimation::Running) {
-        if (m_buttonPalette->active()->foregroundNormal.isValid() && m_buttonPalette->inactive()->foregroundNormal.isValid()) {
-            return KColorUtils::mix(m_buttonPalette->inactive()->foregroundNormal,
-                                    m_buttonPalette->active()->foregroundNormal,
-                                    m_d->activeStateChangeAnimationOpacity());
-        } else if (m_buttonPalette->active()->foregroundNormal.isValid() && !m_buttonPalette->inactive()->foregroundNormal.isValid()) {
-            return ColorTools::alphaMix(m_buttonPalette->active()->foregroundNormal, m_d->activeStateChangeAnimationOpacity());
-        } else if (!m_buttonPalette->active()->foregroundNormal.isValid() && m_buttonPalette->inactive()->foregroundNormal.isValid()) {
-            return ColorTools::alphaMix(m_buttonPalette->inactive()->foregroundNormal, (1.0 - m_d->activeStateChangeAnimationOpacity()));
-        } else {
-            return QColor();
-        }
-    } else {
-        const DecorationButtonPaletteGroup *group = active ? m_buttonPalette->active() : m_buttonPalette->inactive();
-        return group->foregroundNormal;
-    }
-}
-
-QColor Button::foregroundHoverActiveStateAnimated(const bool active, const bool getNonAnimatedColor) const
-{
-    if (!getNonAnimatedColor && m_d->activeStateChangeAnimation()->state() == QAbstractAnimation::Running) {
-        if (m_buttonPalette->active()->foregroundHover.isValid() && m_buttonPalette->inactive()->foregroundHover.isValid()) {
-            return KColorUtils::mix(m_buttonPalette->inactive()->foregroundHover,
-                                    m_buttonPalette->active()->foregroundHover,
-                                    m_d->activeStateChangeAnimationOpacity());
-        } else if (m_buttonPalette->active()->foregroundHover.isValid() && !m_buttonPalette->inactive()->foregroundHover.isValid()) {
-            return ColorTools::alphaMix(m_buttonPalette->active()->foregroundHover, m_d->activeStateChangeAnimationOpacity());
-        } else if (!m_buttonPalette->active()->foregroundHover.isValid() && m_buttonPalette->inactive()->foregroundHover.isValid()) {
-            return ColorTools::alphaMix(m_buttonPalette->inactive()->foregroundHover, (1.0 - m_d->activeStateChangeAnimationOpacity()));
-        } else {
-            return QColor();
-        }
-    } else {
-        const DecorationButtonPaletteGroup *group = active ? m_buttonPalette->active() : m_buttonPalette->inactive();
-        return group->foregroundHover;
-    }
-}
-
-QColor Button::foregroundPressActiveStateAnimated(const bool active, const bool getNonAnimatedColor) const
-{
-    if (!getNonAnimatedColor && m_d->activeStateChangeAnimation()->state() == QAbstractAnimation::Running) {
-        if (m_buttonPalette->active()->foregroundPress.isValid() && m_buttonPalette->inactive()->foregroundPress.isValid()) {
-            return KColorUtils::mix(m_buttonPalette->inactive()->foregroundPress,
-                                    m_buttonPalette->active()->foregroundPress,
-                                    m_d->activeStateChangeAnimationOpacity());
-        } else if (m_buttonPalette->active()->foregroundPress.isValid() && !m_buttonPalette->inactive()->foregroundPress.isValid()) {
-            return ColorTools::alphaMix(m_buttonPalette->active()->foregroundPress, m_d->activeStateChangeAnimationOpacity());
-        } else if (!m_buttonPalette->active()->foregroundPress.isValid() && m_buttonPalette->inactive()->foregroundPress.isValid()) {
-            return ColorTools::alphaMix(m_buttonPalette->inactive()->foregroundPress, (1.0 - m_d->activeStateChangeAnimationOpacity()));
-        } else
-            return QColor();
-    } else {
-        const DecorationButtonPaletteGroup *group = active ? m_buttonPalette->active() : m_buttonPalette->inactive();
-        return group->foregroundPress;
+        return m_buttonPalette->foregroundNormalActiveStateAnimated(active, animation);
     }
 }
 
@@ -427,19 +369,20 @@ QColor Button::backgroundColor(const bool getNonAnimatedColor) const
 
     auto c = m_d->window();
     const bool active = c->isActive();
+    const auto animation = getNonAnimatedColor ? nullptr : m_d->activeStateChangeAnimation();
 
     // return a variant of normal, hover and press colours, depending on state
     if (isPressed()) {
-        return backgroundPressActiveStateAnimated(active, getNonAnimatedColor);
+        return m_buttonPalette->backgroundPressActiveStateAnimated(active, animation);
     } else if (isChecked() && isCheckable()) {
         if (m_d->internalSettings()->buttonStateChecked(active) == InternalSettings::EnumButtonStateChecked::Hover) {
-            return backgroundHoverActiveStateAnimated(active, getNonAnimatedColor);
+            return m_buttonPalette->backgroundHoverActiveStateAnimated(active, animation);
         } else {
-            return backgroundPressActiveStateAnimated(active, getNonAnimatedColor);
+            return m_buttonPalette->backgroundPressActiveStateAnimated(active, animation);
         }
     } else if (m_animation->state() == QAbstractAnimation::Running && !getNonAnimatedColor) { // button hover animation
-        QColor backgroundNormal = backgroundNormalActiveStateAnimated(active, getNonAnimatedColor);
-        QColor backgroundHover = backgroundHoverActiveStateAnimated(active, getNonAnimatedColor);
+        QColor backgroundNormal = m_buttonPalette->backgroundNormalActiveStateAnimated(active, animation);
+        QColor backgroundHover = m_buttonPalette->backgroundHoverActiveStateAnimated(active, animation);
         if (backgroundNormal.isValid() && backgroundHover.isValid()) {
             return KColorUtils::mix(backgroundNormal, backgroundHover, m_opacity);
         } else if (backgroundHover.isValid()) {
@@ -447,68 +390,9 @@ QColor Button::backgroundColor(const bool getNonAnimatedColor) const
         } else
             return QColor();
     } else if (this->hovered()) {
-        return backgroundHoverActiveStateAnimated(active, getNonAnimatedColor);
+        return m_buttonPalette->backgroundHoverActiveStateAnimated(active, animation);
     } else {
-        return backgroundNormalActiveStateAnimated(active, getNonAnimatedColor);
-    }
-}
-
-QColor Button::backgroundNormalActiveStateAnimated(const bool active, const bool getNonAnimatedColor) const
-{
-    if (!getNonAnimatedColor && m_d->activeStateChangeAnimation()->state() == QAbstractAnimation::Running) {
-        if (m_buttonPalette->active()->backgroundNormal.isValid() && m_buttonPalette->inactive()->backgroundNormal.isValid()) {
-            return KColorUtils::mix(m_buttonPalette->inactive()->backgroundNormal,
-                                    m_buttonPalette->active()->backgroundNormal,
-                                    m_d->activeStateChangeAnimationOpacity());
-        } else if (m_buttonPalette->active()->backgroundNormal.isValid() && !m_buttonPalette->inactive()->backgroundNormal.isValid()) {
-            return ColorTools::alphaMix(m_buttonPalette->active()->backgroundNormal, m_d->activeStateChangeAnimationOpacity());
-        } else if (!m_buttonPalette->active()->backgroundNormal.isValid() && m_buttonPalette->inactive()->backgroundNormal.isValid()) {
-            return ColorTools::alphaMix(m_buttonPalette->inactive()->backgroundNormal, (1.0 - m_d->activeStateChangeAnimationOpacity()));
-        } else {
-            return QColor();
-        }
-    } else {
-        const DecorationButtonPaletteGroup *group = active ? m_buttonPalette->active() : m_buttonPalette->inactive();
-        return group->backgroundNormal;
-    }
-}
-
-QColor Button::backgroundHoverActiveStateAnimated(const bool active, const bool getNonAnimatedColor) const
-{
-    if (!getNonAnimatedColor && m_d->activeStateChangeAnimation()->state() == QAbstractAnimation::Running) {
-        if (m_buttonPalette->active()->backgroundHover.isValid() && m_buttonPalette->inactive()->backgroundHover.isValid()) {
-            return KColorUtils::mix(m_buttonPalette->inactive()->backgroundHover,
-                                    m_buttonPalette->active()->backgroundHover,
-                                    m_d->activeStateChangeAnimationOpacity());
-        } else if (m_buttonPalette->active()->backgroundHover.isValid() && !m_buttonPalette->inactive()->backgroundHover.isValid()) {
-            return ColorTools::alphaMix(m_buttonPalette->active()->backgroundHover, m_d->activeStateChangeAnimationOpacity());
-        } else if (!m_buttonPalette->active()->backgroundHover.isValid() && m_buttonPalette->inactive()->backgroundHover.isValid()) {
-            return ColorTools::alphaMix(m_buttonPalette->inactive()->backgroundHover, (1.0 - m_d->activeStateChangeAnimationOpacity()));
-        } else {
-            return QColor();
-        }
-    } else {
-        const DecorationButtonPaletteGroup *group = active ? m_buttonPalette->active() : m_buttonPalette->inactive();
-        return group->backgroundHover;
-    }
-}
-
-QColor Button::backgroundPressActiveStateAnimated(const bool active, const bool getNonAnimatedColor) const
-{
-    if (!getNonAnimatedColor && m_d->activeStateChangeAnimation()->state() == QAbstractAnimation::Running) {
-        if (m_buttonPalette->active()->backgroundPress.isValid() && m_buttonPalette->inactive()->backgroundPress.isValid()) {
-            return KColorUtils::mix(m_buttonPalette->inactive()->backgroundPress,
-                                    m_buttonPalette->active()->backgroundPress,
-                                    m_d->activeStateChangeAnimationOpacity());
-        } else if (m_buttonPalette->active()->backgroundPress.isValid() && !m_buttonPalette->inactive()->backgroundPress.isValid()) {
-            return ColorTools::alphaMix(m_buttonPalette->active()->backgroundPress, m_d->activeStateChangeAnimationOpacity());
-        } else if (!m_buttonPalette->active()->backgroundPress.isValid() && m_buttonPalette->inactive()->backgroundPress.isValid()) {
-            return ColorTools::alphaMix(m_buttonPalette->inactive()->backgroundPress, (1.0 - m_d->activeStateChangeAnimationOpacity()));
-        } else
-            return QColor();
-    } else {
-        const DecorationButtonPaletteGroup *group = active ? m_buttonPalette->active() : m_buttonPalette->inactive();
-        return group->backgroundPress;
+        return m_buttonPalette->backgroundNormalActiveStateAnimated(active, animation);
     }
 }
 
@@ -520,19 +404,20 @@ QColor Button::outlineColor(const bool getNonAnimatedColor) const
 
     auto c = m_d->window();
     const bool active = c->isActive();
+    const auto animation = getNonAnimatedColor ? nullptr : m_d->activeStateChangeAnimation();
 
     // return a variant of normal, hover and press colours, depending on state
     if (isPressed()) {
-        return outlinePressActiveStateAnimated(active, getNonAnimatedColor);
+        return m_buttonPalette->outlinePressActiveStateAnimated(active, animation);
     } else if (isChecked() && isCheckable()) {
         if (m_d->internalSettings()->buttonStateChecked(active) == InternalSettings::EnumButtonStateChecked::Hover) {
-            return outlineHoverActiveStateAnimated(active, getNonAnimatedColor);
+            return m_buttonPalette->outlineHoverActiveStateAnimated(active, animation);
         } else {
-            return outlinePressActiveStateAnimated(active, getNonAnimatedColor);
+            return m_buttonPalette->outlinePressActiveStateAnimated(active, animation);
         }
     } else if (m_animation->state() == QAbstractAnimation::Running && !getNonAnimatedColor) { // button hover animation
-        QColor outlineHover = outlineHoverActiveStateAnimated(active, getNonAnimatedColor);
-        QColor outlineNormal = outlineNormalActiveStateAnimated(active, getNonAnimatedColor);
+        QColor outlineHover = m_buttonPalette->outlineHoverActiveStateAnimated(active, animation);
+        QColor outlineNormal = m_buttonPalette->outlineNormalActiveStateAnimated(active, animation);
         if (outlineNormal.isValid() && outlineHover.isValid()) {
             return KColorUtils::mix(outlineNormal, outlineHover, m_opacity);
         } else if (outlineHover.isValid()) {
@@ -540,68 +425,9 @@ QColor Button::outlineColor(const bool getNonAnimatedColor) const
         } else
             return QColor();
     } else if (this->hovered()) {
-        return outlineHoverActiveStateAnimated(active, getNonAnimatedColor);
+        return m_buttonPalette->outlineHoverActiveStateAnimated(active, animation);
     } else {
-        return outlineNormalActiveStateAnimated(active, getNonAnimatedColor);
-    }
-}
-
-QColor Button::outlineNormalActiveStateAnimated(const bool active, const bool getNonAnimatedColor) const
-{
-    if (!getNonAnimatedColor && m_d->activeStateChangeAnimation()->state() == QAbstractAnimation::Running) {
-        if (m_buttonPalette->active()->outlineNormal.isValid() && m_buttonPalette->inactive()->outlineNormal.isValid()) {
-            return KColorUtils::mix(m_buttonPalette->inactive()->outlineNormal,
-                                    m_buttonPalette->active()->outlineNormal,
-                                    m_d->activeStateChangeAnimationOpacity());
-        } else if (m_buttonPalette->active()->outlineNormal.isValid() && !m_buttonPalette->inactive()->outlineNormal.isValid()) {
-            return ColorTools::alphaMix(m_buttonPalette->active()->outlineNormal, m_d->activeStateChangeAnimationOpacity());
-        } else if (!m_buttonPalette->active()->outlineNormal.isValid() && m_buttonPalette->inactive()->outlineNormal.isValid()) {
-            return ColorTools::alphaMix(m_buttonPalette->inactive()->outlineNormal, (1.0 - m_d->activeStateChangeAnimationOpacity()));
-        } else {
-            return QColor();
-        }
-    } else {
-        const DecorationButtonPaletteGroup *group = active ? m_buttonPalette->active() : m_buttonPalette->inactive();
-        return group->outlineNormal;
-    }
-}
-
-QColor Button::outlineHoverActiveStateAnimated(const bool active, const bool getNonAnimatedColor) const
-{
-    if (!getNonAnimatedColor && m_d->activeStateChangeAnimation()->state() == QAbstractAnimation::Running) {
-        if (m_buttonPalette->active()->outlineHover.isValid() && m_buttonPalette->inactive()->outlineHover.isValid()) {
-            return KColorUtils::mix(m_buttonPalette->inactive()->outlineHover,
-                                    m_buttonPalette->active()->outlineHover,
-                                    m_d->activeStateChangeAnimationOpacity());
-        } else if (m_buttonPalette->active()->outlineHover.isValid() && !m_buttonPalette->inactive()->outlineHover.isValid()) {
-            return ColorTools::alphaMix(m_buttonPalette->active()->outlineHover, m_d->activeStateChangeAnimationOpacity());
-        } else if (!m_buttonPalette->active()->outlineHover.isValid() && m_buttonPalette->inactive()->outlineHover.isValid()) {
-            return ColorTools::alphaMix(m_buttonPalette->inactive()->outlineHover, (1.0 - m_d->activeStateChangeAnimationOpacity()));
-        } else {
-            return QColor();
-        }
-    } else {
-        const DecorationButtonPaletteGroup *group = active ? m_buttonPalette->active() : m_buttonPalette->inactive();
-        return group->outlineHover;
-    }
-}
-
-QColor Button::outlinePressActiveStateAnimated(const bool active, const bool getNonAnimatedColor) const
-{
-    if (!getNonAnimatedColor && m_d->activeStateChangeAnimation()->state() == QAbstractAnimation::Running) {
-        if (m_buttonPalette->active()->outlinePress.isValid() && m_buttonPalette->inactive()->outlinePress.isValid()) {
-            return KColorUtils::mix(m_buttonPalette->inactive()->outlinePress,
-                                    m_buttonPalette->active()->outlinePress,
-                                    m_d->activeStateChangeAnimationOpacity());
-        } else if (m_buttonPalette->active()->outlinePress.isValid() && !m_buttonPalette->inactive()->outlinePress.isValid()) {
-            return ColorTools::alphaMix(m_buttonPalette->active()->outlinePress, m_d->activeStateChangeAnimationOpacity());
-        } else if (!m_buttonPalette->active()->outlinePress.isValid() && m_buttonPalette->inactive()->outlinePress.isValid()) {
-            return ColorTools::alphaMix(m_buttonPalette->inactive()->outlinePress, (1.0 - m_d->activeStateChangeAnimationOpacity()));
-        } else
-            return QColor();
-    } else {
-        const DecorationButtonPaletteGroup *group = active ? m_buttonPalette->active() : m_buttonPalette->inactive();
-        return group->outlinePress;
+        return m_buttonPalette->outlineNormalActiveStateAnimated(active, animation);
     }
 }
 
