@@ -155,6 +155,17 @@ public:
                                                  const int overrideColorItemsIndex,
                                                  const bool active);
 
+    //* gets base button state colors with the active change state animation considered
+    QColor foregroundNormalActiveStateAnimated(const bool active, const QVariantAnimation *activeStateAnimation) const;
+    QColor foregroundHoverActiveStateAnimated(const bool active, const QVariantAnimation *activeStateAnimation) const;
+    QColor foregroundPressActiveStateAnimated(const bool active, const QVariantAnimation *activeStateAnimation) const;
+    QColor backgroundNormalActiveStateAnimated(const bool active, const QVariantAnimation *activeStateAnimation) const;
+    QColor backgroundHoverActiveStateAnimated(const bool active, const QVariantAnimation *activeStateAnimation) const;
+    QColor backgroundPressActiveStateAnimated(const bool active, const QVariantAnimation *activeStateAnimation) const;
+    QColor outlineNormalActiveStateAnimated(const bool active, const QVariantAnimation *activeStateAnimation) const;
+    QColor outlineHoverActiveStateAnimated(const bool active, const QVariantAnimation *activeStateAnimation) const;
+    QColor outlinePressActiveStateAnimated(const bool active, const QVariantAnimation *activeStateAnimation) const;
+
 private:
     void decodeButtonOverrideColors(const bool active);
     void generateBistateColors(ButtonComponent component,
