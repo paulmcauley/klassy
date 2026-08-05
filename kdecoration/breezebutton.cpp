@@ -101,10 +101,12 @@ Button *Button::create(KDecoration3::DecorationButtonType type, KDecoration3::De
     if (auto d = qobject_cast<Decoration *>(decoration)) {
         auto c = d->window();
 
-        // Do not create the application menu button if the integrated menu style is anything but disabled or search only.
-        if (type == KDecoration3::DecorationButtonType::ApplicationMenu) {
+        // Do not create the application menu button if the integrated menu replaces it.
+        const auto internalSettings = d->internalSettings();
+        if (type == KDecoration3::DecorationButtonType::ApplicationMenu && internalSettings->integratedMenuReplacesMenuButton()
+            && internalSettings->integratedMenuEnabled()) {
             const auto menuStyle = d->internalSettings()->integratedMenuStyle();
-            if (!(menuStyle == InternalSettings::EnumIntegratedMenuStyle::Disabled || menuStyle == InternalSettings::EnumIntegratedMenuStyle::SearchOnly)) {
+            if (menuStyle != InternalSettings::EnumIntegratedMenuStyle::SearchOnly) {
                 return nullptr;
             }
         }
