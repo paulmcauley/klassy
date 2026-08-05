@@ -1387,39 +1387,7 @@ void Decoration::updateButtonsGeometry()
     updateIntegratedMenu();
     if (m_integratedMenuButtons) {
         m_integratedMenuButtons->updateShowing();
-
-        if (!m_integratedMenuButtons->buttons().isEmpty()) {
-            qreal scale = window()->nextScale();
-            qreal scaledTitleBarTopMargin, scaledTitleBarBottomMargin, scaledIntegratedRoundedRectangleBottomPadding;
-            scaledTitleBarTopBottomMargins(scale, scaledTitleBarTopMargin, scaledTitleBarBottomMargin, scaledIntegratedRoundedRectangleBottomPadding);
-
-            const qreal topOffset = isTopEdge() ? 0 : scaledTitleBarTopMargin;
-
-            const qreal leftOffset = m_leftButtons->geometry().right();
-            const qreal rightOffset = m_rightButtons->geometry().width();
-
-            QRectF availableRect(leftOffset, topOffset, size().width() - leftOffset - rightOffset, titleBarHeight());
-
-            for (auto *button : m_integratedMenuButtons->buttons()) {
-                if (auto *appMenuButton = qobject_cast<AppMenuButton *>(button)) {
-                    appMenuButton->setHeight(titleBarHeight());
-                }
-                if (auto *textButton = qobject_cast<AppMenuTextButton *>(button)) {
-                    textButton->setHorzPadding(m_internalSettings->menuButtonHorzPadding());
-                }
-            }
-
-            m_integratedMenuButtons->updateOverflow(availableRect);
-
-            if (isMenuOnRight()) {
-                const QPointF topRight = availableRect.topRight();
-                m_integratedMenuButtons->setPos(QPointF(topRight.x() - m_integratedMenuButtons->visibleWidth(), topRight.y()));
-            } else {
-                m_integratedMenuButtons->setPos(availableRect.topLeft());
-            }
-
-            m_integratedMenuButtons->setSpacing(m_internalSettings->menuButtonHorzMargin());
-        }
+        m_integratedMenuButtons->updateGeometry();
     }
 
     update();

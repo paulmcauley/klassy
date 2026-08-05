@@ -129,8 +129,6 @@ AppMenuButtonGroup::AppMenuButtonGroup(Decoration *decoration)
     connect(decoratedClient, &KDecoration3::DecoratedWindow::hasApplicationMenuChanged, this, &AppMenuButtonGroup::onHasApplicationMenuChanged);
     connect(decoratedClient, &KDecoration3::DecoratedWindow::applicationMenuChanged, this, &AppMenuButtonGroup::onApplicationMenuChanged);
 
-    connect(this, &AppMenuButtonGroup::requestActivateOverflow, this, &AppMenuButtonGroup::triggerOverflow);
-
     connect(m_appMenuModel, &AppMenuModel::modelReset, this, &AppMenuButtonGroup::updateAppMenuModel);
     connect(m_appMenuModel, &AppMenuModel::menuReadyForSearch, this, &AppMenuButtonGroup::onMenuReadyForSearch);
     connect(m_appMenuModel, &AppMenuModel::subMenuReady, this, &AppMenuButtonGroup::onSubMenuReady);
@@ -669,10 +667,95 @@ void AppMenuButtonGroup::updateOverflow(QRectF availableRect)
     }
     setOverflowing(showOverflow);
 
+    updateAdjacencyFlags();
+
     if (m_visibleWidth != currentVisibleWidth) {
         m_visibleWidth = currentVisibleWidth;
         Q_EMIT menuUpdated();
     }
+}
+
+void AppMenuButtonGroup::updateAdjacencyFlags()
+{
+    AppMenuButton *firstVisible = nullptr;
+    AppMenuButton *lastVisible = nullptr;
+    for (auto tb : buttons()) {
+        if (auto button = qobject_cast<AppMenuButton *>(tb)) {
+            if (!firstVisible && button->isVisible()) {
+                firstVisible = button;
+            }
+            if (button->isVisible())
+                lastVisible = button;
+            button->setLeftmostVisible(firstVisible == button);
+            button->setRightmostVisible(false);
+        }
+    }
+    if (lastVisible)
+        lastVisible->setRightmostVisible(true);
+    if (!firstVisible && m_overflowButton->isVisible())
+        firstVisible = m_overflowButton;
+}
+
+void AppMenuButtonGroup::updateGeometry()
+{
+    if (buttons().isEmpty())
+        return;
+    const auto internalSettings = m_decoration->internalSettings();
+    const qreal leftOffset = m_decoration->leftButtons()->geometry().right();
+    const qreal rightOffset = m_decoration->rightButtons()->geometry().width();
+
+    const qreal scale = m_decoration->window()->nextScale();
+    const qreal titleBarSeparatorHeight = m_decoration->titleBarSeparatorHeight(scale);
+    qreal scaledTitleBarTopMargin, scaledTitleBarBottomMargin, scaledIntegratedRoundedRectangleBottomPadding;
+    m_decoration->scaledTitleBarTopBottomMargins(scale, scaledTitleBarTopMargin, scaledTitleBarBottomMargin, scaledIntegratedRoundedRectangleBottomPadding);
+    const qreal captionHeight = m_decoration->captionHeight(true, scaledTitleBarTopMargin, scaledTitleBarBottomMargin);
+
+    const int buttonShape = internalSettings->integratedMenuButtonShape();
+    const bool isFullHeight = AppMenuButton::isShapeFullHeight(buttonShape);
+    const qreal verticalIconOffsetNormal = isFullHeight
+        ? scaledTitleBarTopMargin + qreal(captionHeight - m_decoration->smallButtonPaddedSize() - scaledIntegratedRoundedRectangleBottomPadding) / 2
+        : scaledTitleBarTopMargin + qreal(captionHeight - m_decoration->smallButtonPaddedSize()) / 2;
+    const qreal topOffset = isFullHeight ? 0 : verticalIconOffsetNormal;
+    const qreal contentOffset = isFullHeight ? verticalIconOffsetNormal : 0;
+
+    qreal baseButtonHeight = m_decoration->smallButtonPaddedSize();
+    if (isFullHeight) {
+        baseButtonHeight = qMax(m_decoration->nextState()->borders().top() - titleBarSeparatorHeight, 0.0);
+        if (buttonShape == InternalSettings::EnumIntegratedMenuButtonShape::IntegratedRoundedRectangle
+            || buttonShape == InternalSettings::EnumIntegratedMenuButtonShape::IntegratedRoundedRectangleGrouped) {
+            baseButtonHeight = qMax(baseButtonHeight - scaledIntegratedRoundedRectangleBottomPadding, 0.0);
+        }
+    }
+    // These two variables are for handling the case of icon sizes smaller than the text size
+    const qreal realButtonHeight = baseButtonHeight < m_decoration->titleBarHeight() ? m_decoration->titleBarHeight() : baseButtonHeight;
+    const qreal upwardsShift = realButtonHeight - baseButtonHeight;
+    QRectF availableRect(leftOffset,
+                         topOffset - upwardsShift,
+                         m_decoration->size().width() - leftOffset - rightOffset,
+                         m_decoration->titleBarHeight() + contentOffset);
+
+    for (auto *button : buttons()) {
+        if (auto *textButton = qobject_cast<AppMenuTextButton *>(button)) {
+            textButton->setHorzPadding(internalSettings->menuButtonHorzPadding());
+            textButton->setButtonHeight(realButtonHeight);
+            textButton->setVerticalContentOffset(contentOffset);
+        } else if (auto *iconButton = qobject_cast<AppMenuIconButton *>(button)) {
+            iconButton->setButtonHeight(realButtonHeight);
+            iconButton->setIconOffset(QPointF(0, upwardsShift / 2));
+            iconButton->setVerticalContentOffset(contentOffset);
+        }
+    }
+
+    updateOverflow(availableRect);
+
+    if (m_decoration->isMenuOnRight()) {
+        const QPointF topRight = availableRect.topRight();
+        setPos(QPointF(topRight.x() - visibleWidth(), topRight.y()));
+    } else {
+        setPos(availableRect.topLeft());
+    }
+
+    setSpacing(internalSettings->menuButtonHorzMargin());
 }
 
 qreal AppMenuButtonGroup::visibleWidth() const
@@ -847,11 +930,6 @@ void AppMenuButtonGroup::trigger(int buttonIndex, bool immediateTransition)
     }
 }
 
-void AppMenuButtonGroup::triggerOverflow()
-{
-    trigger(m_overflowIndex);
-}
-
 // FIXME TODO doesn't work on submenu
 bool AppMenuButtonGroup::eventFilter(QObject *watched, QEvent *event)
 {
@@ -896,13 +974,13 @@ void AppMenuButtonGroup::unpressAllButtons()
 {
     for (auto &tb : std::as_const(m_textButtons)) {
         if (tb)
-            tb->forceUnpress();
+            tb->setChecked(false);
     }
     if (m_overflowButton) {
-        m_overflowButton->forceUnpress();
+        m_overflowButton->setChecked(false);
     }
     if (m_searchButton) {
-        m_searchButton->forceUnpress();
+        m_searchButton->setChecked(false);
     }
 }
 

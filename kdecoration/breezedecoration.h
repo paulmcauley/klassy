@@ -192,6 +192,12 @@ public:
         return m_buttonUnisonHovered;
     }
 
+    void scaledTitleBarTopBottomMargins(qreal scale,
+                                        qreal &scaledTitleBarTopMargin,
+                                        qreal &scaledTitleBarBottomMargin,
+                                        qreal &scaledIntegratedRoundedRectangleBottomPadding) const;
+    qreal titleBarSeparatorHeight(qreal scale) const;
+
 Q_SIGNALS:
     void reconfigured();
     void buttonUnisonHoveredChanged(bool); // for unison hovering
@@ -258,13 +264,9 @@ private:
     inline bool hasNoSideBorders() const;
     //@}
 
-    void scaledTitleBarTopBottomMargins(qreal scale,
-                                        qreal &scaledTitleBarTopMargin,
-                                        qreal &scaledTitleBarBottomMargin,
-                                        qreal &scaledIntegratedRoundedRectangleBottomPadding) const;
     void scaledTitleBarSideMargins(qreal scale, qreal &scaledTitleBarLeftMargin, qreal &scaledTitleBarRightMargin) const;
     bool isOpaqueTitleBar();
-    qreal titleBarSeparatorHeight(qreal scale) const;
+
     qreal devicePixelRatio(QPainter *painter) const;
 
     //* icon + padding sizes
