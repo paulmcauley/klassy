@@ -497,7 +497,7 @@ void AppMenuButtonGroup::updateAppMenuModel()
         QPointer<QMenu> previousMenu = m_currentMenu;
 
         // Try in-place update if possible to reduce flicker and object churn
-        const bool searchEnabled = deco->internalSettings()->searchEnabled();
+        const bool searchEnabled = deco->internalSettings()->integratedSearchEnabled();
         const bool searchStateMatches = (m_searchButton.isNull() == !searchEnabled);
 
         if (m_textButtons.count() == menuActionCount && !m_textButtons.isEmpty() && searchStateMatches) {
@@ -1048,8 +1048,8 @@ void AppMenuButtonGroup::filterMenu(const QString &text)
         if (rootMenu) {
             QSet<QMenu *> visited;
             const auto *deco = qobject_cast<const Decoration *>(decoration());
-            const bool ignoreTopLevel = deco && deco->internalSettings()->searchIgnoreTopLevel();
-            const bool ignoreSubMenus = deco && deco->internalSettings()->searchIgnoreSubMenus();
+            const bool ignoreTopLevel = deco && deco->internalSettings()->integratedSearchIgnoreTopLevel();
+            const bool ignoreSubMenus = deco && deco->internalSettings()->integratedSearchIgnoreSubMenus();
             QStringList currentPath;
             QStringMatcher matcher(text, Qt::CaseInsensitive);
             searchMenu(rootMenu, matcher, results, visited, ignoreTopLevel, ignoreSubMenus, currentPath);
@@ -1088,7 +1088,7 @@ void AppMenuButtonGroup::filterMenu(const QString &text)
 
         const ActionInfo &info = result.info;
         QAction *action = result.action;
-        if (!info.isEffectivelyEnabled && !deco->internalSettings()->showDisabledActions()) {
+        if (!info.isEffectivelyEnabled && !deco->internalSettings()->integratedSearchShowDisabledActions()) {
             continue;
         }
         QAction *newAction = new QAction(action->icon(), info.path, m_searchMenu);
