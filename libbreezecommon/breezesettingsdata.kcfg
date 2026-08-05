@@ -190,6 +190,10 @@
         <default>false</default>
     </entry>
 
+    <entry name="DragFromIntegratedMenuEnabled" type="Bool">
+        <default>true</default>
+    </entry>
+
   </group>
 
 

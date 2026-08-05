@@ -318,6 +318,30 @@ KDecoration3::DecorationButton *AppMenuButtonGroup::buttonAt(QPoint pos) const
     return nullptr;
 }
 
+void AppMenuButtonGroup::startDragMove(const QPoint &pos)
+{
+    m_pressedPoint = pos;
+}
+
+void AppMenuButtonGroup::resetDragMove()
+{
+    m_pressedPoint = QPoint();
+}
+
+bool AppMenuButtonGroup::dragMoveTick(const QPoint &pos)
+{
+    if (m_pressedPoint.isNull()) {
+        return false;
+    }
+
+    const QPoint diff = pos - m_pressedPoint;
+    if (diff.manhattanLength() >= QApplication::startDragDistance()) {
+        resetDragMove();
+        return true;
+    }
+    return false;
+}
+
 void AppMenuButtonGroup::resetButtons()
 {
     if (buttons().isEmpty()) {
@@ -866,7 +890,7 @@ bool AppMenuButtonGroup::isMenuOpen() const
     return 0 <= m_currentIndex;
 }
 
-void AppMenuButtonGroup::unPressAllButtons()
+void AppMenuButtonGroup::unpressAllButtons()
 {
     for (auto &tb : std::as_const(m_textButtons)) {
         if (tb)
