@@ -32,25 +32,33 @@ public:
     explicit AppMenuIconButton(const DecorationButtonType type, Decoration *decoration, const int buttonIndex, QObject *parent = nullptr);
     ~AppMenuIconButton() override;
 
-    void setHeight(qreal buttonHeight) override;
     void reconfigure() override;
 
-    void setSmallButtonPaddedSize(const QSizeF &value)
+    void setIconOffset(const QPointF &value)
     {
-        m_smallButtonPaddedSize = value;
+        m_iconOffset = value;
     }
-    QSizeF smallButtonPaddedSize() const
+    QPointF iconOffset() const
     {
-        return m_smallButtonPaddedSize;
+        return m_iconOffset;
     }
 
-    void setIconSize(const QSizeF &value)
+    void setIconWidth(const qreal &value)
     {
-        m_iconSize = value;
+        m_iconWidth = value;
     }
-    QSizeF iconSize() const
+    qreal iconWidth() const
     {
-        return m_iconSize;
+        return m_iconWidth;
+    }
+
+    void setSmallButtonPaddedWidth(const qreal &value)
+    {
+        m_smallButtonPaddedWidth = value;
+    }
+    qreal smallButtonPaddedWidth() const
+    {
+        return m_smallButtonPaddedWidth;
     }
 
 protected:
@@ -59,9 +67,11 @@ protected:
 private:
     bool isSystemIconAvailable() const;
     bool shouldDrawBoldButtonIcons() const;
+    void updateGeometry();
 
-    QSizeF m_iconSize;
-    QSizeF m_smallButtonPaddedSize;
+    QPointF m_iconOffset;
+    qreal m_iconWidth;
+    qreal m_smallButtonPaddedWidth;
     QString m_systemIconCheckedName;
     QString m_systemIconName;
 };

@@ -39,7 +39,9 @@ public:
     ~AppMenuButton() override = default;
 
     Q_PROPERTY(int buttonIndex READ buttonIndex NOTIFY buttonIndexChanged)
+    Q_PROPERTY(qreal buttonHeight READ buttonHeight WRITE setButtonHeight NOTIFY buttonHeightChanged)
     Q_PROPERTY(qreal transition READ transition WRITE setTransition NOTIFY transitionChanged)
+    Q_PROPERTY(qreal verticalContentOffset READ verticalContentOffset WRITE setVerticalContentOffset NOTIFY verticalContentOffsetChanged)
 
     void paint(QPainter *painter, const QRectF &repaintRegion) override;
 
@@ -53,11 +55,6 @@ public:
     qreal opacity() const
     {
         return m_opacity;
-    }
-
-    void forceUnpress()
-    {
-        setChecked(false);
     }
 
     void setTransition(qreal value)
@@ -77,17 +74,6 @@ public:
         m_animation->setCurrentTime(m_animation->duration());
     }
 
-    virtual void setHeight(qreal buttonHeight);
-
-    void setIconOffset(const QPointF &value)
-    {
-        m_iconOffset = value;
-    }
-    QPointF iconOffset() const
-    {
-        return m_iconOffset;
-    }
-
     void setBackgroundVisibleSize(const QSizeF &value)
     {
         m_backgroundVisibleSize = value;
@@ -97,6 +83,41 @@ public:
         return m_backgroundVisibleSize;
     }
 
+    void setVerticalContentOffset(qreal value)
+    {
+        if (qFuzzyCompare(m_verticalContentOffset, value))
+            return;
+        m_verticalContentOffset = value;
+        verticalContentOffsetChanged();
+        update();
+    }
+    qreal verticalContentOffset() const
+    {
+        return m_verticalContentOffset;
+    }
+
+    void setButtonHeight(qreal value)
+    {
+        if (qFuzzyCompare(m_buttonHeight, value))
+            return;
+        m_buttonHeight = value;
+        buttonHeightChanged();
+        update();
+    }
+    qreal buttonHeight()
+    {
+        return m_buttonHeight;
+    }
+
+    void setLeftmostVisible(bool value)
+    {
+        m_leftmostVisible = value;
+    }
+    void setRightmostVisible(bool value)
+    {
+        m_rightmostVisible = value;
+    }
+
     int buttonIndex() const
     {
         return m_buttonIndex;
@@ -104,9 +125,25 @@ public:
 
     virtual void reconfigure();
 
+    static inline bool isShapeFullHeight(int shape)
+    {
+        switch (shape) {
+        case InternalSettings::EnumIntegratedMenuButtonShape::FullHeightRectangle:
+        case InternalSettings::EnumIntegratedMenuButtonShape::FullHeightRoundedRectangle:
+        case InternalSettings::EnumIntegratedMenuButtonShape::FullHeightRoundedRectangleGrouped:
+        case InternalSettings::EnumIntegratedMenuButtonShape::IntegratedRoundedRectangle:
+        case InternalSettings::EnumIntegratedMenuButtonShape::IntegratedRoundedRectangleGrouped:
+            return true;
+        default:
+            return false;
+        }
+    }
+
 signals:
+    void buttonHeightChanged();
     void buttonIndexChanged();
     void transitionChanged();
+    void verticalContentOffsetChanged();
 
 protected:
     virtual void drawContent(QPainter *, QPointF) const = 0;
@@ -128,11 +165,14 @@ private:
     void setDevicePixelRatio(QPainter *painter);
     void updateAnimationState(bool hovered);
 
+    qreal m_buttonHeight = 0;
     qreal m_opacity = 0;
     qreal m_transition = 0;
-    QPointF m_iconOffset;
+    qreal m_verticalContentOffset = 0;
     QSizeF m_backgroundVisibleSize;
     QVariantAnimation *m_animation;
+    bool m_leftmostVisible = false;
+    bool m_rightmostVisible = false;
 };
 
 } // namespace Breeze
