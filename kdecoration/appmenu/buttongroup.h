@@ -21,7 +21,6 @@
 // own
 #include "appmenu/button.h"
 #include "appmenu/iconbutton.h"
-#include "appmenu/menustyle.h"
 #include "appmenu/model.h"
 
 // KDecoration
@@ -180,7 +179,6 @@ private:
     void handleMenuButtonTrigger(int buttonIndex);
 
     Decoration *m_decoration;
-    QPointer<AppMenuMenuStyle> m_menuStyle;
     AppMenuModel *m_appMenuModel;
     QPoint m_pressedPoint;
     int m_currentIndex;

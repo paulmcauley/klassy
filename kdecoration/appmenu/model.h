@@ -45,7 +45,7 @@ class AppMenuModel : public QObject
     Q_OBJECT
 
 public:
-    explicit AppMenuModel(QObject *parent, QStyle *menuStyle);
+    explicit AppMenuModel(QObject *parent, Decoration *decoration);
     ~AppMenuModel() override;
 
 public:
@@ -83,7 +83,7 @@ private:
     QList<QPointer<QMenu>> m_menusToDeepCache;
     qsizetype m_nextMenuToProcess = 0;
     QSet<QMenu *> m_seenMenus;
-    bool m_menuAvailable;
+    bool m_menuAvailable = false;
     bool m_deepCacheRequested = false;
     bool m_deepCacheStarted = false;
     QSet<QMenu *> m_pendingDeepCacheUpdates;
@@ -96,7 +96,7 @@ private:
     QString m_menuObjectPath;
 
     QPointer<KDBusMenuImporter> m_importer;
-    QStyle *m_menuStyle;
+    Decoration *m_decoration;
 };
 
 } // namespace Breeze
