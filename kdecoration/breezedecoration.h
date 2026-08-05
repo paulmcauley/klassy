@@ -102,7 +102,6 @@ public:
     void updateIntegratedMenu();
     qreal titleBarHeight() const;
     QPoint windowPos() const;
-    bool isMenuOnRight() const;
     //@}
 
     //

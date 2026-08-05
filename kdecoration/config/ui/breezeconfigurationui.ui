@@ -1687,6 +1687,40 @@
               </property>
              </widget>
             </item>
+            <item row="2" column="0">
+             <widget class="QLabel" name="integratedMenuPositionLabel">
+              <property name="text">
+               <string>Position:</string>
+              </property>
+              <property name="buddy">
+               <cstring>integratedMenuPosition</cstring>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="1">
+             <widget class="QComboBox" name="integratedMenuPosition">
+              <item>
+               <property name="text">
+                <string>Left</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Center (Replace title on hover only)</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Center (Full-Width) (Replace title on hover only)</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Right</string>
+               </property>
+              </item>
+             </widget>
+            </item>
            </layout>
           </widget>
          </item>

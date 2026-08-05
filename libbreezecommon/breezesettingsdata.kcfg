@@ -175,6 +175,16 @@
         <default>Always</default>
     </entry>
 
+    <entry name="IntegratedMenuPosition" type="Enum">
+        <choices>
+            <choice name="Left" />
+            <choice name="Center" />
+            <choice name="CenterFullWidth" />
+            <choice name="Right" />
+        </choices>
+        <default>Left</default>
+    </entry>
+
     <entry name="IntegratedMenuReplacesMenuButton" type="Bool">
         <default>true</default>
     </entry>
