@@ -38,8 +38,7 @@ public:
     Q_PROPERTY(QAction *action READ action WRITE setAction NOTIFY actionChanged)
     Q_PROPERTY(QString text READ text WRITE setText NOTIFY textChanged)
 
-    void drawIcon(QPainter *, QPointF) const override;
-    void reconfigure() override;
+    void drawContent(QPainter *, QPointF) const override;
 
     QAction *action() const;
     void setAction(QAction *set);

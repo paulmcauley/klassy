@@ -856,6 +856,9 @@ void ConfigWidget::getButtonsOrderFromKwinConfig()
     }
 
     m_hiddenButtons.clear();
+    m_hiddenButtons.append(DecorationButtonType::CustomIntegratedMenuMenu);
+    m_hiddenButtons.append(DecorationButtonType::CustomIntegratedMenuOverflow);
+    m_hiddenButtons.append(DecorationButtonType::CustomIntegratedMenuSearch);
     // add hidden buttons to m_hiddenButtons
     for (auto it = buttonNames.begin(); it != buttonNames.end(); it++) {
         auto key = buttonNames.key(*it, DecorationButtonType::Custom);

@@ -38,24 +38,23 @@ AppMenuTextButton::~AppMenuTextButton()
 {
 }
 
-void AppMenuTextButton::drawIcon(QPainter *painter, QPointF point) const
+void AppMenuTextButton::drawContent(QPainter *painter, QPointF point) const
 {
-    const auto *deco = qobject_cast<Decoration *>(decoration());
-
     // Font
-    painter->setFont(deco->menuFont());
-    painter->setPen(deco->fontColor());
+    painter->setFont(m_d->menuFont());
+    QColor foreground = foregroundColor();
+    if (!foreground.isValid() || m_d->internalSettings()->useTitleColorForIntegratedMenus())
+        foreground = m_d->fontColor();
+    painter->setPen(foreground);
     painter->setRenderHint(QPainter::TextAntialiasing);
 
-    // TODO: Use Qt::TextShowMnemonic when Alt is pressed
+    // TODO: If it becomes possible to listen to alt down/up and alt shortcuts, render the mnemonics.
+    // Without notice that alt has been pressed, we can't easily tell KWin the button has an update to render.
+    // And without being able to listen for alt shortcuts, we currently can't implement these shortcuts anyways.
+    // const bool isAltPressed = (QGuiApplication::keyboardModifiers() & Qt::AltModifier) != 0;
     const bool isAltPressed = false;
     const Qt::TextFlag mnemonicFlag = isAltPressed ? Qt::TextShowMnemonic : Qt::TextHideMnemonic;
-    // translating 1 pixel seems the only way to perfect centering the text.
-    painter->drawText(QRectF(geometry().topLeft() - point + QPointF(1, 0), geometry().size()), mnemonicFlag | Qt::AlignCenter | Qt::TextSingleLine, m_text);
-}
-
-void AppMenuTextButton::reconfigure()
-{
+    painter->drawText(QRectF(geometry().topLeft() - point, geometry().size()), mnemonicFlag | Qt::AlignCenter | Qt::TextSingleLine, m_text);
 }
 
 QSizeF AppMenuTextButton::getTextSize() const
@@ -125,7 +124,7 @@ void AppMenuTextButton::updateGeometry()
     const QSizeF size = QSizeF(width, textSize.height());
     setGeometry(QRectF(geometry().topLeft(), size));
     setIconOffset(QPointF(textSize.width() / 2 - m_horzPadding, 0));
-    setBackgroundVisibleSize(textSize);
+    setBackgroundVisibleSize(size);
 }
 
 } // namespace Breeze
