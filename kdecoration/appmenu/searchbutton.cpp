@@ -14,10 +14,10 @@ namespace Breeze
 {
 static constexpr int MAX_SEARCH_RESULTS = 100;
 
-AppMenuSearchButton::AppMenuSearchButton(QStyle *menuStyle, Decoration *decoration, const int buttonIndex, AppMenuButtonGroup *parent)
+AppMenuSearchButton::AppMenuSearchButton(Decoration *decoration, const int buttonIndex, AppMenuButtonGroup *parent)
     : AppMenuIconButton(DecorationButtonType::CustomIntegratedMenuSearch, decoration, buttonIndex, parent)
     , m_integratedMenu(parent)
-    , m_menu(new NavigableMenu(nullptr, menuStyle))
+    , m_menu(new NavigableMenu(nullptr, decoration))
     , m_lineEdit(new QLineEdit(m_menu.get()))
     , m_debounceTimer(new QTimer(this))
 {
