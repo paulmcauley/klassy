@@ -20,10 +20,9 @@
 
 // own
 #include "appmenu/buttongroup.h"
+#include "appmenu/iconbutton.h"
 #include "appmenu/model.h"
 #include "appmenu/navigablemenu.h"
-#include "appmenu/overflowbutton.h"
-#include "appmenu/searchbutton.h"
 #include "appmenu/textbutton.h"
 #include "breezedecoration.h"
 
@@ -170,6 +169,23 @@ AppMenuButtonGroup::~AppMenuButtonGroup()
     // is closed while the m_overflowMenu is open
     if (m_overflowMenu) {
         m_overflowMenu->deleteLater();
+    }
+}
+
+void AppMenuButtonGroup::reconfigure()
+{
+    auto internalSettings = m_decoration->internalSettings();
+    setStyle(static_cast<AppMenuStyle>(internalSettings->integratedMenuStyle()));
+    // TODO: Remove the search menu altogether if disabled rather than just hiding it
+    if (m_searchMenu) {
+        m_searchMenu->setVisible(internalSettings->integratedSearchEnabled());
+    }
+
+    m_animation->setDuration(m_decoration->animationsDuration());
+
+    for (KDecoration3::DecorationButton *button : this->buttons()) {
+        if (auto appMenuButton = qobject_cast<AppMenuButton *>(button))
+            appMenuButton->reconfigure();
     }
 }
 
@@ -561,12 +577,12 @@ void AppMenuButtonGroup::updateAppMenuModel()
 
             if (menuActionCount > 0) {
                 m_overflowIndex = menuActionCount;
-                m_overflowButton = new AppMenuOverflowButton(deco, m_overflowIndex, this);
+                m_overflowButton = new AppMenuIconButton(DecorationButtonType::CustomIntegratedMenuOverflow, deco, m_overflowIndex, this);
                 addButton(QPointer<KDecoration3::DecorationButton>(m_overflowButton));
 
                 if (searchEnabled) {
                     m_searchIndex = menuActionCount + 1;
-                    m_searchButton = new AppMenuSearchButton(deco, m_searchIndex, this);
+                    m_searchButton = new AppMenuIconButton(DecorationButtonType::CustomIntegratedMenuSearch, deco, m_searchIndex, this);
                     addButton(QPointer<KDecoration3::DecorationButton>(m_searchButton));
                 }
             }
