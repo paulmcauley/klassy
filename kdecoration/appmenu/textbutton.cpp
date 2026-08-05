@@ -20,6 +20,7 @@
 #include "appmenu/textbutton.h"
 #include "breezedecoration.h"
 
+#include <QApplication>
 #include <QPainter>
 
 namespace Breeze
@@ -27,24 +28,21 @@ namespace Breeze
 
 AppMenuTextButton::AppMenuTextButton(Decoration *decoration, const int buttonIndex, QObject *parent)
     : AppMenuButton(DecorationButtonType::CustomIntegratedMenuMenu, decoration, buttonIndex, parent)
-    , m_action(nullptr)
-    , m_text(QStringLiteral("Menu"))
 {
     setVisible(true);
     connect(this, &AppMenuButton::buttonHeightChanged, this, &AppMenuTextButton::updateGeometry);
+    reconfigure();
     updateGeometry();
 }
 
-AppMenuTextButton::~AppMenuTextButton()
-{
-}
+AppMenuTextButton::~AppMenuTextButton() = default;
 
 void AppMenuTextButton::drawContent(QPainter *painter, QPointF point) const
 {
     // Font
-    painter->setFont(m_d->menuFont());
+    painter->setFont(m_font);
     QColor foreground = foregroundColor();
-    if (!foreground.isValid() || m_d->internalSettings()->useTitleColorForIntegratedMenus())
+    if (!foreground.isValid() || m_d->internalSettings()->integratedMenuButtonUseTitleColor())
         foreground = m_d->fontColor();
     painter->setPen(foreground);
     painter->setRenderHint(QPainter::TextAntialiasing);
@@ -55,67 +53,40 @@ void AppMenuTextButton::drawContent(QPainter *painter, QPointF point) const
     // const bool isAltPressed = (QGuiApplication::keyboardModifiers() & Qt::AltModifier) != 0;
     const bool isAltPressed = false;
     const Qt::TextFlag mnemonicFlag = isAltPressed ? Qt::TextShowMnemonic : Qt::TextHideMnemonic;
-    const QSizeF contentSize(geometry().width(), geometry().height() - verticalContentOffset());
     painter->drawText(QRectF(geometry().topLeft() - point, m_textSize), mnemonicFlag | Qt::AlignCenter | Qt::TextSingleLine, m_text);
+}
+
+void AppMenuTextButton::reconfigure()
+{
+    AppMenuButton::reconfigure();
+
+    m_font = m_d->internalSettings()->integratedMenuButtonUseSystemMenuFont() ? QApplication::font("QMenu") : m_d->settings()->font();
 }
 
 QSizeF AppMenuTextButton::getTextSize() const
 {
-    const auto *deco = qobject_cast<const Decoration *>(decoration());
-    if (!deco) {
+    if (!m_d) {
         return QSizeF(0, 0);
     }
 
-    const qreal textWidth = deco->getMenuTextWidth(m_text);
-    const qreal titleBarHeight = deco->titleBarHeight();
+    const qreal textWidth = getTextWidth(false);
+    const qreal titleBarHeight = m_d->titleBarHeight();
     return QSizeF(textWidth, titleBarHeight);
 }
 
-QAction *AppMenuTextButton::action() const
+qreal AppMenuTextButton::getTextWidth(bool showMnemonic) const
 {
-    return m_action.data();
-}
-
-void AppMenuTextButton::setAction(QAction *set)
-{
-    if (m_action != set) {
-        m_action = set;
-        Q_EMIT actionChanged();
-    }
-}
-
-QString AppMenuTextButton::text() const
-{
-    return m_text;
-}
-
-void AppMenuTextButton::setText(const QString &set)
-{
-    if (m_text != set) {
-        m_text = set;
-        Q_EMIT textChanged();
-
-        updateGeometry();
-    }
-}
-
-void AppMenuTextButton::setHorzPadding(qreal value)
-{
-    if (!qFuzzyCompare(m_horzPadding, value)) {
-        m_horzPadding = value;
-        updateGeometry();
-    }
-}
-
-qreal AppMenuTextButton::horzPadding() const
-{
-    return m_horzPadding;
+    const QFontMetricsF fontMetrics(m_font);
+    const int flags = showMnemonic ? Qt::TextShowMnemonic : Qt::TextHideMnemonic;
+    const QRectF boundingRect = fontMetrics.boundingRect(QRectF(), flags, m_text);
+    const qreal scale = m_d->window()->nextScale();
+    return qCeil(boundingRect.width() * scale) / scale;
 }
 
 void AppMenuTextButton::updateGeometry()
 {
     const QSizeF textSize = getTextSize();
-    const qreal width = textSize.width() + m_horzPadding * 2;
+    const qreal width = textSize.width() + m_horizontalPadding * 2;
     const QSizeF size = QSizeF(width, buttonHeight());
     setGeometry(QRectF(geometry().topLeft(), size));
     setBackgroundVisibleSize(QSizeF(size.width(), buttonHeight()));
