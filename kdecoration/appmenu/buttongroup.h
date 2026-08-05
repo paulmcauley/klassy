@@ -100,6 +100,11 @@ public:
     bool menuLoadedOnce() const;
     bool isWaitingForMenu() const;
 
+    AppMenuModel *model()
+    {
+        return m_appMenuModel;
+    }
+
     void handleHoverMove(const QPointF &pos);
 
 public:
@@ -121,7 +126,6 @@ private:
     void onShowingChanged(bool hovered);
     void updateHoverAnimationState(bool hovered);
     void filterMenu(const QString &text);
-    void onSearchTimerTimeout();
     void onSubMenuReady(QMenu *menu);
 
 signals:
@@ -158,37 +162,9 @@ private:
 
     void trigger(int index);
 
-    struct ActionInfo {
-        QString path;
-        QString searchablePath;
-        QString label;
-        bool isEffectivelyEnabled;
-    };
-
-    struct SearchResult {
-        QAction *action;
-        ActionInfo info;
-
-        bool operator==(const SearchResult &other) const
-        {
-            return action == other.action && info.isEffectivelyEnabled == other.info.isEffectivelyEnabled && info.path == other.info.path
-                && (!action || (action->isChecked() == other.action->isChecked() && action->isCheckable() == other.action->isCheckable()));
-        }
-    };
-
     void resetButtons();
     QString getActionText(QAction *action) const;
     void setupSearchMenu();
-    void repositionSearchMenu();
-    void searchMenu(QMenu *menu,
-                    const QStringMatcher &matcher,
-                    QList<SearchResult> &results,
-                    QSet<QMenu *> &visited,
-                    bool ignoreTopLevel,
-                    bool ignoreSubMenus,
-                    QStringList &currentPath,
-                    bool isParentEnabled = true,
-                    bool parentMatched = false);
     AppMenuButton *getAppMenuButton(int index) const;
     int findNextVisibleButtonIndex(int currentIndex, bool forward) const;
 
@@ -215,10 +191,7 @@ private:
     int m_buttonIndexWaitingForPopup = -1;
     int m_buttonIndexOfMenuToCache = -1;
 
-    QPointer<QMenu> m_searchMenu;
     QPointer<QMenu> m_overflowMenu;
-    QPointer<QLineEdit> m_searchLineEdit;
-    QTimer *m_searchDebounceTimer;
     QTimer *m_menuUpdateDebounceTimer;
     QTimer *m_delayedCacheTimer;
     QTimer *m_resetTimer;
@@ -229,14 +202,10 @@ private:
     bool m_isMenuUpdateThrottled = false;
     bool m_pendingMenuUpdate = false;
     bool m_menuLoadedOnce = false;
-    QString m_lastSearchQuery;
-    QList<SearchResult> m_lastResults;
 
     QList<QPointer<AppMenuTextButton>> m_textButtons;
     QPointer<AppMenuIconButton> m_overflowButton;
-    QPointer<AppMenuIconButton> m_searchButton;
-
-    mutable QHash<QString, QString> m_actionTextCache;
+    QPointer<AppMenuSearchButton> m_searchButton;
 
     QPointer<KDecoration3::DecorationButton> m_hoveredButton = nullptr;
 
