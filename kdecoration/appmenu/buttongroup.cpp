@@ -66,11 +66,9 @@ AppMenuButtonGroup::AppMenuButtonGroup(Decoration *decoration)
     , m_currentIndex(-1)
     , m_overflowIndex(-1)
     , m_searchIndex(-1)
-    , m_hamburgerMenu(false)
     , m_hovered(false)
     , m_showing(true)
-    , m_alwaysShow(true)
-    , m_animationEnabled(false)
+    , m_animationEnabled(true)
     , m_animation(new QVariantAnimation(this))
     , m_opacity(1)
     , m_visibleWidth(0)
@@ -115,14 +113,19 @@ AppMenuButtonGroup::AppMenuButtonGroup(Decoration *decoration)
 
     // Assign showing and opacity before we bind the onShowingChanged animation
     // so that new windows do not animate.
-    setAlwaysShow(decoration->internalSettings()->menuAlwaysShow());
     updateShowing();
     setOpacity(m_showing ? 1 : 0);
 
     connect(this, &AppMenuButtonGroup::showingChanged, this, &AppMenuButtonGroup::onShowingChanged);
     connect(this, &AppMenuButtonGroup::hoveredChanged, this, &AppMenuButtonGroup::updateShowing);
-    connect(this, &AppMenuButtonGroup::alwaysShowChanged, this, &AppMenuButtonGroup::updateShowing);
     connect(this, &AppMenuButtonGroup::currentIndexChanged, this, &AppMenuButtonGroup::updateShowing);
+
+    // Hover animation for integrated menu buttons
+    connect(this, &AppMenuButtonGroup::hoveredChanged, this, [this](bool hovered) {
+        if (!m_decoration->internalSettings()->unisonHovering()) {
+            updateHoverAnimationState(hovered);
+        }
+    });
 
     m_animationEnabled = decoration->internalSettings()->animationsEnabled();
     m_animation->setDuration(decoration->animationsDuration());
@@ -263,15 +266,7 @@ void AppMenuButtonGroup::setShowing(bool value)
 
 bool AppMenuButtonGroup::alwaysShow() const
 {
-    return m_alwaysShow;
-}
-
-void AppMenuButtonGroup::setAlwaysShow(bool value)
-{
-    if (m_alwaysShow != value) {
-        m_alwaysShow = value;
-        Q_EMIT alwaysShowChanged(value);
-    }
+    return m_style != AppMenuStyle::ReplaceTitleOnHover && m_style != AppMenuStyle::RevealOnHover;
 }
 
 bool AppMenuButtonGroup::animationEnabled() const
@@ -320,8 +315,23 @@ void AppMenuButtonGroup::setOpacity(qreal value)
         if (m_searchButton) {
             m_searchButton->setOpacity(m_opacity);
         }
+        if (m_style == AppMenuStyle::ReplaceTitleOnHover) {
+            m_decoration->setCaptionOpacity(1 - value);
+        }
 
         Q_EMIT opacityChanged(value);
+    }
+}
+
+AppMenuStyle AppMenuButtonGroup::style() const
+{
+    return m_style;
+}
+void AppMenuButtonGroup::setStyle(AppMenuStyle value)
+{
+    if (m_style != value) {
+        m_style = value;
+        Q_EMIT styleChanged(value);
     }
 }
 
@@ -589,13 +599,6 @@ void AppMenuButtonGroup::updateAppMenuModel()
     }
 }
 
-void AppMenuButtonGroup::setHamburgerMenu(bool value)
-{
-    if (m_hamburgerMenu != value) {
-        m_hamburgerMenu = value;
-    }
-}
-
 void AppMenuButtonGroup::updateOverflow(QRectF availableRect)
 {
     const qreal availableWidth = availableRect.width();
@@ -605,15 +608,14 @@ void AppMenuButtonGroup::updateOverflow(QRectF availableRect)
         fixedWidth += m_searchButton->geometry().width();
     }
 
-    bool showOverflow = m_hamburgerMenu;
+    bool showOverflow = false;
     qreal currentVisibleWidth = fixedWidth;
 
-    if (m_hamburgerMenu) {
+    if (m_style == AppMenuStyle::SearchOnly || m_style == AppMenuStyle::Disabled) {
         for (auto &tb : std::as_const(m_textButtons)) {
             if (tb)
                 tb->setVisible(false);
         }
-        showOverflow = true;
     } else {
         // First pass: check if all enabled text buttons fit without overflow button.
         // We perform this pass without side effects to avoid layout thrashing in Qt.
@@ -670,6 +672,10 @@ void AppMenuButtonGroup::updateOverflow(QRectF availableRect)
                     tb->setVisible(false);
             }
         }
+    }
+
+    if (m_searchButton) {
+        m_searchButton->setVisible(m_style != AppMenuStyle::Disabled && m_decoration->internalSettings()->integratedSearchEnabled());
     }
 
     if (m_overflowButton) {
@@ -944,7 +950,7 @@ void AppMenuButtonGroup::unPressAllButtons()
 
 void AppMenuButtonGroup::updateShowing()
 {
-    setShowing(m_alwaysShow || m_hovered || isMenuOpen());
+    setShowing(alwaysShow() || m_hovered || isMenuOpen());
 }
 
 void AppMenuButtonGroup::onMenuAboutToHide()
@@ -994,15 +1000,34 @@ void AppMenuButtonGroup::onShowingChanged(bool showing)
 {
     if (m_animationEnabled) {
         const QAbstractAnimation::Direction dir = showing ? QAbstractAnimation::Forward : QAbstractAnimation::Backward;
-        if (m_animation->state() == QAbstractAnimation::Running && m_animation->direction() != dir) {
-            m_animation->stop();
-        }
         m_animation->setDirection(dir);
         if (m_animation->state() != QAbstractAnimation::Running) {
             m_animation->start();
         }
     } else {
         setOpacity(showing ? 1 : 0);
+    }
+}
+
+void AppMenuButtonGroup::updateHoverAnimationState(bool hovered)
+{
+    if (!(m_decoration && m_decoration->animationsDuration() > 0)) {
+        return;
+    }
+    // Buttons are always visible — no hover fade
+    if (alwaysShow()) {
+        return;
+    }
+    // Don't fade out buttons while hovered or a menu is open
+    if (!hovered && isMenuOpen()) {
+        return;
+    }
+
+    const QAbstractAnimation::Direction dir = hovered ? QAbstractAnimation::Forward : QAbstractAnimation::Backward;
+
+    m_animation->setDirection(dir);
+    if (m_animation->state() != QAbstractAnimation::Running) {
+        m_animation->resume();
     }
 }
 
