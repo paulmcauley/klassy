@@ -165,7 +165,7 @@ private:
 
     void unpressAllButtons();
 
-    void trigger(int index);
+    void trigger(int index, bool immediateTransition);
 
     void resetButtons();
     QString getActionText(QAction *action) const;
@@ -203,7 +203,7 @@ private:
     QTimer *m_resetTimer;
     QTimer *m_menuLoadFallbackTimer;
 
-    bool m_searchUiVisible = false;
+    bool m_immediateTransition;
 
     bool m_isMenuUpdateThrottled = false;
     bool m_pendingMenuUpdate = false;
