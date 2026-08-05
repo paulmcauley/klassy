@@ -63,6 +63,7 @@ AppMenuButton::AppMenuButton(DecorationButtonType type, Decoration *decoration, 
 void AppMenuButton::updateAnimationState(bool hovered)
 {
     if (!(m_d && m_d->animationsDuration() > 0)) {
+        setTransition(hovered ? 1 : 0);
         return;
     }
 
