@@ -32,7 +32,7 @@ class NavigableMenu : public QMenu
     Q_OBJECT
 
 public:
-    explicit NavigableMenu(QWidget *parent = nullptr);
+    explicit NavigableMenu(QWidget *parent, QStyle *style);
     ~NavigableMenu() override = default;
 
 Q_SIGNALS:
@@ -41,6 +41,7 @@ Q_SIGNALS:
 
 protected:
     void keyPressEvent(QKeyEvent *event) override;
+    void showEvent(QShowEvent *event) override;
 };
 
 } // namespace Breeze
