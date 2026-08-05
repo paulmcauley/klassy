@@ -20,6 +20,7 @@
 
 // own
 #include "appmenu/button.h"
+#include "appmenu/iconbutton.h"
 #include "appmenu/menustyle.h"
 #include "appmenu/model.h"
 
@@ -69,6 +70,8 @@ public:
     Q_PROPERTY(int animationDuration READ animationDuration WRITE setAnimationDuration NOTIFY animationDurationChanged)
     Q_PROPERTY(qreal opacity READ opacity WRITE setOpacity NOTIFY opacityChanged)
     Q_PROPERTY(AppMenuStyle style READ style WRITE setStyle NOTIFY styleChanged)
+
+    void reconfigure();
 
     bool hovered() const;
     void setHovered(bool value);
@@ -230,8 +233,8 @@ private:
     QList<SearchResult> m_lastResults;
 
     QList<QPointer<AppMenuTextButton>> m_textButtons;
-    QPointer<AppMenuOverflowButton> m_overflowButton;
-    QPointer<AppMenuSearchButton> m_searchButton;
+    QPointer<AppMenuIconButton> m_overflowButton;
+    QPointer<AppMenuIconButton> m_searchButton;
 
     mutable QHash<QString, QString> m_actionTextCache;
 
