@@ -20,6 +20,7 @@
 
 // own
 #include "appmenu/button.h"
+#include "appmenu/menustyle.h"
 #include "appmenu/model.h"
 
 // KDecoration
@@ -178,6 +179,8 @@ private:
     void handleOverflowTrigger();
     void handleMenuButtonTrigger(int buttonIndex);
 
+    Decoration *m_decoration;
+    QPointer<AppMenuMenuStyle> m_menuStyle;
     AppMenuModel *m_appMenuModel;
     int m_currentIndex;
     int m_overflowIndex;
