@@ -61,33 +61,9 @@ public:
     AppMenuButtonGroup(Decoration *decoration);
     ~AppMenuButtonGroup() override;
 
-    Q_PROPERTY(int currentIndex READ currentIndex WRITE setCurrentIndex NOTIFY currentIndexChanged)
-    Q_PROPERTY(int overflowing READ overflowing WRITE setOverflowing NOTIFY overflowingChanged)
-    Q_PROPERTY(bool hovered READ hovered WRITE setHovered NOTIFY hoveredChanged)
-    Q_PROPERTY(bool showing READ showing WRITE setShowing NOTIFY showingChanged)
-    Q_PROPERTY(bool animationEnabled READ animationEnabled WRITE setAnimationEnabled NOTIFY animationEnabledChanged)
-    Q_PROPERTY(int animationDuration READ animationDuration WRITE setAnimationDuration NOTIFY animationDurationChanged)
-    Q_PROPERTY(qreal opacity READ opacity WRITE setOpacity NOTIFY opacityChanged)
-    Q_PROPERTY(AppMenuStyle style READ style WRITE setStyle NOTIFY styleChanged)
-
     void reconfigure();
 
-    bool hovered() const;
-    void setHovered(bool value);
-
     bool alwaysShow() const;
-
-    bool animationEnabled() const;
-    void setAnimationEnabled(bool value);
-
-    int animationDuration() const;
-    void setAnimationDuration(int duration);
-
-    qreal opacity() const;
-    void setOpacity(qreal value);
-
-    AppMenuStyle style() const;
-    void setStyle(AppMenuStyle value);
 
     inline bool takesSpace() const
     {
@@ -105,6 +81,94 @@ public:
     }
 
     void handleHoverMove(const QPointF &pos);
+
+    Q_PROPERTY(int animationDuration READ animationDuration WRITE setAnimationDuration NOTIFY animationDurationChanged)
+    Q_PROPERTY(bool animationEnabled READ animationEnabled WRITE setAnimationEnabled NOTIFY animationEnabledChanged)
+    Q_PROPERTY(int currentIndex READ currentIndex WRITE setCurrentIndex NOTIFY currentIndexChanged)
+    Q_PROPERTY(bool hovered READ hovered WRITE setHovered NOTIFY hoveredChanged)
+    Q_PROPERTY(qreal opacity READ opacity WRITE setOpacity NOTIFY opacityChanged)
+    Q_PROPERTY(int overflowing READ overflowing WRITE setOverflowing NOTIFY overflowingChanged)
+    Q_PROPERTY(bool showing READ showing WRITE setShowing NOTIFY showingChanged)
+    Q_PROPERTY(AppMenuStyle style READ style WRITE setStyle NOTIFY styleChanged)
+
+    int animationDuration() const
+    {
+        return m_animation->duration();
+    }
+    void setAnimationDuration(int value)
+    {
+        if (m_animation->duration() == value)
+            return;
+        m_animation->setDuration(value);
+        Q_EMIT animationDurationChanged(value);
+    }
+
+    bool animationEnabled() const
+    {
+        return m_animationEnabled;
+    }
+    void setAnimationEnabled(bool value)
+    {
+        if (m_animationEnabled == value)
+            return;
+        m_animationEnabled = value;
+        Q_EMIT animationEnabledChanged(value);
+    }
+
+    void setHovered(bool value)
+    {
+        if (m_hovered == value)
+            return;
+        m_hovered = value;
+        Q_EMIT hoveredChanged(value);
+    }
+    bool hovered() const
+    {
+        return m_hovered;
+    }
+
+    qreal opacity() const
+    {
+        return m_opacity;
+    }
+    void setOpacity(qreal value)
+    {
+        if (qFuzzyCompare(m_opacity, value))
+            return;
+        m_opacity = value;
+        for (auto rawButton : buttons()) {
+            if (auto button = qobject_cast<AppMenuButton *>(rawButton))
+                button->setOpacity(m_opacity);
+        }
+        if (m_style == AppMenuStyle::ReplaceTitleOnHover) {
+            m_decoration->setCaptionOpacity(1 - value);
+        }
+        Q_EMIT opacityChanged(value);
+    }
+
+    void setOverflowing(bool set)
+    {
+        if (m_overflowing == set)
+            return;
+        m_overflowing = set;
+        Q_EMIT overflowingChanged();
+    }
+    bool overflowing() const
+    {
+        return m_overflowing;
+    }
+
+    AppMenuStyle style() const
+    {
+        return m_style;
+    }
+    void setStyle(AppMenuStyle value)
+    {
+        if (m_style == value)
+            return;
+        m_style = value;
+        Q_EMIT styleChanged(value);
+    }
 
 public:
     void updateAppMenuModel();
@@ -130,7 +194,6 @@ private:
     void onDelayedCacheTimerTimeout();
     void onShowingChanged(bool hovered);
     void updateHoverAnimationState(bool hovered);
-    void filterMenu(const QString &text);
     void onSubMenuReady(QMenu *menu);
 
 signals:
@@ -150,14 +213,29 @@ protected:
     bool eventFilter(QObject *watched, QEvent *event) override;
 
 private:
-    int currentIndex() const;
-    void setCurrentIndex(int set);
+    void setCurrentIndex(int set)
+    {
+        if (m_currentIndex == set)
+            return;
+        m_currentIndex = set;
+        Q_EMIT currentIndexChanged();
+    }
+    int currentIndex() const
+    {
+        return m_currentIndex;
+    }
 
-    bool overflowing() const;
-    void setOverflowing(bool set);
-
-    bool showing() const;
-    void setShowing(bool value);
+    void setShowing(bool value)
+    {
+        if (m_showing == value)
+            return;
+        m_showing = value;
+        Q_EMIT showingChanged(value);
+    }
+    bool showing() const
+    {
+        return m_showing;
+    }
 
     bool isMenuOpen() const;
 
@@ -168,8 +246,6 @@ private:
     void trigger(int index, bool immediateTransition);
 
     void resetButtons();
-    QString getActionText(QAction *action) const;
-    void setupSearchMenu();
     AppMenuButton *getAppMenuButton(int index) const;
     int findNextVisibleButtonIndex(int currentIndex, bool forward) const;
 
@@ -181,17 +257,17 @@ private:
     Decoration *m_decoration;
     AppMenuModel *m_appMenuModel;
     QPoint m_pressedPoint;
-    int m_currentIndex;
-    int m_overflowIndex;
-    int m_searchIndex;
-    bool m_overflowing;
-    bool m_hovered;
-    bool m_showing;
-    bool m_animationEnabled;
+    int m_currentIndex = -1;
+    int m_overflowIndex = -1;
+    int m_searchIndex = -1;
+    bool m_overflowing = false;
+    bool m_hovered = false;
+    bool m_showing = true;
+    bool m_animationEnabled = true;
     AppMenuStyle m_style;
     QVariantAnimation *m_animation;
-    qreal m_opacity;
-    qreal m_visibleWidth;
+    qreal m_opacity = 1;
+    qreal m_visibleWidth = 0;
     QPointer<QMenu> m_currentMenu;
     int m_buttonIndexWaitingForPopup = -1;
     int m_buttonIndexOfMenuToCache = -1;
@@ -202,7 +278,7 @@ private:
     QTimer *m_resetTimer;
     QTimer *m_menuLoadFallbackTimer;
 
-    bool m_immediateTransition;
+    bool m_immediateTransition = false;
 
     bool m_isMenuUpdateThrottled = false;
     bool m_pendingMenuUpdate = false;
@@ -215,7 +291,6 @@ private:
     QPointer<KDecoration3::DecorationButton> m_hoveredButton = nullptr;
 
     friend class AppMenuButton;
-    friend class Decoration;
 };
 
 } // namespace Breeze
