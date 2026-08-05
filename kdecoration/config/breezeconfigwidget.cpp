@@ -22,6 +22,7 @@
 #include <QScreen>
 #include <QStackedLayout>
 #include <QStackedWidget>
+#include <QStandardItemModel>
 #include <QTimer>
 #include <QWindow>
 
@@ -176,6 +177,7 @@ ConfigWidget::ConfigWidget(QObject *parent, const KPluginMetaData &data, const Q
     // track integrated menu changes
     connect(m_ui.integratedMenuBox, SIGNAL(toggled(bool)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
     connect(m_ui.integratedMenuStyle, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
+    connect(m_ui.integratedMenuPosition, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
     connect(m_ui.integratedMenuReplacesMenuButton, SIGNAL(toggled(bool)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
     connect(m_ui.integratedMenuButtonShape, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
     connect(m_ui.integratedMenuButtonHorizontalMargin, SIGNAL(valueChanged(double)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
@@ -188,6 +190,23 @@ ConfigWidget::ConfigWidget(QObject *parent, const KPluginMetaData &data, const Q
     connect(m_ui.integratedMenuSearchShowDisabledActions, SIGNAL(toggled(bool)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
     connect(m_ui.integratedMenuSearchIgnoreTopLevel, SIGNAL(toggled(bool)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
     connect(m_ui.integratedMenuSearchIgnoreSubMenus, SIGNAL(toggled(bool)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
+    // ensure certain positions are only available in certain styles
+    auto onShapeChangeUpdatePositions = [this]() {
+        QStandardItemModel *integratedMenuPositionModel = qobject_cast<QStandardItemModel *>(m_ui.integratedMenuPosition->model());
+        QStandardItem *centerItem = integratedMenuPositionModel->item(InternalSettings::EnumIntegratedMenuPosition::Center);
+        QStandardItem *centerFullWidthItem = integratedMenuPositionModel->item(InternalSettings::EnumIntegratedMenuPosition::CenterFullWidth);
+        const bool isReplaceTitle = m_ui.integratedMenuStyle->currentIndex() == InternalSettings::EnumIntegratedMenuStyle::ReplaceTitleOnHover;
+        centerItem->setEnabled(isReplaceTitle);
+        centerFullWidthItem->setEnabled(isReplaceTitle);
+        const int currentIndex = m_ui.integratedMenuPosition->currentIndex();
+        if (!isReplaceTitle
+            && (currentIndex == InternalSettings::EnumIntegratedMenuPosition::Center
+                || currentIndex == InternalSettings::EnumIntegratedMenuPosition::CenterFullWidth)) {
+            m_ui.integratedMenuPosition->setCurrentIndex(InternalSettings::EnumIntegratedMenuPosition::Left);
+        }
+    };
+    onShapeChangeUpdatePositions();
+    connect(m_ui.integratedMenuStyle, &QComboBox::currentIndexChanged, this, onShapeChangeUpdatePositions);
 
     connect(m_ui.colorizeWindowOutlineWithButton, &QAbstractButton::toggled, this, &ConfigWidget::updateChanged, Qt::ConnectionType::DirectConnection);
 
@@ -249,6 +268,7 @@ void ConfigWidget::load()
     // -- Load state
     m_ui.integratedMenuBox->setChecked(m_internalSettings->integratedMenuEnabled());
     m_ui.integratedMenuStyle->setCurrentIndex(m_internalSettings->integratedMenuStyle());
+    m_ui.integratedMenuPosition->setCurrentIndex(m_internalSettings->integratedMenuPosition());
     m_ui.integratedMenuReplacesMenuButton->setChecked(m_internalSettings->integratedMenuReplacesMenuButton());
     m_ui.integratedMenuButtonShape->setCurrentIndex(m_internalSettings->integratedMenuButtonShape());
     m_ui.integratedMenuButtonHorizontalMargin->setValue(m_internalSettings->integratedMenuButtonHorizontalMargin());
@@ -324,6 +344,7 @@ void ConfigWidget::saveMain(QString saveAsPresetName)
     // integrated menu
     m_internalSettings->setIntegratedMenuEnabled(m_ui.integratedMenuBox->isChecked());
     m_internalSettings->setIntegratedMenuStyle(m_ui.integratedMenuStyle->currentIndex());
+    m_internalSettings->setIntegratedMenuPosition(m_ui.integratedMenuPosition->currentIndex());
     m_internalSettings->setIntegratedMenuReplacesMenuButton(m_ui.integratedMenuReplacesMenuButton->isChecked());
     m_internalSettings->setIntegratedMenuButtonShape(m_ui.integratedMenuButtonShape->currentIndex());
     m_internalSettings->setIntegratedMenuButtonHorizontalMargin(m_ui.integratedMenuButtonHorizontalMargin->value());
@@ -414,6 +435,7 @@ void ConfigWidget::defaults()
     // integrated menu
     m_ui.integratedMenuBox->setChecked(m_internalSettings->integratedMenuEnabled());
     m_ui.integratedMenuStyle->setCurrentIndex(m_internalSettings->integratedMenuStyle());
+    m_ui.integratedMenuPosition->setCurrentIndex(m_internalSettings->integratedMenuPosition());
     m_ui.integratedMenuReplacesMenuButton->setChecked(m_internalSettings->integratedMenuReplacesMenuButton());
     m_ui.integratedMenuButtonShape->setCurrentIndex(m_internalSettings->integratedMenuButtonShape());
     m_ui.integratedMenuButtonHorizontalMargin->setValue(m_internalSettings->integratedMenuButtonHorizontalMargin());
@@ -559,6 +581,8 @@ void ConfigWidget::updateChanged()
     else if (m_ui.integratedMenuBox->isChecked() != m_internalSettings->integratedMenuEnabled())
         modified = true;
     else if (m_ui.integratedMenuStyle->currentIndex() != m_internalSettings->integratedMenuStyle())
+        modified = true;
+    else if (m_ui.integratedMenuPosition->currentIndex() != m_internalSettings->integratedMenuPosition())
         modified = true;
     else if (m_ui.integratedMenuReplacesMenuButton->isChecked() != m_internalSettings->integratedMenuReplacesMenuButton())
         modified = true;

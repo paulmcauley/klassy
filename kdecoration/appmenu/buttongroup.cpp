@@ -151,6 +151,7 @@ void AppMenuButtonGroup::reconfigure()
 {
     auto internalSettings = m_decoration->internalSettings();
     setStyle(static_cast<AppMenuStyle>(internalSettings->integratedMenuStyle()));
+    setPosition(static_cast<AppMenuPosition>(internalSettings->integratedMenuPosition()));
 
     if (!internalSettings->integratedMenuSearchEnabled() && m_searchButton) {
         removeButton(m_searchButton);
@@ -617,16 +618,21 @@ void AppMenuButtonGroup::updateGeometry()
         }
     }
 
+    setSpacing(internalSettings->integratedMenuButtonHorizontalMargin());
     updateOverflow(availableRect);
 
-    if (m_decoration->isMenuOnRight()) {
-        const QPointF topRight = availableRect.topRight();
-        setPos(QPointF(topRight.x() - visibleWidth(), topRight.y()));
+    const bool isReplaceStyle = m_style == AppMenuStyle::ReplaceTitleOnHover;
+    if (isReplaceStyle && m_position == AppMenuPosition::Center) {
+        const qreal x = (availableRect.width() - visibleWidth()) / 2 + leftOffset;
+        setPos(QPointF(x, availableRect.y()));
+    } else if (isReplaceStyle && m_position == AppMenuPosition::CenterFullWidth) {
+        const qreal x = (m_decoration->size().width() - visibleWidth()) / 2;
+        setPos(QPointF(x, availableRect.y()));
+    } else if (m_position == AppMenuPosition::Right) {
+        setPos(availableRect.topRight() - QPointF(visibleWidth(), 0));
     } else {
         setPos(availableRect.topLeft());
     }
-
-    setSpacing(internalSettings->integratedMenuButtonHorizontalMargin());
 }
 
 qreal AppMenuButtonGroup::visibleWidth() const
