@@ -127,6 +127,8 @@ protected:
     virtual void renderApplicationMenuIcon() = 0;
     virtual void renderContextHelpIcon() = 0;
     virtual void renderExcludeFromCaptureIcon() = 0;
+    virtual void renderIntegratedMenuOverflowIcon() = 0;
+    virtual void renderIntegratedMenuSearchIcon() = 0;
 
     /**
      * @brief Determines whether a rounded version of a given Pen's width is an odd number. Accounts for cosmetic/non-cosmetic pens.
