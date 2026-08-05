@@ -5,11 +5,15 @@ include_directories(${CMAKE_SOURCE_DIR}/libbreezecommon)
 include_directories(${CMAKE_BINARY_DIR}/libbreezecommon6)
 
 ################# newt target #################
+add_subdirectory(appmenu)
+add_subdirectory(libdbusmenuqt)
+
 ### plugin classes
 set(breezedecoration_SRCS
     breezebutton.cpp
     breezedecoration.cpp
     breezesettingsprovider.cpp
+    ${breezedecoration_appmenu_SRCS}
 )
 
 ### build library
@@ -26,6 +30,7 @@ set_target_properties(klassydecoration PROPERTIES
 target_link_libraries(klassydecoration
     PRIVATE
         klassycommon6
+        dbusmenuqt
         Qt6::DBus
         KF6::CoreAddons
         KF6::ConfigGui
