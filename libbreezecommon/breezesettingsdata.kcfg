@@ -159,6 +159,40 @@
         <max>10</max>
     </entry>
 
+    <!-- ______________________________MENU______________________________ -->
+
+    <entry name="MenuAlwaysShow" type = "Bool">
+        <default>true</default>
+    </entry>
+
+    <entry name="SearchEnabled" type = "Bool">
+        <default>true</default>
+    </entry>
+
+    <entry name="HamburgerMenu" type = "Bool">
+        <default>false</default>
+    </entry>
+
+    <entry name="ShowDisabledActions" type = "Bool">
+        <default>false</default>
+    </entry>
+
+    <entry name="SearchIgnoreTopLevel" type = "Bool">
+        <default>true</default>
+    </entry>
+
+    <entry name="SearchIgnoreSubMenus" type = "Bool">
+        <default>false</default>
+    </entry>
+
+    <entry name="MenuButtonHorzPadding" type = "Int">
+        <default>4</default>
+    </entry>
+
+    <entry name="UseSystemMenuFont" type = "Bool">
+        <default>false</default>
+    </entry>
+
   </group>
 
 
