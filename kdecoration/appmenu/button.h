@@ -148,7 +148,7 @@ public Q_SLOTS:
     virtual void trigger();
 
 protected:
-    virtual void drawContent(QPainter *, QPointF) const = 0;
+    virtual void drawContent(QPainter *, QPointF offsetDecorationTopLeftToIconTopLeft) const = 0;
     QColor backgroundColor() const;
     QColor outlineColor() const;
     QColor foregroundColor() const;
