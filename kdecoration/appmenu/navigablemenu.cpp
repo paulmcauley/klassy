@@ -30,11 +30,11 @@
 namespace Breeze
 {
 
-NavigableMenu::NavigableMenu(QWidget *parent, QStyle *style)
+NavigableMenu::NavigableMenu(QWidget *parent, Decoration *decoration)
     : QMenu(parent)
+    , m_decoration(decoration)
 {
     setAttribute(Qt::WA_TranslucentBackground);
-    setStyle(style);
 }
 
 void NavigableMenu::keyPressEvent(QKeyEvent *event)
@@ -71,7 +71,7 @@ void NavigableMenu::showEvent(QShowEvent *event)
 {
     QMenu::showEvent(event);
     if (windowHandle()) {
-        KWindowEffects::enableBlurBehind(windowHandle());
+        KWindowEffects::enableBlurBehind(windowHandle(), m_decoration->internalSettings()->integratedMenuEnableBlur());
     }
 }
 

@@ -59,8 +59,7 @@ namespace Breeze
 AppMenuButtonGroup::AppMenuButtonGroup(Decoration *decoration)
     : KDecoration3::DecorationButtonGroup(decoration)
     , m_decoration(decoration)
-    , m_menuStyle(new AppMenuMenuStyle(QApplication::style(), decoration))
-    , m_appMenuModel(new AppMenuModel(this, m_menuStyle))
+    , m_appMenuModel(new AppMenuModel(this, decoration))
     , m_currentIndex(-1)
     , m_overflowIndex(-1)
     , m_searchIndex(-1)
@@ -551,7 +550,7 @@ void AppMenuButtonGroup::updateAppMenuModel()
 
                 if (searchEnabled) {
                     m_searchIndex = menuActionCount + 1;
-                    m_searchButton = new AppMenuSearchButton(m_menuStyle, deco, m_searchIndex, this);
+                    m_searchButton = new AppMenuSearchButton(deco, m_searchIndex, this);
                     addButton(QPointer<KDecoration3::DecorationButton>(m_searchButton));
                 }
             }
@@ -887,7 +886,7 @@ void AppMenuButtonGroup::handleOverflowTrigger()
         m_overflowMenu->deleteLater();
     }
 
-    auto *actionMenu = new NavigableMenu(nullptr, m_menuStyle);
+    auto *actionMenu = new NavigableMenu(nullptr, m_decoration);
     actionMenu->setAttribute(Qt::WA_DeleteOnClose);
     m_overflowMenu = actionMenu;
 
