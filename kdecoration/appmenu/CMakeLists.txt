@@ -5,6 +5,7 @@ set(breezedecoration_appmenu_SRCS
     appmenu/menustyle.cpp
     appmenu/model.cpp
     appmenu/navigablemenu.cpp
+    appmenu/searchbutton.cpp
     appmenu/textbutton.cpp
     PARENT_SCOPE
 )
