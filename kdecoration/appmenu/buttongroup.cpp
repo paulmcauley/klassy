@@ -163,7 +163,13 @@ void AppMenuButtonGroup::reconfigure()
 {
     auto internalSettings = m_decoration->internalSettings();
     setStyle(static_cast<AppMenuStyle>(internalSettings->integratedMenuStyle()));
-    // TODO: Remove the search menu altogether if disabled rather than just hiding it
+
+    if (!internalSettings->integratedSearchEnabled() && m_searchButton) {
+        removeButton(m_searchButton);
+        m_searchButton->deleteLater();
+        m_searchButton = nullptr;
+        m_searchIndex = -1;
+    }
 
     m_animation->setDuration(m_decoration->animationsDuration());
 
@@ -468,7 +474,8 @@ void AppMenuButtonGroup::updateAppMenuModel()
         const bool searchStateMatches = (m_searchButton.isNull() == !searchEnabled);
 
         if (m_textButtons.count() == menuActionCount && !m_textButtons.isEmpty() && searchStateMatches) {
-            m_searchButton->clearCache();
+            if (m_searchButton)
+                m_searchButton->clearCache();
             int actionIdx = 0;
             for (auto &textButton : std::as_const(m_textButtons)) {
                 if (!textButton) {
@@ -685,7 +692,7 @@ void AppMenuButtonGroup::popupMenu(QMenu *menu, int buttonIndex)
         connect(navMenu, &NavigableMenu::hitLeft, this, &AppMenuButtonGroup::onHitLeft, Qt::UniqueConnection);
         connect(navMenu, &NavigableMenu::hitRight, this, &AppMenuButtonGroup::onHitRight, Qt::UniqueConnection);
     }
-    if (menu != m_searchButton->menu()) {
+    if (m_searchButton && menu != m_searchButton->menu()) {
         menu->installEventFilter(this);
     }
 
@@ -890,7 +897,7 @@ void AppMenuButtonGroup::onMenuAboutToHide()
         disconnect(navMenu, &NavigableMenu::hitRight, this, &AppMenuButtonGroup::onHitRight);
     }
 
-    if (menu != m_searchButton->menu()) {
+    if (m_searchButton && menu != m_searchButton->menu()) {
         menu->removeEventFilter(this);
     }
 
@@ -951,10 +958,11 @@ void AppMenuButtonGroup::updateHoverAnimationState(bool hovered)
 
 void AppMenuButtonGroup::onSubMenuReady(QMenu *menu)
 {
-    m_searchButton->clearCache();
-
-    if (m_searchButton->isUiVisible()) {
-        m_searchButton->startDebounceIfHasLastQuery();
+    if (m_searchButton) {
+        m_searchButton->clearCache();
+        if (m_searchButton->isUiVisible()) {
+            m_searchButton->startDebounceIfHasLastQuery();
+        }
     }
 
     if (m_buttonIndexWaitingForPopup == -1 || !m_appMenuModel || !m_appMenuModel->menu()) {
