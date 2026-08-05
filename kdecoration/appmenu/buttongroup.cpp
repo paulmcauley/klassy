@@ -70,7 +70,6 @@ AppMenuButtonGroup::AppMenuButtonGroup(Decoration *decoration)
     , m_animation(new QVariantAnimation(this))
     , m_opacity(1)
     , m_visibleWidth(0)
-    , m_searchUiVisible(false)
 {
     m_menuUpdateDebounceTimer = new QTimer(this);
     m_menuUpdateDebounceTimer->setInterval(100);
@@ -709,6 +708,8 @@ void AppMenuButtonGroup::popupMenu(QMenu *menu, int buttonIndex)
     // 1. Set the new internal state. This must happen before popup for positioning.
     setCurrentIndex(buttonIndex);
     button->setChecked(true);
+    if (m_immediateTransition)
+        button->transitionFully();
     m_currentMenu = menu;
 
     // 2. Calculate position and show the new menu. This must happen before hiding the old one to prevent flicker.
@@ -826,7 +827,7 @@ void AppMenuButtonGroup::handleOverflowTrigger()
     popupMenu(actionMenu, m_overflowIndex);
 }
 
-void AppMenuButtonGroup::trigger(int buttonIndex)
+void AppMenuButtonGroup::trigger(int buttonIndex, bool immediateTransition)
 {
     // The button is checked in popupMenu, but we need to check it here
     // for the case where the menu is not yet loaded.
@@ -836,6 +837,7 @@ void AppMenuButtonGroup::trigger(int buttonIndex)
         return;
     }
 
+    m_immediateTransition = immediateTransition;
     if (buttonIndex == m_searchIndex) {
         handleSearchTrigger();
     } else if (buttonIndex == m_overflowIndex) {
@@ -936,13 +938,13 @@ void AppMenuButtonGroup::onMenuAboutToHide()
 void AppMenuButtonGroup::onHitLeft()
 {
     int desiredIndex = findNextVisibleButtonIndex(m_currentIndex, false);
-    trigger(desiredIndex);
+    trigger(desiredIndex, true);
 }
 
 void AppMenuButtonGroup::onHitRight()
 {
     int desiredIndex = findNextVisibleButtonIndex(m_currentIndex, true);
-    trigger(desiredIndex);
+    trigger(desiredIndex, true);
 }
 
 void AppMenuButtonGroup::onShowingChanged(bool showing)
@@ -1011,7 +1013,7 @@ void AppMenuButtonGroup::onSubMenuReady(QMenu *menu)
         if (menu->actions().isEmpty()) {
             popupMenu(menu, buttonIndex);
         } else {
-            trigger(buttonIndex);
+            trigger(buttonIndex, m_immediateTransition);
         }
     }
 }
@@ -1082,7 +1084,7 @@ void AppMenuButtonGroup::handleHoverMove(const QPointF &pos)
             // All buttons in this group are AppMenuButtons
             auto *appMenuButton = qobject_cast<AppMenuButton *>(m_hoveredButton.data());
             if (appMenuButton && m_currentIndex != appMenuButton->buttonIndex() && appMenuButton->isVisible() && appMenuButton->isEnabled()) {
-                trigger(appMenuButton->buttonIndex());
+                trigger(appMenuButton->buttonIndex(), false);
             }
         }
     }
