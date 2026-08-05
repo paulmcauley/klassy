@@ -933,16 +933,10 @@ void Decoration::createButtons()
 //________________________________________________________________
 void Decoration::updateIntegratedMenu()
 {
-    // menu buttons
+    // Add/remove integrated menu buttons based on whether the application menu exists for the application
     if (window()->hasApplicationMenu() && !m_integratedMenuButtons) {
-        auto repaintTitleBar = [this] {
-            update(titleBar());
-        };
-
         m_integratedMenuButtons = new AppMenuButtonGroup(this);
         connect(m_integratedMenuButtons, &AppMenuButtonGroup::menuUpdated, this, &Decoration::updateButtonsGeometry);
-        connect(m_integratedMenuButtons, &AppMenuButtonGroup::opacityChanged, this, repaintTitleBar);
-        connect(m_integratedMenuButtons, &AppMenuButtonGroup::styleChanged, this, repaintTitleBar);
         m_integratedMenuButtons->updateAppMenuModel();
     } else if (!window()->hasApplicationMenu() && m_integratedMenuButtons) {
         m_integratedMenuButtons->deleteLater();
@@ -951,22 +945,6 @@ void Decoration::updateIntegratedMenu()
     }
     if (m_integratedMenuButtons)
         m_integratedMenuButtons->reconfigure();
-}
-
-//________________________________________________________________
-QFont Decoration::menuFont() const
-{
-    return m_internalSettings->useSystemMenuFont() ? QApplication::font("QMenu") : settings()->font();
-}
-
-//________________________________________________________________
-qreal Decoration::getMenuTextWidth(const QString &text, bool showMnemonic) const
-{
-    const QFontMetricsF fontMetrics(menuFont());
-    const int flags = showMnemonic ? Qt::TextShowMnemonic : Qt::TextHideMnemonic;
-    const QRectF boundingRect = fontMetrics.boundingRect(QRectF(), flags, text);
-    const qreal scale = window()->nextScale();
-    return qCeil(boundingRect.width() * scale) / scale;
 }
 
 //________________________________________________________________
@@ -2178,7 +2156,7 @@ void Decoration::mousePressEvent(QMouseEvent *event)
 {
     KDecoration3::Decoration::mousePressEvent(event);
 
-    if (!m_internalSettings->dragFromIntegratedMenuEnabled() || !m_integratedMenuButtons) {
+    if (!m_internalSettings->integratedMenuButtonCanDragWindow() || !m_integratedMenuButtons) {
         return;
     }
 

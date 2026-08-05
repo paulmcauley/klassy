@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>717</width>
-    <height>630</height>
+    <width>727</width>
+    <height>651</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -1703,17 +1703,17 @@
              <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
             </property>
             <item row="3" column="0">
-             <widget class="QLabel" name="menuButtonHorzMarginLabel">
+             <widget class="QLabel" name="integratedMenuButtonHorizontalMarginLabel">
               <property name="text">
                <string>Horizontal margin:</string>
               </property>
               <property name="buddy">
-               <cstring>menuButtonHorzMargin</cstring>
+               <cstring>integratedMenuButtonHorizontalMargin</cstring>
               </property>
              </widget>
             </item>
             <item row="3" column="1">
-             <widget class="QDoubleSpinBox" name="menuButtonHorzMargin">
+             <widget class="QDoubleSpinBox" name="integratedMenuButtonHorizontalMargin">
               <property name="decimals">
                <number>2</number>
               </property>
@@ -1729,7 +1729,7 @@
              </widget>
             </item>
             <item row="4" column="1">
-             <widget class="QDoubleSpinBox" name="menuButtonHorzPadding">
+             <widget class="QDoubleSpinBox" name="integratedMenuButtonHorizontalPadding">
               <property name="decimals">
                <number>2</number>
               </property>
@@ -1745,31 +1745,31 @@
              </widget>
             </item>
             <item row="4" column="0">
-             <widget class="QLabel" name="menuButtonHorzPaddingLabel">
+             <widget class="QLabel" name="integratedMenuButtonHorizontalPaddingLabel">
               <property name="text">
                <string>Horizontal padding:</string>
               </property>
               <property name="buddy">
-               <cstring>menuButtonHorzPadding</cstring>
+               <cstring>integratedMenuButtonHorizontalPadding</cstring>
               </property>
              </widget>
             </item>
             <item row="7" column="1">
-             <widget class="QCheckBox" name="useTitleColorForIntegratedMenus">
+             <widget class="QCheckBox" name="integratedMenuButtonUseTitleColor">
               <property name="text">
                <string>Use title color for text</string>
               </property>
              </widget>
             </item>
             <item row="8" column="1">
-             <widget class="QCheckBox" name="useSystemMenuFont">
+             <widget class="QCheckBox" name="integratedMenuButtonUseSystemMenuFont">
               <property name="text">
                <string>Use system menu font</string>
               </property>
              </widget>
             </item>
             <item row="9" column="1">
-             <widget class="QCheckBox" name="dragFromIntegratedMenuEnabled">
+             <widget class="QCheckBox" name="integratedMenuButtonCanDragWindow">
               <property name="text">
                <string>Allow dragging window</string>
               </property>
@@ -1844,7 +1844,7 @@
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_4">
               <item>
-               <widget class="QCheckBox" name="integratedMenuMenuEnableBlur">
+               <widget class="QCheckBox" name="integratedMenuEnableBlur">
                 <property name="text">
                  <string>Enable Blur</string>
                 </property>
@@ -1891,21 +1891,21 @@
                <number>6</number>
               </property>
               <item>
-               <widget class="QCheckBox" name="integratedSearchShowDisabledActions">
+               <widget class="QCheckBox" name="integratedMenuSearchShowDisabledActions">
                 <property name="text">
                  <string>Show disabled actions</string>
                 </property>
                </widget>
               </item>
               <item>
-               <widget class="QCheckBox" name="integratedSearchIgnoreSubMenus">
+               <widget class="QCheckBox" name="integratedMenuSearchIgnoreSubMenus">
                 <property name="text">
                  <string>Ignores sub-menus</string>
                 </property>
                </widget>
               </item>
               <item>
-               <widget class="QCheckBox" name="integratedSearchIgnoreTopLevel">
+               <widget class="QCheckBox" name="integratedMenuSearchIgnoreTopLevel">
                 <property name="text">
                  <string>Ignores top-level items</string>
                 </property>

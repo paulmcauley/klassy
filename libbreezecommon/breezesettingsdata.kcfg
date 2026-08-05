@@ -177,39 +177,23 @@
         <default>true</default>
     </entry>
 
-    <entry name="IntegratedSearchEnabled" type="Bool">
-        <default>true</default>
-    </entry>
-
-    <entry name="IntegratedSearchShowDisabledActions" type="Bool">
-        <default>false</default>
-    </entry>
-
-    <entry name="IntegratedSearchIgnoreTopLevel" type="Bool">
-        <default>true</default>
-    </entry>
-
-    <entry name="IntegratedSearchIgnoreSubMenus" type="Bool">
-        <default>false</default>
-    </entry>
-
-    <entry name="MenuButtonHorzPadding" type="Double">
-        <default>4.0</default>
-    </entry>
-
-    <entry name="MenuButtonHorzMargin" type="Double">
+    <entry name="IntegratedMenuButtonHorizontalMargin" type="Double">
         <default>0.0</default>
     </entry>
 
-    <entry name="UseSystemMenuFont" type="Bool">
-        <default>false</default>
+    <entry name="IntegratedMenuButtonHorizontalPadding" type="Double">
+        <default>4.0</default>
     </entry>
 
-    <entry name="DragFromIntegratedMenuEnabled" type="Bool">
+    <entry name="IntegratedMenuButtonUseTitleColor" type="Bool">
         <default>true</default>
     </entry>
 
-    <entry name="UseTitleColorForIntegratedMenus" type="Bool">
+    <entry name="IntegratedMenuButtonUseSystemMenuFont" type="Bool">
+        <default>false</default>
+    </entry>
+
+    <entry name="IntegratedMenuButtonCanDragWindow" type="Bool">
         <default>true</default>
     </entry>
 
@@ -229,6 +213,22 @@
 
     <entry name="IntegratedMenuEnableBlur" type="Bool">
         <default>true</default>
+    </entry>
+
+    <entry name="IntegratedMenuSearchEnabled" type="Bool">
+        <default>true</default>
+    </entry>
+
+    <entry name="IntegratedMenuSearchShowDisabledActions" type="Bool">
+        <default>false</default>
+    </entry>
+
+    <entry name="IntegratedMenuSearchIgnoreTopLevel" type="Bool">
+        <default>true</default>
+    </entry>
+
+    <entry name="IntegratedMenuSearchIgnoreSubMenus" type="Bool">
+        <default>false</default>
     </entry>
   </group>
 
