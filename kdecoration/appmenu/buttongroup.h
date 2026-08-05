@@ -45,6 +45,14 @@ class AppMenuTextButton;
 class AppMenuOverflowButton;
 class AppMenuSearchButton;
 
+enum class AppMenuStyle {
+    Always,
+    RevealOnHover,
+    ReplaceTitleOnHover,
+    SearchOnly,
+    Disabled,
+};
+
 class AppMenuButtonGroup : public KDecoration3::DecorationButtonGroup
 {
     Q_OBJECT
@@ -57,16 +65,15 @@ public:
     Q_PROPERTY(int overflowing READ overflowing WRITE setOverflowing NOTIFY overflowingChanged)
     Q_PROPERTY(bool hovered READ hovered WRITE setHovered NOTIFY hoveredChanged)
     Q_PROPERTY(bool showing READ showing WRITE setShowing NOTIFY showingChanged)
-    Q_PROPERTY(bool alwaysShow READ alwaysShow WRITE setAlwaysShow NOTIFY alwaysShowChanged)
     Q_PROPERTY(bool animationEnabled READ animationEnabled WRITE setAnimationEnabled NOTIFY animationEnabledChanged)
     Q_PROPERTY(int animationDuration READ animationDuration WRITE setAnimationDuration NOTIFY animationDurationChanged)
     Q_PROPERTY(qreal opacity READ opacity WRITE setOpacity NOTIFY opacityChanged)
+    Q_PROPERTY(AppMenuStyle style READ style WRITE setStyle NOTIFY styleChanged)
 
     bool hovered() const;
     void setHovered(bool value);
 
     bool alwaysShow() const;
-    void setAlwaysShow(bool value);
 
     bool animationEnabled() const;
     void setAnimationEnabled(bool value);
@@ -77,6 +84,14 @@ public:
     qreal opacity() const;
     void setOpacity(qreal value);
 
+    AppMenuStyle style() const;
+    void setStyle(AppMenuStyle value);
+
+    inline bool takesSpace() const
+    {
+        return m_style != AppMenuStyle::ReplaceTitleOnHover;
+    };
+
     qreal visibleWidth() const;
 
     bool menuLoadedOnce() const;
@@ -85,7 +100,6 @@ public:
     void handleHoverMove(const QPointF &pos);
 
 public:
-    void setHamburgerMenu(bool value);
     void updateAppMenuModel();
     void updateOverflow(QRectF availableRect);
     void updateShowing();
@@ -102,6 +116,7 @@ private:
     void onMenuUpdateThrottleTimeout();
     void onDelayedCacheTimerTimeout();
     void onShowingChanged(bool hovered);
+    void updateHoverAnimationState(bool hovered);
     void filterMenu(const QString &text);
     void onSearchTimerTimeout();
     void onSubMenuReady(QMenu *menu);
@@ -114,10 +129,10 @@ signals:
     void overflowingChanged();
     void hoveredChanged(bool);
     void showingChanged(bool);
-    void alwaysShowChanged(bool);
     void animationEnabledChanged(bool);
     void animationDurationChanged(int);
     void opacityChanged(qreal);
+    void styleChanged(AppMenuStyle);
 
 protected:
     bool eventFilter(QObject *watched, QEvent *event) override;
@@ -186,11 +201,10 @@ private:
     int m_overflowIndex;
     int m_searchIndex;
     bool m_overflowing;
-    bool m_hamburgerMenu;
     bool m_hovered;
     bool m_showing;
-    bool m_alwaysShow;
     bool m_animationEnabled;
+    AppMenuStyle m_style;
     QVariantAnimation *m_animation;
     qreal m_opacity;
     qreal m_visibleWidth;
