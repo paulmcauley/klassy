@@ -22,7 +22,9 @@
 #include "appmenu/buttongroup.h"
 #include "breezedecoration.h"
 
+#include <KColorUtils>
 #include <KDecoration3/DecoratedWindow>
+#include <KDecoration3/ScaleHelpers>
 #include <KWindowSystem>
 
 #include <QApplication>
@@ -36,10 +38,19 @@ AppMenuButton::AppMenuButton(DecorationButtonType type, Decoration *decoration, 
     , m_d(qobject_cast<Decoration *>(decoration))
     , m_buttonIndex(buttonIndex)
     , m_type(type)
+    , m_animation(new QVariantAnimation(this))
 {
+    m_animation->setDuration(m_d->animationsDuration());
+    m_animation->setStartValue(0.0);
+    m_animation->setEndValue(1.0);
+    m_animation->setEasingCurve(QEasingCurve::InOutQuad);
+    connect(m_animation, &QVariantAnimation::valueChanged, this, [this](const QVariant &value) {
+        setTransition(value.toReal());
+    });
     setCheckable(true);
 
     connect(this, &AppMenuButton::clicked, this, &AppMenuButton::trigger);
+    connect(this, &KDecoration3::DecorationButton::hoveredChanged, this, &AppMenuButton::updateAnimationState);
 
     const auto *buttonGroup = qobject_cast<AppMenuButtonGroup *>(parent);
     if (buttonGroup) {
@@ -47,9 +58,25 @@ AppMenuButton::AppMenuButton(DecorationButtonType type, Decoration *decoration, 
     }
 }
 
-int AppMenuButton::buttonIndex() const
+void AppMenuButton::updateAnimationState(bool hovered)
 {
-    return m_buttonIndex;
+    if (!(m_d && m_d->animationsDuration() > 0)) {
+        return;
+    }
+
+    if (!hovered && isChecked()) {
+        return;
+    }
+
+    m_animation->setDirection(hovered ? QAbstractAnimation::Forward : QAbstractAnimation::Backward);
+    if (m_animation->state() != QAbstractAnimation::Running) {
+        m_animation->start();
+    }
+}
+
+void AppMenuButton::reconfigure()
+{
+    m_animation->setDuration(m_d->animationsDuration());
 }
 
 void AppMenuButton::paint(QPainter *painter, const QRectF &repaintRegion)
@@ -60,52 +87,121 @@ void AppMenuButton::paint(QPainter *painter, const QRectF &repaintRegion)
         return;
     }
 
-    auto c = m_d->window();
-
-    painter->save();
-    painter->setRenderHints(QPainter::Antialiasing);
-
     // Nothing to paint when fully transparent
     if (qFuzzyIsNull(m_opacity)) {
         painter->restore();
         return;
     }
-    painter->setOpacity(m_opacity);
+
+    painter->save();
+    QRectF backgroundBoundingRect = (QRectF(geometry().topLeft(), m_backgroundVisibleSize));
+    backgroundBoundingRect = KDecoration3::snapToPixelGrid(backgroundBoundingRect, m_devicePixelRatio);
+    painter->setClipRect(backgroundBoundingRect);
+    painter->setRenderHints(QPainter::Antialiasing);
+    painter->setOpacity(sqrt(m_opacity * m_transition));
     painter->translate(geometry().topLeft());
 
-    setDevicePixelRatio(painter);
     m_buttonPalette = m_d->decorationColors()->buttonPalette(m_type);
 
-    const QRectF iconRect(QPointF(0, 0), geometry().size());
+    QColor background = backgroundColor();
+    QColor outline = outlineColor();
+
+    if (background.isValid() || outline.isValid()) {
+        setDevicePixelRatio(painter);
+
+        const QRectF iconRect(QPointF(0, 0), geometry().size());
+
+        if (outline.isValid()) {
+            QPen pen(outline);
+            pen.setWidthF(PenWidth::Symbol * m_devicePixelRatio);
+            pen.setCosmetic(true);
+            painter->setPen(pen);
+        } else
+            painter->setPen(Qt::NoPen);
+        if (background.isValid())
+            painter->setBrush(background);
+        else
+            painter->setBrush(Qt::NoBrush);
+
+        qreal geometryShrinkOffset = PenWidth::Symbol * 1.5;
+        painter->drawRect(iconRect.adjusted(geometryShrinkOffset, geometryShrinkOffset, -geometryShrinkOffset, -geometryShrinkOffset));
+    }
 
     // Calculate device offset for icon drawing
     QPointF deviceOffsetDecorationTopLeftToIconTopLeft;
     QPointF topLeftButtonDeviceGeometry = painter->deviceTransform().map(geometry().topLeft());
     QPointF decorationTopLeftDeviceGeometry = painter->deviceTransform().map(QRectF(m_d->rect()).topLeft());
     deviceOffsetDecorationTopLeftToIconTopLeft = topLeftButtonDeviceGeometry - decorationTopLeftDeviceGeometry;
-
-    // Paint background
-    const QColor bgColor = m_d->titleBarColor();
-
-    const auto *buttonGroup = qobject_cast<AppMenuButtonGroup *>(parent());
-    if (buttonGroup && buttonGroup->isMenuOpen() && buttonGroup->currentIndex() != m_buttonIndex) {
-        // Dimmed state
-    } else if (buttonGroup && buttonGroup->isMenuOpen() && buttonGroup->currentIndex() == m_buttonIndex) {
-        // Active menu button - paint highlight background
-        QColor highlight = c->isActive() ? qApp->palette().color(QPalette::Highlight) : bgColor;
-        const int titleBarOpacity = m_d->internalSettings()->activeTitleBarOpacity();
-        if (titleBarOpacity < 100) {
-            painter->setCompositionMode(QPainter::CompositionMode_Source);
-            highlight.setAlphaF(titleBarOpacity / 100.0f);
-        }
-        painter->fillRect(iconRect, highlight);
-    } else if (isChecked()) {
-        painter->fillRect(iconRect, bgColor);
-    }
-
-    drawIcon(painter, deviceOffsetDecorationTopLeftToIconTopLeft);
+    painter->setOpacity(m_opacity);
+    drawContent(painter, deviceOffsetDecorationTopLeftToIconTopLeft);
 
     painter->restore();
+}
+
+QColor AppMenuButton::backgroundColor() const
+{
+    auto c = m_d->window();
+    const bool active = c->isActive();
+    if (isChecked() || isPressed()) {
+        return m_buttonPalette->backgroundPressActiveStateAnimated(active, m_animation);
+    } else if (m_animation->state() == QAbstractAnimation::Running) {
+        QColor backgroundNormal = m_buttonPalette->backgroundNormalActiveStateAnimated(active, m_animation);
+        QColor backgroundHover = m_buttonPalette->backgroundHoverActiveStateAnimated(active, m_animation);
+        if (backgroundNormal.isValid() && backgroundHover.isValid()) {
+            return KColorUtils::mix(backgroundNormal, backgroundHover, m_opacity);
+        } else if (backgroundHover.isValid()) {
+            return ColorTools::alphaMix(backgroundHover, m_opacity);
+        } else
+            return QColor();
+    } else if (isHovered()) {
+        return m_buttonPalette->backgroundHoverActiveStateAnimated(active, m_animation);
+    } else {
+        return m_buttonPalette->backgroundNormalActiveStateAnimated(active, m_animation);
+    }
+}
+
+QColor AppMenuButton::outlineColor() const
+{
+    auto c = m_d->window();
+    const bool active = c->isActive();
+    if (isChecked() || isPressed()) {
+        return m_buttonPalette->outlinePressActiveStateAnimated(active, m_animation);
+    } else if (m_animation->state() == QAbstractAnimation::Running) {
+        QColor backgroundNormal = m_buttonPalette->outlineNormalActiveStateAnimated(active, m_animation);
+        QColor backgroundHover = m_buttonPalette->outlineHoverActiveStateAnimated(active, m_animation);
+        if (backgroundNormal.isValid() && backgroundHover.isValid()) {
+            return KColorUtils::mix(backgroundNormal, backgroundHover, m_opacity);
+        } else if (backgroundHover.isValid()) {
+            return ColorTools::alphaMix(backgroundHover, m_opacity);
+        } else
+            return QColor();
+    } else if (isHovered()) {
+        return m_buttonPalette->outlineHoverActiveStateAnimated(active, m_animation);
+    } else {
+        return m_buttonPalette->outlineNormalActiveStateAnimated(active, m_animation);
+    }
+}
+
+QColor AppMenuButton::foregroundColor() const
+{
+    auto c = m_d->window();
+    const bool active = c->isActive();
+    if (isChecked() || isPressed()) {
+        return m_buttonPalette->foregroundPressActiveStateAnimated(active, m_animation);
+    } else if (m_animation->state() == QAbstractAnimation::Running) {
+        QColor backgroundNormal = m_buttonPalette->foregroundNormalActiveStateAnimated(active, m_animation);
+        QColor backgroundHover = m_buttonPalette->foregroundHoverActiveStateAnimated(active, m_animation);
+        if (backgroundNormal.isValid() && backgroundHover.isValid()) {
+            return KColorUtils::mix(backgroundNormal, backgroundHover, m_opacity);
+        } else if (backgroundHover.isValid()) {
+            return ColorTools::alphaMix(backgroundHover, m_opacity);
+        } else
+            return QColor();
+    } else if (isHovered()) {
+        return m_buttonPalette->foregroundHoverActiveStateAnimated(active, m_animation);
+    } else {
+        return m_buttonPalette->foregroundNormalActiveStateAnimated(active, m_animation);
+    }
 }
 
 void AppMenuButton::setDevicePixelRatio(QPainter *painter)
@@ -127,7 +223,7 @@ void AppMenuButton::trigger()
 {
     auto *buttonGroup = qobject_cast<AppMenuButtonGroup *>(parent());
     if (buttonGroup) {
-        buttonGroup->trigger(m_buttonIndex);
+        buttonGroup->trigger(m_buttonIndex, false);
     }
 }
 

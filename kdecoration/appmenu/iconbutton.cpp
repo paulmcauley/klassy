@@ -39,7 +39,7 @@ AppMenuIconButton::~AppMenuIconButton() = default;
 
 void AppMenuIconButton::setHeight(qreal buttonHeight)
 {
-    AppMenuButton::setHeight(buttonHeight);
+    Q_UNUSED(buttonHeight)
 
     if (!m_d) {
         return;
@@ -47,14 +47,14 @@ void AppMenuIconButton::setHeight(qreal buttonHeight)
 
     const qreal paddedSize = m_d->smallButtonPaddedSize();
     const qreal iconSz = m_d->iconSize();
-    const qreal bgSize = m_d->smallButtonBackgroundSize();
 
+    setGeometry(QRectF(geometry().topLeft(), QSizeF(paddedSize, paddedSize)));
     setSmallButtonPaddedSize(QSizeF(paddedSize, paddedSize));
     setIconSize(QSizeF(iconSz, iconSz));
-    setBackgroundVisibleSize(QSizeF(bgSize, bgSize));
+    setBackgroundVisibleSize(QSizeF(paddedSize, paddedSize));
 }
 
-void AppMenuIconButton::drawIcon(QPainter *painter, QPointF deviceOffsetDecorationTopLeftToIconTopLeft) const
+void AppMenuIconButton::drawContent(QPainter *painter, QPointF deviceOffsetDecorationTopLeftToIconTopLeft) const
 {
     if (!m_d) {
         return;
@@ -69,12 +69,11 @@ void AppMenuIconButton::drawIcon(QPainter *painter, QPointF deviceOffsetDecorati
 
     // Center icon in button
     qreal iconTranslationOffset = (smallButtonPaddedWidth - iconWidth) / 2;
-    painter->translate(iconTranslationOffset, iconTranslationOffset);
+    painter->translate(this->geometry().topLeft() - deviceOffsetDecorationTopLeftToIconTopLeft + QPointF(iconTranslationOffset, iconTranslationOffset));
     deviceOffsetDecorationTopLeftToIconTopLeft += QPointF(iconTranslationOffset, iconTranslationOffset) * painter->device()->devicePixelRatioF();
 
-    // Setup pen with foreground color
-    const QColor foregroundColor = m_d->fontColor();
-    QPen pen(foregroundColor);
+    // Setup pen for icon drawing
+    QPen pen(foregroundColor());
     pen.setWidthF(PenWidth::Symbol);
     pen.setCosmetic(true);
     painter->setPen(pen);
@@ -119,6 +118,7 @@ void AppMenuIconButton::drawIcon(QPainter *painter, QPointF deviceOffsetDecorati
 
 void AppMenuIconButton::reconfigure()
 {
+    AppMenuButton::reconfigure();
     // set m_systemIconName and m_systemIconCheckedName if a system icon theme is set
     if (m_d->internalSettings()->buttonIconStyle() == InternalSettings::EnumButtonIconStyle::StyleSystemIconTheme) {
         SystemIconTheme::systemIconNames(m_type, m_systemIconName, m_systemIconCheckedName);

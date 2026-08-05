@@ -54,7 +54,7 @@ public:
     }
 
 protected:
-    void drawIcon(QPainter *, QPointF) const override;
+    void drawContent(QPainter *, QPointF) const override;
 
 private:
     bool isSystemIconAvailable() const;

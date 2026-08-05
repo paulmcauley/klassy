@@ -194,6 +194,10 @@
         <default>true</default>
     </entry>
 
+    <entry name="UseTitleColorForIntegratedMenus" type="Bool">
+        <default>true</default>
+    </entry>
+
   </group>
 
 
@@ -479,6 +483,9 @@
                 <value>KeepBelow</value>
                 <value>KeepAbove</value>
                 <value>ExcludeFromCapture</value>
+                <value>IntegratedMenuMenu</value>
+                <value>IntegratedMenuOverflow</value>
+                <value>IntegratedMenuSearch</value>
             </values>
         </parameter>
     </entry>
@@ -497,6 +504,9 @@
                 <value>KeepBelow</value>
                 <value>KeepAbove</value>
                 <value>ExcludeFromCapture</value>
+                <value>IntegratedMenuMenu</value>
+                <value>IntegratedMenuOverflow</value>
+                <value>IntegratedMenuSearch</value>
             </values>
         </parameter>
     </entry>

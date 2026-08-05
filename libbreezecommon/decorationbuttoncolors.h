@@ -11,6 +11,7 @@
 #include "klassycommon_export.h"
 #include <KColorScheme>
 #include <QColor>
+#include <QVariantAnimation>
 #include <memory>
 
 namespace Klassy
@@ -32,6 +33,9 @@ const QList<DecorationButtonType> coloredWindowDecorationButtonTypes{
     DecorationButtonType::KeepAbove,
     DecorationButtonType::Custom,
     DecorationButtonType::ExcludeFromCapture,
+    DecorationButtonType::CustomIntegratedMenuMenu,
+    DecorationButtonType::CustomIntegratedMenuOverflow,
+    DecorationButtonType::CustomIntegratedMenuSearch,
 };
 
 const QList<DecorationButtonType> coloredAppStyleDecorationButtonTypes{
