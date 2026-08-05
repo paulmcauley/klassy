@@ -110,6 +110,8 @@ public:
 public:
     void updateAppMenuModel();
     void updateOverflow(QRectF availableRect);
+    void updateAdjacencyFlags();
+    void updateGeometry();
     void updateShowing();
 
     // Drag-from-buttons support
@@ -119,7 +121,6 @@ public:
 
 private:
     void onMenuReadyForSearch();
-    void triggerOverflow();
     void onMenuAboutToHide();
     void onHitLeft();
     void onHitRight();
