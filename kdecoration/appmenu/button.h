@@ -23,6 +23,8 @@
 
 #include <KDecoration3/DecorationButton>
 
+#include <QVariantAnimation>
+
 namespace Breeze
 {
 
@@ -37,8 +39,7 @@ public:
     ~AppMenuButton() override = default;
 
     Q_PROPERTY(int buttonIndex READ buttonIndex NOTIFY buttonIndexChanged)
-
-    int buttonIndex() const;
+    Q_PROPERTY(qreal transition READ transition WRITE setTransition NOTIFY transitionChanged)
 
     void paint(QPainter *painter, const QRectF &repaintRegion) override;
 
@@ -58,6 +59,24 @@ public:
     {
         setChecked(false);
     }
+
+    void setTransition(qreal value)
+    {
+        if (qFuzzyCompare(m_transition, value))
+            return;
+        m_transition = value;
+        transitionChanged();
+        update();
+    }
+    qreal transition() const
+    {
+        return m_transition;
+    }
+    void transitionFully()
+    {
+        m_animation->setCurrentTime(m_animation->duration());
+    }
+
     virtual void setHeight(qreal buttonHeight);
 
     void setIconOffset(const QPointF &value)
@@ -77,13 +96,23 @@ public:
     {
         return m_backgroundVisibleSize;
     }
-    virtual void reconfigure() = 0;
+
+    int buttonIndex() const
+    {
+        return m_buttonIndex;
+    }
+
+    virtual void reconfigure();
 
 signals:
     void buttonIndexChanged();
+    void transitionChanged();
 
 protected:
-    virtual void drawIcon(QPainter *, QPointF) const = 0;
+    virtual void drawContent(QPainter *, QPointF) const = 0;
+    QColor backgroundColor() const;
+    QColor outlineColor() const;
+    QColor foregroundColor() const;
 
 public Q_SLOTS:
     virtual void trigger();
@@ -97,10 +126,13 @@ protected:
 
 private:
     void setDevicePixelRatio(QPainter *painter);
+    void updateAnimationState(bool hovered);
 
     qreal m_opacity = 0;
+    qreal m_transition = 0;
     QPointF m_iconOffset;
     QSizeF m_backgroundVisibleSize;
+    QVariantAnimation *m_animation;
 };
 
 } // namespace Breeze
