@@ -22,15 +22,19 @@
 
 #include "appmenu/navigablemenu.h"
 
+#include <KWindowEffects>
 #include <QGuiApplication>
 #include <QKeyEvent>
+#include <QStyle>
 
 namespace Breeze
 {
 
-NavigableMenu::NavigableMenu(QWidget *parent)
+NavigableMenu::NavigableMenu(QWidget *parent, QStyle *style)
     : QMenu(parent)
 {
+    setAttribute(Qt::WA_TranslucentBackground);
+    setStyle(style);
 }
 
 void NavigableMenu::keyPressEvent(QKeyEvent *event)
@@ -60,6 +64,14 @@ void NavigableMenu::keyPressEvent(QKeyEvent *event)
             }
             event->accept();
         }
+    }
+}
+
+void NavigableMenu::showEvent(QShowEvent *event)
+{
+    QMenu::showEvent(event);
+    if (windowHandle()) {
+        KWindowEffects::enableBlurBehind(windowHandle());
     }
 }
 
