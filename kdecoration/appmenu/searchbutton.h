@@ -14,6 +14,8 @@ class AppMenuButtonGroup;
 
 class AppMenuSearchButton : public AppMenuIconButton
 {
+    Q_OBJECT
+
 public:
     AppMenuSearchButton(Decoration *decoration, const int buttonIndex, AppMenuButtonGroup *parent);
 

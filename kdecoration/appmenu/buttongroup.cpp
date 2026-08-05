@@ -60,15 +60,7 @@ AppMenuButtonGroup::AppMenuButtonGroup(Decoration *decoration)
     : KDecoration3::DecorationButtonGroup(decoration)
     , m_decoration(decoration)
     , m_appMenuModel(new AppMenuModel(this, decoration))
-    , m_currentIndex(-1)
-    , m_overflowIndex(-1)
-    , m_searchIndex(-1)
-    , m_hovered(false)
-    , m_showing(true)
-    , m_animationEnabled(true)
     , m_animation(new QVariantAnimation(this))
-    , m_opacity(1)
-    , m_visibleWidth(0)
 {
     m_menuUpdateDebounceTimer = new QTimer(this);
     m_menuUpdateDebounceTimer->setInterval(100);
@@ -160,7 +152,7 @@ void AppMenuButtonGroup::reconfigure()
     auto internalSettings = m_decoration->internalSettings();
     setStyle(static_cast<AppMenuStyle>(internalSettings->integratedMenuStyle()));
 
-    if (!internalSettings->integratedSearchEnabled() && m_searchButton) {
+    if (!internalSettings->integratedMenuSearchEnabled() && m_searchButton) {
         removeButton(m_searchButton);
         m_searchButton->deleteLater();
         m_searchButton = nullptr;
@@ -175,127 +167,9 @@ void AppMenuButtonGroup::reconfigure()
     }
 }
 
-int AppMenuButtonGroup::currentIndex() const
-{
-    return m_currentIndex;
-}
-
-void AppMenuButtonGroup::setCurrentIndex(int set)
-{
-    if (m_currentIndex != set) {
-        m_currentIndex = set;
-        Q_EMIT currentIndexChanged();
-    }
-}
-
-bool AppMenuButtonGroup::overflowing() const
-{
-    return m_overflowing;
-}
-
-void AppMenuButtonGroup::setOverflowing(bool set)
-{
-    if (m_overflowing != set) {
-        m_overflowing = set;
-        Q_EMIT overflowingChanged();
-    }
-}
-
-bool AppMenuButtonGroup::hovered() const
-{
-    return m_hovered;
-}
-
-void AppMenuButtonGroup::setHovered(bool value)
-{
-    if (m_hovered != value) {
-        m_hovered = value;
-        Q_EMIT hoveredChanged(value);
-    }
-}
-
-bool AppMenuButtonGroup::showing() const
-{
-    return m_showing;
-}
-
-void AppMenuButtonGroup::setShowing(bool value)
-{
-    if (m_showing != value) {
-        m_showing = value;
-        Q_EMIT showingChanged(value);
-    }
-}
-
 bool AppMenuButtonGroup::alwaysShow() const
 {
     return m_style != AppMenuStyle::ReplaceTitleOnHover && m_style != AppMenuStyle::RevealOnHover;
-}
-
-bool AppMenuButtonGroup::animationEnabled() const
-{
-    return m_animationEnabled;
-}
-
-void AppMenuButtonGroup::setAnimationEnabled(bool value)
-{
-    if (m_animationEnabled != value) {
-        m_animationEnabled = value;
-        Q_EMIT animationEnabledChanged(value);
-    }
-}
-
-int AppMenuButtonGroup::animationDuration() const
-{
-    return m_animation->duration();
-}
-
-void AppMenuButtonGroup::setAnimationDuration(int value)
-{
-    if (m_animation->duration() != value) {
-        m_animation->setDuration(value);
-        Q_EMIT animationDurationChanged(value);
-    }
-}
-
-qreal AppMenuButtonGroup::opacity() const
-{
-    return m_opacity;
-}
-
-void AppMenuButtonGroup::setOpacity(qreal value)
-{
-    if (m_opacity != value) {
-        m_opacity = value;
-
-        for (auto &tb : std::as_const(m_textButtons)) {
-            if (tb)
-                tb->setOpacity(m_opacity);
-        }
-        if (m_overflowButton) {
-            m_overflowButton->setOpacity(m_opacity);
-        }
-        if (m_searchButton) {
-            m_searchButton->setOpacity(m_opacity);
-        }
-        if (m_style == AppMenuStyle::ReplaceTitleOnHover) {
-            m_decoration->setCaptionOpacity(1 - value);
-        }
-
-        Q_EMIT opacityChanged(value);
-    }
-}
-
-AppMenuStyle AppMenuButtonGroup::style() const
-{
-    return m_style;
-}
-void AppMenuButtonGroup::setStyle(AppMenuStyle value)
-{
-    if (m_style != value) {
-        m_style = value;
-        Q_EMIT styleChanged(value);
-    }
 }
 
 KDecoration3::DecorationButton *AppMenuButtonGroup::buttonAt(QPoint pos) const
@@ -490,7 +364,7 @@ void AppMenuButtonGroup::updateAppMenuModel()
         QPointer<QMenu> previousMenu = m_currentMenu;
 
         // Try in-place update if possible to reduce flicker and object churn
-        const bool searchEnabled = deco->internalSettings()->integratedSearchEnabled();
+        const bool searchEnabled = deco->internalSettings()->integratedMenuSearchEnabled();
         const bool searchStateMatches = (m_searchButton.isNull() == !searchEnabled);
 
         if (m_textButtons.count() == menuActionCount && !m_textButtons.isEmpty() && searchStateMatches) {
@@ -691,8 +565,6 @@ void AppMenuButtonGroup::updateAdjacencyFlags()
     }
     if (lastVisible)
         lastVisible->setRightmostVisible(true);
-    if (!firstVisible && m_overflowButton->isVisible())
-        firstVisible = m_overflowButton;
 }
 
 void AppMenuButtonGroup::updateGeometry()
@@ -735,7 +607,7 @@ void AppMenuButtonGroup::updateGeometry()
 
     for (auto *button : buttons()) {
         if (auto *textButton = qobject_cast<AppMenuTextButton *>(button)) {
-            textButton->setHorzPadding(internalSettings->menuButtonHorzPadding());
+            textButton->setHorizontalPadding(internalSettings->integratedMenuButtonHorizontalPadding());
             textButton->setButtonHeight(realButtonHeight);
             textButton->setVerticalContentOffset(contentOffset);
         } else if (auto *iconButton = qobject_cast<AppMenuIconButton *>(button)) {
@@ -754,7 +626,7 @@ void AppMenuButtonGroup::updateGeometry()
         setPos(availableRect.topLeft());
     }
 
-    setSpacing(internalSettings->menuButtonHorzMargin());
+    setSpacing(internalSettings->integratedMenuButtonHorizontalMargin());
 }
 
 qreal AppMenuButtonGroup::visibleWidth() const

@@ -100,8 +100,6 @@ public:
     //*@name locally integrated menu
     //@{
     void updateIntegratedMenu();
-    QFont menuFont() const;
-    qreal getMenuTextWidth(const QString &text, bool showMnemonic = false) const;
     qreal titleBarHeight() const;
     QPoint windowPos() const;
     bool isMenuOnRight() const;

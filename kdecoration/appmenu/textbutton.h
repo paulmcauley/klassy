@@ -40,18 +40,50 @@ public:
 
     void drawContent(QPainter *, QPointF) const override;
 
-    QAction *action() const;
-    void setAction(QAction *set);
+    void reconfigure() override;
 
-    QString text() const;
-    void setText(const QString &set);
-
-    void setHorzPadding(qreal value);
-    qreal horzPadding() const;
-
-    void setTextSize(const QSizeF &size)
+    void setAction(QAction *value)
     {
-        m_textSize = size;
+        if (m_action == value)
+            return;
+        m_action = value;
+        Q_EMIT actionChanged();
+    }
+    QAction *action() const
+    {
+        return m_action.data();
+    }
+
+    void setHorizontalPadding(qreal value)
+    {
+        if (qFuzzyCompare(m_horizontalPadding, value))
+            return;
+        m_horizontalPadding = value;
+        updateGeometry();
+    }
+    qreal horizontalPadding() const
+    {
+        return m_horizontalPadding;
+    }
+
+    void setText(const QString &value)
+    {
+        if (m_text == value)
+            return;
+        m_text = value;
+        Q_EMIT textChanged();
+        updateGeometry();
+    }
+    QString text() const
+    {
+        return m_text;
+    }
+
+    void setTextSize(const QSizeF &value)
+    {
+        if (m_textSize == value)
+            return;
+        m_textSize = value;
     }
     QSizeF textSize()
     {
@@ -64,12 +96,14 @@ signals:
 
 private:
     QSizeF getTextSize() const;
+    qreal getTextWidth(bool showMnemonic) const;
     void updateGeometry();
 
-    QPointer<QAction> m_action;
-    QString m_text;
-    qreal m_horzPadding = 0;
+    QPointer<QAction> m_action = nullptr;
+    QString m_text = QStringLiteral("Menu");
+    qreal m_horizontalPadding = 0;
     QSizeF m_textSize;
+    QFont m_font;
 };
 
 } // namespace Breeze
