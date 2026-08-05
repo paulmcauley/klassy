@@ -13,6 +13,9 @@
 #include "setqdebug_logging.h"
 #endif
 
+#include "appmenu/button.h"
+#include "appmenu/buttongroup.h"
+#include "appmenu/textbutton.h"
 #include "breezeboxshadowrenderer.h"
 #include "breezebutton.h"
 #include "breezesettingsprovider.h"
@@ -31,6 +34,7 @@
 #include <KPluginFactory>
 #include <KWindowSystem>
 
+#include <QApplication>
 #include <QDBusConnection>
 #include <QDBusMessage>
 #include <QDBusPendingCallWatcher>
@@ -288,7 +292,7 @@ bool Decoration::init()
 {
     auto c = window();
     reconfigureMain(true);
-    
+
     // active state change animation
     // It is important start and end value are of the same type, hence 0.0 and not just 0
     m_animation->setStartValue(0.0);
@@ -404,6 +408,7 @@ bool Decoration::init()
     connect(c, &KDecoration3::DecoratedWindow::nextScaleChanged, this, &Decoration::updateNextScale);
 
     createButtons();
+    setupIntegratedMenu();
     updateShadow();
     return true;
 }
@@ -625,6 +630,13 @@ void Decoration::reconfigureMain(const bool noUpdateShadow)
     // shadow
     if (!noUpdateShadow)
         this->updateShadow();
+
+    // menu buttons
+    if (m_integratedMenuButtons) {
+        m_integratedMenuButtons->setHamburgerMenu(m_internalSettings->hamburgerMenu());
+        m_integratedMenuButtons->updateAppMenuModel();
+        m_integratedMenuButtons->setAlwaysShow(m_internalSettings->menuAlwaysShow());
+    }
 
     Q_EMIT reconfigured();
 }
@@ -913,6 +925,64 @@ void Decoration::createButtons()
     m_leftButtons = new KDecoration3::DecorationButtonGroup(KDecoration3::DecorationButtonGroup::Position::Left, this, &Button::create);
     m_rightButtons = new KDecoration3::DecorationButtonGroup(KDecoration3::DecorationButtonGroup::Position::Right, this, &Button::create);
     updateButtonsGeometry();
+}
+
+//________________________________________________________________
+void Decoration::setupIntegratedMenu()
+{
+    auto repaintTitleBar = [this] {
+        update(titleBar());
+    };
+
+    m_integratedMenuButtons = new AppMenuButtonGroup(this);
+    connect(m_integratedMenuButtons, &AppMenuButtonGroup::menuUpdated, this, &Decoration::updateButtonsGeometry);
+    connect(m_integratedMenuButtons, &AppMenuButtonGroup::opacityChanged, this, repaintTitleBar);
+    connect(m_integratedMenuButtons, &AppMenuButtonGroup::alwaysShowChanged, this, repaintTitleBar);
+    m_integratedMenuButtons->updateAppMenuModel();
+    m_integratedMenuButtons->setHamburgerMenu(m_internalSettings->hamburgerMenu());
+}
+
+//________________________________________________________________
+QFont Decoration::menuFont() const
+{
+    return m_internalSettings->useSystemMenuFont() ? QApplication::font("QMenu") : settings()->font();
+}
+
+//________________________________________________________________
+qreal Decoration::getMenuTextWidth(const QString &text, bool showMnemonic) const
+{
+    const QFontMetricsF fontMetrics(menuFont());
+    const int flags = showMnemonic ? Qt::TextShowMnemonic : Qt::TextHideMnemonic;
+    const QRectF boundingRect = fontMetrics.boundingRect(QRectF(), flags, text);
+    const qreal scale = window()->nextScale();
+    return qCeil(boundingRect.width() * scale) / scale;
+}
+
+//________________________________________________________________
+qreal Decoration::titleBarHeight() const
+{
+    qreal scale = window()->nextScale();
+    qreal scaledTitleBarTopMargin, scaledTitleBarBottomMargin, scaledIntegratedRoundedRectangleBottomPadding;
+    scaledTitleBarTopBottomMargins(scale, scaledTitleBarTopMargin, scaledTitleBarBottomMargin, scaledIntegratedRoundedRectangleBottomPadding);
+    return captionHeight(true, scaledTitleBarTopMargin, scaledTitleBarBottomMargin);
+}
+
+//________________________________________________________________
+QPoint Decoration::windowPos() const
+{
+    if (KWindowSystem::isPlatformX11()) {
+        if (const auto *p = parent()) {
+            return p->property("clientGeometry").toRect().topLeft();
+        }
+    }
+    return QPoint(0, 0);
+}
+
+//________________________________________________________________
+bool Decoration::isMenuOnRight() const
+{
+    const auto buttonsRight = settings()->decorationButtonsRight();
+    return buttonsRight.contains(KDecoration3::DecorationButtonType::ApplicationMenu);
 }
 
 //________________________________________________________________
@@ -1292,6 +1362,44 @@ void Decoration::updateButtonsGeometry()
         }
     }
 
+    // menu buttons
+    if (m_integratedMenuButtons) {
+        m_integratedMenuButtons->updateShowing();
+
+        if (!m_integratedMenuButtons->buttons().isEmpty()) {
+            qreal scale = window()->nextScale();
+            qreal scaledTitleBarTopMargin, scaledTitleBarBottomMargin, scaledIntegratedRoundedRectangleBottomPadding;
+            scaledTitleBarTopBottomMargins(scale, scaledTitleBarTopMargin, scaledTitleBarBottomMargin, scaledIntegratedRoundedRectangleBottomPadding);
+
+            const qreal topOffset = isTopEdge() ? 0 : scaledTitleBarTopMargin;
+
+            const qreal leftOffset = m_leftButtons->geometry().right();
+            const qreal rightOffset = m_rightButtons->geometry().width();
+
+            QRectF availableRect(leftOffset, topOffset, size().width() - leftOffset - rightOffset, titleBarHeight());
+
+            for (auto *button : m_integratedMenuButtons->buttons()) {
+                if (auto *appMenuButton = qobject_cast<AppMenuButton *>(button)) {
+                    appMenuButton->setHeight(titleBarHeight());
+                }
+                if (auto *textButton = qobject_cast<AppMenuTextButton *>(button)) {
+                    textButton->setHorzPadding(m_internalSettings->menuButtonHorzPadding());
+                }
+            }
+
+            m_integratedMenuButtons->updateOverflow(availableRect);
+
+            if (isMenuOnRight()) {
+                const QPointF topRight = availableRect.topRight();
+                m_integratedMenuButtons->setPos(QPointF(topRight.x() - m_integratedMenuButtons->visibleWidth(), topRight.y()));
+            } else {
+                m_integratedMenuButtons->setPos(availableRect.topLeft());
+            }
+
+            m_integratedMenuButtons->setSpacing(0);
+        }
+    }
+
     update();
 }
 
@@ -1517,6 +1625,9 @@ void Decoration::paintTitleBar(QPainter *painter, const QRectF &repaintRegion)
     painter->setPen(fontColor);
     m_leftButtons->paint(painter, repaintRegion);
     m_rightButtons->paint(painter, repaintRegion);
+    if (m_integratedMenuButtons) {
+        m_integratedMenuButtons->paint(painter, repaintRegion);
+    }
 }
 
 // outputs the icon size + padding to make a small button, the actual icon size, and the background size to make a small button
@@ -1635,8 +1746,17 @@ QPair<QRectF, Qt::Alignment> Decoration::captionRect(bool nextState) const
 
         qreal padding = KDecoration3::snapToPixelGrid(m_internalSettings->titleSidePadding() * m_x11Scale, scale);
 
-        const qreal leftOffset = m_leftButtons->buttons().isEmpty() ? padding : m_leftButtons->geometry().x() + m_leftButtons->geometry().width() + padding;
-        const qreal rightOffset = m_rightButtons->buttons().isEmpty() ? padding : size().width() - m_rightButtons->geometry().x() + padding;
+        qreal leftOffset = m_leftButtons->buttons().isEmpty() ? padding : m_leftButtons->geometry().x() + m_leftButtons->geometry().width() + padding;
+        qreal rightOffset = m_rightButtons->buttons().isEmpty() ? padding : size().width() - m_rightButtons->geometry().x() + padding;
+
+        if (m_integratedMenuButtons && !m_integratedMenuButtons->buttons().isEmpty() && m_integratedMenuButtons->alwaysShow()) {
+            const qreal menuWidth = m_integratedMenuButtons->visibleWidth() + padding;
+            if (isMenuOnRight()) {
+                rightOffset += menuWidth;
+            } else {
+                leftOffset += menuWidth;
+            }
+        }
 
         const qreal yOffset = scaledTitleBarTopMargin;
         const QRectF maxRect(leftOffset, yOffset, size().width() - leftOffset - rightOffset, captionHeight);
@@ -2068,6 +2188,17 @@ void Decoration::hoverMoveEvent(QHoverEvent *event)
         setButtonUnisonHovered(groupContains);
     }
 
+    // update menu button hover state based on titlebar hover
+    if (m_integratedMenuButtons) {
+        const bool titleBarHovered = titleBar().contains(event->position());
+        m_integratedMenuButtons->setHovered(titleBarHovered);
+        m_integratedMenuButtons->updateShowing();
+    }
+
+    if (m_integratedMenuButtons && m_integratedMenuButtons->geometry().contains(event->position())) {
+        m_integratedMenuButtons->handleHoverMove(event->position());
+    }
+
     KDecoration3::Decoration::hoverMoveEvent(event);
 }
 
@@ -2075,6 +2206,10 @@ void Decoration::hoverLeaveEvent(QHoverEvent *event)
 {
     if (m_internalSettings->unisonHovering()) {
         setButtonUnisonHovered(false);
+    }
+    if (m_integratedMenuButtons) {
+        m_integratedMenuButtons->setHovered(false);
+        m_integratedMenuButtons->updateShowing();
     }
     KDecoration3::Decoration::hoverLeaveEvent(event);
 }

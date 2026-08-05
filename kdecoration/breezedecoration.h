@@ -93,6 +93,17 @@ public:
     QColor overriddenOutlineColorAnimateIn() const;
     QColor overriddenOutlineColorAnimateOut(const QColor &destinationColor);
     //@}
+
+    //*@name locally integrated menu
+    //@{
+    void setupIntegratedMenu();
+    QFont menuFont() const;
+    qreal getMenuTextWidth(const QString &text, bool showMnemonic = false) const;
+    qreal titleBarHeight() const;
+    QPoint windowPos() const;
+    bool isMenuOnRight() const;
+    //@}
+
     //
     //*@name maximization modes
     //@{
@@ -269,6 +280,7 @@ private:
     InternalSettingsPtr m_internalSettings;
     KDecoration3::DecorationButtonGroup *m_leftButtons = nullptr;
     KDecoration3::DecorationButtonGroup *m_rightButtons = nullptr;
+    class AppMenuButtonGroup *m_integratedMenuButtons = nullptr;
 
     TaskManagerType m_taskManagerType = TaskManagerType::IconsAndTextTaskManager;
     Side m_taskManagerSide = SideBottom;
