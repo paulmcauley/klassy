@@ -67,6 +67,11 @@ public:
 
     //* caption height
     qreal captionHeight(const bool nextState, qreal scaledTitleBarTopMargin, qreal scaledTitleBarBottomMargin) const;
+    void setCaptionOpacity(qreal);
+    qreal captionOpacity() const
+    {
+        return m_captionOpacity;
+    }
 
     //*@name active state change animation
     //@{
@@ -76,7 +81,6 @@ public:
     {
         return m_opacity;
     }
-
     //@}
 
     //*@name colors
@@ -299,6 +303,8 @@ private:
     qreal m_shadowOpacity = 0;
     //* overridden thin window outline change animation progress
     qreal m_overrideOutlineAnimationProgress = 0;
+    //* titlebar caption opacity
+    qreal m_captionOpacity = 1;
 
     //* frame corner radius, scaled according to smallspacing
     qreal m_scaledCornerRadius = 3.0;
