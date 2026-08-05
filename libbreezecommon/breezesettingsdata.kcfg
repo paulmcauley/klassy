@@ -161,8 +161,15 @@
 
     <!-- ______________________________MENU______________________________ -->
 
-    <entry name="MenuAlwaysShow" type = "Bool">
-        <default>true</default>
+    <entry name="IntegratedMenuStyle" type="Enum">
+        <choices>
+            <choice name="Always" />
+            <choice name="RevealOnHover" />
+            <choice name="ReplaceTitleOnHover" />
+            <choice name="SearchOnly" />
+            <choice name="Disabled" />
+        </choices>
+        <default>Always</default>
     </entry>
 
     <entry name="IntegratedSearchEnabled" type="Bool">
