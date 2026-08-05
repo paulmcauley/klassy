@@ -1510,4 +1510,34 @@ void RenderDecorationButtonIcon18By18::renderExcludeFromCaptureIcon()
     }
     m_painter->drawPath(path);
 }
+
+void RenderDecorationButtonIcon18By18::renderIntegratedMenuOverflowIcon()
+{
+    renderApplicationMenuIcon();
+}
+
+void RenderDecorationButtonIcon18By18::renderIntegratedMenuSearchIcon()
+{
+    QPen pen = m_painter->pen();
+    if ((!m_fromKstyle) && m_boldButtonIcons) {
+        // thicker pen in titlebar
+        pen.setWidthF(pen.widthF() * 1.6);
+    }
+
+    pen.setJoinStyle(Qt::RoundJoin);
+    m_painter->setPen(pen);
+
+    const qreal circleRadius = 4.0;
+
+    const QPointF circleCenter = QPointF(7.5, 7.5);
+    m_painter->drawEllipse(circleCenter, circleRadius, circleRadius);
+
+    const qreal handleLength = 5.0;
+    const qreal sqrt2 = qSqrt(2);
+    const qreal handleAttachOffset = circleRadius / sqrt2;
+    const QPointF handleStart = circleCenter + QPointF(handleAttachOffset, handleAttachOffset);
+    const qreal handleEndOffset = (circleRadius + handleLength) / sqrt2;
+    const QPointF handleEnd = circleCenter + QPointF(handleEndOffset, handleEndOffset);
+    m_painter->drawLine(handleStart, handleEnd);
+}
 }

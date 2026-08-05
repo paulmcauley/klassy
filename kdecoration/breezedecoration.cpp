@@ -429,7 +429,6 @@ bool Decoration::init()
     connect(c, &KDecoration3::DecoratedWindow::nextScaleChanged, this, &Decoration::updateNextScale);
 
     createButtons();
-    setupIntegratedMenu();
     updateShadow();
     return true;
 }
@@ -653,11 +652,8 @@ void Decoration::reconfigureMain(const bool noUpdateShadow)
         this->updateShadow();
 
     // menu buttons
-    if (m_integratedMenuButtons) {
-        m_integratedMenuButtons->setHamburgerMenu(m_internalSettings->hamburgerMenu());
-        m_integratedMenuButtons->updateAppMenuModel();
-        m_integratedMenuButtons->setAlwaysShow(m_internalSettings->menuAlwaysShow());
-    }
+    if (m_integratedMenuButtons)
+        m_integratedMenuButtons->reconfigure();
 
     Q_EMIT reconfigured();
 }
@@ -941,11 +937,12 @@ void Decoration::createButtons()
 {
     m_leftButtons = new KDecoration3::DecorationButtonGroup(KDecoration3::DecorationButtonGroup::Position::Left, this, &Button::create);
     m_rightButtons = new KDecoration3::DecorationButtonGroup(KDecoration3::DecorationButtonGroup::Position::Right, this, &Button::create);
+    createIntegratedMenu();
     updateButtonsGeometry();
 }
 
 //________________________________________________________________
-void Decoration::setupIntegratedMenu()
+void Decoration::createIntegratedMenu()
 {
     auto repaintTitleBar = [this] {
         update(titleBar());
@@ -956,7 +953,7 @@ void Decoration::setupIntegratedMenu()
     connect(m_integratedMenuButtons, &AppMenuButtonGroup::opacityChanged, this, repaintTitleBar);
     connect(m_integratedMenuButtons, &AppMenuButtonGroup::styleChanged, this, repaintTitleBar);
     m_integratedMenuButtons->updateAppMenuModel();
-    m_integratedMenuButtons->setHamburgerMenu(m_internalSettings->hamburgerMenu());
+    m_integratedMenuButtons->reconfigure();
 }
 
 //________________________________________________________________
