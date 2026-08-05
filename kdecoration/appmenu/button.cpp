@@ -20,7 +20,9 @@
 
 #include "appmenu/button.h"
 #include "appmenu/buttongroup.h"
+#include "breeze.h"
 #include "breezedecoration.h"
+#include "geometrytools.h"
 
 #include <KColorUtils>
 #include <KDecoration3/DecoratedWindow>
@@ -109,7 +111,7 @@ void AppMenuButton::paint(QPainter *painter, const QRectF &repaintRegion)
     if (background.isValid() || outline.isValid()) {
         setDevicePixelRatio(painter);
 
-        const QRectF iconRect(QPointF(0, 0), geometry().size());
+        const QRectF contentRect(QPointF(0, m_verticalContentOffset), geometry().size() - QSizeF(0, m_verticalContentOffset));
 
         if (outline.isValid()) {
             QPen pen(outline);
@@ -123,15 +125,74 @@ void AppMenuButton::paint(QPainter *painter, const QRectF &repaintRegion)
         else
             painter->setBrush(Qt::NoBrush);
 
-        qreal geometryShrinkOffset = PenWidth::Symbol * 1.5;
-        painter->drawRect(iconRect.adjusted(geometryShrinkOffset, geometryShrinkOffset, -geometryShrinkOffset, -geometryShrinkOffset));
+        qreal cornerRadius = 0;
+        if (m_d->internalSettings()->buttonCornerRadius() == InternalSettings::EnumButtonCornerRadius::Custom) {
+            cornerRadius = m_d->internalSettings()->buttonCustomCornerRadius() * m_d->x11Scale();
+        } else {
+            cornerRadius = m_d->scaledCornerRadius();
+        }
+        if (cornerRadius < 0.1) {
+            cornerRadius = 0;
+        }
+
+        const qreal geometryShrinkOffset = PenWidth::Symbol * 1.5 * m_devicePixelRatio;
+        const qreal geometryEnlargeOffset = outline.isValid() ? painter->pen().widthF() / 2 : 0;
+
+        const auto buttonShape = m_d->internalSettings()->integratedMenuButtonShape();
+        QRectF backgroundRect = contentRect;
+        if (AppMenuButton::isShapeFullHeight(buttonShape)) {
+            backgroundRect = backgroundRect.adjusted(0, -m_verticalContentOffset, 0, 0);
+        }
+        if (buttonShape == InternalSettings::EnumIntegratedMenuButtonShape::IntegratedRoundedRectangle
+            || buttonShape == InternalSettings::EnumIntegratedMenuButtonShape::IntegratedRoundedRectangleGrouped) {
+            backgroundRect = backgroundRect.adjusted(geometryShrinkOffset, -geometryShrinkOffset, -geometryShrinkOffset, -geometryShrinkOffset);
+        } else {
+            backgroundRect = backgroundRect.adjusted(geometryShrinkOffset, geometryShrinkOffset, -geometryShrinkOffset, -geometryShrinkOffset);
+        }
+        backgroundRect = backgroundRect.adjusted(-geometryEnlargeOffset, -geometryEnlargeOffset, geometryEnlargeOffset * 2, geometryEnlargeOffset * 2);
+        backgroundRect = KDecoration3::snapToPixelGrid(backgroundRect, m_devicePixelRatio);
+
+        if (buttonShape == InternalSettings::EnumIntegratedMenuButtonShape::Rectangle) {
+            painter->drawRect(backgroundRect);
+        } else {
+            Corners corners = Corners();
+            if (buttonShape == InternalSettings::EnumIntegratedMenuButtonShape::RoundedRectangle
+                || buttonShape == InternalSettings::EnumIntegratedMenuButtonShape::FullHeightRoundedRectangle) {
+                corners = AllCorners;
+            } else if (buttonShape == InternalSettings::EnumIntegratedMenuButtonShape::IntegratedRoundedRectangle) {
+                corners = CornerBottomLeft | CornerBottomRight;
+            } else if (buttonShape == InternalSettings::EnumIntegratedMenuButtonShape::RoundedRectangleGrouped
+                       || buttonShape == InternalSettings::EnumIntegratedMenuButtonShape::FullHeightRoundedRectangleGrouped) {
+                if (m_leftmostVisible) {
+                    corners |= CornerTopLeft | CornerBottomLeft;
+                }
+                if (m_rightmostVisible) {
+                    corners |= CornerTopRight | CornerBottomRight;
+                }
+            } else if (buttonShape == InternalSettings::EnumIntegratedMenuButtonShape::IntegratedRoundedRectangleGrouped) {
+                if (m_leftmostVisible) {
+                    corners |= CornerBottomLeft;
+                }
+                if (m_rightmostVisible) {
+                    corners |= CornerBottomRight;
+                }
+            }
+
+            QPainterPath background;
+            if (!corners) {
+                background.addRect(backgroundRect);
+            } else {
+                background = GeometryTools::roundedPath(backgroundRect, corners, cornerRadius);
+            }
+            painter->drawPath(background);
+        }
     }
 
     // Calculate device offset for icon drawing
     QPointF deviceOffsetDecorationTopLeftToIconTopLeft;
     QPointF topLeftButtonDeviceGeometry = painter->deviceTransform().map(geometry().topLeft());
     QPointF decorationTopLeftDeviceGeometry = painter->deviceTransform().map(QRectF(m_d->rect()).topLeft());
-    deviceOffsetDecorationTopLeftToIconTopLeft = topLeftButtonDeviceGeometry - decorationTopLeftDeviceGeometry;
+    deviceOffsetDecorationTopLeftToIconTopLeft = topLeftButtonDeviceGeometry - decorationTopLeftDeviceGeometry - QPointF(0, m_verticalContentOffset);
     painter->setOpacity(m_opacity);
     drawContent(painter, deviceOffsetDecorationTopLeftToIconTopLeft);
 
@@ -211,12 +272,6 @@ void AppMenuButton::setDevicePixelRatio(QPainter *painter)
         m_devicePixelRatio = m_d->systemScaleFactorX11();
     else
         m_devicePixelRatio = painter->device()->devicePixelRatioF();
-}
-
-void AppMenuButton::setHeight(qreal buttonHeight)
-{
-    const QSizeF size(buttonHeight * 1.1, buttonHeight);
-    setGeometry(QRectF(geometry().topLeft(), size));
 }
 
 void AppMenuButton::trigger()
