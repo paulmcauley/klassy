@@ -1591,6 +1591,359 @@
          </item>
         </layout>
        </widget>
+       <widget class="QWidget" name="tab_integratedmenu">
+        <attribute name="title">
+         <string>&amp;Integrated Menu</string>
+        </attribute>
+        <layout class="QVBoxLayout" name="verticalLayout_integratedmenu">
+         <property name="topMargin">
+          <number>6</number>
+         </property>
+         <item>
+          <spacer name="verticalSpacer_integratedmenu_top">
+           <property name="orientation">
+            <enum>Qt::Orientation::Vertical</enum>
+           </property>
+           <property name="sizeType">
+            <enum>QSizePolicy::Policy::Fixed</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>10</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QLabel" name="integratedMenuCanNotBeEnabledLabel">
+           <property name="text">
+            <string>Integrated menu requires an application menu button be configured in the window decorations.</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QGroupBox" name="integratedMenuBox">
+           <property name="title">
+            <string>Integrated Menu</string>
+           </property>
+           <property name="checkable">
+            <bool>true</bool>
+           </property>
+           <layout class="QFormLayout" name="formLayout_integratedmenu">
+            <property name="leftMargin">
+             <number>12</number>
+            </property>
+            <property name="topMargin">
+             <number>12</number>
+            </property>
+            <property name="rightMargin">
+             <number>12</number>
+            </property>
+            <property name="bottomMargin">
+             <number>12</number>
+            </property>
+            <item row="0" column="0">
+             <widget class="QLabel" name="integratedMenuStyleLabel">
+              <property name="text">
+               <string>Style:</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
+              </property>
+              <property name="buddy">
+               <cstring>integratedMenuStyle</cstring>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QComboBox" name="integratedMenuStyle">
+              <item>
+               <property name="text">
+                <string>Always</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Reveal on hover</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Replace title on hover</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Search only</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+            <item row="4" column="1">
+             <widget class="QCheckBox" name="integratedMenuReplacesMenuButton">
+              <property name="text">
+               <string>Replace application menu button</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
+          <widget class="QGroupBox" name="integratedMenuButtonsBox">
+           <property name="title">
+            <string>Menu Buttons</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
+           </property>
+           <layout class="QFormLayout" name="formLayout_2">
+            <property name="labelAlignment">
+             <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
+            </property>
+            <item row="3" column="0">
+             <widget class="QLabel" name="menuButtonHorzMarginLabel">
+              <property name="text">
+               <string>Horizontal margin:</string>
+              </property>
+              <property name="buddy">
+               <cstring>menuButtonHorzMargin</cstring>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="1">
+             <widget class="QDoubleSpinBox" name="menuButtonHorzMargin">
+              <property name="decimals">
+               <number>2</number>
+              </property>
+              <property name="minimum">
+               <double>0.000000000000000</double>
+              </property>
+              <property name="maximum">
+               <double>20.000000000000000</double>
+              </property>
+              <property name="singleStep">
+               <double>0.100000000000000</double>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="1">
+             <widget class="QDoubleSpinBox" name="menuButtonHorzPadding">
+              <property name="decimals">
+               <number>2</number>
+              </property>
+              <property name="minimum">
+               <double>0.000000000000000</double>
+              </property>
+              <property name="maximum">
+               <double>20.000000000000000</double>
+              </property>
+              <property name="singleStep">
+               <double>0.100000000000000</double>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="0">
+             <widget class="QLabel" name="menuButtonHorzPaddingLabel">
+              <property name="text">
+               <string>Horizontal padding:</string>
+              </property>
+              <property name="buddy">
+               <cstring>menuButtonHorzPadding</cstring>
+              </property>
+             </widget>
+            </item>
+            <item row="7" column="1">
+             <widget class="QCheckBox" name="useTitleColorForIntegratedMenus">
+              <property name="text">
+               <string>Use title color for text</string>
+              </property>
+             </widget>
+            </item>
+            <item row="8" column="1">
+             <widget class="QCheckBox" name="useSystemMenuFont">
+              <property name="text">
+               <string>Use system menu font</string>
+              </property>
+             </widget>
+            </item>
+            <item row="9" column="1">
+             <widget class="QCheckBox" name="dragFromIntegratedMenuEnabled">
+              <property name="text">
+               <string>Allow dragging window</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="0">
+             <widget class="QLabel" name="integratedMenuButtonShapeLabel">
+              <property name="text">
+               <string>Shape:</string>
+              </property>
+              <property name="buddy">
+               <cstring>integratedMenuButtonShape</cstring>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="1">
+             <widget class="QComboBox" name="integratedMenuButtonShape">
+              <item>
+               <property name="text">
+                <string>Full Height Rectangle</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Full Height Rounded Rectangle</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Full Height Rounded Rectangle, grouped</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Integrated Rounded Rectangle</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Integrated Rounded Rectangle, grouped</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Rectangle</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Rounded Rectangle</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Rounded Rectangle, grouped</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_3">
+           <item>
+            <widget class="QGroupBox" name="integratedMenuMenuBox">
+             <property name="title">
+              <string>Menu</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
+             </property>
+             <layout class="QVBoxLayout" name="verticalLayout_4">
+              <item>
+               <widget class="QCheckBox" name="integratedMenuMenuEnableBlur">
+                <property name="text">
+                 <string>Enable Blur</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="verticalSpacer_9">
+                <property name="orientation">
+                 <enum>Qt::Orientation::Vertical</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>40</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <widget class="QGroupBox" name="integratedMenuSearchBox">
+             <property name="title">
+              <string>Integrated Search</string>
+             </property>
+             <property name="checkable">
+              <bool>true</bool>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+             <layout class="QVBoxLayout" name="verticalLayout_integratedSearch">
+              <property name="leftMargin">
+               <number>6</number>
+              </property>
+              <property name="topMargin">
+               <number>6</number>
+              </property>
+              <property name="rightMargin">
+               <number>6</number>
+              </property>
+              <property name="bottomMargin">
+               <number>6</number>
+              </property>
+              <item>
+               <widget class="QCheckBox" name="integratedSearchShowDisabledActions">
+                <property name="text">
+                 <string>Show disabled actions</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QCheckBox" name="integratedSearchIgnoreSubMenus">
+                <property name="text">
+                 <string>Ignores sub-menus</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QCheckBox" name="integratedSearchIgnoreTopLevel">
+                <property name="text">
+                 <string>Ignores top-level items</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="verticalSpacer_10">
+                <property name="orientation">
+                 <enum>Qt::Orientation::Vertical</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>40</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <spacer name="verticalSpacer_integratedmenu_bottom">
+           <property name="orientation">
+            <enum>Qt::Orientation::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </widget>
        <widget class="QWidget" name="tab_overrides">
         <attribute name="title">
          <string>Window-Specific Overrides</string>
@@ -1777,6 +2130,54 @@
     <hint type="destinationlabel">
      <x>102</x>
      <y>287</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>integratedMenuBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>integratedMenuButtonsBox</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>363</x>
+     <y>161</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>363</x>
+     <y>347</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>integratedMenuBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>integratedMenuMenuBox</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>363</x>
+     <y>161</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>191</x>
+     <y>525</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>integratedMenuBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>integratedMenuSearchBox</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>363</x>
+     <y>161</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>535</x>
+     <y>525</y>
     </hint>
    </hints>
   </connection>
