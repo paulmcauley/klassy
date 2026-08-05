@@ -33,43 +33,39 @@ AppMenuIconButton::AppMenuIconButton(const DecorationButtonType type, Decoration
     : AppMenuButton(type, decoration, buttonIndex, parent)
 {
     reconfigure();
+    connect(this, &AppMenuButton::buttonHeightChanged, this, &AppMenuIconButton::updateGeometry);
+    updateGeometry();
 }
 
 AppMenuIconButton::~AppMenuIconButton() = default;
 
-void AppMenuIconButton::setHeight(qreal buttonHeight)
+void AppMenuIconButton::updateGeometry()
 {
-    Q_UNUSED(buttonHeight)
-
     if (!m_d) {
         return;
     }
 
     const qreal paddedSize = m_d->smallButtonPaddedSize();
-    const qreal iconSz = m_d->iconSize();
-
-    setGeometry(QRectF(geometry().topLeft(), QSizeF(paddedSize, paddedSize)));
-    setSmallButtonPaddedSize(QSizeF(paddedSize, paddedSize));
-    setIconSize(QSizeF(iconSz, iconSz));
-    setBackgroundVisibleSize(QSizeF(paddedSize, paddedSize));
+    setGeometry(QRectF(geometry().topLeft(), QSizeF(paddedSize, buttonHeight())));
+    setSmallButtonPaddedWidth(paddedSize);
+    setIconWidth(m_d->iconSize());
+    setBackgroundVisibleSize(QSizeF(paddedSize, buttonHeight()));
 }
 
 void AppMenuIconButton::drawContent(QPainter *painter, QPointF deviceOffsetDecorationTopLeftToIconTopLeft) const
 {
     if (!m_d) {
         return;
-    }
+    };
 
-    const qreal smallButtonPaddedWidth(m_smallButtonPaddedSize.width());
-    const qreal iconWidth(m_iconSize.width());
-
-    if (iconWidth <= 0 || smallButtonPaddedWidth <= 0) {
+    if (iconWidth() <= 0 || smallButtonPaddedWidth() <= 0) {
         return;
     }
 
     // Center icon in button
-    qreal iconTranslationOffset = (smallButtonPaddedWidth - iconWidth) / 2;
-    painter->translate(this->geometry().topLeft() - deviceOffsetDecorationTopLeftToIconTopLeft + QPointF(iconTranslationOffset, iconTranslationOffset));
+    qreal iconTranslationOffset = (smallButtonPaddedWidth() - iconWidth()) / 2;
+    painter->translate(this->geometry().topLeft() - deviceOffsetDecorationTopLeftToIconTopLeft + QPointF(iconTranslationOffset, iconTranslationOffset)
+                       + iconOffset());
     deviceOffsetDecorationTopLeftToIconTopLeft += QPointF(iconTranslationOffset, iconTranslationOffset) * painter->device()->devicePixelRatioF();
 
     // Setup pen for icon drawing
@@ -87,7 +83,7 @@ void AppMenuIconButton::drawContent(QPainter *painter, QPointF deviceOffsetDecor
         QString systemIconName;
         systemIconName = isChecked() ? m_systemIconCheckedName : m_systemIconName;
         SystemIconTheme iconRenderer(painter,
-                                     iconWidth,
+                                     iconWidth(),
                                      systemIconName,
                                      m_d->internalSettings(),
                                      m_d->internalSettings()->forceColorizeSystemIcons() ? QPalette() : c->palette());
@@ -106,7 +102,7 @@ void AppMenuIconButton::drawContent(QPainter *painter, QPointF deviceOffsetDecor
                                                                                        deviceOffsetDecorationTopLeftToIconTopLeft,
                                                                                        forceEvenSquares);
 
-        qreal scaleFactor = iconWidth / localRenderingWidth;
+        qreal scaleFactor = iconWidth() / localRenderingWidth;
         /*
         scale painter so that all further rendering is preformed inside QRect( 0, 0, localRenderingWidth, localRenderingWidth )
         */

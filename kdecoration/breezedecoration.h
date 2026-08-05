@@ -225,6 +225,12 @@ public:
         return m_buttonUnisonHovered;
     }
 
+    void scaledTitleBarTopBottomMargins(qreal scale,
+                                        qreal &scaledTitleBarTopMargin,
+                                        qreal &scaledTitleBarBottomMargin,
+                                        qreal &scaledIntegratedRoundedRectangleBottomPadding) const;
+    qreal titleBarSeparatorHeight(qreal scale) const;
+
 Q_SIGNALS:
     void reconfigured();
     void buttonUnisonHoveredChanged(bool); // for unison hovering
