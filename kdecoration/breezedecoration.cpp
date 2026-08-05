@@ -385,6 +385,7 @@ bool Decoration::init()
 #if KDECORATION_VERSION >= KDECORATION_VERSION_CHECK(6, 7, 0) // workaround for strange linking error on Plasma 6.6.2
     connect(c, &KDecoration3::DecoratedWindow::excludeFromCaptureChanged, this, &Decoration::updateButtonsGeometryDelayed);
 #endif
+    connect(c, &KDecoration3::DecoratedWindow::hasApplicationMenuChanged, this, &Decoration::updateButtonsGeometryDelayed);
 
     // full reconfiguration
     connect(s.get(), &KDecoration3::DecorationSettings::reconfigured, this, &Decoration::reconfigure);
@@ -650,10 +651,6 @@ void Decoration::reconfigureMain(const bool noUpdateShadow)
     // shadow
     if (!noUpdateShadow)
         this->updateShadow();
-
-    // menu buttons
-    if (m_integratedMenuButtons)
-        m_integratedMenuButtons->reconfigure();
 
     Q_EMIT reconfigured();
 }
@@ -937,23 +934,30 @@ void Decoration::createButtons()
 {
     m_leftButtons = new KDecoration3::DecorationButtonGroup(KDecoration3::DecorationButtonGroup::Position::Left, this, &Button::create);
     m_rightButtons = new KDecoration3::DecorationButtonGroup(KDecoration3::DecorationButtonGroup::Position::Right, this, &Button::create);
-    createIntegratedMenu();
     updateButtonsGeometry();
 }
 
 //________________________________________________________________
-void Decoration::createIntegratedMenu()
+void Decoration::updateIntegratedMenu()
 {
-    auto repaintTitleBar = [this] {
-        update(titleBar());
-    };
+    // menu buttons
+    if (window()->hasApplicationMenu() && !m_integratedMenuButtons) {
+        auto repaintTitleBar = [this] {
+            update(titleBar());
+        };
 
-    m_integratedMenuButtons = new AppMenuButtonGroup(this);
-    connect(m_integratedMenuButtons, &AppMenuButtonGroup::menuUpdated, this, &Decoration::updateButtonsGeometry);
-    connect(m_integratedMenuButtons, &AppMenuButtonGroup::opacityChanged, this, repaintTitleBar);
-    connect(m_integratedMenuButtons, &AppMenuButtonGroup::styleChanged, this, repaintTitleBar);
-    m_integratedMenuButtons->updateAppMenuModel();
-    m_integratedMenuButtons->reconfigure();
+        m_integratedMenuButtons = new AppMenuButtonGroup(this);
+        connect(m_integratedMenuButtons, &AppMenuButtonGroup::menuUpdated, this, &Decoration::updateButtonsGeometry);
+        connect(m_integratedMenuButtons, &AppMenuButtonGroup::opacityChanged, this, repaintTitleBar);
+        connect(m_integratedMenuButtons, &AppMenuButtonGroup::styleChanged, this, repaintTitleBar);
+        m_integratedMenuButtons->updateAppMenuModel();
+    } else if (!window()->hasApplicationMenu() && m_integratedMenuButtons) {
+        m_integratedMenuButtons->deleteLater();
+        m_integratedMenuButtons = nullptr;
+        setCaptionOpacity(1);
+    }
+    if (m_integratedMenuButtons)
+        m_integratedMenuButtons->reconfigure();
 }
 
 //________________________________________________________________
@@ -1379,6 +1383,7 @@ void Decoration::updateButtonsGeometry()
     }
 
     // menu buttons
+    updateIntegratedMenu();
     if (m_integratedMenuButtons) {
         m_integratedMenuButtons->updateShowing();
 
