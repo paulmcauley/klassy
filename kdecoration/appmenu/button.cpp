@@ -188,13 +188,9 @@ void AppMenuButton::paint(QPainter *painter, const QRectF &repaintRegion)
         }
     }
 
-    // Calculate device offset for icon drawing
-    QPointF deviceOffsetDecorationTopLeftToIconTopLeft;
-    QPointF topLeftButtonDeviceGeometry = painter->deviceTransform().map(geometry().topLeft());
-    QPointF decorationTopLeftDeviceGeometry = painter->deviceTransform().map(QRectF(m_d->rect()).topLeft());
-    deviceOffsetDecorationTopLeftToIconTopLeft = topLeftButtonDeviceGeometry - decorationTopLeftDeviceGeometry - QPointF(0, m_verticalContentOffset);
+    const QPointF offsetDecorationTopLeftToIconTopLeft = geometry().topLeft() - QPointF(0, m_verticalContentOffset);
     painter->setOpacity(m_opacity);
-    drawContent(painter, deviceOffsetDecorationTopLeftToIconTopLeft);
+    drawContent(painter, offsetDecorationTopLeftToIconTopLeft);
 
     painter->restore();
 }
