@@ -186,12 +186,12 @@
         <default>false</default>
     </entry>
 
-    <entry name="MenuButtonHorzPadding" type="Int">
-        <default>4</default>
+    <entry name="MenuButtonHorzPadding" type="Double">
+        <default>4.0</default>
     </entry>
 
-    <entry name="MenuButtonHorzMargin" type="Int">
-        <default>0</default>
+    <entry name="MenuButtonHorzMargin" type="Double">
+        <default>0.0</default>
     </entry>
 
     <entry name="UseSystemMenuFont" type="Bool">
@@ -204,6 +204,20 @@
 
     <entry name="UseTitleColorForIntegratedMenus" type="Bool">
         <default>true</default>
+    </entry>
+
+    <entry name="IntegratedMenuButtonShape" type="Enum">
+        <choices>
+            <choice name="FullHeightRectangle" />
+            <choice name="FullHeightRoundedRectangle" />
+            <choice name="FullHeightRoundedRectangleGrouped" />
+            <choice name="IntegratedRoundedRectangle" />
+            <choice name="IntegratedRoundedRectangleGrouped" />
+            <choice name="Rectangle" />
+            <choice name="RoundedRectangle" />
+            <choice name="RoundedRectangleGrouped" />
+        </choices>
+        <default>RoundedRectangle</default>
     </entry>
 
   </group>
