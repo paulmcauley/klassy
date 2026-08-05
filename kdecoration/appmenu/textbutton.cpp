@@ -31,6 +31,7 @@ AppMenuTextButton::AppMenuTextButton(Decoration *decoration, const int buttonInd
     , m_text(QStringLiteral("Menu"))
 {
     setVisible(true);
+    connect(this, &AppMenuButton::buttonHeightChanged, this, &AppMenuTextButton::updateGeometry);
     updateGeometry();
 }
 
@@ -54,7 +55,8 @@ void AppMenuTextButton::drawContent(QPainter *painter, QPointF point) const
     // const bool isAltPressed = (QGuiApplication::keyboardModifiers() & Qt::AltModifier) != 0;
     const bool isAltPressed = false;
     const Qt::TextFlag mnemonicFlag = isAltPressed ? Qt::TextShowMnemonic : Qt::TextHideMnemonic;
-    painter->drawText(QRectF(geometry().topLeft() - point, geometry().size()), mnemonicFlag | Qt::AlignCenter | Qt::TextSingleLine, m_text);
+    const QSizeF contentSize(geometry().width(), geometry().height() - verticalContentOffset());
+    painter->drawText(QRectF(geometry().topLeft() - point, m_textSize), mnemonicFlag | Qt::AlignCenter | Qt::TextSingleLine, m_text);
 }
 
 QSizeF AppMenuTextButton::getTextSize() const
@@ -97,13 +99,6 @@ void AppMenuTextButton::setText(const QString &set)
     }
 }
 
-void AppMenuTextButton::setHeight(qreal buttonHeight)
-{
-    Q_UNUSED(buttonHeight)
-
-    updateGeometry();
-}
-
 void AppMenuTextButton::setHorzPadding(qreal value)
 {
     if (!qFuzzyCompare(m_horzPadding, value)) {
@@ -121,10 +116,10 @@ void AppMenuTextButton::updateGeometry()
 {
     const QSizeF textSize = getTextSize();
     const qreal width = textSize.width() + m_horzPadding * 2;
-    const QSizeF size = QSizeF(width, textSize.height());
+    const QSizeF size = QSizeF(width, buttonHeight());
     setGeometry(QRectF(geometry().topLeft(), size));
-    setIconOffset(QPointF(textSize.width() / 2 - m_horzPadding, 0));
-    setBackgroundVisibleSize(size);
+    setBackgroundVisibleSize(QSizeF(size.width(), buttonHeight()));
+    setTextSize(QSizeF(size.width(), textSize.height()));
 }
 
 } // namespace Breeze
