@@ -163,23 +163,19 @@
         <default>true</default>
     </entry>
 
-    <entry name="SearchEnabled" type = "Bool">
+    <entry name="IntegratedSearchEnabled" type="Bool">
         <default>true</default>
     </entry>
 
-    <entry name="HamburgerMenu" type = "Bool">
+    <entry name="IntegratedSearchShowDisabledActions" type="Bool">
         <default>false</default>
     </entry>
 
-    <entry name="ShowDisabledActions" type = "Bool">
-        <default>false</default>
-    </entry>
-
-    <entry name="SearchIgnoreTopLevel" type = "Bool">
+    <entry name="IntegratedSearchIgnoreTopLevel" type="Bool">
         <default>true</default>
     </entry>
 
-    <entry name="SearchIgnoreSubMenus" type = "Bool">
+    <entry name="IntegratedSearchIgnoreSubMenus" type="Bool">
         <default>false</default>
     </entry>
 
