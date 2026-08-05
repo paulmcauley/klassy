@@ -38,7 +38,7 @@ public:
     AppMenuButton(DecorationButtonType type, Decoration *decoration, const int buttonIndex, QObject *parent = nullptr);
     ~AppMenuButton() override = default;
 
-    Q_PROPERTY(int buttonIndex READ buttonIndex NOTIFY buttonIndexChanged)
+    Q_PROPERTY(int buttonIndex READ buttonIndex)
     Q_PROPERTY(qreal buttonHeight READ buttonHeight WRITE setButtonHeight NOTIFY buttonHeightChanged)
     Q_PROPERTY(qreal transition READ transition WRITE setTransition NOTIFY transitionChanged)
     Q_PROPERTY(qreal verticalContentOffset READ verticalContentOffset WRITE setVerticalContentOffset NOTIFY verticalContentOffsetChanged)
@@ -104,7 +104,7 @@ public:
         buttonHeightChanged();
         update();
     }
-    qreal buttonHeight()
+    qreal buttonHeight() const
     {
         return m_buttonHeight;
     }
@@ -141,9 +141,11 @@ public:
 
 signals:
     void buttonHeightChanged();
-    void buttonIndexChanged();
     void transitionChanged();
     void verticalContentOffsetChanged();
+
+public Q_SLOTS:
+    virtual void trigger();
 
 protected:
     virtual void drawContent(QPainter *, QPointF) const = 0;
@@ -151,12 +153,8 @@ protected:
     QColor outlineColor() const;
     QColor foregroundColor() const;
 
-public Q_SLOTS:
-    virtual void trigger();
-
-protected:
     Decoration *m_d;
-    int m_buttonIndex;
+    const int m_buttonIndex;
     const DecorationButtonType m_type;
     qreal m_devicePixelRatio = 1;
     DecorationButtonPalette *m_buttonPalette = nullptr;
