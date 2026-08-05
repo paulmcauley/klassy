@@ -172,6 +172,8 @@ private:
     QIcon m_lockedIcon;
     QIcon m_lockIcon; // bistate with both unlocked and locked
 
+    bool m_hasApplicationMenu;
+
     Side m_taskManagerSide = SideBottom;
 
     bool isDefaults();
