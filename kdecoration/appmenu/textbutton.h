@@ -46,9 +46,17 @@ public:
     QString text() const;
     void setText(const QString &set);
 
-    void setHeight(qreal buttonHeight) override;
     void setHorzPadding(qreal value);
     qreal horzPadding() const;
+
+    void setTextSize(const QSizeF &size)
+    {
+        m_textSize = size;
+    }
+    QSizeF textSize()
+    {
+        return m_textSize;
+    }
 
 signals:
     void actionChanged();
@@ -61,6 +69,7 @@ private:
     QPointer<QAction> m_action;
     QString m_text;
     qreal m_horzPadding = 0;
+    QSizeF m_textSize;
 };
 
 } // namespace Breeze
