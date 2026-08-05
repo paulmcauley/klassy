@@ -18,6 +18,9 @@
 
 #pragma once
 
+#include "breeze.h"
+#include "decorationbuttoncolors.h"
+
 #include <KDecoration3/DecorationButton>
 
 namespace Breeze
@@ -30,7 +33,7 @@ class AppMenuButton : public KDecoration3::DecorationButton
     Q_OBJECT
 
 public:
-    AppMenuButton(Decoration *decoration, const int buttonIndex, QObject *parent = nullptr);
+    AppMenuButton(DecorationButtonType type, Decoration *decoration, const int buttonIndex, QObject *parent = nullptr);
     ~AppMenuButton() override = default;
 
     Q_PROPERTY(int buttonIndex READ buttonIndex NOTIFY buttonIndexChanged)
@@ -41,32 +44,63 @@ public:
 
     void setOpacity(qreal value)
     {
+        if (qFuzzyCompare(m_opacity, value))
+            return;
         m_opacity = value;
+        update();
     }
     qreal opacity() const
     {
         return m_opacity;
     }
+
     void forceUnpress()
     {
         setChecked(false);
     }
     virtual void setHeight(qreal buttonHeight);
 
+    void setIconOffset(const QPointF &value)
+    {
+        m_iconOffset = value;
+    }
+    QPointF iconOffset() const
+    {
+        return m_iconOffset;
+    }
+
+    void setBackgroundVisibleSize(const QSizeF &value)
+    {
+        m_backgroundVisibleSize = value;
+    }
+    QSizeF backgroundVisibleSize() const
+    {
+        return m_backgroundVisibleSize;
+    }
+    virtual void reconfigure() = 0;
+
 signals:
     void buttonIndexChanged();
+
+protected:
+    virtual void drawIcon(QPainter *, QPointF) const = 0;
 
 public Q_SLOTS:
     virtual void trigger();
 
 protected:
-    virtual void paintIcon(QPainter *painter, const QRectF &iconRect, const qreal iconScale) = 0;
-    void setPenWidth(QPainter *painter, qreal width);
-    qreal transitionValue() const;
+    Decoration *m_d;
+    int m_buttonIndex;
+    const DecorationButtonType m_type;
+    qreal m_devicePixelRatio = 1;
+    DecorationButtonPalette *m_buttonPalette = nullptr;
 
 private:
-    int m_buttonIndex;
-    qreal m_opacity = 1.0;
+    void setDevicePixelRatio(QPainter *painter);
+
+    qreal m_opacity = 0;
+    QPointF m_iconOffset;
+    QSizeF m_backgroundVisibleSize;
 };
 
 } // namespace Breeze

@@ -26,7 +26,7 @@ namespace Breeze
 {
 
 AppMenuTextButton::AppMenuTextButton(Decoration *decoration, const int buttonIndex, QObject *parent)
-    : AppMenuButton(decoration, buttonIndex, parent)
+    : AppMenuButton(DecorationButtonType::CustomIntegratedMenuMenu, decoration, buttonIndex, parent)
     , m_action(nullptr)
     , m_text(QStringLiteral("Menu"))
 {
@@ -38,7 +38,7 @@ AppMenuTextButton::~AppMenuTextButton()
 {
 }
 
-void AppMenuTextButton::paintIcon(QPainter *painter, const QRectF &iconRect, const qreal)
+void AppMenuTextButton::drawIcon(QPainter *painter, QPointF point) const
 {
     const auto *deco = qobject_cast<Decoration *>(decoration());
 
@@ -51,7 +51,11 @@ void AppMenuTextButton::paintIcon(QPainter *painter, const QRectF &iconRect, con
     const bool isAltPressed = false;
     const Qt::TextFlag mnemonicFlag = isAltPressed ? Qt::TextShowMnemonic : Qt::TextHideMnemonic;
     // translating 1 pixel seems the only way to perfect centering the text.
-    painter->drawText(iconRect.translated(1.0, 0.0), mnemonicFlag | Qt::AlignCenter | Qt::TextSingleLine, m_text);
+    painter->drawText(QRectF(geometry().topLeft() - point + QPointF(1, 0), geometry().size()), mnemonicFlag | Qt::AlignCenter | Qt::TextSingleLine, m_text);
+}
+
+void AppMenuTextButton::reconfigure()
+{
 }
 
 QSizeF AppMenuTextButton::getTextSize() const
@@ -118,7 +122,10 @@ void AppMenuTextButton::updateGeometry()
 {
     const QSizeF textSize = getTextSize();
     const qreal width = textSize.width() + m_horzPadding * 2;
-    setGeometry(QRectF(geometry().topLeft(), QSizeF(width, textSize.height())));
+    const QSizeF size = QSizeF(width, textSize.height());
+    setGeometry(QRectF(geometry().topLeft(), size));
+    setIconOffset(QPointF(textSize.width() / 2 - m_horzPadding, 0));
+    setBackgroundVisibleSize(textSize);
 }
 
 } // namespace Breeze
