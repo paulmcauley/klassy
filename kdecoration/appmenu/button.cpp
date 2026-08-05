@@ -91,9 +91,10 @@ void AppMenuButton::paint(QPainter *painter, const QRectF &repaintRegion)
 
     // Nothing to paint when fully transparent
     if (qFuzzyIsNull(m_opacity)) {
-        painter->restore();
         return;
     }
+
+    setDevicePixelRatio(painter);
 
     painter->save();
     QRectF backgroundBoundingRect = (QRectF(geometry().topLeft(), m_backgroundVisibleSize));
@@ -109,8 +110,6 @@ void AppMenuButton::paint(QPainter *painter, const QRectF &repaintRegion)
     QColor outline = outlineColor();
 
     if (background.isValid() || outline.isValid()) {
-        setDevicePixelRatio(painter);
-
         const QRectF contentRect(QPointF(0, m_verticalContentOffset), geometry().size() - QSizeF(0, m_verticalContentOffset));
 
         if (outline.isValid()) {

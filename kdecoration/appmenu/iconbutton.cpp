@@ -34,6 +34,7 @@ AppMenuIconButton::AppMenuIconButton(const DecorationButtonType type, Decoration
 {
     reconfigure();
     connect(this, &AppMenuButton::buttonHeightChanged, this, &AppMenuIconButton::updateGeometry);
+    reconfigure();
     updateGeometry();
 }
 
@@ -66,7 +67,7 @@ void AppMenuIconButton::drawContent(QPainter *painter, QPointF deviceOffsetDecor
     qreal iconTranslationOffset = (smallButtonPaddedWidth() - iconWidth()) / 2;
     painter->translate(this->geometry().topLeft() - deviceOffsetDecorationTopLeftToIconTopLeft + QPointF(iconTranslationOffset, iconTranslationOffset)
                        + iconOffset());
-    deviceOffsetDecorationTopLeftToIconTopLeft += QPointF(iconTranslationOffset, iconTranslationOffset) * painter->device()->devicePixelRatioF();
+    deviceOffsetDecorationTopLeftToIconTopLeft += QPointF(iconTranslationOffset, iconTranslationOffset) * m_devicePixelRatio;
 
     // Setup pen for icon drawing
     QPen pen(foregroundColor());

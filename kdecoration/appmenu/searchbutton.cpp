@@ -45,7 +45,7 @@ void AppMenuSearchButton::reconfigure()
 {
     AppMenuIconButton::reconfigure();
     auto settings = m_d->internalSettings();
-    this->setVisible(static_cast<AppMenuStyle>(settings->integratedMenuStyle()) != AppMenuStyle::Disabled && settings->integratedSearchEnabled());
+    this->setVisible(static_cast<AppMenuStyle>(settings->integratedMenuStyle()) != AppMenuStyle::Disabled && settings->integratedMenuSearchEnabled());
 }
 
 void AppMenuSearchButton::filter(const QString &text)
@@ -86,8 +86,8 @@ void AppMenuSearchButton::filter(const QString &text)
     if (rootMenu) {
         QSet<QMenu *> visited;
         const auto *deco = qobject_cast<const Decoration *>(decoration());
-        const bool ignoreTopLevel = deco && deco->internalSettings()->integratedSearchIgnoreTopLevel();
-        const bool ignoreSubMenus = deco && deco->internalSettings()->integratedSearchIgnoreSubMenus();
+        const bool ignoreTopLevel = deco && deco->internalSettings()->integratedMenuSearchIgnoreTopLevel();
+        const bool ignoreSubMenus = deco && deco->internalSettings()->integratedMenuSearchIgnoreSubMenus();
         QStringList currentPath;
         QStringMatcher matcher(text, Qt::CaseInsensitive);
         searchMenu(rootMenu, matcher, results, visited, ignoreTopLevel, ignoreSubMenus, currentPath);
@@ -125,7 +125,7 @@ void AppMenuSearchButton::filter(const QString &text)
 
         const ActionInfo &info = result.info;
         QAction *action = result.action;
-        if (!info.isEffectivelyEnabled && !deco->internalSettings()->integratedSearchShowDisabledActions()) {
+        if (!info.isEffectivelyEnabled && !deco->internalSettings()->integratedMenuSearchShowDisabledActions()) {
             continue;
         }
         QAction *newAction = new QAction(action->icon(), info.path, m_menu.get());
@@ -311,6 +311,7 @@ void AppMenuSearchButton::onMenuHide()
     m_uiVisible = false;
     m_lineEdit->clear();
     m_lastResults.clear();
+    m_lastSearchQuery.clear();
     clearCache();
 }
 
