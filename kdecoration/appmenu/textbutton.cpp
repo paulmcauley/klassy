@@ -37,7 +37,7 @@ AppMenuTextButton::AppMenuTextButton(Decoration *decoration, const int buttonInd
 
 AppMenuTextButton::~AppMenuTextButton() = default;
 
-void AppMenuTextButton::drawContent(QPainter *painter, QPointF point) const
+void AppMenuTextButton::drawContent(QPainter *painter, QPointF offsetDecorationTopLeftToContentTopLeft) const
 {
     // Font
     painter->setFont(m_font);
@@ -53,7 +53,9 @@ void AppMenuTextButton::drawContent(QPainter *painter, QPointF point) const
     // const bool isAltPressed = (QGuiApplication::keyboardModifiers() & Qt::AltModifier) != 0;
     const bool isAltPressed = false;
     const Qt::TextFlag mnemonicFlag = isAltPressed ? Qt::TextShowMnemonic : Qt::TextHideMnemonic;
-    painter->drawText(QRectF(geometry().topLeft() - point, m_textSize), mnemonicFlag | Qt::AlignCenter | Qt::TextSingleLine, m_text);
+    painter->drawText(QRectF(geometry().topLeft() - offsetDecorationTopLeftToContentTopLeft, m_textSize),
+                      mnemonicFlag | Qt::AlignCenter | Qt::TextSingleLine,
+                      m_text);
 }
 
 void AppMenuTextButton::reconfigure()
