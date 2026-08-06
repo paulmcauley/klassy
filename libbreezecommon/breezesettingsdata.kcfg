@@ -20,20 +20,20 @@
     <entry name="ButtonIconStyle" type="Enum">
       <choices>
           <choice name="StyleSystemIconTheme" />
+          <choice name="StyleMaterialDynamic" />
           <choice name="StyleMaterial" />
-          <choice name="StyleKite" />
-          <choice name="StyleSuessigKite" />
           <choice name="StyleOxygen" />
-          <choice name="StyleKlasse" />
+          <choice name="StyleKiteDynamic" />
+          <choice name="StyleKite" />
+          <choice name="StyleTraditionalDynamic" />
           <choice name="StyleTraditional" />
           <choice name="StyleMetro" />
           <choice name="StyleFluent" />
           <choice name="StyleArk" />
-          <choice name="StyleArkopal" />
-          <choice name="StyleArkopalLeft" />
+          <choice name="StyleKisweetDynamic" />
           <choice name="StyleKisweet" />
       </choices>
-      <default>StyleKite</default>
+      <default>StyleMaterialDynamic</default>
     </entry>
 
     <!-- button size -->

@@ -5,6 +5,7 @@
  */
 
 #include "systemicongenerator.h"
+#include "plasmatools.h"
 #include "renderdecorationbuttonicon.h"
 #include <KLocalizedString>
 #include <KSharedConfig>
@@ -36,10 +37,8 @@ void SystemIconGenerator::generate()
 
     addSystemScales();
 
-    auto kdeGlobalConfig = KSharedConfig::openConfig();
-    const KConfigGroup cg(kdeGlobalConfig, QStringLiteral("KDE"));
-    QString lookAndFeelPackage = cg.readEntry("LookAndFeelPackage");
-    m_leftPanel = lookAndFeelPackage.contains(QStringLiteral("leftpanel"), Qt::CaseSensitivity::CaseInsensitive);
+    m_panelSide = PlasmaTools::taskManagerSide(false);
+    m_taskManagerSide = PlasmaTools::taskManagerSide(true);
 
     QString iconsPath = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) % QStringLiteral("/icons");
 
@@ -223,6 +222,7 @@ void SystemIconGenerator::generateIconThemeDir(const QString themeDirPath,
                 painter->setPen(pen);
                 iconRenderer->setForceEvenSquares(true);
                 iconRenderer->setStrokeToFilledPath(true);
+                iconRenderer->setTaskManagerSide(m_taskManagerSide);
 
                 iconRenderer->renderIcon(iconType.type, iconType.checked);
 
@@ -320,45 +320,40 @@ void SystemIconGenerator::generateIconThemeDir(const QString themeDirPath,
     desktopDir.mkdir("64");
     desktopDir.mkdir("96");
 
-    if (m_leftPanel) {
-        QFile::copy(":/icons/leftpanel/16/desktop.svg", desktopPath + "/16/desktop.svg");
-        QFile::copy(":/icons/leftpanel/16/desktop-symbolic.svg", desktopPath + "/16/desktop-symbolic.svg");
-        QFile::copy(":/icons/leftpanel/16/user-desktop.svg", desktopPath + "/16/user-desktop.svg");
-        QFile::copy(":/icons/leftpanel/16/user-desktop-symbolic.svg", desktopPath + "/16/user-desktop-symbolic.svg");
-        QFile::copy(":/icons/leftpanel/22/desktop.svg", desktopPath + "/22/desktop.svg");
-        QFile::copy(":/icons/leftpanel/22/desktop-symbolic.svg", desktopPath + "/22/desktop-symbolic.svg");
-        QFile::copy(":/icons/leftpanel/22/user-desktop.svg", desktopPath + "/22/user-desktop.svg");
-        QFile::copy(":/icons/leftpanel/22/user-desktop-symbolic.svg", desktopPath + "/22/user-desktop-symbolic.svg");
-        QFile::copy(":/icons/leftpanel/32/desktop.svg", desktopPath + "/32/desktop.svg");
-        QFile::copy(":/icons/leftpanel/32/desktop-symbolic.svg", desktopPath + "/32/desktop-symbolic.svg");
-        QFile::copy(":/icons/leftpanel/32/user-desktop.svg", desktopPath + "/32/user-desktop.svg");
-        QFile::copy(":/icons/leftpanel/32/user-desktop-symbolic.svg", desktopPath + "/32/user-desktop-symbolic.svg");
-        QFile::copy(":/icons/leftpanel/48/desktop.svg", desktopPath + "/48/desktop.svg");
-        QFile::copy(":/icons/leftpanel/48/user-desktop.svg", desktopPath + "/48/user-desktop.svg");
-        QFile::copy(":/icons/leftpanel/64/desktop.svg", desktopPath + "/64/desktop.svg");
-        QFile::copy(":/icons/leftpanel/64/user-desktop.svg", desktopPath + "/64/user-desktop.svg");
-        QFile::copy(":/icons/leftpanel/96/desktop.svg", desktopPath + "/96/desktop.svg");
-        QFile::copy(":/icons/leftpanel/96/user-desktop.svg", desktopPath + "/96/user-desktop.svg");
-    } else {
-        QFile::copy(":/icons/bottompanel/16/desktop.svg", desktopPath + "/16/desktop.svg");
-        QFile::copy(":/icons/bottompanel/16/desktop-symbolic.svg", desktopPath + "/16/desktop-symbolic.svg");
-        QFile::copy(":/icons/bottompanel/16/user-desktop.svg", desktopPath + "/16/user-desktop.svg");
-        QFile::copy(":/icons/bottompanel/16/user-desktop-symbolic.svg", desktopPath + "/16/user-desktop-symbolic.svg");
-        QFile::copy(":/icons/bottompanel/22/desktop.svg", desktopPath + "/22/desktop.svg");
-        QFile::copy(":/icons/bottompanel/22/desktop-symbolic.svg", desktopPath + "/22/desktop-symbolic.svg");
-        QFile::copy(":/icons/bottompanel/22/user-desktop.svg", desktopPath + "/22/user-desktop.svg");
-        QFile::copy(":/icons/bottompanel/22/user-desktop-symbolic.svg", desktopPath + "/22/user-desktop-symbolic.svg");
-        QFile::copy(":/icons/bottompanel/32/desktop.svg", desktopPath + "/32/desktop.svg");
-        QFile::copy(":/icons/bottompanel/32/desktop-symbolic.svg", desktopPath + "/32/desktop-symbolic.svg");
-        QFile::copy(":/icons/bottompanel/32/user-desktop.svg", desktopPath + "/32/user-desktop.svg");
-        QFile::copy(":/icons/bottompanel/32/user-desktop-symbolic.svg", desktopPath + "/32/user-desktop-symbolic.svg");
-        QFile::copy(":/icons/bottompanel/48/desktop.svg", desktopPath + "/48/desktop.svg");
-        QFile::copy(":/icons/bottompanel/48/user-desktop.svg", desktopPath + "/48/user-desktop.svg");
-        QFile::copy(":/icons/bottompanel/64/desktop.svg", desktopPath + "/64/desktop.svg");
-        QFile::copy(":/icons/bottompanel/64/user-desktop.svg", desktopPath + "/64/user-desktop.svg");
-        QFile::copy(":/icons/bottompanel/96/desktop.svg", desktopPath + "/96/desktop.svg");
-        QFile::copy(":/icons/bottompanel/96/user-desktop.svg", desktopPath + "/96/user-desktop.svg");
+    QString basePanelDir;
+    switch (m_panelSide) {
+    case SideBottom:
+    default:
+        basePanelDir = ":/icons/bottompanel";
+        break;
+    case SideLeft:
+        basePanelDir = ":/icons/leftpanel";
+        break;
+    case SideTop:
+        basePanelDir = ":/icons/toppanel";
+        break;
+    case SideRight:
+        basePanelDir = ":/icons/rightpanel";
+        break;
     }
+    QFile::copy(basePanelDir + "/16/desktop.svg", desktopPath + "/16/desktop.svg");
+    QFile::copy(basePanelDir + "/16/desktop-symbolic.svg", desktopPath + "/16/desktop-symbolic.svg");
+    QFile::copy(basePanelDir + "/16/user-desktop.svg", desktopPath + "/16/user-desktop.svg");
+    QFile::copy(basePanelDir + "/16/user-desktop-symbolic.svg", desktopPath + "/16/user-desktop-symbolic.svg");
+    QFile::copy(basePanelDir + "/22/desktop.svg", desktopPath + "/22/desktop.svg");
+    QFile::copy(basePanelDir + "/22/desktop-symbolic.svg", desktopPath + "/22/desktop-symbolic.svg");
+    QFile::copy(basePanelDir + "/22/user-desktop.svg", desktopPath + "/22/user-desktop.svg");
+    QFile::copy(basePanelDir + "/22/user-desktop-symbolic.svg", desktopPath + "/22/user-desktop-symbolic.svg");
+    QFile::copy(basePanelDir + "/32/desktop.svg", desktopPath + "/32/desktop.svg");
+    QFile::copy(basePanelDir + "/32/desktop-symbolic.svg", desktopPath + "/32/desktop-symbolic.svg");
+    QFile::copy(basePanelDir + "/32/user-desktop.svg", desktopPath + "/32/user-desktop.svg");
+    QFile::copy(basePanelDir + "/32/user-desktop-symbolic.svg", desktopPath + "/32/user-desktop-symbolic.svg");
+    QFile::copy(basePanelDir + "/48/desktop.svg", desktopPath + "/48/desktop.svg");
+    QFile::copy(basePanelDir + "/48/user-desktop.svg", desktopPath + "/48/user-desktop.svg");
+    QFile::copy(basePanelDir + "/64/desktop.svg", desktopPath + "/64/desktop.svg");
+    QFile::copy(basePanelDir + "/64/user-desktop.svg", desktopPath + "/64/user-desktop.svg");
+    QFile::copy(basePanelDir + "/96/desktop.svg", desktopPath + "/96/desktop.svg");
+    QFile::copy(basePanelDir + "/96/user-desktop.svg", desktopPath + "/96/user-desktop.svg");
 
     // write index file entries for desktop icons
     QString desktopDirNames = "places/16,places/22,places/32,places/48,places/64,places/96";

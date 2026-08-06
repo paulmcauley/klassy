@@ -206,6 +206,7 @@ enum BREEZECOMMON_EXPORT Side {
     SideTop = 0x2,
     SideRight = 0x4,
     SideBottom = 0x8,
+    SideDot = 0x10,
     AllSides = SideLeft | SideTop | SideRight | SideBottom,
 };
 

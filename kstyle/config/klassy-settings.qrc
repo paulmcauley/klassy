@@ -36,5 +36,41 @@
     <file>icons/leftpanel/64/user-desktop.svg</file>
     <file>icons/leftpanel/96/desktop.svg</file>
     <file>icons/leftpanel/96/user-desktop.svg</file>
+    <file>icons/rightpanel/16/desktop.svg</file>
+    <file>icons/rightpanel/16/desktop-symbolic.svg</file>
+    <file>icons/rightpanel/16/user-desktop.svg</file>
+    <file>icons/rightpanel/16/user-desktop-symbolic.svg</file>
+    <file>icons/rightpanel/22/desktop.svg</file>
+    <file>icons/rightpanel/22/desktop-symbolic.svg</file>
+    <file>icons/rightpanel/22/user-desktop.svg</file>
+    <file>icons/rightpanel/22/user-desktop-symbolic.svg</file>
+    <file>icons/rightpanel/32/desktop.svg</file>
+    <file>icons/rightpanel/32/desktop-symbolic.svg</file>
+    <file>icons/rightpanel/32/user-desktop.svg</file>
+    <file>icons/rightpanel/32/user-desktop-symbolic.svg</file>
+    <file>icons/rightpanel/48/desktop.svg</file>
+    <file>icons/rightpanel/48/user-desktop.svg</file>
+    <file>icons/rightpanel/64/desktop.svg</file>
+    <file>icons/rightpanel/64/user-desktop.svg</file>
+    <file>icons/rightpanel/96/desktop.svg</file>
+    <file>icons/rightpanel/96/user-desktop.svg</file>
+    <file>icons/toppanel/16/desktop.svg</file>
+    <file>icons/toppanel/16/desktop-symbolic.svg</file>
+    <file>icons/toppanel/16/user-desktop.svg</file>
+    <file>icons/toppanel/16/user-desktop-symbolic.svg</file>
+    <file>icons/toppanel/22/desktop.svg</file>
+    <file>icons/toppanel/22/desktop-symbolic.svg</file>
+    <file>icons/toppanel/22/user-desktop.svg</file>
+    <file>icons/toppanel/22/user-desktop-symbolic.svg</file>
+    <file>icons/toppanel/32/desktop.svg</file>
+    <file>icons/toppanel/32/desktop-symbolic.svg</file>
+    <file>icons/toppanel/32/user-desktop.svg</file>
+    <file>icons/toppanel/32/user-desktop-symbolic.svg</file>
+    <file>icons/toppanel/48/desktop.svg</file>
+    <file>icons/toppanel/48/user-desktop.svg</file>
+    <file>icons/toppanel/64/desktop.svg</file>
+    <file>icons/toppanel/64/user-desktop.svg</file>
+    <file>icons/toppanel/96/desktop.svg</file>
+    <file>icons/toppanel/96/user-desktop.svg</file>
 </qresource>
 </RCC>

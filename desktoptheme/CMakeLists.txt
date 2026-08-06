@@ -1,4 +1,4 @@
-install(DIRECTORY kite-light
+install(DIRECTORY klassy-light
         DESTINATION ${KDE_INSTALL_DATADIR}/plasma/desktoptheme)
-install(DIRECTORY kite-dark
+install(DIRECTORY klassy-dark
         DESTINATION ${KDE_INSTALL_DATADIR}/plasma/desktoptheme)

@@ -1,0 +1,21 @@
+{
+    "KPlugin": {
+        "Authors": [
+            {
+                "Email": "kde@paulmcauley.com",
+                "Name": "Paul A McAuley"
+            }
+        ],
+        "Category": "",
+        "Description": "Klassy Light - by Paul A McAuley",
+        "Description[fr]": "Klassy clair - par Paul A McAuley",
+        "EnabledByDefault": true,
+        "Id": "klassy-light",
+        "License": "LGPL",
+        "Name": "Klassy Light",
+        "Name[fr]": "Klassy clair",
+        "Version": "6.7",
+        "Website": "https://github.com/paulmcauley/klassy"
+    },
+    "X-Plasma-API": "5.0"
+}

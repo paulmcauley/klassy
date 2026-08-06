@@ -58,6 +58,8 @@ protected:
                                            qreal halfPenWidthLocal);
 
     void renderTinySquareMinimizeIcon(bool showArrows = false);
+    void renderCenteredLineMinimizeIcon();
+    void renderDynamicMinimizeIcon(bool dynamicMinimize = true);
     void renderOnAllDesktopsIcon();
     void renderKeepBehindIconAsFromBreezeIcons();
     void renderKeepInFrontIconAsFromBreezeIcons();

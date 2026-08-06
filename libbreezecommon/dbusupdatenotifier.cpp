@@ -30,6 +30,13 @@ DBusUpdateNotifier::DBusUpdateNotifier()
                            QStringLiteral("updateDecorationColorCache"),
                            this,
                            SLOT(onWindowDecorationSettingsUpdate()));
+
+    dBusConnection.connect(QString(),
+                           QStringLiteral("/plasma_org_kde_plasma_desktop_appletsrc"),
+                           QStringLiteral("org.kde.kconfig.notify"),
+                           QStringLiteral("ConfigChanged"),
+                           this,
+                           SLOT(onAppletSettingsUpdate()));
 }
 
 void DBusUpdateNotifier::onWindowDecorationSettingsUpdate()
@@ -47,4 +54,8 @@ void DBusUpdateNotifier::onSystemSettingUpdate(QString first, QString second, QD
     }
 }
 
+void DBusUpdateNotifier::onAppletSettingsUpdate()
+{
+    Q_EMIT appletSettingsUpdate(QUuid::createUuid().toByteArray());
+}
 }

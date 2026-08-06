@@ -1,0 +1,20 @@
+{
+    "KPackageStructure": "Plasma/LookAndFeel",
+    "KPlugin": {
+        "Authors": [
+            {
+                "Email": "kde@paulmcauley.com",
+                "Name": "Paul A McAuley"
+            }
+        ],
+        "Category": "",
+        "Description": "Light theme with traditional panel at the bottom and labelled tasks",
+        "Description[fr]": "Thème clair avec le panneau traditionnel inférieur et tâches labellisées",
+        "Id": "org.kde.klassylightbottompanel.desktop",
+        "License": "LGPL 2.1",
+        "Name": "Klassy Light - Bottom Panel",
+        "Name[fr]": "Klassy clair - Panneau inférieur",
+        "Website": "https://github.com/paulmcauley/klassy"
+    },
+    "X-Plasma-APIVersion": "2"
+}

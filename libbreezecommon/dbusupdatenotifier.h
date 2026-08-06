@@ -24,11 +24,13 @@ public:
 public Q_SLOTS:
     void onWindowDecorationSettingsUpdate();
     void onSystemSettingUpdate(QString, QString, QDBusVariant);
+    void onAppletSettingsUpdate();
 
 Q_SIGNALS:
     void decorationSettingsUpdate(QByteArray uuid);
     void systemColorSchemeUpdate(QByteArray uuid);
     void systemIconsUpdate();
+    void appletSettingsUpdate(QByteArray uuid);
 };
 
 extern DBusUpdateNotifier BREEZECOMMON_EXPORT g_dBusUpdateNotifier;

@@ -1,7 +1,7 @@
 const panel = new Panel;
 var panelScreen = panel.screen;
 panel.location = "bottom";
-panel.height = Math.round(gridUnit * 20 / 9); //gridUnit is 18
+panel.height = Math.round(gridUnit * 2); //gridUnit is 18
 panel.hiding = "normal";
 panel.offset = 0;
 panel.floating = false;

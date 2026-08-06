@@ -111,6 +111,110 @@ void RenderDecorationButtonIcon18By18::renderMinimizeIcon()
     }
 }
 
+void RenderDecorationButtonIcon18By18::renderCenteredLineMinimizeIcon()
+{
+    QPen pen = m_painter->pen();
+    bool isOddPenWidth = true;
+
+    if (!m_fromKstyle) {
+        qreal roundedBoldPenWidth;
+        if (m_boldButtonIcons) {
+            // thicker pen in titlebar
+            isOddPenWidth = roundedPenWidthIsOdd(pen, roundedBoldPenWidth, m_squareMaximizeBoldPenWidthFactor);
+        } else
+            isOddPenWidth = roundedPenWidthIsOdd(pen, roundedBoldPenWidth, 1);
+        pen.setWidthF(roundedBoldPenWidth);
+    }
+
+    // make excessively thick pen widths translucent to balance with other buttons
+    qreal opacity = straightLineOpacity();
+    QColor penColor = pen.color();
+    penColor.setAlphaF(penColor.alphaF() * opacity);
+    pen.setColor(penColor);
+
+    m_painter->setPen(pen);
+
+    QVector<QPointF> line;
+    // horizontal line
+    if (isOddPenWidth) {
+        line = {snapToNearestPixel(QPointF(4.5, 9.5), SnapPixel::ToHalf, SnapPixel::ToHalf),
+                snapToNearestPixel(QPointF(13.5, 9.5), SnapPixel::ToHalf, SnapPixel::ToHalf)};
+
+    } else {
+        line = {snapToNearestPixel(QPointF(4.5, 9.5), SnapPixel::ToWhole, SnapPixel::ToWhole),
+                snapToNearestPixel(QPointF(13.5, 9.5), SnapPixel::ToWhole, SnapPixel::ToWhole)};
+    }
+
+    if (m_strokeToFilledPath) {
+        QPainterPath path;
+        path.addPolygon(line);
+        QPainterPathStroker stroker(m_painter->pen());
+        path = stroker.createStroke(path);
+        m_painter->setBrush(m_painter->pen().color());
+        m_painter->setPen(Qt::NoPen);
+        m_painter->drawPath(path);
+    } else {
+        m_painter->drawPolyline(line);
+    }
+}
+
+void RenderDecorationButtonIcon18By18::renderDynamicMinimizeIcon(bool dynamicMinimize)
+{
+    // first determine the size of the maximize icon so the minimize icon can align with it
+    auto [maximizeRect, maximizePenWidth] = renderSquareMaximizeIcon(true);
+
+    QVector<QPointF> line;
+
+    if (!dynamicMinimize) { // bottom line
+        line.append(maximizeRect.bottomLeft());
+        line.append(maximizeRect.bottomRight());
+    } else { // dynamic minimize icon
+        switch (m_taskManagerSide) {
+        case SideBottom:
+        default:
+            line.append(maximizeRect.bottomLeft());
+            line.append(maximizeRect.bottomRight());
+            break;
+        case SideLeft:
+            renderCenteredLineMinimizeIcon();
+            return;
+        case SideTop:
+            line.append(maximizeRect.topLeft());
+            line.append(maximizeRect.topRight());
+            break;
+        case SideRight:
+            renderCenteredLineMinimizeIcon();
+            return;
+        case SideDot:
+            renderTinySquareMinimizeIcon();
+            return;
+        }
+    }
+
+    QPen pen = m_painter->pen();
+    pen.setWidthF(maximizePenWidth);
+
+    // make excessively thick pen widths translucent to balance with other buttons
+    qreal opacity = straightLineOpacity();
+    QColor penColor = pen.color();
+    penColor.setAlphaF(penColor.alphaF() * opacity);
+    pen.setColor(penColor);
+
+    m_painter->setPen(pen);
+
+    if (m_strokeToFilledPath) {
+        QPainterPath path;
+        path.addPolygon(line);
+        QPainterPathStroker stroker(m_painter->pen());
+        path = stroker.createStroke(path);
+        m_painter->setBrush(m_painter->pen().color());
+        m_painter->setPen(Qt::NoPen);
+        m_painter->drawPath(path);
+    } else {
+        m_painter->drawPolyline(line);
+    }
+}
+
 void RenderDecorationButtonIcon18By18::renderPinnedOnAllDesktopsIcon()
 {
     renderOnAllDesktopsIcon();
@@ -934,7 +1038,6 @@ void RenderDecorationButtonIcon18By18::renderTinySquareMinimizeIcon(bool showArr
         penColor.setAlphaF(penColor.alphaF() * straightLineOpacity() * 0.95);
         pen.setColor(penColor);
 
-        pen.setJoinStyle(Qt::BevelJoin);
         m_painter->setBrush(brushColor);
 
         isOddPenWidth = qRound(maximizePenWidth) % 2 != 0;
@@ -948,7 +1051,6 @@ void RenderDecorationButtonIcon18By18::renderTinySquareMinimizeIcon(bool showArr
         penColor.setAlphaF(penColor.alphaF() * straightLineOpacity() * 0.9);
         pen.setColor(penColor);
 
-        pen.setJoinStyle(Qt::BevelJoin);
         m_painter->setBrush(brushColor);
 
         isOddPenWidth = qRound(maximizePenWidth) % 2 != 0;

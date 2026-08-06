@@ -7,18 +7,16 @@ set(breezecommon_LIB_SRCS
     decorationcolors.cpp
     decorationexceptionlist.cpp
     geometrytools.cpp
+    plasmatools.cpp
     presetsmodel.cpp
     renderdecorationbuttonicon.cpp
     renderdecorationbuttonicon18by18.cpp
     styleark.cpp
     stylekisweet.cpp
-    stylearkopal.cpp
-    stylearkopalleft.cpp
-    styleklasse.cpp
-    stylekite.cpp
-    stylematerial.cpp
+    stylekisweetdynamic.cpp
+    stylekitedynamic.cpp
+    stylematerialdynamic.cpp
     styleoxygen.cpp
-    stylesuessigkite.cpp
     styletraditional.cpp
     stylemetro.cpp
     stylefluent.cpp

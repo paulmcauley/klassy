@@ -561,21 +561,12 @@
              </item>
              <item>
               <property name="text">
+               <string>  Material (dynamic minimize)</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
                <string>  Material</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>  Kite</string>
-              </property>
-              <property name="icon">
-               <iconset>
-                <normaloff>:/klassy_config_icons/Kite.png</normaloff>:/klassy_config_icons/Kite.png</iconset>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>  SuessigKite</string>
               </property>
              </item>
              <item>
@@ -589,7 +580,21 @@
              </item>
              <item>
               <property name="text">
-               <string>  Klasse</string>
+               <string>  Kite (dynamic minimize)</string>
+              </property>
+              <property name="icon">
+               <iconset>
+                <normaloff>:/klassy_config_icons/Kite.png</normaloff>:/klassy_config_icons/Kite.png</iconset>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>  Kite</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>  Traditional (dynamic minimize)</string>
               </property>
               <property name="icon">
                <iconset>
@@ -626,12 +631,7 @@
              </item>
              <item>
               <property name="text">
-               <string>  Arkopal</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>  Arkopal (Left Panel)</string>
+               <string>  Kisweet (dynamic minimize)</string>
               </property>
              </item>
              <item>

@@ -11,6 +11,7 @@
 #include "breezeconfigwidget.h"
 #include "dbusmessages.h"
 #include "decorationexceptionlist.h"
+#include "plasmatools.h"
 #include "presetsmodel.h"
 #include "renderdecorationbuttonicon.h"
 
@@ -536,15 +537,6 @@ void ConfigWidget::onIconsChanged()
         m_ui.iconSizeStackedWidget->setCurrentIndex(0);
         m_ui.iconOptionsStackedWidget->setCurrentIndex(0);
     }
-
-    if (m_ui.buttonIconStyle->currentIndex() == InternalSettings::EnumButtonIconStyle::StyleKite
-        || m_ui.buttonIconStyle->currentIndex() == InternalSettings::EnumButtonIconStyle::StyleSuessigKite) {
-        m_ui.klassy_logo->setStyleSheet("border-image: url(:/klassy_config_icons/Kite_logo.svg);");
-        m_ui.klassy_logo->setMaximumSize(116, 64);
-    } else {
-        m_ui.klassy_logo->setStyleSheet("border-image: url(:/klassy_config_icons/Klassy_logo.svg);");
-        m_ui.klassy_logo->setMaximumSize(156, 64);
-    }
 }
 
 void ConfigWidget::dialogChanged(bool changed)
@@ -663,6 +655,7 @@ void ConfigWidget::updateWindowControlPreviewIcons()
 {
     QSize size(115, 72);
     m_ui.buttonIconStyle->setIconSize(size);
+    m_taskManagerSide = PlasmaTools::taskManagerSide(true);
 
     for (int i = 0; i < InternalSettings::EnumButtonIconStyle::COUNT; i++) {
         if (i != static_cast<int>(InternalSettings::EnumButtonIconStyle::StyleSystemIconTheme)) {
@@ -705,6 +698,7 @@ void ConfigWidget::generateWindowControlPreviewIcon(QSize size, InternalSettings
     internalSettings->setButtonIconStyle(iconStyle);
 
     auto [iconRenderer, localRenderingWidth](RenderDecorationButtonIcon::factory(internalSettings, painter.get(), false, boldIcons, dpr));
+    iconRenderer->setTaskManagerSide(m_taskManagerSide);
 
     QPen pen("#bcc1c5");
     pen.setWidthF(PenWidth::Symbol * dpr);

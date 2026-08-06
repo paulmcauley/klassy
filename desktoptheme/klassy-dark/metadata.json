@@ -1,0 +1,21 @@
+{
+    "KPlugin": {
+        "Authors": [
+            {
+                "Email": "kde@paulmcauley.com",
+                "Name": "Paul A McAuley"
+            }
+        ],
+        "Category": "",
+        "Description": "Klassy Dark - by Paul A McAuley",
+        "Description[fr]": "Klassy sombre -par Paul A McAuley",
+        "EnabledByDefault": true,
+        "Id": "klassy-dark",
+        "License": "LGPL",
+        "Name": "Klassy Dark",
+        "Name[fr]": "Klassy sombre",
+        "Version": "6.7",
+        "Website": "https://github.com/paulmcauley/klassy"
+    },
+    "X-Plasma-API": "5.0"
+}

@@ -74,6 +74,11 @@ public:
     {
         m_strokeToFilledPath = v;
     }
+
+    void setTaskManagerSide(Side taskManagerSide)
+    {
+        m_taskManagerSide = taskManagerSide;
+    }
     void renderIcon(DecorationButtonType type, bool checked);
 
 protected:
@@ -225,6 +230,7 @@ protected:
     bool m_forceEvenSquares = false;
     bool m_strokeToFilledPath =
         false; // When outputting icons for GTK, closed pens get filled -- this flag is to convert pen strokes to filled paths to fix this
+    Side m_taskManagerSide = SideBottom;
 
     //* how much to factor the pen width for a bold restore button
     static constexpr qreal m_overlappingWindowsBoldPenWidthFactor = 1.5;

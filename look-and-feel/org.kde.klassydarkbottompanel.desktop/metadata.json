@@ -1,0 +1,20 @@
+{
+    "KPackageStructure": "Plasma/LookAndFeel",
+    "KPlugin": {
+        "Authors": [
+            {
+                "Email": "kde@paulmcauley.com",
+                "Name": "Paul A McAuley"
+            }
+        ],
+        "Category": "",
+        "Description": "Dark theme with traditional panel at the bottom and labelled tasks",
+        "Description[fr]": "Thème sombre avec le panneau traditionnel inférieur et tâches labellisées",
+        "Id": "org.kde.klassydarkbottompanel.desktop",
+        "License": "LGPL 2.1",
+        "Name": "Klassy Dark - Bottom Panel",
+        "Name[fr]": "Klassy sombre - Panneau inférieur",
+        "Website": "https://github.com/paulmcauley/klassy"
+    },
+    "X-Plasma-APIVersion": "2"
+}

@@ -6,17 +6,17 @@
 
 #include "renderdecorationbuttonicon.h"
 #include "styleark.h"
-#include "stylearkopal.h"
-#include "stylearkopalleft.h"
 #include "stylefluent.h"
 #include "stylekisweet.h"
+#include "stylekisweetdynamic.h"
 #include "stylekite.h"
-#include "styleklasse.h"
+#include "stylekitedynamic.h"
 #include "stylematerial.h"
+#include "stylematerialdynamic.h"
 #include "stylemetro.h"
 #include "styleoxygen.h"
-#include "stylesuessigkite.h"
 #include "styletraditional.h"
+#include "styletraditionaldynamic.h"
 #include "systemicontheme.h"
 #include <algorithm>
 #include <cmath>
@@ -33,8 +33,16 @@ std::pair<std::unique_ptr<RenderDecorationButtonIcon>, int> RenderDecorationButt
                                                                                                 const bool forceEvenSquares)
 {
     switch (internalSettings->buttonIconStyle()) {
-    case InternalSettings::EnumButtonIconStyle::StyleMaterial:
+    case InternalSettings::EnumButtonIconStyle::StyleMaterialDynamic:
     default:
+        return {std::make_unique<RenderStyleMaterialDynamic18By18>(painter,
+                                                                   fromKstyle,
+                                                                   boldButtonIcons,
+                                                                   devicePixelRatio,
+                                                                   deviceOffsetFromZeroReference,
+                                                                   forceEvenSquares),
+                18};
+    case InternalSettings::EnumButtonIconStyle::StyleMaterial:
         return {std::make_unique<RenderStyleMaterial18By18>(painter,
                                                             fromKstyle,
                                                             boldButtonIcons,
@@ -42,26 +50,30 @@ std::pair<std::unique_ptr<RenderDecorationButtonIcon>, int> RenderDecorationButt
                                                             deviceOffsetFromZeroReference,
                                                             forceEvenSquares),
                 18};
-    case InternalSettings::EnumButtonIconStyle::StyleKite:
+    case InternalSettings::EnumButtonIconStyle::StyleOxygen:
         return {
-            std::make_unique<RenderStyleKite18By18>(painter, fromKstyle, boldButtonIcons, devicePixelRatio, deviceOffsetFromZeroReference, forceEvenSquares),
+            std::make_unique<RenderStyleOxygen18By18>(painter, fromKstyle, boldButtonIcons, devicePixelRatio, deviceOffsetFromZeroReference, forceEvenSquares),
             18};
-    case InternalSettings::EnumButtonIconStyle::StyleSuessigKite:
-        return {std::make_unique<RenderStyleSuessigKite18By18>(painter,
+    case InternalSettings::EnumButtonIconStyle::StyleKiteDynamic:
+        return {std::make_unique<RenderStyleKiteDynamic18By18>(painter,
                                                                fromKstyle,
                                                                boldButtonIcons,
                                                                devicePixelRatio,
                                                                deviceOffsetFromZeroReference,
                                                                forceEvenSquares),
                 18};
-    case InternalSettings::EnumButtonIconStyle::StyleOxygen:
+    case InternalSettings::EnumButtonIconStyle::StyleKite:
         return {
-            std::make_unique<RenderStyleOxygen18By18>(painter, fromKstyle, boldButtonIcons, devicePixelRatio, deviceOffsetFromZeroReference, forceEvenSquares),
+            std::make_unique<RenderStyleKite18By18>(painter, fromKstyle, boldButtonIcons, devicePixelRatio, deviceOffsetFromZeroReference, forceEvenSquares),
             18};
-    case InternalSettings::EnumButtonIconStyle::StyleKlasse:
-        return {
-            std::make_unique<RenderStyleKlasse18By18>(painter, fromKstyle, boldButtonIcons, devicePixelRatio, deviceOffsetFromZeroReference, forceEvenSquares),
-            18};
+    case InternalSettings::EnumButtonIconStyle::StyleTraditionalDynamic:
+        return {std::make_unique<RenderStyleTraditionalDynamic18By18>(painter,
+                                                                      fromKstyle,
+                                                                      boldButtonIcons,
+                                                                      devicePixelRatio,
+                                                                      deviceOffsetFromZeroReference,
+                                                                      forceEvenSquares),
+                18};
     case InternalSettings::EnumButtonIconStyle::StyleTraditional:
         return {std::make_unique<RenderStyleTraditional18By18>(painter,
                                                                fromKstyle,
@@ -81,17 +93,13 @@ std::pair<std::unique_ptr<RenderDecorationButtonIcon>, int> RenderDecorationButt
     case InternalSettings::EnumButtonIconStyle::StyleArk:
         return {std::make_unique<RenderStyleArk18By18>(painter, fromKstyle, boldButtonIcons, devicePixelRatio, deviceOffsetFromZeroReference, forceEvenSquares),
                 18};
-    case InternalSettings::EnumButtonIconStyle::StyleArkopal:
-        return {
-            std::make_unique<RenderStyleArkopal18By18>(painter, fromKstyle, boldButtonIcons, devicePixelRatio, deviceOffsetFromZeroReference, forceEvenSquares),
-            18};
-    case InternalSettings::EnumButtonIconStyle::StyleArkopalLeft:
-        return {std::make_unique<RenderStyleArkopalLeft18By18>(painter,
-                                                               fromKstyle,
-                                                               boldButtonIcons,
-                                                               devicePixelRatio,
-                                                               deviceOffsetFromZeroReference,
-                                                               forceEvenSquares),
+    case InternalSettings::EnumButtonIconStyle::StyleKisweetDynamic:
+        return {std::make_unique<RenderStyleKisweetDynamic18By18>(painter,
+                                                                  fromKstyle,
+                                                                  boldButtonIcons,
+                                                                  devicePixelRatio,
+                                                                  deviceOffsetFromZeroReference,
+                                                                  forceEvenSquares),
                 18};
     case InternalSettings::EnumButtonIconStyle::StyleKisweet:
         return {

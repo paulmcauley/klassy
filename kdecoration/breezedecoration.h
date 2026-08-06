@@ -40,6 +40,8 @@ enum struct ButtonBackgroundType {
     FullHeight,
 };
 
+extern Side g_taskManagerSide;
+
 class Decoration : public KDecoration3::Decoration
 {
     Q_OBJECT
@@ -199,6 +201,7 @@ private Q_SLOTS:
     void generateDecorationColorsOnClientPaletteUpdate(const QPalette &clientPalette);
     void generateDecorationColorsOnDecorationColorSettingsUpdate(QByteArray uuid);
     void generateDecorationColorsOnSystemColorSettingsUpdate(QByteArray uuid);
+    void updateTaskManagerSide(QByteArray uuid = QByteArray());
     void recalculateBorders();
     void updateOpaque();
     void updateBlur();
@@ -267,6 +270,8 @@ private:
     InternalSettingsPtr m_internalSettings;
     KDecoration3::DecorationButtonGroup *m_leftButtons = nullptr;
     KDecoration3::DecorationButtonGroup *m_rightButtons = nullptr;
+
+    Side m_taskManagerSide = SideBottom;
 
     //* Whether the paint() method is active
     bool m_painting = false;

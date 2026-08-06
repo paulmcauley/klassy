@@ -68,7 +68,8 @@ private:
         {DecorationButtonType::KeepAbove, false, QStringLiteral("window-keep-above")},
     };
 
-    bool m_leftPanel = false;
+    Side m_panelSide = SideBottom;
+    Side m_taskManagerSide = SideBottom;
 };
 
 }

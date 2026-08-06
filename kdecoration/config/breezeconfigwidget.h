@@ -86,6 +86,11 @@ public:
         return m_ui.buttonShape->currentIndex();
     }
 
+    Side taskManagerSide()
+    {
+        return m_taskManagerSide;
+    }
+
     bool matchTitleBarToApplicationColor()
     {
         return m_ui.matchTitleBarToApplicationColor->isChecked();
@@ -166,6 +171,8 @@ private:
     QIcon m_unlockedIcon;
     QIcon m_lockedIcon;
     QIcon m_lockIcon; // bistate with both unlocked and locked
+
+    Side m_taskManagerSide = SideBottom;
 
     bool isDefaults();
     QString presetGroupName(QString str);

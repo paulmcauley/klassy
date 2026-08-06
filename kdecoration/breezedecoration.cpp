@@ -18,6 +18,7 @@
 #include "breezesettingsprovider.h"
 #include "dbusupdatenotifier.h"
 #include "geometrytools.h"
+#include "plasmatools.h"
 
 #include <KDecoration3/DecoratedWindow>
 #include <KDecoration3/DecorationButtonGroup>
@@ -125,6 +126,7 @@ namespace Breeze
 {
 
 KSharedConfig::Ptr Decoration::s_kdeGlobalConfig = KSharedConfig::Ptr();
+Side g_taskManagerSide = SideBottom;
 
 using KDecoration3::ColorGroup;
 using KDecoration3::ColorRole;
@@ -152,6 +154,8 @@ static bool g_hideTitleBar = false;
 static bool g_colorizeWindowOutlineWithButton = true;
 static std::shared_ptr<KDecoration3::DecorationShadow> g_sShadow;
 static std::shared_ptr<KDecoration3::DecorationShadow> g_sShadowInactive;
+
+static QByteArray g_taskManagerSideUpdateUuid = QByteArray();
 
 //________________________________________________________________
 Decoration::Decoration(QObject *parent, const QVariantList &args)
@@ -295,7 +299,6 @@ void Decoration::init()
 #endif
 {
     auto c = window();
-
     reconfigureMain(true);
     
     // active state change animation
@@ -380,8 +383,10 @@ void Decoration::init()
         if (m_internalSettings->buttonIconStyle() == InternalSettings::EnumButtonIconStyle::StyleSystemIconTheme) {
             Q_EMIT reconfigured(); // this will trigger Button::reconfigure
         }
+        update(titleBar());
     });
     connect(c, &KDecoration3::DecoratedWindow::paletteChanged, this, &Decoration::generateDecorationColorsOnClientPaletteUpdate);
+    connect(&g_dBusUpdateNotifier, &DBusUpdateNotifier::appletSettingsUpdate, this, &Decoration::updateTaskManagerSide);
 
     // buttons
     connect(s.get(), &KDecoration3::DecorationSettings::spacingChanged, this, &Decoration::updateButtonsGeometryDelayed);
@@ -597,6 +602,7 @@ void Decoration::reconfigureMain(const bool noUpdateShadow)
 
     QPalette clientPalette = c->palette();
     updateDecorationColors(clientPalette);
+    updateTaskManagerSide();
 
     s_kdeGlobalConfig->reparseConfiguration();
     // settings()->smallSpacing() was used to scale on X11 and usually 2 on Wayland but not always and varies on X11, depending on font size
@@ -800,35 +806,40 @@ void Decoration::setGlobalLookAndFeelOptions(QString lookAndFeelPackageName)
         m_internalSettings->save();
 
         QString presetToLoad;
+        QStringList klassyLookAndFeels = {QStringLiteral("org.kde.klassydarkleftpanel.desktop"),
+                                          QStringLiteral("org.kde.klassylightleftpanel.desktop"),
+                                          QStringLiteral("org.kde.klassydarkbottompanel.desktop"),
+                                          QStringLiteral("org.kde.klassylightbottompanel.desktop")};
 
-        if (lookAndFeelPackageName == QStringLiteral("org.kde.klassykitedarkleftpanel.desktop")) {
-            if (lookAndFeelSet == QStringLiteral("org.kde.klassykitelightleftpanel.desktop")
-                && m_internalSettings->buttonIconStyle() == InternalSettings::EnumButtonIconStyle::StyleKite) {
-                return;
+        // load Klassy preset if it is first time applying Klassy Global Theme
+        if (klassyLookAndFeels.contains(lookAndFeelPackageName)) {
+            if (!klassyLookAndFeels.contains(lookAndFeelSet)) {
+                presetToLoad = QStringLiteral("Klassy");
             }
-            presetToLoad = QStringLiteral("Kite");
-        } else if (lookAndFeelPackageName == QStringLiteral("org.kde.klassykitelightleftpanel.desktop")) {
-            if (lookAndFeelSet == QStringLiteral("org.kde.klassykitedarkleftpanel.desktop")
-                && m_internalSettings->buttonIconStyle() == InternalSettings::EnumButtonIconStyle::StyleKite) {
-                return;
-            }
-            presetToLoad = QStringLiteral("Kite");
-        } else if (lookAndFeelPackageName == QStringLiteral("org.kde.klassykitedarkbottompanel.desktop")) {
-            if (lookAndFeelSet == QStringLiteral("org.kde.klassykitelightbottompanel.desktop")
-                && m_internalSettings->buttonIconStyle() == InternalSettings::EnumButtonIconStyle::StyleSuessigKite) {
-                return;
-            }
-            presetToLoad = QStringLiteral("SuessigKite");
-        } else if (lookAndFeelPackageName == QStringLiteral("org.kde.klassykitelightbottompanel.desktop")) {
-            if (lookAndFeelSet == QStringLiteral("org.kde.klassykitedarkbottompanel.desktop")
-                && m_internalSettings->buttonIconStyle() == InternalSettings::EnumButtonIconStyle::StyleSuessigKite) {
-                return;
-            }
-            presetToLoad = QStringLiteral("SuessigKite");
         }
 
         if (!presetToLoad.isEmpty()) { // if matching look-and-feel-package, load the associated Klassy window decoration preset
             system("klassy-settings -w \"" + presetToLoad.toUtf8() + "\" &");
+        }
+    }
+}
+
+void Decoration::updateTaskManagerSide(QByteArray uuid)
+{
+    if (uuid.isEmpty()) {
+        if (g_taskManagerSideUpdateUuid.isEmpty()) {
+            g_taskManagerSideUpdateUuid = "1";
+            g_taskManagerSide = PlasmaTools::taskManagerSide(true);
+            m_taskManagerSide = g_taskManagerSide;
+        }
+    } else {
+        if (g_taskManagerSideUpdateUuid != uuid) {
+            g_taskManagerSideUpdateUuid = uuid;
+            g_taskManagerSide = PlasmaTools::taskManagerSide(true);
+        }
+        if (m_taskManagerSide != g_taskManagerSide) {
+            m_taskManagerSide = g_taskManagerSide;
+            update(titleBar());
         }
     }
 }

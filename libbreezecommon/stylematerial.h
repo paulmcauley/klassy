@@ -6,14 +6,14 @@
 
 #pragma once
 
-#include "renderdecorationbuttonicon18by18.h"
+#include "stylematerialdynamic.h"
 
 #include <QPainter>
 
 namespace Breeze
 {
 
-class RenderStyleMaterial18By18 : public RenderDecorationButtonIcon18By18
+class RenderStyleMaterial18By18 : public RenderStyleMaterialDynamic18By18
 {
 public:
     /**
@@ -29,15 +29,13 @@ public:
                               const qreal devicePixelRatio,
                               const QPointF &deviceOffsetTitleBarTopLeftToIconTopLeft,
                               const bool forceEvenSquares)
-        : RenderDecorationButtonIcon18By18(painter, fromKstyle, boldButtonIcons, devicePixelRatio, deviceOffsetTitleBarTopLeftToIconTopLeft, forceEvenSquares) {
+        : RenderStyleMaterialDynamic18By18(painter, fromKstyle, boldButtonIcons, devicePixelRatio, deviceOffsetTitleBarTopLeftToIconTopLeft, forceEvenSquares) {
         };
 
-    void renderCloseIcon() override;
-    void renderMaximizeIcon() override;
-    void renderFloatIcon() override;
-    void renderMinimizeIcon() override;
-
-private:
+    void renderMinimizeIcon() override
+    {
+        renderDynamicMinimizeIcon(false);
+    }
 };
 
 }
