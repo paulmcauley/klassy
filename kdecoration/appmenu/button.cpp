@@ -82,7 +82,8 @@ void AppMenuButton::updateAnimationState(bool hovered)
     }
 
     m_animation->setDirection(hovered ? QAbstractAnimation::Forward : QAbstractAnimation::Backward);
-    if (m_animation->state() != QAbstractAnimation::Running) {
+    const bool atTheEnd = hovered && qFuzzyCompare(m_animation->currentValue().toReal(), m_animation->endValue().toReal());
+    if (m_animation->state() != QAbstractAnimation::Running && !atTheEnd) {
         m_animation->start();
     }
 }
