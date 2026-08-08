@@ -211,11 +211,12 @@ QColor AppMenuButton::backgroundColor() const
 {
     auto c = m_d->window();
     const bool active = c->isActive();
+    const QVariantAnimation *animation = m_d->activeStateChangeAnimation();
     if (isChecked() || isPressed()) {
-        return m_buttonPalette->backgroundPressActiveStateAnimated(active, m_animation);
+        return m_buttonPalette->backgroundPressActiveStateAnimated(active, animation);
     } else if (m_animation->state() == QAbstractAnimation::Running) {
-        QColor backgroundNormal = m_buttonPalette->backgroundNormalActiveStateAnimated(active, m_animation);
-        QColor backgroundHover = m_buttonPalette->backgroundHoverActiveStateAnimated(active, m_animation);
+        QColor backgroundNormal = m_buttonPalette->backgroundNormalActiveStateAnimated(active, animation);
+        QColor backgroundHover = m_buttonPalette->backgroundHoverActiveStateAnimated(active, animation);
         if (backgroundNormal.isValid() && backgroundHover.isValid()) {
             return KColorUtils::mix(backgroundNormal, backgroundHover, m_opacity);
         } else if (backgroundHover.isValid()) {
@@ -223,9 +224,9 @@ QColor AppMenuButton::backgroundColor() const
         } else
             return QColor();
     } else if (hovered()) {
-        return m_buttonPalette->backgroundHoverActiveStateAnimated(active, m_animation);
+        return m_buttonPalette->backgroundHoverActiveStateAnimated(active, animation);
     } else {
-        return m_buttonPalette->backgroundNormalActiveStateAnimated(active, m_animation);
+        return m_buttonPalette->backgroundNormalActiveStateAnimated(active, animation);
     }
 }
 
@@ -233,11 +234,12 @@ QColor AppMenuButton::outlineColor() const
 {
     auto c = m_d->window();
     const bool active = c->isActive();
+    const QVariantAnimation *animation = m_d->activeStateChangeAnimation();
     if (isChecked() || isPressed()) {
-        return m_buttonPalette->outlinePressActiveStateAnimated(active, m_animation);
+        return m_buttonPalette->outlinePressActiveStateAnimated(active, animation);
     } else if (m_animation->state() == QAbstractAnimation::Running) {
-        QColor backgroundNormal = m_buttonPalette->outlineNormalActiveStateAnimated(active, m_animation);
-        QColor backgroundHover = m_buttonPalette->outlineHoverActiveStateAnimated(active, m_animation);
+        QColor backgroundNormal = m_buttonPalette->outlineNormalActiveStateAnimated(active, animation);
+        QColor backgroundHover = m_buttonPalette->outlineHoverActiveStateAnimated(active, animation);
         if (backgroundNormal.isValid() && backgroundHover.isValid()) {
             return KColorUtils::mix(backgroundNormal, backgroundHover, m_opacity);
         } else if (backgroundHover.isValid()) {
@@ -245,9 +247,9 @@ QColor AppMenuButton::outlineColor() const
         } else
             return QColor();
     } else if (hovered()) {
-        return m_buttonPalette->outlineHoverActiveStateAnimated(active, m_animation);
+        return m_buttonPalette->outlineHoverActiveStateAnimated(active, animation);
     } else {
-        return m_buttonPalette->outlineNormalActiveStateAnimated(active, m_animation);
+        return m_buttonPalette->outlineNormalActiveStateAnimated(active, animation);
     }
 }
 
@@ -255,11 +257,12 @@ QColor AppMenuButton::foregroundColor() const
 {
     auto c = m_d->window();
     const bool active = c->isActive();
+    const QVariantAnimation *animation = m_d->activeStateChangeAnimation();
     if (isChecked() || isPressed()) {
-        return m_buttonPalette->foregroundPressActiveStateAnimated(active, m_animation);
+        return m_buttonPalette->foregroundPressActiveStateAnimated(active, animation);
     } else if (m_animation->state() == QAbstractAnimation::Running) {
-        QColor backgroundNormal = m_buttonPalette->foregroundNormalActiveStateAnimated(active, m_animation);
-        QColor backgroundHover = m_buttonPalette->foregroundHoverActiveStateAnimated(active, m_animation);
+        QColor backgroundNormal = m_buttonPalette->foregroundNormalActiveStateAnimated(active, animation);
+        QColor backgroundHover = m_buttonPalette->foregroundHoverActiveStateAnimated(active, animation);
         if (backgroundNormal.isValid() && backgroundHover.isValid()) {
             return KColorUtils::mix(backgroundNormal, backgroundHover, m_opacity);
         } else if (backgroundHover.isValid()) {
@@ -267,9 +270,9 @@ QColor AppMenuButton::foregroundColor() const
         } else
             return QColor();
     } else if (hovered()) {
-        return m_buttonPalette->foregroundHoverActiveStateAnimated(active, m_animation);
+        return m_buttonPalette->foregroundHoverActiveStateAnimated(active, animation);
     } else {
-        return m_buttonPalette->foregroundNormalActiveStateAnimated(active, m_animation);
+        return m_buttonPalette->foregroundNormalActiveStateAnimated(active, animation);
     }
 }
 
