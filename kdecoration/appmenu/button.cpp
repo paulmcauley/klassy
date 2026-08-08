@@ -113,7 +113,7 @@ void AppMenuButton::paint(QPainter *painter, const QRectF &repaintRegion)
     backgroundBoundingRect = KDecoration3::snapToPixelGrid(backgroundBoundingRect, m_devicePixelRatio);
     painter->setClipRect(backgroundBoundingRect);
     painter->setRenderHints(QPainter::Antialiasing);
-    painter->setOpacity(sqrt(m_opacity * m_transition));
+    painter->setOpacity(m_opacity);
     painter->translate(geometry().topLeft());
 
     m_buttonPalette = m_d->decorationColors()->buttonPalette(m_type);
@@ -201,7 +201,6 @@ void AppMenuButton::paint(QPainter *painter, const QRectF &repaintRegion)
     }
 
     const QPointF offsetDecorationTopLeftToIconTopLeft = geometry().topLeft() - QPointF(0, m_verticalContentOffset);
-    painter->setOpacity(m_opacity);
     drawContent(painter, offsetDecorationTopLeftToIconTopLeft);
 
     painter->restore();
@@ -218,9 +217,9 @@ QColor AppMenuButton::backgroundColor() const
         QColor backgroundNormal = m_buttonPalette->backgroundNormalActiveStateAnimated(active, animation);
         QColor backgroundHover = m_buttonPalette->backgroundHoverActiveStateAnimated(active, animation);
         if (backgroundNormal.isValid() && backgroundHover.isValid()) {
-            return KColorUtils::mix(backgroundNormal, backgroundHover, m_opacity);
+            return KColorUtils::mix(backgroundNormal, backgroundHover, m_transition);
         } else if (backgroundHover.isValid()) {
-            return ColorTools::alphaMix(backgroundHover, m_opacity);
+            return ColorTools::alphaMix(backgroundHover, m_transition);
         } else
             return QColor();
     } else if (hovered()) {
@@ -241,9 +240,9 @@ QColor AppMenuButton::outlineColor() const
         QColor backgroundNormal = m_buttonPalette->outlineNormalActiveStateAnimated(active, animation);
         QColor backgroundHover = m_buttonPalette->outlineHoverActiveStateAnimated(active, animation);
         if (backgroundNormal.isValid() && backgroundHover.isValid()) {
-            return KColorUtils::mix(backgroundNormal, backgroundHover, m_opacity);
+            return KColorUtils::mix(backgroundNormal, backgroundHover, m_transition);
         } else if (backgroundHover.isValid()) {
-            return ColorTools::alphaMix(backgroundHover, m_opacity);
+            return ColorTools::alphaMix(backgroundHover, m_transition);
         } else
             return QColor();
     } else if (hovered()) {
@@ -264,9 +263,9 @@ QColor AppMenuButton::foregroundColor() const
         QColor backgroundNormal = m_buttonPalette->foregroundNormalActiveStateAnimated(active, animation);
         QColor backgroundHover = m_buttonPalette->foregroundHoverActiveStateAnimated(active, animation);
         if (backgroundNormal.isValid() && backgroundHover.isValid()) {
-            return KColorUtils::mix(backgroundNormal, backgroundHover, m_opacity);
+            return KColorUtils::mix(backgroundNormal, backgroundHover, m_transition);
         } else if (backgroundHover.isValid()) {
-            return ColorTools::alphaMix(backgroundHover, m_opacity);
+            return ColorTools::alphaMix(backgroundHover, m_transition);
         } else
             return QColor();
     } else if (hovered()) {
