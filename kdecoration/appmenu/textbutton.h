@@ -24,7 +24,7 @@
 
 namespace Breeze
 {
-
+class AppMenuButtonGroup;
 class Decoration;
 
 class AppMenuTextButton : public AppMenuButton
@@ -32,7 +32,7 @@ class AppMenuTextButton : public AppMenuButton
     Q_OBJECT
 
 public:
-    AppMenuTextButton(Decoration *decoration, const int buttonIndex, QObject *parent = nullptr);
+    AppMenuTextButton(Decoration *decoration, const int buttonIndex, AppMenuButtonGroup *parent);
     ~AppMenuTextButton() override;
 
     Q_PROPERTY(QAction *action READ action WRITE setAction NOTIFY actionChanged)
