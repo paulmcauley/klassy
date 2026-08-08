@@ -183,6 +183,15 @@
         <default>Left</default>
     </entry>
 
+    <entry name="IntegratedMenuUnisonHovering" type="Enum">
+        <choices>
+            <choice name="Disabled" />
+            <choice name="Separate" />
+            <choice name="Together" />
+        </choices>
+        <default>Disabled</default>
+    </entry>
+
     <entry name="IntegratedMenuReplacesMenuButton" type="Bool">
         <default>true</default>
     </entry>

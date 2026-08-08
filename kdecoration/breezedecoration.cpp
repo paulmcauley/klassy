@@ -2169,9 +2169,11 @@ void Decoration::mouseReleaseEvent(QMouseEvent *event)
 
 void Decoration::hoverMoveEvent(QHoverEvent *event)
 {
+    const bool overIntegratedButtons = m_integratedMenuButtons && m_integratedMenuButtons->geometry().contains(event->position());
     if (m_internalSettings->unisonHovering()) {
         const bool groupContains = m_leftButtons->geometry().contains(event->position()) || m_rightButtons->geometry().contains(event->position());
-        setButtonUnisonHovered(groupContains);
+        const bool integratedContains = overIntegratedButtons && m_integratedMenuButtons->unisonHoveringType() == AppMenuUnisonHovering::Together;
+        setButtonUnisonHovered(groupContains || integratedContains);
     }
 
     // Update integrated menu button showing state based on titlebar hover
@@ -2179,7 +2181,12 @@ void Decoration::hoverMoveEvent(QHoverEvent *event)
         const bool titleBarHovered = titleBar().contains(event->position());
         m_integratedMenuButtons->setHovered(titleBarHovered);
         m_integratedMenuButtons->updateShowing();
-        if (m_integratedMenuButtons->geometry().contains(event->position()))
+        if (m_integratedMenuButtons->unisonHoveringType() != AppMenuUnisonHovering::Disabled) {
+            const bool togetherHovered = m_buttonUnisonHovered && m_integratedMenuButtons->unisonHoveringType() == AppMenuUnisonHovering::Together;
+            m_integratedMenuButtons->setUnisonHovered(overIntegratedButtons || togetherHovered);
+        }
+
+        if (overIntegratedButtons)
             m_integratedMenuButtons->handleHoverMove(event->position());
         if (m_integratedMenuButtons->dragMoveTick(event->position().toPoint()))
             return;
