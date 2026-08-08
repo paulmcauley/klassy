@@ -121,7 +121,7 @@ void AppMenuButton::paint(QPainter *painter, const QRectF &repaintRegion)
     QColor outline = outlineColor();
 
     if (background.isValid() || outline.isValid()) {
-        const QRectF contentRect(QPointF(0, m_verticalContentOffset), geometry().size() - QSizeF(0, m_verticalContentOffset));
+        const QRectF contentRect(QPointF(geometry().topLeft() + QPointF(0, m_verticalContentOffset)), geometry().size() - QSizeF(0, m_verticalContentOffset));
 
         if (outline.isValid()) {
             QPen pen(outline);
@@ -145,22 +145,23 @@ void AppMenuButton::paint(QPainter *painter, const QRectF &repaintRegion)
             cornerRadius = 0;
         }
 
-        const qreal geometryShrinkOffset = PenWidth::Symbol * 1.5 * m_devicePixelRatio;
-        const qreal geometryEnlargeOffset = outline.isValid() ? painter->pen().widthF() / 2 : 0;
+        qreal geometryShrinkOffset = PenWidth::Symbol * 1.5;
+        if (KWindowSystem::isPlatformX11())
+            geometryShrinkOffset *= m_devicePixelRatio;
 
         const auto buttonShape = m_d->internalSettings()->integratedMenuButtonShape();
         QRectF backgroundRect = contentRect;
         if (AppMenuButton::isShapeFullHeight(buttonShape)) {
             backgroundRect = backgroundRect.adjusted(0, -m_verticalContentOffset, 0, 0);
         }
+        backgroundRect = KDecoration3::snapToPixelGrid(backgroundRect, m_devicePixelRatio);
         if (buttonShape == InternalSettings::EnumIntegratedMenuButtonShape::IntegratedRoundedRectangle
             || buttonShape == InternalSettings::EnumIntegratedMenuButtonShape::IntegratedRoundedRectangleGrouped) {
             backgroundRect = backgroundRect.adjusted(geometryShrinkOffset, -geometryShrinkOffset, -geometryShrinkOffset, -geometryShrinkOffset);
         } else {
             backgroundRect = backgroundRect.adjusted(geometryShrinkOffset, geometryShrinkOffset, -geometryShrinkOffset, -geometryShrinkOffset);
         }
-        backgroundRect = backgroundRect.adjusted(-geometryEnlargeOffset, -geometryEnlargeOffset, geometryEnlargeOffset * 2, geometryEnlargeOffset * 2);
-        backgroundRect = KDecoration3::snapToPixelGrid(backgroundRect, m_devicePixelRatio);
+        backgroundRect = backgroundRect.translated(-geometry().topLeft());
 
         if (buttonShape == InternalSettings::EnumIntegratedMenuButtonShape::Rectangle) {
             painter->drawRect(backgroundRect);
