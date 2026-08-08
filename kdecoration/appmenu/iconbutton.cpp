@@ -29,7 +29,7 @@
 namespace Breeze
 {
 
-AppMenuIconButton::AppMenuIconButton(const DecorationButtonType type, Decoration *decoration, const int buttonIndex, QObject *parent)
+AppMenuIconButton::AppMenuIconButton(const DecorationButtonType type, Decoration *decoration, const int buttonIndex, AppMenuButtonGroup *parent)
     : AppMenuButton(type, decoration, buttonIndex, parent)
 {
     reconfigure();

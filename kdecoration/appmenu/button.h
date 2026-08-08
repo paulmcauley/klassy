@@ -28,6 +28,7 @@
 namespace Breeze
 {
 
+class AppMenuButtonGroup;
 class Decoration;
 
 class AppMenuButton : public KDecoration3::DecorationButton
@@ -35,7 +36,7 @@ class AppMenuButton : public KDecoration3::DecorationButton
     Q_OBJECT
 
 public:
-    AppMenuButton(DecorationButtonType type, Decoration *decoration, const int buttonIndex, QObject *parent = nullptr);
+    AppMenuButton(DecorationButtonType type, Decoration *decoration, const int buttonIndex, AppMenuButtonGroup *parent);
     ~AppMenuButton() override = default;
 
     Q_PROPERTY(int buttonIndex READ buttonIndex)
@@ -117,6 +118,8 @@ public:
     {
         m_rightmostVisible = value;
     }
+
+    bool hovered() const;
 
     int buttonIndex() const
     {

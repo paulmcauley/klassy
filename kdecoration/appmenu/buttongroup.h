@@ -60,6 +60,12 @@ enum class AppMenuPosition {
     Right,
 };
 
+enum class AppMenuUnisonHovering {
+    Disabled,
+    Separate,
+    Together,
+};
+
 class AppMenuButtonGroup : public KDecoration3::DecorationButtonGroup
 {
     Q_OBJECT
@@ -98,6 +104,8 @@ public:
     Q_PROPERTY(AppMenuPosition position READ position WRITE setPosition NOTIFY positionChanged)
     Q_PROPERTY(bool showing READ showing WRITE setShowing NOTIFY showingChanged)
     Q_PROPERTY(AppMenuStyle style READ style WRITE setStyle NOTIFY styleChanged)
+    Q_PROPERTY(bool unisonHovered READ unisonHovered WRITE setUnisonHovered NOTIFY unisonHoveredChanged)
+    Q_PROPERTY(AppMenuUnisonHovering unisonHoveringType READ unisonHoveringType WRITE setUnisonHoveringType NOTIFY unisonHoveringTypeChanged)
 
     int animationDuration() const
     {
@@ -190,6 +198,32 @@ public:
         Q_EMIT styleChanged(value);
     }
 
+    bool unisonHovered() const
+    {
+        return m_unisonHovered;
+    }
+    void setUnisonHovered(bool value)
+    {
+        if (m_unisonHovered == value)
+            return;
+        m_unisonHovered = value;
+        Q_EMIT(unisonHoveredChanged(value));
+    }
+
+    AppMenuUnisonHovering unisonHoveringType() const
+    {
+        return m_unisonHoveringType;
+    }
+    void setUnisonHoveringType(AppMenuUnisonHovering value)
+    {
+        if (m_unisonHoveringType == value)
+            return;
+        if (value == AppMenuUnisonHovering::Disabled)
+            setUnisonHovered(false);
+        m_unisonHoveringType = value;
+        Q_EMIT unisonHoveringTypeChanged(value);
+    }
+
 public:
     void updateAppMenuModel();
     void updateOverflow(QRectF availableRect);
@@ -229,6 +263,8 @@ signals:
     void showingChanged(bool);
     void styleChanged(AppMenuStyle);
     void overflowingChanged();
+    void unisonHoveringTypeChanged(AppMenuUnisonHovering);
+    void unisonHoveredChanged(bool);
 
 protected:
     bool eventFilter(QObject *watched, QEvent *event) override;
@@ -285,8 +321,10 @@ private:
     bool m_hovered = false;
     bool m_showing = true;
     bool m_animationEnabled = true;
+    bool m_unisonHovered = false;
     AppMenuStyle m_style = AppMenuStyle::Always;
     AppMenuPosition m_position = AppMenuPosition::Left;
+    AppMenuUnisonHovering m_unisonHoveringType = AppMenuUnisonHovering::Disabled;
     QVariantAnimation *m_animation;
     qreal m_opacity = 1;
     qreal m_visibleWidth = 0;
