@@ -1687,6 +1687,38 @@
               </property>
              </widget>
             </item>
+            <item row="3" column="0">
+             <widget class="QLabel" name="integratedMenuUnisonHoveringLabel">
+              <property name="text">
+               <string>Unison hovering:</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
+              </property>
+              <property name="buddy">
+               <cstring>integratedMenuUnisonHovering</cstring>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="1">
+             <widget class="QComboBox" name="integratedMenuUnisonHovering">
+              <item>
+               <property name="text">
+                <string>Disabled</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Separate</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Together</string>
+               </property>
+              </item>
+             </widget>
+            </item>
             <item row="2" column="0">
              <widget class="QLabel" name="integratedMenuPositionLabel">
               <property name="text">
