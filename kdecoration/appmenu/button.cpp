@@ -35,7 +35,7 @@
 namespace Breeze
 {
 
-AppMenuButton::AppMenuButton(DecorationButtonType type, Decoration *decoration, const int buttonIndex, QObject *parent)
+AppMenuButton::AppMenuButton(DecorationButtonType type, Decoration *decoration, const int buttonIndex, AppMenuButtonGroup *parent)
     : KDecoration3::DecorationButton(KDecoration3::DecorationButtonType::Custom, decoration, parent)
     , m_d(qobject_cast<Decoration *>(decoration))
     , m_buttonIndex(buttonIndex)
@@ -52,12 +52,22 @@ AppMenuButton::AppMenuButton(DecorationButtonType type, Decoration *decoration, 
     setCheckable(true);
 
     connect(this, &AppMenuButton::clicked, this, &AppMenuButton::trigger);
-    connect(this, &KDecoration3::DecorationButton::hoveredChanged, this, &AppMenuButton::updateAnimationState);
+    connect(this, &KDecoration3::DecorationButton::hoveredChanged, this, [this](bool v) {
+        updateAnimationState(v || qobject_cast<AppMenuButtonGroup *>(this->parent())->unisonHovered());
+    });
+    connect(parent, &AppMenuButtonGroup::unisonHoveredChanged, this, [this](bool v) {
+        updateAnimationState(v || this->isHovered());
+    });
 
     const auto *buttonGroup = qobject_cast<AppMenuButtonGroup *>(parent);
     if (buttonGroup) {
         setOpacity(buttonGroup->opacity());
     }
+}
+
+bool AppMenuButton::hovered() const // for integrated menu unison hovering
+{
+    return isHovered() || qobject_cast<AppMenuButtonGroup *>(parent())->unisonHovered();
 }
 
 void AppMenuButton::updateAnimationState(bool hovered)
@@ -210,7 +220,7 @@ QColor AppMenuButton::backgroundColor() const
             return ColorTools::alphaMix(backgroundHover, m_opacity);
         } else
             return QColor();
-    } else if (isHovered()) {
+    } else if (hovered()) {
         return m_buttonPalette->backgroundHoverActiveStateAnimated(active, m_animation);
     } else {
         return m_buttonPalette->backgroundNormalActiveStateAnimated(active, m_animation);
@@ -232,7 +242,7 @@ QColor AppMenuButton::outlineColor() const
             return ColorTools::alphaMix(backgroundHover, m_opacity);
         } else
             return QColor();
-    } else if (isHovered()) {
+    } else if (hovered()) {
         return m_buttonPalette->outlineHoverActiveStateAnimated(active, m_animation);
     } else {
         return m_buttonPalette->outlineNormalActiveStateAnimated(active, m_animation);
@@ -254,7 +264,7 @@ QColor AppMenuButton::foregroundColor() const
             return ColorTools::alphaMix(backgroundHover, m_opacity);
         } else
             return QColor();
-    } else if (isHovered()) {
+    } else if (hovered()) {
         return m_buttonPalette->foregroundHoverActiveStateAnimated(active, m_animation);
     } else {
         return m_buttonPalette->foregroundNormalActiveStateAnimated(active, m_animation);

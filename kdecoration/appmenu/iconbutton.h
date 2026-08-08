@@ -23,13 +23,14 @@
 namespace Breeze
 {
 
+class AppMenuButtonGroup;
 class Decoration;
 
 class AppMenuIconButton : public AppMenuButton
 {
     Q_OBJECT
 public:
-    explicit AppMenuIconButton(const DecorationButtonType type, Decoration *decoration, const int buttonIndex, QObject *parent = nullptr);
+    explicit AppMenuIconButton(const DecorationButtonType type, Decoration *decoration, const int buttonIndex, AppMenuButtonGroup *parent);
     ~AppMenuIconButton() override;
 
     void reconfigure() override;
