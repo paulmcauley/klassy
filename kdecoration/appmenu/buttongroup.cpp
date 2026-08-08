@@ -152,6 +152,7 @@ void AppMenuButtonGroup::reconfigure()
     auto internalSettings = m_decoration->internalSettings();
     setStyle(static_cast<AppMenuStyle>(internalSettings->integratedMenuStyle()));
     setPosition(static_cast<AppMenuPosition>(internalSettings->integratedMenuPosition()));
+    setUnisonHoveringType(static_cast<AppMenuUnisonHovering>(internalSettings->integratedMenuUnisonHovering()));
 
     if (!internalSettings->integratedMenuSearchEnabled() && m_searchButton) {
         removeButton(m_searchButton);
