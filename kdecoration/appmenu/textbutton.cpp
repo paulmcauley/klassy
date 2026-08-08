@@ -26,7 +26,7 @@
 namespace Breeze
 {
 
-AppMenuTextButton::AppMenuTextButton(Decoration *decoration, const int buttonIndex, QObject *parent)
+AppMenuTextButton::AppMenuTextButton(Decoration *decoration, const int buttonIndex, AppMenuButtonGroup *parent)
     : AppMenuButton(DecorationButtonType::CustomIntegratedMenuMenu, decoration, buttonIndex, parent)
 {
     setVisible(true);
