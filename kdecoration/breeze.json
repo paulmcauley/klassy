@@ -6,6 +6,7 @@
     },
     "X-KDE-ConfigModule": "kcm_klassydecoration",
     "org.kde.kdecoration3": {
-        "recommendedBorderSize": "Normal"
+        "recommendedBorderSize": "Normal",
+        "styles": ["shadow", "titled"]
     }
 }

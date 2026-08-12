@@ -493,6 +493,10 @@ void Decoration::updateOverrideOutlineFromButtonAnimationState()
 //________________________________________________________________
 qreal Decoration::borderSize(bool bottom, qreal scale) const
 {
+    if (style() == KDecoration3::Style::Shadow) {
+        return 0;
+    }
+
     const int baseSize = m_smallSpacing;
     int borderSize;
     if (m_internalSettings && (m_internalSettings->exceptionBorder())) {

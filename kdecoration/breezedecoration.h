@@ -401,9 +401,11 @@ bool Decoration::isBottomEdge() const
 
 bool Decoration::hideTitleBar() const
 {
+    if (style() == KDecoration3::Style::Shadow)
+        return true;
+
     bool hide = false;
     auto c = window();
-
     switch (m_internalSettings->hideTitleBar()) {
     default:
     case InternalSettings::EnumHideTitleBar::Never:
