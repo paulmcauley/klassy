@@ -182,11 +182,7 @@ Q_SIGNALS:
     void buttonUnisonHoveredChanged(bool); // for unison hovering
 
 public Q_SLOTS:
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     bool init() override;
-#else
-    void init() override;
-#endif
     void setButtonUnisonHovered(bool value);
 
 private Q_SLOTS:
