@@ -60,7 +60,7 @@ target_link_libraries(kcm_klassydecoration
 
 kcmutils_generate_desktop_file(kcm_klassydecoration)
 
-add_test(NAME kcm_klassydecoration_smoketest COMMAND kcmshell6 --smoke-test ${KDECORATION_KCM_PLUGIN_DIR}/kcm_klassydecoration)
+add_test(NAME kcm_klassydecoration_smoketest COMMAND kcmshell6 -style Klassy --smoke-test ${KDECORATION_KCM_PLUGIN_DIR}/kcm_klassydecoration)
 set_tests_properties(kcm_klassydecoration_smoketest PROPERTIES
     ENVIRONMENT_MODIFICATION QT_PLUGIN_PATH=path_list_prepend:${CMAKE_BINARY_DIR}/bin
 )

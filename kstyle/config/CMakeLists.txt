@@ -69,7 +69,7 @@ ecm_install_icons(ICONS sc-apps-klassy-settings.svgz
 # .desktop file
 install(FILES klassy-settings.desktop DESTINATION ${KDE_INSTALL_APPDIR})
 
-add_test(NAME klassystyleconfig_smoketest COMMAND kcmshell6 --smoke-test kstyle_config/klassystyleconfig)
+add_test(NAME klassystyleconfig_smoketest COMMAND kcmshell6 -style Klassy --smoke-test kstyle_config/klassystyleconfig)
 set_tests_properties(klassystyleconfig_smoketest PROPERTIES
     ENVIRONMENT_MODIFICATION QT_PLUGIN_PATH=path_list_prepend:${CMAKE_BINARY_DIR}/bin
 )
