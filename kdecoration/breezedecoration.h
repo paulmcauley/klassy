@@ -217,7 +217,6 @@ private Q_SLOTS:
     {
         updateShadow(false, true);
     }
-    void onTabletModeChanged(bool mode);
     void updateNextScale();
 
 protected:
@@ -296,7 +295,6 @@ private:
     //* frame corner radius, scaled according to smallspacing
     qreal m_scaledCornerRadius = 3.0;
 
-    bool m_tabletMode = false;
     bool m_darkTheme = false;
 
     //* Rectangular area of titlebar without clipped corners

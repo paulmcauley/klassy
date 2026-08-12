@@ -66,7 +66,6 @@ ButtonSizing::ButtonSizing(KSharedConfig::Ptr config, KSharedConfig::Ptr presets
     connect(m_ui.fullHeightButtonSpacingRight, SIGNAL(valueChanged(int)), SLOT(fullHeightButtonSpacingRightChanged()), Qt::ConnectionType::DirectConnection);
 
     connect(m_ui.spacerButtonWidthRelative, &QSpinBox::valueChanged, this, &ButtonSizing::updateChanged, Qt::ConnectionType::DirectConnection);
-    connect(m_ui.scaleTouchMode, &QSpinBox::valueChanged, this, &ButtonSizing::updateChanged, Qt::ConnectionType::DirectConnection);
 
     connect(m_ui.buttonBox->button(QDialogButtonBox::RestoreDefaults), &QAbstractButton::clicked, this, &ButtonSizing::defaults);
     connect(m_ui.buttonBox->button(QDialogButtonBox::Reset), &QAbstractButton::clicked, this, &ButtonSizing::load);
@@ -105,7 +104,6 @@ void ButtonSizing::loadMain(const bool assignUiValuesOnly)
     m_ui.buttonCustomCornerRadius->setValue(m_internalSettings->buttonCustomCornerRadius());
 
     m_ui.spacerButtonWidthRelative->setValue(m_internalSettings->spacerButtonWidthRelative());
-    m_ui.scaleTouchMode->setValue(m_internalSettings->scaleTouchMode());
 
     setVisibleUiElements(); // needs to be at the end of load to get the correct value of m_ui.buttonCornerRadius
 
@@ -330,7 +328,6 @@ void ButtonSizing::save(const bool reloadKwinConfig)
     m_internalSettings->setButtonCustomCornerRadius(m_ui.buttonCustomCornerRadius->value());
 
     m_internalSettings->setSpacerButtonWidthRelative(m_ui.spacerButtonWidthRelative->value());
-    m_internalSettings->setScaleTouchMode(m_ui.scaleTouchMode->value());
 
     m_internalSettings->save();
     setChanged(false);
@@ -422,8 +419,6 @@ void ButtonSizing::updateChanged()
         modified = true;
 
     else if (m_ui.spacerButtonWidthRelative->value() != m_internalSettings->spacerButtonWidthRelative())
-        modified = true;
-    else if (m_ui.scaleTouchMode->value() != m_internalSettings->scaleTouchMode())
         modified = true;
 
     setChanged(modified);

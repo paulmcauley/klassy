@@ -102,14 +102,8 @@ target_link_libraries(klassy${QT_MAJOR_VERSION}
 
 if(QT_MAJOR_VERSION STREQUAL "5")
     target_link_libraries(klassy5 KF5::ConfigWidgets)
-    if (BREEZE_HAVE_QTQUICK)
-        target_link_libraries(klassy5 KF5::Kirigami2)
-    endif()
 else()
     target_link_libraries(klassy6 KF6::ColorScheme)
-    if (BREEZE_HAVE_QTQUICK)
-        target_link_libraries(klassy6 KF6::KirigamiPlatform)
-    endif()
 endif()
 
 

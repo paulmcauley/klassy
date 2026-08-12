@@ -340,30 +340,6 @@ void Decoration::init()
                  this,
                  SLOT(reconfigure()));
 
-    // Implement tablet mode DBus connection
-    dbus.connect(QStringLiteral("org.kde.KWin"),
-                 QStringLiteral("/org/kde/KWin"),
-                 QStringLiteral("org.kde.KWin.TabletModeManager"),
-                 QStringLiteral("tabletModeChanged"),
-                 QStringLiteral("b"),
-                 this,
-                 SLOT(onTabletModeChanged(bool)));
-
-    auto message = QDBusMessage::createMethodCall(QStringLiteral("org.kde.KWin"),
-                                                  QStringLiteral("/org/kde/KWin"),
-                                                  QStringLiteral("org.freedesktop.DBus.Properties"),
-                                                  QStringLiteral("Get"));
-    message.setArguments({QStringLiteral("org.kde.KWin.TabletModeManager"), QStringLiteral("tabletMode")});
-    auto call = new QDBusPendingCallWatcher(dbus.asyncCall(message), this);
-    connect(call, &QDBusPendingCallWatcher::finished, this, [this, call]() {
-        QDBusPendingReply<QVariant> reply = *call;
-        if (!reply.isError()) {
-            onTabletModeChanged(reply.value().toBool());
-        }
-
-        call->deleteLater();
-    });
-
     updateTitleBar();
     auto s = settings();
     connect(s.get(), &KDecoration3::DecorationSettings::borderSizeChanged, this, &Decoration::recalculateBorders);
@@ -1560,9 +1536,6 @@ void Decoration::calculateIconSizes()
     qreal baseSize = settings()->gridUnit(); // 10 on Wayland
     qreal basePaddingSize = m_smallSpacing; // 2 on Wayland
 
-    if (m_tabletMode)
-        baseSize = baseSize * m_internalSettings->scaleTouchMode() / 100.0f;
-
     if (m_internalSettings->buttonIconStyle() == InternalSettings::EnumButtonIconStyle::StyleSystemIconTheme) {
         switch (m_internalSettings->systemIconSize()) {
         case InternalSettings::EnumSystemIconSize::SystemIcon8: // 10, 8 on Wayland
@@ -1648,14 +1621,6 @@ void Decoration::calculateIconSizes()
 
         m_smallButtonBackgroundSize = KDecoration3::snapToPixelGrid(m_iconSize * smallBackgroundScaleFactor, scale);
     }
-}
-
-void Decoration::onTabletModeChanged(bool mode)
-{
-    m_tabletMode = mode;
-    calculateIconSizes();
-    recalculateBorders();
-    updateButtonsGeometry();
 }
 
 //________________________________________________________________

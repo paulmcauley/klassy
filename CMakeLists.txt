@@ -40,7 +40,7 @@ include(GtkUpdateIconCache)
 
 option(BUILD_QT5 "Build Qt5 style" ON)
 option(BUILD_QT6 "Build with Qt6" ON)
-option(BUILD_WITH_QTQUICK "Build with Qt Quick and Kirigami features enabled" ON)
+option(BUILD_WITH_QTQUICK "Build with Qt Quick features enabled" ON)
 
 set(QT_NO_CREATE_VERSIONLESS_TARGETS ON)
 set(QT_NO_CREATE_VERSIONLESS_FUNCTIONS ON)
@@ -91,7 +91,6 @@ function(build_Qt5)
 
     if(BUILD_WITH_QTQUICK)
         find_package(Qt5 ${QT5_MIN_VERSION} REQUIRED COMPONENTS Quick)
-        find_package(KF5 ${KF5_MIN_VERSION} REQUIRED COMPONENTS Kirigami2)
     endif()
 
     set(BREEZE_HAVE_KSTYLE ${KF5FrameworkIntegration_FOUND})
@@ -147,7 +146,6 @@ function(build_Qt6)
 
     if(BUILD_WITH_QTQUICK)
         find_package(Qt6 ${QT_MIN_VERSION} REQUIRED COMPONENTS Quick)
-        find_package(KF6KirigamiPlatform ${KF6_MIN_VERSION} REQUIRED)
     endif()
 
     set(BREEZE_HAVE_KSTYLE ${KF6FrameworkIntegration_FOUND})

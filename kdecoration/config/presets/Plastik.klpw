@@ -96,7 +96,6 @@ PoorIconContrastThresholdActive=1.5
 PoorIconContrastThresholdInactive=1.5
 RoundAllCornersWhenNoBorders=false
 ScaleBackgroundPercent=120
-ScaleTouchMode=150
 ShadowColor=0,0,0
 ShadowSize=ShadowLarge
 ShadowStrength=255

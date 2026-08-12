@@ -270,12 +270,6 @@
        <max>400</max>
     </entry>
 
-    <entry name="ScaleTouchMode" type = "Int">
-       <default>150</default>
-       <min>100</min>
-       <max>400</max>
-    </entry>
-
   </group>
 
   <group name="ButtonColors">

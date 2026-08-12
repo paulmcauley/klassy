@@ -68,23 +68,6 @@
 #include <QDBusConnection>
 #endif
 
-#if BREEZE_HAVE_QTQUICK
-#include <KCoreAddons>
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
-#include <Kirigami/Platform/TabletModeWatcher>
-using TabletModeWatcher = Kirigami::Platform::TabletModeWatcher;
-#else
-#if __has_include(<Kirigami/TabletModeWatcher>)
-// the namespaced include is new in KF 5.91
-#include <Kirigami/TabletModeWatcher>
-#else
-#include <TabletModeWatcher>
-#endif
-using TabletModeWatcher = Kirigami::TabletModeWatcher;
-#endif
-#include <QQuickWindow>
-#endif
-
 #include "breeze_logging.h"
 
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
@@ -675,22 +658,7 @@ int Style::pixelMetric(PixelMetric metric, const QStyleOption *option, const QWi
 
     // small icon size
     case PM_SmallIconSize: {
-        auto iconSize = ParentStyleClass::pixelMetric(metric, option, widget);
-        if (!isTabletMode()) {
-            return iconSize;
-        }
-
-        // in tablet mode, we try to figure out the next size and use it
-        // see bug 455513
-        auto metaEnum = QMetaEnum::fromType<KIconLoader::StdSizes>();
-        for (int i = 0; i + 1 < metaEnum.keyCount(); ++i) {
-            if (iconSize == metaEnum.value(i)) {
-                return metaEnum.value(i + 1);
-            }
-        }
-
-        // size is either too large or unknown, just increase it by 50%
-        return iconSize * 3 / 2;
+        return ParentStyleClass::pixelMetric(metric, option, widget);
     }
 
     // frame width
@@ -3992,7 +3960,7 @@ QSize Style::menuItemSizeFromContents(const QStyleOption *option, const QSize &c
         size.setHeight(qMax(size.height(), int(Metrics::CheckBox_Size)));
         size.setHeight(qMax(size.height(), iconWidth));
         size.setHeight(size.height() + 1); // Make sure to add one pixel here to follow QQC2 style more closely
-        return expandSize(size, Metrics::MenuItem_MarginWidth, (isTabletMode() ? 2 : 1) * Metrics::MenuItem_MarginHeight);
+        return expandSize(size, Metrics::MenuItem_MarginWidth, Metrics::MenuItem_MarginHeight);
     }
 
     case QStyleOptionMenuItem::Separator: {
@@ -6360,7 +6328,7 @@ bool Style::drawMenuItemControl(const QStyleOption *option, QPainter *painter, c
     }
 
     // get rect available for contents
-    auto contentsRect(insideMargin(rect, Metrics::MenuItem_MarginWidth, (isTabletMode() ? 2 : 1) * Metrics::MenuItem_MarginHeight));
+    auto contentsRect(insideMargin(rect, Metrics::MenuItem_MarginWidth, Metrics::MenuItem_MarginHeight));
     contentsRect = contentsRect.marginsRemoved(QMargins(Metrics::MenuItem_TextLeftMargin, 0, 0, 0));
 
     // define relevant rectangles
@@ -8867,18 +8835,6 @@ QIcon Style::toolBarExtensionIcon(StandardPixmap standardPixmap, const QStyleOpt
     }
 
     return icon;
-}
-
-bool Style::isTabletMode() const
-{
-    if (qEnvironmentVariableIsSet("BREEZE_IS_TABLET_MODE")) {
-        return qEnvironmentVariableIntValue("BREEZE_IS_TABLET_MODE");
-    }
-#if BREEZE_HAVE_QTQUICK
-    return TabletModeWatcher::self()->isTabletMode();
-#else
-    return false;
-#endif
 }
 
 //____________________________________________________________________________________
