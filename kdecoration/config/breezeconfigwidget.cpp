@@ -839,10 +839,10 @@ void ConfigWidget::getButtonsOrderFromKwinConfig()
     if (kwinConfig && kwinConfig->hasGroup(QStringLiteral("org.kde.kdecoration2"))) { // As of Plasma 6.3.3 this is still kdecoration2
         KConfigGroup kdecoration3Group = kwinConfig->group(QStringLiteral("org.kde.kdecoration2"));
 
-        buttonsOnLeft = kdecoration3Group.readEntry(QStringLiteral("ButtonsOnLeft"), QStringLiteral("MS"));
+        buttonsOnLeft = kdecoration3Group.readEntry(QStringLiteral("ButtonsOnLeft"), QStringLiteral("MSE"));
         buttonsOnRight = kdecoration3Group.readEntry(QStringLiteral("ButtonsOnRight"), QStringLiteral("HIAX"));
     } else {
-        buttonsOnLeft = QStringLiteral("MS");
+        buttonsOnLeft = QStringLiteral("MSE");
         buttonsOnRight = QStringLiteral("HIAX");
     }
 
