@@ -111,7 +111,7 @@ void RenderDecorationButtonIcon18By18::renderMinimizeIcon()
     }
 }
 
-void RenderDecorationButtonIcon18By18::renderCenteredLineMinimizeIcon()
+void RenderDecorationButtonIcon18By18::renderCenteredLineMinimizeIcon(bool smaller)
 {
     QPen pen = m_painter->pen();
     bool isOddPenWidth = true;
@@ -135,14 +135,22 @@ void RenderDecorationButtonIcon18By18::renderCenteredLineMinimizeIcon()
     m_painter->setPen(pen);
 
     QVector<QPointF> line;
+    qreal x1, x2;
+    if (smaller) {
+        x1 = 5.5;
+        x2 = 12.5;
+    } else {
+        x1 = 4.5;
+        x2 = 13.5;
+    }
     // horizontal line
     if (isOddPenWidth) {
-        line = {snapToNearestPixel(QPointF(4.5, 9.5), SnapPixel::ToHalf, SnapPixel::ToHalf),
-                snapToNearestPixel(QPointF(13.5, 9.5), SnapPixel::ToHalf, SnapPixel::ToHalf)};
+        line = {snapToNearestPixel(QPointF(x1, 9.5), SnapPixel::ToHalf, SnapPixel::ToHalf),
+                snapToNearestPixel(QPointF(x2, 9.5), SnapPixel::ToHalf, SnapPixel::ToHalf)};
 
     } else {
-        line = {snapToNearestPixel(QPointF(4.5, 9.5), SnapPixel::ToWhole, SnapPixel::ToWhole),
-                snapToNearestPixel(QPointF(13.5, 9.5), SnapPixel::ToWhole, SnapPixel::ToWhole)};
+        line = {snapToNearestPixel(QPointF(x1, 9.5), SnapPixel::ToWhole, SnapPixel::ToWhole),
+                snapToNearestPixel(QPointF(x2, 9.5), SnapPixel::ToWhole, SnapPixel::ToWhole)};
     }
 
     if (m_strokeToFilledPath) {

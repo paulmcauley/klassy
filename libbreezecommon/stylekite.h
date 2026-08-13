@@ -26,7 +26,7 @@ public:
 
     void renderMinimizeIcon() override
     {
-        renderDynamicMinimizeIcon(false);
+        renderCenteredLineMinimizeIcon(true);
     }
 
 private:

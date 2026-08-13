@@ -1,7 +1,7 @@
 [Klassy Window Decoration Preset File]
 version=6.7.git
 
-[Windeco Preset ClassiK v3]
+[Windeco Preset ClassiK Ocean]
 ActiveTitleBarOpacity=100
 AdjustBackgroundColorOnPoorContrastActive=true
 AdjustBackgroundColorOnPoorContrastInactive=true
@@ -22,10 +22,11 @@ ButtonIconColorsActive=TitleBarText
 ButtonIconColorsInactive=TitleBarText
 ButtonIconOpacityActive=100
 ButtonIconOpacityInactive=100
-ButtonIconStyle=StyleTraditionalDynamic
+ButtonIconStyle=StyleMaterialDynamic
 ButtonOverrideColorsActiveApplicationMenu=
 ButtonOverrideColorsActiveClose=
 ButtonOverrideColorsActiveContextHelp=
+ButtonOverrideColorsActiveExcludeFromCapture=
 ButtonOverrideColorsActiveKeepAbove=
 ButtonOverrideColorsActiveKeepBelow=
 ButtonOverrideColorsActiveMaximize=
@@ -36,6 +37,7 @@ ButtonOverrideColorsActiveShade=
 ButtonOverrideColorsInactiveApplicationMenu=
 ButtonOverrideColorsInactiveClose=
 ButtonOverrideColorsInactiveContextHelp=
+ButtonOverrideColorsInactiveExcludeFromCapture=
 ButtonOverrideColorsInactiveKeepAbove=
 ButtonOverrideColorsInactiveKeepBelow=
 ButtonOverrideColorsInactiveMaximize=
