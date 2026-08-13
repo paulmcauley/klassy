@@ -136,9 +136,12 @@ static std::mutex g_setGlobalLookAndFeelOptionsMutex;
 
 // cached shadow values
 static int g_sDecoCount = 0;
-static int g_shadowSizeEnum = InternalSettings::EnumShadowSize::ShadowLarge;
-static int g_shadowStrength = 255;
-static QColor g_shadowColor = Qt::black;
+static int g_shadowSizeEnumActive = InternalSettings::EnumShadowSize::ShadowLarge;
+static int g_shadowStrengthActive = 255;
+static QColor g_shadowColorActive = Qt::black;
+static int g_shadowSizeEnumInactive = InternalSettings::EnumShadowSize::ShadowLarge;
+static int g_shadowStrengthInactive = 128;
+static QColor g_shadowColorInactive = Qt::black;
 static qreal g_cornerRadius = 3;
 static qreal g_systemScaleFactor = 1;
 static bool g_hasNoBorders = true;
@@ -1715,8 +1718,10 @@ void Decoration::updateShadow(const bool forceUpdateCache, bool noCache, const b
     if (!noCache
         && (
 
-            forceUpdateCache || g_shadowSizeEnum != m_internalSettings->shadowSize() || g_shadowStrength != m_internalSettings->shadowStrength()
-            || g_shadowColor != m_internalSettings->shadowColor() || !(qAbs(g_cornerRadius - m_scaledCornerRadius) < 0.001)
+            forceUpdateCache || g_shadowSizeEnumActive != m_internalSettings->shadowSize(true)
+            || g_shadowSizeEnumInactive != m_internalSettings->shadowSize(false) || g_shadowStrengthActive != m_internalSettings->shadowStrength(true)
+            || g_shadowStrengthInactive != m_internalSettings->shadowStrength(false) || g_shadowColorActive != m_internalSettings->shadowColor(true)
+            || g_shadowColorInactive != m_internalSettings->shadowColor(false) || !(qAbs(g_cornerRadius - m_scaledCornerRadius) < 0.001)
             || !(qAbs(g_systemScaleFactor - m_systemScaleFactorX11) < 0.001) || g_hasNoBorders != hasNoBorders()
             || g_roundAllCornersWhenNoBorders != m_internalSettings->roundAllCornersWhenNoBorders()
             || g_windowOutlineStyleActive != m_internalSettings->windowOutlineStyle(true)
@@ -1728,9 +1733,12 @@ void Decoration::updateShadow(const bool forceUpdateCache, bool noCache, const b
             || g_colorizeWindowOutlineWithButton != m_internalSettings->colorizeWindowOutlineWithButton())) {
         g_sShadow.reset();
         g_sShadowInactive.reset();
-        g_shadowSizeEnum = m_internalSettings->shadowSize();
-        g_shadowStrength = m_internalSettings->shadowStrength();
-        g_shadowColor = m_internalSettings->shadowColor();
+        g_shadowSizeEnumActive = m_internalSettings->shadowSize(true);
+        g_shadowStrengthActive = m_internalSettings->shadowStrength(true);
+        g_shadowColorActive = m_internalSettings->shadowColor(true);
+        g_shadowSizeEnumInactive = m_internalSettings->shadowSize(false);
+        g_shadowStrengthInactive = m_internalSettings->shadowStrength(false);
+        g_shadowColorInactive = m_internalSettings->shadowColor(false);
         g_cornerRadius = m_scaledCornerRadius;
         g_systemScaleFactor = m_systemScaleFactorX11;
         g_hasNoBorders = hasNoBorders();
@@ -1766,6 +1774,7 @@ void Decoration::updateShadow(const bool forceUpdateCache, bool noCache, const b
 std::shared_ptr<KDecoration3::DecorationShadow> Decoration::createShadowObject(QColor shadowColor, const bool isWindowOutlineOverride)
 {
     auto c = window();
+    bool active = c->isActive();
     const qreal scale = c->nextScale();
 
     // determine when a window outline does not need to be drawn (even when set to none, sometimes needs to be drawn if there is an animation)
@@ -1773,15 +1782,19 @@ std::shared_ptr<KDecoration3::DecorationShadow> Decoration::createShadowObject(Q
         ((m_internalSettings->windowOutlineStyle(true) == InternalSettings::EnumWindowOutlineStyle::WindowOutlineNone
           && m_internalSettings->windowOutlineStyle(false) == InternalSettings::EnumWindowOutlineStyle::WindowOutlineNone)
          || (m_animation->state() != QAbstractAnimation::Running
-             && ((c->isActive() && m_internalSettings->windowOutlineStyle(true) == InternalSettings::EnumWindowOutlineStyle::WindowOutlineNone)
-                 || (!c->isActive() && m_internalSettings->windowOutlineStyle(false) == InternalSettings::EnumWindowOutlineStyle::WindowOutlineNone))))
+             && ((active && m_internalSettings->windowOutlineStyle(true) == InternalSettings::EnumWindowOutlineStyle::WindowOutlineNone)
+                 || (!active && m_internalSettings->windowOutlineStyle(false) == InternalSettings::EnumWindowOutlineStyle::WindowOutlineNone))))
         && (!(c->isKeepAbove() && m_internalSettings->colorizeWindowOutlineWithButton()));
 
-    if (m_internalSettings->shadowSize() == InternalSettings::EnumShadowSize::ShadowNone && windowOutlineNone && !isWindowOutlineOverride) {
+    if (active && m_internalSettings->shadowSize(true) == InternalSettings::EnumShadowSize::ShadowNone && windowOutlineNone && !isWindowOutlineOverride) {
+        return nullptr;
+    }
+    if (!active && m_internalSettings->shadowSize(false) == InternalSettings::EnumShadowSize::ShadowNone && windowOutlineNone && !isWindowOutlineOverride) {
         return nullptr;
     }
 
-    const CompositeShadowParams params = lookupShadowParams(m_internalSettings->shadowSize());
+    const CompositeShadowParams params = lookupShadowParams(active ? m_internalSettings->shadowSize(true) : m_internalSettings->shadowSize(false));
+
     qreal shadow1Radius = params.shadow1.radius;
     qreal shadow2Radius = params.shadow2.radius;
 

@@ -1072,13 +1072,27 @@
   </group>
 
   <group name="ShadowStyle">
-    <entry name="ShadowStrength" type = "Int">
-    <default>255</default>
+
+    <entry name="ShadowStrength$(ShadowStrengthActive)" type = "Int">
+        <parameter name="ShadowStrengthActive" type="Enum">
+            <values>
+                <value>Inactive</value>
+                <value>Active</value>
+            </values>
+        </parameter>
+    <default param ="Active">255</default>
+    <default param ="Inactive">128</default>
     <min>25</min>
     <max>255</max>
     </entry>
 
-    <entry name="ShadowSize" type = "Enum">
+    <entry name="ShadowSize$(ShadowSizeActive)" type = "Enum">
+        <parameter name="ShadowSizeActive" type="Enum">
+            <values>
+                <value>Inactive</value>
+                <value>Active</value>
+            </values>
+        </parameter>
     <choices>
         <choice name="ShadowNone"/>
         <choice name="ShadowSmall"/>
@@ -1089,7 +1103,13 @@
     <default>ShadowLarge</default>
     </entry>
 
-    <entry name="ShadowColor" type = "Color">
+    <entry name="ShadowColor$(ShadowColorActive)" type = "Color">
+        <parameter name="ShadowColorActive" type="Enum">
+            <values>
+                <value>Inactive</value>
+                <value>Active</value>
+            </values>
+        </parameter>
     <default>0, 0, 0</default>
     </entry>
   </group>

@@ -180,7 +180,9 @@ bool ShadowHelper::eventFilter(QObject *object, QEvent *event)
 //_______________________________________________________
 TileSet ShadowHelper::shadowTiles(QWidget *widget)
 {
-    CompositeShadowParams params = lookupShadowParams(_helper->decorationConfig()->shadowSize());
+    bool active = true;
+
+    CompositeShadowParams params = lookupShadowParams(_helper->decorationConfig()->shadowSize(active));
 
     if (params.isNone()) {
         return TileSet();
@@ -197,8 +199,8 @@ TileSet ShadowHelper::shadowTiles(QWidget *widget)
         return c;
     };
 
-    const QColor color = _helper->decorationConfig()->shadowColor();
-    const qreal strength = static_cast<qreal>(_helper->decorationConfig()->shadowStrength()) / 255.0;
+    const QColor color = _helper->decorationConfig()->shadowColor(active);
+    const qreal strength = static_cast<qreal>(_helper->decorationConfig()->shadowStrength(active)) / 255.0;
 
     const QSize boxSize =
         BoxShadowRenderer::calculateMinimumBoxSize(params.shadow1.radius).expandedTo(BoxShadowRenderer::calculateMinimumBoxSize(params.shadow2.radius));
@@ -405,7 +407,7 @@ void ShadowHelper::installShadows(QWidget *widget)
 //_______________________________________________________
 QMargins ShadowHelper::shadowMargins(QWidget *widget) const
 {
-    CompositeShadowParams params = lookupShadowParams(_helper->decorationConfig()->shadowSize());
+    CompositeShadowParams params = lookupShadowParams(_helper->decorationConfig()->shadowSize(true));
     if (params.isNone()) {
         return QMargins();
     }

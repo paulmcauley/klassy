@@ -39,7 +39,7 @@ void MdiWindowShadow::updateGeometry()
     }
 
     // metrics
-    const CompositeShadowParams params = ShadowHelper::lookupShadowParams(_shadowHelper->helper()->decorationConfig()->shadowSize());
+    const CompositeShadowParams params = ShadowHelper::lookupShadowParams(_shadowHelper->helper()->decorationConfig()->shadowSize(true));
     if (params.isNone()) {
         return;
     }

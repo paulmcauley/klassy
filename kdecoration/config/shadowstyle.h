@@ -24,11 +24,15 @@ public:
     explicit ShadowStyle(KSharedConfig::Ptr config, KSharedConfig::Ptr presetsConfig, QObject *parent = nullptr);
     ~ShadowStyle();
 
+    void loadMain(const bool assignUiValuesOnly = false);
     void save(const bool reloadKwinConfig = true);
     void defaults();
 
 public Q_SLOTS:
-    void load();
+    void load()
+    {
+        loadMain();
+    }
 
 private Q_SLOTS:
     void accept() override;

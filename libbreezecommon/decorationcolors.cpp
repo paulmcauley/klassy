@@ -189,9 +189,8 @@ void DecorationColors::generateDecorationPaletteGroup(const QPalette &palette,
     (*decorationPaletteGroup)->highlightLessSaturated = ColorTools::getLessSaturatedColorForWindowHighlight((*decorationPaletteGroup)->highlight, true);
 
     // set shadow
-    (*decorationPaletteGroup)->shadow = decorationSettings->shadowColor();
-    qreal shadowStrengthScale = active ? 1.0 : 0.5;
-    (*decorationPaletteGroup)->shadow.setAlphaF(decorationSettings->shadowStrength() / 255.0 * shadowStrengthScale);
+    (*decorationPaletteGroup)->shadow = decorationSettings->shadowColor(active);
+    (*decorationPaletteGroup)->shadow.setAlphaF(decorationSettings->shadowStrength(active) / 255.0);
 
     // set windowOutline
     switch (decorationSettings->windowOutlineStyle(active)) {

@@ -21,12 +21,17 @@ ShadowStyle::ShadowStyle(KSharedConfig::Ptr config, KSharedConfig::Ptr presetsCo
     , m_parent(parent)
 {
     m_ui->setupUi(this);
+    m_internalSettings = InternalSettingsPtr(new InternalSettings());
 
     // track shadows changes
     // direct connections are used in several places so the slot can detect the immediate m_loading status (not available in a queued connection)
-    connect(m_ui->shadowSize, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
-    connect(m_ui->shadowStrength, SIGNAL(valueChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
-    connect(m_ui->shadowColor, &KColorButton::changed, this, &ShadowStyle::updateChanged, Qt::ConnectionType::DirectConnection);
+    connect(m_ui->shadowSizeActive, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
+    connect(m_ui->shadowStrengthActive, SIGNAL(valueChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
+    connect(m_ui->shadowColorActive, &KColorButton::changed, this, &ShadowStyle::updateChanged, Qt::ConnectionType::DirectConnection);
+
+    connect(m_ui->shadowSizeInactive, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
+    connect(m_ui->shadowStrengthInactive, SIGNAL(valueChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
+    connect(m_ui->shadowColorInactive, &KColorButton::changed, this, &ShadowStyle::updateChanged, Qt::ConnectionType::DirectConnection);
 
     connect(m_ui->buttonBox->button(QDialogButtonBox::RestoreDefaults), &QAbstractButton::clicked, this, &ShadowStyle::defaults);
     connect(m_ui->buttonBox->button(QDialogButtonBox::Reset), &QAbstractButton::clicked, this, &ShadowStyle::load);
@@ -39,28 +44,40 @@ ShadowStyle::~ShadowStyle()
     delete m_ui;
 }
 
-void ShadowStyle::load()
+void ShadowStyle::loadMain(const bool assignUiValuesOnly)
 {
-    m_loading = true;
+    if (!assignUiValuesOnly) {
+        m_loading = true;
 
-    // create internal settings and load from rc files
-    m_internalSettings = InternalSettingsPtr(new InternalSettings());
-    m_internalSettings->load();
-
-    // load shadows
-    if (m_internalSettings->shadowSize() <= InternalSettings::EnumShadowSize::ShadowVeryLarge) {
-        m_ui->shadowSize->setCurrentIndex(m_internalSettings->shadowSize());
-    } else {
-        m_ui->shadowSize->setCurrentIndex(InternalSettings::EnumShadowSize::ShadowLarge);
+        // load from rc files
+        m_internalSettings->load();
     }
 
-    m_ui->shadowStrength->setValue(qRound(qreal(m_internalSettings->shadowStrength() * 100) / 255));
-    m_ui->shadowColor->setColor(m_internalSettings->shadowColor());
+    // load shadows
+    if (m_internalSettings->shadowSize(true) <= InternalSettings::EnumShadowSize::ShadowVeryLarge) {
+        m_ui->shadowSizeActive->setCurrentIndex(m_internalSettings->shadowSize(true));
+    } else {
+        m_ui->shadowSizeActive->setCurrentIndex(InternalSettings::EnumShadowSize::ShadowLarge);
+    }
 
-    setChanged(false);
+    if (m_internalSettings->shadowSize(false) <= InternalSettings::EnumShadowSize::ShadowVeryLarge) {
+        m_ui->shadowSizeInactive->setCurrentIndex(m_internalSettings->shadowSize(false));
+    } else {
+        m_ui->shadowSizeInactive->setCurrentIndex(InternalSettings::EnumShadowSize::ShadowLarge);
+    }
 
-    m_loading = false;
-    m_loaded = true;
+    m_ui->shadowStrengthActive->setValue(qRound(qreal(m_internalSettings->shadowStrength(true) * 100) / 255));
+    m_ui->shadowStrengthInactive->setValue(qRound(qreal(m_internalSettings->shadowStrength(false) * 100) / 255));
+
+    m_ui->shadowColorActive->setColor(m_internalSettings->shadowColor(true));
+    m_ui->shadowColorInactive->setColor(m_internalSettings->shadowColor(false));
+
+    if (!assignUiValuesOnly) {
+        setChanged(false);
+
+        m_loading = false;
+        m_loaded = true;
+    }
 }
 
 void ShadowStyle::save(const bool reloadKwinConfig)
@@ -70,9 +87,14 @@ void ShadowStyle::save(const bool reloadKwinConfig)
     m_internalSettings->load();
 
     // apply modifications from ui
-    m_internalSettings->setShadowSize(m_ui->shadowSize->currentIndex());
-    m_internalSettings->setShadowStrength(qRound(qreal(m_ui->shadowStrength->value() * 255) / 100));
-    m_internalSettings->setShadowColor(m_ui->shadowColor->color());
+    m_internalSettings->setShadowSize(true, m_ui->shadowSizeActive->currentIndex());
+    m_internalSettings->setShadowSize(false, m_ui->shadowSizeInactive->currentIndex());
+
+    m_internalSettings->setShadowStrength(true, qRound(qreal(m_ui->shadowStrengthActive->value() * 255) / 100));
+    m_internalSettings->setShadowStrength(false, qRound(qreal(m_ui->shadowStrengthInactive->value() * 255) / 100));
+
+    m_internalSettings->setShadowColor(true, m_ui->shadowColorActive->color());
+    m_internalSettings->setShadowColor(false, m_ui->shadowColorInactive->color());
 
     m_internalSettings->save();
     setChanged(false);
@@ -82,7 +104,7 @@ void ShadowStyle::save(const bool reloadKwinConfig)
         DBusMessages::kwinReloadConfig();
         // DBusMessages::kstyleReloadDecorationConfig(); //should reload anyway
 
-        static_cast<ConfigWidget *>(m_parent)->generateSystemIcons();
+        static_cast<ConfigWidget *>(m_parent)->generateSystemIcons(); // system icons could have a shadow colour override
     }
 }
 
@@ -94,9 +116,7 @@ void ShadowStyle::defaults()
     m_internalSettings->setDefaults();
 
     // assign to ui
-    m_ui->shadowSize->setCurrentIndex(m_internalSettings->shadowSize());
-    m_ui->shadowStrength->setValue(qRound(qreal(m_internalSettings->shadowStrength() * 100) / 255));
-    m_ui->shadowColor->setColor(m_internalSettings->shadowColor());
+    loadMain(true);
 
     setChanged(!isDefaults());
 
@@ -149,11 +169,17 @@ void ShadowStyle::updateChanged()
     // track modifications
     bool modified(false);
 
-    if (m_ui->shadowSize->currentIndex() != m_internalSettings->shadowSize())
+    if (m_ui->shadowSizeActive->currentIndex() != m_internalSettings->shadowSize(true))
         modified = true;
-    else if (qRound(qreal(m_ui->shadowStrength->value() * 255) / 100) != m_internalSettings->shadowStrength())
+    else if (m_ui->shadowSizeInactive->currentIndex() != m_internalSettings->shadowSize(false))
         modified = true;
-    else if (m_ui->shadowColor->color() != m_internalSettings->shadowColor())
+    else if (qRound(qreal(m_ui->shadowStrengthActive->value() * 255) / 100) != m_internalSettings->shadowStrength(true))
+        modified = true;
+    else if (qRound(qreal(m_ui->shadowStrengthInactive->value() * 255) / 100) != m_internalSettings->shadowStrength(false))
+        modified = true;
+    else if (m_ui->shadowColorActive->color() != m_internalSettings->shadowColor(true))
+        modified = true;
+    else if (m_ui->shadowColorInactive->color() != m_internalSettings->shadowColor(false))
         modified = true;
 
     setChanged(modified);
