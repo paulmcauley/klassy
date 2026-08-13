@@ -134,16 +134,6 @@ Button *Button::create(KDecoration3::DecorationButtonType type, KDecoration3::De
             });
             break;
 
-        case KDecoration3::DecorationButtonType::ExcludeFromCapture:
-            b->setVisible(decoration->settings()->isAlwaysShowExcludeFromCapture() || c->isExcludedFromCapture());
-            QObject::connect(decoration->settings().get(), &KDecoration3::DecorationSettings::alwaysShowExcludeFromCaptureChanged, b, [b, c](bool alwaysShow) {
-                b->setVisible(alwaysShow || c->isExcludedFromCapture());
-            });
-            QObject::connect(c, &KDecoration3::DecoratedWindow::excludeFromCaptureChanged, b, [b, decoration](bool excluded) {
-                b->setVisible(decoration->settings()->isAlwaysShowExcludeFromCapture() || excluded);
-            });
-            break;
-
         default:
             break;
         }
@@ -1183,8 +1173,7 @@ bool Button::isSystemIconAvailable() const
 bool Button::isCheckable() const
 {
     return (type() == KDecoration3::DecorationButtonType::KeepBelow || type() == KDecoration3::DecorationButtonType::KeepAbove
-            || type() == KDecoration3::DecorationButtonType::Shade
-            || (type() == KDecoration3::DecorationButtonType::ExcludeFromCapture && m_d->settings()->isAlwaysShowExcludeFromCapture())
+            || type() == KDecoration3::DecorationButtonType::Shade || (type() == KDecoration3::DecorationButtonType::ExcludeFromCapture)
             || (type() == KDecoration3::DecorationButtonType::OnAllDesktops && !m_titlebarTextPinnedInversion));
 }
 

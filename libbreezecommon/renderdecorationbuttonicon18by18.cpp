@@ -1478,22 +1478,23 @@ void RenderDecorationButtonIcon18By18::renderExcludeFromCaptureIcon()
     QPainterPath path;
 
     // Fedora brim
-    path.moveTo(0.5, 8);
-    path.lineTo(17.5, 8);
+    path.moveTo(1, 8);
+    path.lineTo(17, 8);
 
     // Fedora crown with center crease
-    path.moveTo(3, 7.5);
-    path.quadTo(3, 2, 6, 2);
-    path.cubicTo(7, 2, 8, 3, 9, 3.5);
-    path.cubicTo(10, 3, 11, 2, 12, 2);
-    path.quadTo(15, 2, 15, 7.5);
+    path.moveTo(3.5, 7.5);
+    path.quadTo(3.5, 2.5, 6.5, 2.5);
+    path.cubicTo(7, 2.5, 8, 3.5, 9, 4);
+    path.cubicTo(10, 3.5, 11, 2.5, 12, 2.5);
+    path.quadTo(14.5, 2.5, 14.5, 7.5);
     path.closeSubpath();
 
     // Glasses
-    path.addEllipse(QRectF(1.5, 9.5, 6, 6));
-    path.addEllipse(QRectF(10.5, 9.5, 6, 6));
-    path.moveTo(7.5, 12.5);
-    path.lineTo(10.5, 12.5);
+    path.addEllipse(QRectF(2.5, 9.5, 5.5, 5.5));
+    path.addEllipse(QRectF(10, 9.5, 5.5, 5.5));
+    path.moveTo(8, 11.5);
+    path.lineTo(10, 11.5);
+
     if (m_strokeToFilledPath) {
         QPainterPathStroker stroker(m_painter->pen());
         path = stroker.createStroke(path);

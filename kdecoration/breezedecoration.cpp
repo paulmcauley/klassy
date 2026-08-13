@@ -18,6 +18,7 @@
 #include "breezesettingsprovider.h"
 #include "dbusupdatenotifier.h"
 #include "geometrytools.h"
+#include "kdecorationglobals.h"
 #include "plasmatools.h"
 
 #include <KDecoration3/DecoratedWindow>
@@ -365,7 +366,9 @@ bool Decoration::init()
     connect(s.get(), &KDecoration3::DecorationSettings::decorationButtonsLeftChanged, this, &Decoration::updateButtonsGeometryDelayed);
     connect(s.get(), &KDecoration3::DecorationSettings::decorationButtonsRightChanged, this, &Decoration::updateButtonsGeometryDelayed);
     connect(s.get(), &KDecoration3::DecorationSettings::onAllDesktopsAvailableChanged, this, &Decoration::updateButtonsGeometryDelayed);
+#if KDECORATION_VERSION >= KDECORATION_VERSION_CHECK(6, 7, 0) // workaround for strange linking error on Plasma 6.6.2
     connect(c, &KDecoration3::DecoratedWindow::excludeFromCaptureChanged, this, &Decoration::updateButtonsGeometryDelayed);
+#endif
 
     // full reconfiguration
     connect(s.get(), &KDecoration3::DecorationSettings::reconfigured, this, &Decoration::reconfigure);
