@@ -122,7 +122,8 @@ void AppMenuButton::paint(QPainter *painter, const QRectF &repaintRegion)
     QColor outline = outlineColor();
 
     if (background.isValid() || outline.isValid()) {
-        const QRectF contentRect(QPointF(geometry().topLeft() + QPointF(0, m_verticalContentOffset)), geometry().size() - QSizeF(0, m_verticalContentOffset));
+        const QRectF contentRect(QPointF(geometry().topLeft() + QPointF(geometry().width() - m_backgroundVisibleSize.width(), m_verticalContentOffset)),
+                                 geometry().size() - QSizeF(0, m_verticalContentOffset));
 
         if (outline.isValid()) {
             QPen pen(outline);
@@ -152,15 +153,15 @@ void AppMenuButton::paint(QPainter *painter, const QRectF &repaintRegion)
 
         const auto buttonShape = m_d->internalSettings()->integratedMenuButtonShape();
         QRectF backgroundRect = contentRect;
-        if (AppMenuButton::isShapeFullHeight(buttonShape)) {
-            backgroundRect = backgroundRect.adjusted(0, -m_verticalContentOffset, 0, 0);
+        if (isShapeFullHeight(buttonShape)) {
+            backgroundRect.adjust(0, -m_verticalContentOffset, 0, 0);
         }
         backgroundRect = KDecoration3::snapToPixelGrid(backgroundRect, m_devicePixelRatio);
         if (buttonShape == InternalSettings::EnumIntegratedMenuButtonShape::IntegratedRoundedRectangle
             || buttonShape == InternalSettings::EnumIntegratedMenuButtonShape::IntegratedRoundedRectangleGrouped) {
-            backgroundRect = backgroundRect.adjusted(geometryShrinkOffset, -geometryShrinkOffset, -geometryShrinkOffset, -geometryShrinkOffset);
+            backgroundRect.adjust(geometryShrinkOffset, -geometryShrinkOffset, -geometryShrinkOffset, -geometryShrinkOffset);
         } else {
-            backgroundRect = backgroundRect.adjusted(geometryShrinkOffset, geometryShrinkOffset, -geometryShrinkOffset, -geometryShrinkOffset);
+            backgroundRect.adjust(geometryShrinkOffset, geometryShrinkOffset, -geometryShrinkOffset, -geometryShrinkOffset);
         }
         backgroundRect = backgroundRect.translated(-geometry().topLeft());
 
