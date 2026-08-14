@@ -585,38 +585,45 @@ void AppMenuButtonGroup::updateGeometry()
 
     const int buttonShape = internalSettings->integratedMenuButtonShape();
     const bool isFullHeight = AppMenuButton::isShapeFullHeight(buttonShape);
+    const qreal baseSize = qMax(m_decoration->smallButtonPaddedSize(), captionHeight);
     const qreal verticalIconOffsetNormal = isFullHeight
-        ? scaledTitleBarTopMargin + qreal(captionHeight - m_decoration->smallButtonPaddedSize() - scaledIntegratedRoundedRectangleBottomPadding) / 2
-        : scaledTitleBarTopMargin + qreal(captionHeight - m_decoration->smallButtonPaddedSize()) / 2;
+        ? scaledTitleBarTopMargin + qreal(captionHeight - baseSize - scaledIntegratedRoundedRectangleBottomPadding) / 2
+        : scaledTitleBarTopMargin + qreal(captionHeight - baseSize) / 2;
     const qreal topOffset = isFullHeight ? 0 : verticalIconOffsetNormal;
     const qreal contentOffset = isFullHeight ? verticalIconOffsetNormal : 0;
 
-    qreal baseButtonHeight = m_decoration->smallButtonPaddedSize();
+    qreal baseButtonHeight;
     if (isFullHeight) {
         baseButtonHeight = qMax(m_decoration->nextState()->borders().top() - titleBarSeparatorHeight, 0.0);
         if (buttonShape == InternalSettings::EnumIntegratedMenuButtonShape::IntegratedRoundedRectangle
             || buttonShape == InternalSettings::EnumIntegratedMenuButtonShape::IntegratedRoundedRectangleGrouped) {
             baseButtonHeight = qMax(baseButtonHeight - scaledIntegratedRoundedRectangleBottomPadding, 0.0);
         }
+    } else {
+        baseButtonHeight = m_decoration->smallButtonBackgroundSize();
     }
-    // These two variables are for handling the case of icon sizes smaller than the text size
-    const qreal realButtonHeight = baseButtonHeight < m_decoration->titleBarHeight() ? m_decoration->titleBarHeight() : baseButtonHeight;
-    const qreal upwardsShift = realButtonHeight - baseButtonHeight;
-    QRectF availableRect(leftOffset,
-                         topOffset - upwardsShift,
-                         m_decoration->size().width() - leftOffset - rightOffset,
-                         m_decoration->titleBarHeight() + contentOffset);
+    // Handle the case where the button size is smaller than the height we need for text buttons
+    const qreal realButtonHeight = qMax(captionHeight, baseButtonHeight);
+    const qreal iconTranslation = (m_decoration->smallButtonPaddedSize() - m_decoration->iconSize()) / 2;
+    const QPointF iconOffset = {
+        iconTranslation,
+        iconTranslation + (realButtonHeight - contentOffset - m_decoration->smallButtonPaddedSize()) / 2}; // (realButtonHeight - baseButtonHeight) / 2
+    QRectF availableRect(leftOffset, topOffset, m_decoration->size().width() - leftOffset - rightOffset, m_decoration->titleBarHeight() + contentOffset);
 
     for (auto *button : buttons()) {
+        AppMenuButton *appMenuButton;
         if (auto *textButton = qobject_cast<AppMenuTextButton *>(button)) {
+            appMenuButton = textButton;
             textButton->setHorizontalPadding(internalSettings->integratedMenuButtonHorizontalPadding());
-            textButton->setButtonHeight(realButtonHeight);
-            textButton->setVerticalContentOffset(contentOffset);
         } else if (auto *iconButton = qobject_cast<AppMenuIconButton *>(button)) {
-            iconButton->setButtonHeight(realButtonHeight);
-            iconButton->setIconOffset(QPointF(0, upwardsShift / 2));
-            iconButton->setVerticalContentOffset(contentOffset);
+            appMenuButton = iconButton;
+            iconButton->setIconOffset(iconOffset);
+        } else {
+            continue;
         }
+
+        appMenuButton->setVerticalContentOffset(contentOffset);
+        appMenuButton->setButtonHeight(realButtonHeight);
     }
 
     setSpacing(internalSettings->integratedMenuButtonHorizontalMargin());
