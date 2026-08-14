@@ -1068,8 +1068,21 @@ QRect Style::subElementRect(SubElement element, const QStyleOption *option, cons
         QRect rect = ParentStyleClass::subElementRect(element, option, widget);
         if (viewItem) {
             const QMargins margins = _helper->itemViewItemMargins(viewItem);
-            rect.setRight(rect.right() - margins.right() - Metrics::ItemView_ItemPaddingWidth);
-            rect.setLeft(rect.left() + margins.left() + Metrics::ItemView_ItemPaddingWidth);
+            const int leftInset = margins.left() + Metrics::ItemView_ItemPaddingWidth;
+            const int rightInset = margins.right() + Metrics::ItemView_ItemPaddingWidth;
+
+            // Use the font metrics to inset only as far as the text can spare,
+            // so the inset itself cannot cause elision.
+            const int textMargin = proxy()->pixelMetric(PM_FocusFrameHMargin, option, widget) + 1;
+            const int available = rect.width() - 2 * textMargin; // viewItemDrawText() removes textMargin again
+            const int required = viewItem->fontMetrics.horizontalAdvance(viewItem->text);
+            const int inset = qBound(0, available - required, leftInset + rightInset);
+
+            // Shrink both sides in proportion so the text stays where it was.
+            const int total = leftInset + rightInset;
+            const int right = total > 0 ? inset * rightInset / total : 0;
+            rect.setRight(rect.right() - right);
+            rect.setLeft(rect.left() + (inset - right));
             rect.moveTop(rect.top() + margins.top() - margins.bottom());
         }
 
