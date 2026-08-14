@@ -64,11 +64,8 @@ void AppMenuIconButton::drawContent(QPainter *painter, QPointF offsetDecorationT
     }
 
     // Center icon in button
-    qreal iconTranslationOffset = (smallButtonPaddedWidth() - iconWidth()) / 2;
-    painter->translate(this->geometry().topLeft() - offsetDecorationTopLeftToContentTopLeft + QPointF(iconTranslationOffset, iconTranslationOffset)
-                       + iconOffset());
-    QPointF deviceOffsetDecorationTopLeftToIconTopLeft =
-        (offsetDecorationTopLeftToContentTopLeft + QPointF(iconTranslationOffset, iconTranslationOffset)) * m_devicePixelRatio;
+    painter->translate(this->geometry().topLeft() - offsetDecorationTopLeftToContentTopLeft + iconOffset());
+    QPointF deviceOffsetDecorationTopLeftToIconTopLeft = offsetDecorationTopLeftToContentTopLeft * m_devicePixelRatio;
 
     // Setup pen for icon drawing
     QPen pen(foregroundColor());
