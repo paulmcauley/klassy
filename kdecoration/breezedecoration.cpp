@@ -2140,6 +2140,7 @@ void Decoration::hoverLeaveEvent(QHoverEvent *event)
 
     if (m_integratedMenuButtons) {
         m_integratedMenuButtons->setHovered(false);
+        m_integratedMenuButtons->setUnisonHovered(false);
         m_integratedMenuButtons->updateShowing();
     }
     KDecoration3::Decoration::hoverLeaveEvent(event);
