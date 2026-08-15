@@ -123,10 +123,19 @@ protected:
     virtual void renderExcludeFromCaptureIcon() = 0;
 
     /**
-     *@brief Multiplies the pen width by the bolding factor, and rounds it. Also returns whether the integer-rounded bold pen with is an even or odd number of
-     *pixels This is useful for pixel alignment
+     * @brief Determines whether a rounded version of a given Pen's width is an odd number. Accounts for cosmetic/non-cosmetic pens.
      *
-     *@param pen The input pen
+     *@param pen The input QPen
+     *@param outputRoundedPenWidth The output pen width, factored by boldingFactor, and rounded
+     *@param boldingFactor Optional bolding factor. Set to 1 for no bolding
+     */
+    bool roundedPenWidthIsOdd(const QPen &pen);
+
+    /**
+     *@brief Multiplies the pen width by the bolding factor, and rounds it. Also returns whether the integer-rounded bold pen with is an even or odd number of
+     *pixels This is useful for pixel alignment.  Accounts for cosmetic/non-cosmetic pens.
+     *
+     *@param pen The input QPen
      *@param outputRoundedPenWidth The output pen width, factored by boldingFactor, and rounded
      *@param boldingFactor Optional bolding factor. Set to 1 for no bolding
      */

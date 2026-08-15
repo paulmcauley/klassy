@@ -213,6 +213,11 @@ void RenderDecorationButtonIcon::renderIcon(DecorationButtonType type, bool chec
     m_painter->restore();
 }
 
+bool RenderDecorationButtonIcon::roundedPenWidthIsOdd(const QPen &pen)
+{
+    return (qRound(penWidthToDevice(pen)) % 2 != 0);
+}
+
 bool RenderDecorationButtonIcon::roundedPenWidthIsOdd(const QPen &pen, qreal &outputRoundedPenWidth, const qreal boldingFactor)
 {
     outputRoundedPenWidth = qRound(penWidthToDevice(pen) * boldingFactor) * PenWidth::Symbol;

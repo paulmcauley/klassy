@@ -114,17 +114,10 @@ void RenderDecorationButtonIcon18By18::renderMinimizeIcon()
 void RenderDecorationButtonIcon18By18::renderCenteredLineMinimizeIcon(bool smaller)
 {
     QPen pen = m_painter->pen();
-    bool isOddPenWidth = true;
 
-    if (!m_fromKstyle) {
-        qreal roundedBoldPenWidth;
-        if (m_boldButtonIcons) {
-            // thicker pen in titlebar
-            isOddPenWidth = roundedPenWidthIsOdd(pen, roundedBoldPenWidth, m_squareMaximizeBoldPenWidthFactor);
-        } else
-            isOddPenWidth = roundedPenWidthIsOdd(pen, roundedBoldPenWidth, 1);
-        pen.setWidthF(roundedBoldPenWidth);
-    }
+    auto [maximizeRect, maximizePenWidth] = renderSquareMaximizeIcon(true);
+    pen.setWidthF(maximizePenWidth);
+    bool isOddPenWidth(roundedPenWidthIsOdd(pen));
 
     // make excessively thick pen widths translucent to balance with other buttons
     qreal opacity = straightLineOpacity();
@@ -135,22 +128,24 @@ void RenderDecorationButtonIcon18By18::renderCenteredLineMinimizeIcon(bool small
     m_painter->setPen(pen);
 
     QVector<QPointF> line;
-    qreal x1, x2;
+    qreal x1, x2, y;
     if (smaller) {
         x1 = 5.5;
         x2 = 12.5;
     } else {
-        x1 = 4.5;
-        x2 = 13.5;
+        x1 = maximizeRect.left();
+        x2 = maximizeRect.right();
     }
+    y = maximizeRect.center().y();
+
     // horizontal line
     if (isOddPenWidth) {
-        line = {snapToNearestPixel(QPointF(x1, 9.5), SnapPixel::ToHalf, SnapPixel::ToHalf),
-                snapToNearestPixel(QPointF(x2, 9.5), SnapPixel::ToHalf, SnapPixel::ToHalf)};
+        line = {snapToNearestPixel(QPointF(x1, y), SnapPixel::ToHalf, SnapPixel::ToHalf),
+                snapToNearestPixel(QPointF(x2, y), SnapPixel::ToHalf, SnapPixel::ToHalf)};
 
     } else {
-        line = {snapToNearestPixel(QPointF(x1, 9.5), SnapPixel::ToWhole, SnapPixel::ToWhole),
-                snapToNearestPixel(QPointF(x2, 9.5), SnapPixel::ToWhole, SnapPixel::ToWhole)};
+        line = {snapToNearestPixel(QPointF(x1, y), SnapPixel::ToWhole, SnapPixel::ToWhole),
+                snapToNearestPixel(QPointF(x2, y), SnapPixel::ToWhole, SnapPixel::ToWhole)};
     }
 
     if (m_strokeToFilledPath) {
@@ -168,28 +163,34 @@ void RenderDecorationButtonIcon18By18::renderCenteredLineMinimizeIcon(bool small
 
 void RenderDecorationButtonIcon18By18::renderDynamicMinimizeIcon(bool dynamicMinimize)
 {
-    // first determine the size of the maximize icon so the minimize icon can align with it
-    auto [maximizeRect, maximizePenWidth] = renderSquareMaximizeIcon(true);
-
     QVector<QPointF> line;
+    QPen pen = m_painter->pen();
 
     if (!dynamicMinimize) { // bottom line
+        auto [maximizeRect, maximizePenWidth] = renderSquareMaximizeIcon(true);
         line.append(maximizeRect.bottomLeft());
         line.append(maximizeRect.bottomRight());
+        pen.setWidthF(maximizePenWidth);
     } else { // dynamic minimize icon
         switch (m_taskManagerSide) {
         case SideBottom:
-        default:
+        default: {
+            auto [maximizeRect, maximizePenWidth] = renderSquareMaximizeIcon(true);
             line.append(maximizeRect.bottomLeft());
             line.append(maximizeRect.bottomRight());
+            pen.setWidthF(maximizePenWidth);
             break;
+        }
         case SideLeft:
             renderCenteredLineMinimizeIcon();
             return;
-        case SideTop:
+        case SideTop: {
+            auto [maximizeRect, maximizePenWidth] = renderSquareMaximizeIcon(true);
             line.append(maximizeRect.topLeft());
             line.append(maximizeRect.topRight());
+            pen.setWidthF(maximizePenWidth);
             break;
+        }
         case SideRight:
             renderCenteredLineMinimizeIcon();
             return;
@@ -198,9 +199,6 @@ void RenderDecorationButtonIcon18By18::renderDynamicMinimizeIcon(bool dynamicMin
             return;
         }
     }
-
-    QPen pen = m_painter->pen();
-    pen.setWidthF(maximizePenWidth);
 
     // make excessively thick pen widths translucent to balance with other buttons
     qreal opacity = straightLineOpacity();

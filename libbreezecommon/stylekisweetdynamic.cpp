@@ -28,6 +28,11 @@ void RenderStyleKisweetDynamic18By18::renderFloatIcon()
 
 void RenderStyleKisweetDynamic18By18::renderMinimizeIcon()
 {
+    if (m_taskManagerSide == SideDot) {
+        renderTinySquareMinimizeIcon(true);
+        return;
+    }
+
     // first determine the size of the maximize icon so the minimize icon can align with it
     auto [maximizeRect, maximizePenWidth] = renderSquareMaximizeIcon(true);
 
@@ -50,9 +55,6 @@ void RenderStyleKisweetDynamic18By18::renderMinimizeIcon()
         line.append(maximizeRect.topRight());
         line.append(maximizeRect.bottomRight());
         break;
-    case SideDot:
-        renderTinySquareMinimizeIcon(true);
-        return;
     }
 
     QPen pen = m_painter->pen();
