@@ -21,6 +21,7 @@
       <choices>
           <choice name="StyleSystemIconTheme" />
           <choice name="StyleMaterialDynamic" />
+          <choice name="StyleMaterialCentered" />
           <choice name="StyleMaterial" />
           <choice name="StyleOxygen" />
           <choice name="StyleKiteDynamic" />

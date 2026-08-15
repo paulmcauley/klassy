@@ -12,6 +12,7 @@
 #include "stylekite.h"
 #include "stylekitedynamic.h"
 #include "stylematerial.h"
+#include "stylematerialcentered.h"
 #include "stylematerialdynamic.h"
 #include "stylemetro.h"
 #include "styleoxygen.h"
@@ -41,6 +42,14 @@ std::pair<std::unique_ptr<RenderDecorationButtonIcon>, int> RenderDecorationButt
                                                                    devicePixelRatio,
                                                                    deviceOffsetFromZeroReference,
                                                                    forceEvenSquares),
+                18};
+    case InternalSettings::EnumButtonIconStyle::StyleMaterialCentered:
+        return {std::make_unique<RenderStyleMaterialCentered18By18>(painter,
+                                                                    fromKstyle,
+                                                                    boldButtonIcons,
+                                                                    devicePixelRatio,
+                                                                    deviceOffsetFromZeroReference,
+                                                                    forceEvenSquares),
                 18};
     case InternalSettings::EnumButtonIconStyle::StyleMaterial:
         return {std::make_unique<RenderStyleMaterial18By18>(painter,
