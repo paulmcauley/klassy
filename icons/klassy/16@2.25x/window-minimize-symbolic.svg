@@ -9,7 +9,7 @@
             <rect height="3.5" width="3.5" x="0" y="0"/>
         </g>
         <g class="ColorScheme-Text" fill="currentColor" fill-opacity="0.902495" font-family="Noto Sans" font-size="30" font-style="normal" font-weight="400" stroke="none" transform="matrix(2,0,0,2,15,15)">
-            <path d="M0,-0.75075 L3.5,-0.75075 L4.25075,0 L4.25075,3.5 L3.5,4.25075 L0,4.25075 L-0.75075,3.5 L-0.75075,0 L0,-0.75075 M0.75075,0 L0.75075,3.5 L0,3.5 L0,2.74925 L3.5,2.74925 L3.5,3.5 L2.74925,3.5 L2.74925,0 L3.5,0 L3.5,0.75075 L0,0.75075 L0,0 L0.75075,0" fill-rule="nonzero" vector-effect="none"/>
+            <path d="M0,-0.75075 L3.5,-0.75075 L4.25075,-0.75075 L4.25075,0 L4.25075,3.5 L4.25075,4.25075 L3.5,4.25075 L0,4.25075 L-0.75075,4.25075 L-0.75075,3.5 L-0.75075,0 L-0.75075,-0.75075 L0,-0.75075 M0.75075,0 L0.75075,3.5 L0,3.5 L0,2.74925 L3.5,2.74925 L3.5,3.5 L2.74925,3.5 L2.74925,0 L3.5,0 L3.5,0.75075 L0,0.75075 L0,0 L0.75075,0" fill-rule="nonzero" vector-effect="none"/>
         </g>
     </g>
 </svg>
