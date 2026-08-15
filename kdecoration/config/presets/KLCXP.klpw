@@ -183,4 +183,4 @@ WindowOutlineShadowColorOpacity=20
 WindowOutlineSnapToWholePixel=true
 WindowOutlineStyleActive=WindowOutlineNone
 WindowOutlineStyleInactive=WindowOutlineNone
-WindowOutlineThickness=2
+WindowOutlineThickness=1.49
