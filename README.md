@@ -1,9 +1,9 @@
 # Klassy
-<img align="right" src="screenshots/highlight_gifs/kite_demo.gif?raw=true" alt="kite window decoration" />
+<img align="right" src="screenshots/highlight_gifs/klassy_demo.gif" alt="Klassy window decoration" />
 
 ##### Table of Contents
 [Overview](#overview)  
->[Main _Kite_ Global theme](#kite)  
+>[Main _Klassy_ Global theme](#kite)  
 >[Customizability](#customizability)
 
 [Installation](#installation)  
@@ -22,8 +22,8 @@ _Klassy_ is a theming utility for the KDE Plasma desktop environment. It consist
 
 <a name="kite"/>
 
-### Main _Kite_ global theme
-After [installing](#installation), it is recommended to first try the main Global Theme, called _Kite_.
+### Main _Klassy_ global theme
+After [installing](#installation), it is recommended to first activate the main _Klassy_ Global Theme.
 
 The global theme is enabled in System Settings->Colours & Themes->Global Theme. NB: you need to initially use the Global Theme settings screen to apply the theme properly; if you intially apply via the Quick Settings screen or the Light/Dark selector then the full Desktop & window layout will not be applied. Afterwards, you can set Light/Dark switching for day/night, respectively.
 
@@ -33,7 +33,7 @@ Left panel theme selection (recommended for 16:9 laptops):
 Bottom panel theme selection (recommended for everything else):
 ![Bottom panel dark/light theme selection](screenshots/bottom_panel_light_dark.png?raw=true "Bottom panel dark/light theme selection")
 
-The default _Kite_ theme is designed to be pragmatic for long-term every-day use, not for instant likes on social media or "ricing" sites. _Kite_ is the result of Paul A McAuley evolving the _Breeze_ theme to be arguably more polished and usable, with influences from the original Breeze design, the "Blue Ocean" refresh, and the original KDE 1. A kite floats in the breeze! [See the _Kite defaults design decisions_ document for full design details](https://github.com/paulmcauley/klassy/discussions/263).
+The default _Klassy_ theme is designed to be pragmatic for long-term every-day use, not for instant likes on social media or "ricing" sites. It is the result of Paul A McAuley evolving the _Breeze_ theme to be arguably more polished and usable, with influences from the original Breeze design, the "Blue Ocean" refresh, and the original KDE 1. [See the _Klassy defaults design decisions_ document for full design details](https://github.com/paulmcauley/klassy/discussions/318).
 
 <a name="customizability"/>
 
