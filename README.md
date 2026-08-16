@@ -27,13 +27,13 @@ After [installing](#installation), it is recommended to first activate the main 
 
 The global theme is enabled in System Settings->Colours & Themes->Global Theme. NB: you need to initially use the Global Theme settings screen to apply the theme properly; if you intially apply via the Quick Settings screen or the Light/Dark selector then the full Desktop & window layout will not be applied. Afterwards, you can set Light/Dark switching for day/night, respectively.
 
-Left panel theme selection (recommended for 16:9 laptops):
-![Left panel dark/light theme selection](screenshots/left_panel_light_dark.png?raw=true "Left panel dark/light theme selection")
+Left panel theme selection - recommended for 16:9 laptops (click to zoom):
+[![Left panel dark/light theme selection](screenshots/left_panel_light_dark.png "Left panel dark/light theme selection")](https://raw.githubusercontent.com/paulmcauley/klassy/refs/heads/master/screenshots/left_panel_light_dark_full.png)
 
-Bottom panel theme selection (recommended for everything else):
-![Bottom panel dark/light theme selection](screenshots/bottom_panel_light_dark.png?raw=true "Bottom panel dark/light theme selection")
+Bottom panel theme selection - recommended for everything else (click to zoom):
+[![Bottom panel dark/light theme selection](screenshots/bottom_panel_light_dark.png "Bottom panel dark/light theme selection")](https://raw.githubusercontent.com/paulmcauley/klassy/refs/heads/master/screenshots/bottom_panel_light_dark_full.png)
 
-The default _Klassy_ theme is designed to be pragmatic for long-term every-day use, not for instant likes on social media or "ricing" sites. It is the result of Paul A McAuley evolving the _Breeze_ theme to be arguably more polished and usable, with influences from the original Breeze design, the "Blue Ocean" refresh, and the original KDE 1. [See the _Klassy defaults design decisions_ document for full design details](https://github.com/paulmcauley/klassy/discussions/318).
+The default _Klassy_ theme is designed to be pragmatic and unobtrusive for long-term every-day use, not for instant likes on social media or "ricing" sites. It is the result of Paul A McAuley evolving the _Breeze_ theme to be arguably more polished and usable, with influences from the original Breeze design, the "Blue Ocean" refresh, and the original KDE 1. [See the _Klassy defaults design decisions_ document for full design details](https://github.com/paulmcauley/klassy/discussions/318).
 
 <a name="customizability"/>
 
@@ -43,10 +43,10 @@ _Klassy_ is highly customizable - you can make your system as classy or unclassy
 For easy customization, the _Klassy Settings_ GUI application is installed. `klassy-settings` also has command-line options to allow Preset file imports, load Presets and generate system icons. Run `klassy-settings --help` for details.
 
 It is recommended to first try the bundled Presets in Klassy Settings before any fine-tuning:
-![Preset selection](screenshots/presets_opal_fruits.png?raw=true "Preset selection")
+![Preset selection](screenshots/presets_opal_fruits.png "Preset selection")
 
 * Provides numerous built-in perfectly-pixel-snapped button icons, as well as the ability to display `window-*-symbolic` system icons:
-  ![Screenshot of Button icons menu](screenshots/button_icon_menu.png?raw=true "Screenshot of Button icons menu")
+  ![Screenshot of Button icons menu](screenshots/button_icon_menu.png "Screenshot of Button icons menu")
 >(Above Preset: _Glassy Klassy_)
 
 * Provides an Application Style aso that icons in dockable panels, MDI applications and application tabs are consistent (make sure to enable the _Klassy_ Application Style):
@@ -62,38 +62,38 @@ It is recommended to first try the bundled Presets in Klassy Settings before any
 
 * Default buttons are "Integrated Rounded Rectangles" with translucent outlined accent colours, with a large clickable area. These are designed to complement the "Blue Ocean" design refresh, along with the system accent colour feature. Shown below with _Klasse_ icons (inspired by KDE1):
   
-   ![Default Integrated Rounded rectangle button style, dark](screenshots/highlight_gifs/icdark.gif?raw=true "Default Integrated Rounded rectangle button style, dark")
+   ![Default Integrated Rounded rectangle button style, dark](screenshots/highlight_gifs/icdark.gif "Default Integrated Rounded rectangle button style, dark")
   
 * Alternative "Traffic lights" background colours:
   
-   ![Traffic lights button style, dark](screenshots/highlight_gifs/icdark_trafficlights.gif?raw=true "Traffic lights button style, dark")
+   ![Traffic lights button style, dark](screenshots/highlight_gifs/icdark_trafficlights.gif "Traffic lights button style, dark")
 
 * Alternative "Full-height Rounded Rectangle" button shape (_ClassiK v3_ preset):
   
-   ![Rounded rectangle button style, dark](screenshots/highlight_gifs/cdark.gif?raw=true "Default button style, dark")![Rounded Rectangle button style, light](screenshots/highlight_gifs/clight.gif?raw=true "Default button style, light")
-   ![Pink button style, dark](screenshots/highlight_gifs/pdark.gif?raw=true "Green button style, dark")![Pink button style, light](screenshots/highlight_gifs/plight.gif?raw=true "Pink button style, light")
-   ![Turquoise button style, dark](screenshots/highlight_gifs/tdark.gif?raw=true "Turquoise button style, dark")![Turquoise button style, light](screenshots/highlight_gifs/tlight.gif?raw=true "Turquoise button style, light")
+   ![Rounded rectangle button style, dark](screenshots/highlight_gifs/cdark.gif "Default button style, dark")![Rounded Rectangle button style, light](screenshots/highlight_gifs/clight.gif "Default button style, light")
+   ![Pink button style, dark](screenshots/highlight_gifs/pdark.gif "Green button style, dark")![Pink button style, light](screenshots/highlight_gifs/plight.gif "Pink button style, light")
+   ![Turquoise button style, dark](screenshots/highlight_gifs/tdark.gif "Turquoise button style, dark")![Turquoise button style, light](screenshots/highlight_gifs/tlight.gif "Turquoise button style, light")
 
 
 * Full-height Rectangular (_ClassikStyles_ preset) or Circular (_Classik-Aurorae_ preset) button highlights:
-   ![Full-height Rectangle button highlight style, inheriting system highlight colours](screenshots/highlight_gifs/squareHighlight.gif?raw=true "Full-height Rectangle button highlight style, inheriting system highlight colours")![Circle button highlight style, inheriting system highlight colours](screenshots/highlight_gifs/circleHighlight.gif?raw=true "Circle button highlight style, inheriting system highlight colours")
+   ![Full-height Rectangle button highlight style, inheriting system highlight colours](screenshots/highlight_gifs/squareHighlight.gif "Full-height Rectangle button highlight style, inheriting system highlight colours")![Circle button highlight style, inheriting system highlight colours](screenshots/highlight_gifs/circleHighlight.gif "Circle button highlight style, inheriting system highlight colours")
 
 * Ability to inherit system colour-scheme highlight colours for hover and focus, as well as titlebar colour. Auto-enhances contrast in cases where it is poor.
 * Option to have matching titlebar colour and border colour.
 
 * Configurable button spacing (left and right), titlebar margins (sides, top/bottom and option for different maximized), corner radius; all with scaling for HiDPI:
 
-![Screenshot of Alignment & Spacing tab](screenshots/alignment_and_spacing.png?raw=true "Screenshot of Alignment & Spacing tab")
+![Screenshot of Alignment & Spacing tab](screenshots/alignment_and_spacing.png "Screenshot of Alignment & Spacing tab")
 
 * Transparency/opacity configurable for both active/inactive titlebars/headers; setting to make maximized windows opaque; blur is configurable.
 
 * Configurable thin window outline with optional accent colours:
 
-![Composite screenshot of thin window outlines with Contrast blended with accent colour (dark)](screenshots/thin_window_outline_dark_contrast_accent.png?raw=true "Composite screenshot of thin window outlines with Contrast blended with accent colour (dark)")
+![Composite screenshot of thin window outlines with Contrast blended with accent colour (dark)](screenshots/thin_window_outline_dark_contrast_accent.png "Composite screenshot of thin window outlines with Contrast blended with accent colour (dark)")
 
 * Configurable scrollbars:
  
-<img src="screenshots/configurable_scrollbars.png" width="80%">![Default scrollbar animation](screenshots/scrollbar_mouseover.gif?raw=true "Default scrollbar animation")
+<img src="screenshots/configurable_scrollbars.png" width="80%">![Default scrollbar animation](screenshots/scrollbar_mouseover.gif "Default scrollbar animation")
 
 * Configurable animations
 
