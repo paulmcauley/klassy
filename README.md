@@ -75,7 +75,7 @@ It is recommended to first try the bundled Presets in Klassy Settings before any
    ![Turquoise button style, dark](screenshots/highlight_gifs/tdark.gif "Turquoise button style, dark")![Turquoise button style, light](screenshots/highlight_gifs/tlight.gif "Turquoise button style, light")
 
 
-* Full-height Rectangular (_ClassikStyles_ preset) or Circular (_Classik-Aurorae_ preset) button highlights:
+* Full-height Rectangular (_ClassikStyles_ preset) or Circular button highlights:
    ![Full-height Rectangle button highlight style, inheriting system highlight colours](screenshots/highlight_gifs/squareHighlight.gif "Full-height Rectangle button highlight style, inheriting system highlight colours")![Circle button highlight style, inheriting system highlight colours](screenshots/highlight_gifs/circleHighlight.gif "Circle button highlight style, inheriting system highlight colours")
 
 * Ability to inherit system colour-scheme highlight colours for hover and focus, as well as titlebar colour. Auto-enhances contrast in cases where it is poor.
@@ -91,7 +91,7 @@ It is recommended to first try the bundled Presets in Klassy Settings before any
 
 ![Composite screenshot of thin window outlines with Contrast blended with accent colour (dark)](screenshots/thin_window_outline_dark_contrast_accent.png "Composite screenshot of thin window outlines with Contrast blended with accent colour (dark)")
 
-* Configurable scrollbars:
+* Configurable scrollbars; innovative gapless auto-hiding-arrow scrollbar design by default:
  
 <img src="screenshots/configurable_scrollbars.png" width="80%">![Default scrollbar animation](screenshots/scrollbar_mouseover.gif "Default scrollbar animation")
 
