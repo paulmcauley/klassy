@@ -104,6 +104,7 @@ It is recommended to first try the bundled Presets in Klassy Settings before any
 
 ## Installation
 _Klassy_ requires Plasma 6.6, or later, so please check you have this in kinfocenter before trying to install.
+<a name="prebuilt"/>
 
 ### Pre-built packages
 [Official Respositories are available from the Open Build Service](https://software.opensuse.org/download.html?project=home%3Apaulmcauley&package=klassy) for OpenSUSE, Debian/Ubuntu, Fedora, Mageia and Arch/Manjaro to keep you on the latest version.
