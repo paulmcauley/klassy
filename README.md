@@ -9,7 +9,7 @@
 [Installation](#installation)  
 >[Pre-built packages](#prebuilt)  
 >[Compile from source](#compile)  
->[Gentoo Linux package](#gentoo-linux-package)
+>[Gentoo Linux package](#gentoo-linux-package)  
    
 [Donations](#donations)
 
@@ -60,7 +60,7 @@ It is recommended to first try the bundled Presets in Klassy Settings before any
 
 * Configurable button size, shape, translucency, colours and outlining.
 
-* Default buttons are "Integrated Rounded Rectangles" with translucent outlined accent colours, with a large clickable area. These are designed to complement the "Blue Ocean" design refresh, along with the system accent colour feature. Shown below with _Klasse_ icons (inspired by KDE1):
+* Default buttons are "Integrated Rounded Rectangles" with translucent outlined accent colours, with a large clickable area. These are designed to complement the "Blue Ocean" design refresh, along with the system accent colour feature:
   
    ![Default Integrated Rounded rectangle button style, dark](screenshots/highlight_gifs/icdark.gif "Default Integrated Rounded rectangle button style, dark")
   
@@ -68,7 +68,7 @@ It is recommended to first try the bundled Presets in Klassy Settings before any
   
    ![Traffic lights button style, dark](screenshots/highlight_gifs/icdark_trafficlights.gif "Traffic lights button style, dark")
 
-* Alternative "Full-height Rounded Rectangle" button shape (_ClassiK v3_ preset):
+* Alternative "Full-height Rounded Rectangle" button shape (_ClassiK Ocean_ preset):
   
    ![Rounded rectangle button style, dark](screenshots/highlight_gifs/cdark.gif "Default button style, dark")![Rounded Rectangle button style, light](screenshots/highlight_gifs/clight.gif "Default button style, light")
    ![Pink button style, dark](screenshots/highlight_gifs/pdark.gif "Green button style, dark")![Pink button style, light](screenshots/highlight_gifs/plight.gif "Pink button style, light")
@@ -84,12 +84,14 @@ It is recommended to first try the bundled Presets in Klassy Settings before any
 * Configurable button spacing (left and right), titlebar margins (sides, top/bottom and option for different maximized), corner radius; all with scaling for HiDPI:
 
 ![Screenshot of Alignment & Spacing tab](screenshots/alignment_and_spacing.png "Screenshot of Alignment & Spacing tab")
+>(Above Preset: _Klassy_)
 
 * Transparency/opacity configurable for both active/inactive titlebars/headers; setting to make maximized windows opaque; blur is configurable.
 
 * Configurable thin window outline with optional accent colours:
 
 ![Composite screenshot of thin window outlines with Contrast blended with accent colour (dark)](screenshots/thin_window_outline_dark_contrast_accent.png "Composite screenshot of thin window outlines with Contrast blended with accent colour (dark)")
+>(Above Preset: _ClassiK Ocean_)
 
 * Configurable scrollbars; innovative gapless auto-hiding-arrow scrollbar design by default:
  
