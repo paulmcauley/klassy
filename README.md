@@ -9,7 +9,6 @@
 [Installation](#installation)  
 >[Pre-built packages](#prebuilt)  
 >[Compile from source](#compile)  
->[Gentoo Linux package](#gentoo-linux-package)  
    
 [Donations](#donations)
 
@@ -104,7 +103,16 @@ It is recommended to first try the bundled Presets in Klassy Settings before any
 <a name="installation"/>
 
 ## Installation
-_Klassy_ master branch requires Plasma 6.5, or later, so please check you have this in kinfocenter before trying to install. For the master branch you should compile from source.
+_Klassy_ requires Plasma 6.6, or later, so please check you have this in kinfocenter before trying to install.
+
+### Pre-built packages
+[Official Respositories are available from the Open Build Service](https://software.opensuse.org/download.html?project=home%3Apaulmcauley&package=klassy) for OpenSUSE, Debian/Ubuntu, Fedora, Mageia and Arch/Manjaro to keep you on the latest version.
+
+Raw .rpm, .deb etc. binary packages are also available from the Open Build Service link above if you choose "Grab binary packages directly".
+
+There are also 3rd party packages as follows: [AUR version for Arch](https://aur.archlinux.org/packages/klassy), a [Copr version for Fedora](https://copr.fedorainfracloud.org/coprs/errornointernet/klassy), and a [NixOS version in the official NixOS repos](https://search.nixos.org/packages?query=klassy#show=klassy).
+&nbsp;
+&nbsp;
 
 <a name="compile"/>
 
@@ -168,8 +176,8 @@ Uninstall build script:
 ```
 
 &nbsp;
-### Gentoo Linux package
-There is a package available for Klassy in the [guru](https://github.com/gentoo/guru) repository.
+#### Gentoo Linux package
+There is a Gentoo package available for Klassy in the [guru](https://github.com/gentoo/guru) repository.
 You can install Klassy on Gentoo Linux by following these steps.
 
 First, install the `eselect repository` module with:
@@ -189,12 +197,12 @@ sudo emaint sync -r guru
 
 Add the package keywords to `/etc/portage/package.accept_keywords`:
 ```
-echo "=gui-apps/klassy-9999::guru **" | sudo tee /etc/portage/package.accept_keywords/klassy 
+echo "gui-apps/klassy ~amd64" | sudo tee /etc/portage/package.accept_keywords/klassy
 ```
 
 Finally, compile & install the package with:
 ```
-sudo emerge -av =gui-apps/klassy-9999::guru
+sudo emerge -av gui-apps/klassy
 ```
 
 <a name="donations"/>
