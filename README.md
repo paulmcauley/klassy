@@ -3,7 +3,7 @@
 
 ##### Table of Contents
 [Overview](#overview)  
->[Main _Klassy_ Global theme](#kite)  
+>[Main _Klassy_ Global theme](#klassyglobal)  
 >[Customizability](#customizability)
 
 [Installation](#installation)  
@@ -20,7 +20,7 @@
 ## Overview
 _Klassy_ is a theming utility for the KDE Plasma desktop environment. It consists of a Global Theme which applies several components: Window Decoration, Application Style, Colour Scheme, Plasma style, and Icons. The Klassy Application Style has arguably the best scrollbars on any platform.
 
-<a name="kite"/>
+<a name="klassyglobal"/>
 
 ### Main _Klassy_ global theme
 After [installing](#installation), it is recommended to first activate the main _Klassy_ Global Theme.
