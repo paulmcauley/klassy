@@ -42,7 +42,7 @@ void AppMenuTextButton::drawContent(QPainter *painter, QPointF offsetDecorationT
     // Font
     painter->setFont(m_font);
     QColor foreground = foregroundColor();
-    if (!foreground.isValid() || m_d->internalSettings()->integratedMenuButtonUseTitleColor())
+    if (!foreground.isValid())
         foreground = m_d->fontColor();
     painter->setPen(foreground);
     painter->setRenderHint(QPainter::TextAntialiasing);

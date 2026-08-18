@@ -183,7 +183,6 @@ ConfigWidget::ConfigWidget(QObject *parent, const KPluginMetaData &data, const Q
     connect(m_ui.integratedMenuButtonShape, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
     connect(m_ui.integratedMenuButtonHorizontalMargin, SIGNAL(valueChanged(double)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
     connect(m_ui.integratedMenuButtonHorizontalPadding, SIGNAL(valueChanged(double)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
-    connect(m_ui.integratedMenuButtonUseTitleColor, SIGNAL(toggled(bool)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
     connect(m_ui.integratedMenuButtonUseSystemMenuFont, SIGNAL(toggled(bool)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
     connect(m_ui.integratedMenuButtonCanDragWindow, SIGNAL(toggled(bool)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
     connect(m_ui.integratedMenuEnableBlur, SIGNAL(toggled(bool)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
@@ -275,7 +274,6 @@ void ConfigWidget::load()
     m_ui.integratedMenuButtonShape->setCurrentIndex(m_internalSettings->integratedMenuButtonShape());
     m_ui.integratedMenuButtonHorizontalMargin->setValue(m_internalSettings->integratedMenuButtonHorizontalMargin());
     m_ui.integratedMenuButtonHorizontalPadding->setValue(m_internalSettings->integratedMenuButtonHorizontalPadding());
-    m_ui.integratedMenuButtonUseTitleColor->setChecked(m_internalSettings->integratedMenuButtonUseTitleColor());
     m_ui.integratedMenuButtonUseSystemMenuFont->setChecked(m_internalSettings->integratedMenuButtonUseSystemMenuFont());
     m_ui.integratedMenuButtonCanDragWindow->setChecked(m_internalSettings->integratedMenuButtonCanDragWindow());
     m_ui.integratedMenuEnableBlur->setChecked(m_internalSettings->integratedMenuEnableBlur());
@@ -352,7 +350,6 @@ void ConfigWidget::saveMain(QString saveAsPresetName)
     m_internalSettings->setIntegratedMenuButtonShape(m_ui.integratedMenuButtonShape->currentIndex());
     m_internalSettings->setIntegratedMenuButtonHorizontalMargin(m_ui.integratedMenuButtonHorizontalMargin->value());
     m_internalSettings->setIntegratedMenuButtonHorizontalPadding(m_ui.integratedMenuButtonHorizontalPadding->value());
-    m_internalSettings->setIntegratedMenuButtonUseTitleColor(m_ui.integratedMenuButtonUseTitleColor->isChecked());
     m_internalSettings->setIntegratedMenuButtonUseSystemMenuFont(m_ui.integratedMenuButtonUseSystemMenuFont->isChecked());
     m_internalSettings->setIntegratedMenuButtonCanDragWindow(m_ui.integratedMenuButtonCanDragWindow->isChecked());
     m_internalSettings->setIntegratedMenuEnableBlur(m_ui.integratedMenuEnableBlur->isChecked());
@@ -444,7 +441,6 @@ void ConfigWidget::defaults()
     m_ui.integratedMenuButtonShape->setCurrentIndex(m_internalSettings->integratedMenuButtonShape());
     m_ui.integratedMenuButtonHorizontalMargin->setValue(m_internalSettings->integratedMenuButtonHorizontalMargin());
     m_ui.integratedMenuButtonHorizontalPadding->setValue(m_internalSettings->integratedMenuButtonHorizontalPadding());
-    m_ui.integratedMenuButtonUseTitleColor->setChecked(m_internalSettings->integratedMenuButtonUseTitleColor());
     m_ui.integratedMenuButtonUseSystemMenuFont->setChecked(m_internalSettings->integratedMenuButtonUseSystemMenuFont());
     m_ui.integratedMenuButtonCanDragWindow->setChecked(m_internalSettings->integratedMenuButtonCanDragWindow());
     m_ui.integratedMenuEnableBlur->setChecked(m_internalSettings->integratedMenuEnableBlur());
@@ -597,8 +593,6 @@ void ConfigWidget::updateChanged()
     else if (m_ui.integratedMenuButtonHorizontalMargin->value() != m_internalSettings->integratedMenuButtonHorizontalMargin())
         modified = true;
     else if (m_ui.integratedMenuButtonHorizontalPadding->value() != m_internalSettings->integratedMenuButtonHorizontalPadding())
-        modified = true;
-    else if (m_ui.integratedMenuButtonUseTitleColor->isChecked() != m_internalSettings->integratedMenuButtonUseTitleColor())
         modified = true;
     else if (m_ui.integratedMenuButtonUseSystemMenuFont->isChecked() != m_internalSettings->integratedMenuButtonUseSystemMenuFont())
         modified = true;
