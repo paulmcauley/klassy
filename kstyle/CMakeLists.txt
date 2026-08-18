@@ -123,8 +123,9 @@ endif()
 ########### install files ###############
 install(TARGETS klassy${QT_MAJOR_VERSION} DESTINATION ${KDE_INSTALL_QTPLUGINDIR}/styles/)
 install(FILES klassy.themerc  DESTINATION  ${KDE_INSTALL_DATADIR}/kstyle/themes)
-install(FILES breeze.kcfg DESTINATION ${KDE_INSTALL_KCFGDIR}  RENAME klassy.kcfg)
-
+if(QT_MAJOR_VERSION STREQUAL "6")
+    install(FILES breeze.kcfg DESTINATION ${KDE_INSTALL_KCFGDIR}  RENAME klassy.kcfg)
+endif()
 ########### subdirectories ###############
 
 if (QT_MAJOR_VERSION EQUAL "6" AND TARGET "KF6::KCMUtils")
