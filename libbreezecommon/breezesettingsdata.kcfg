@@ -204,10 +204,6 @@
         <default>4.0</default>
     </entry>
 
-    <entry name="IntegratedMenuButtonUseTitleColor" type="Bool">
-        <default>true</default>
-    </entry>
-
     <entry name="IntegratedMenuButtonUseSystemMenuFont" type="Bool">
         <default>false</default>
     </entry>
