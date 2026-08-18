@@ -8,13 +8,14 @@ msgstr ""
 "Project-Id-Version: Klassy KWin Decoration Config\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-02-21 17:14+0100\n"
-"PO-Revision-Date: 2026-08-18 12:00+0900\n"
+"PO-Revision-Date: 2026-08-18 14:18+0800\n"
 "Last-Translator: KairikiFedora <13278297951@sina.cn>\n"
 "Language-Team: KairikiFedora <13278297951@sina.cn>\n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.9\n"
 
 #: config/breezeconfigwidget.cpp:70
 #, kde-format
@@ -66,8 +67,8 @@ msgstr "新規例外 - Klassy設定"
 msgid "Edit Exception - Klassy Settings"
 msgstr "例外の編集 - Klassy設定"
 
-#: config/breezeexceptionlistwidget.cpp:169
-#: config/loadpreset.cpp:82 config/loadpreset.cpp:131 config/loadpreset.cpp:156
+#: config/breezeexceptionlistwidget.cpp:169 config/loadpreset.cpp:82
+#: config/loadpreset.cpp:131 config/loadpreset.cpp:156
 #: config/loadpreset.cpp:179
 #, kde-format
 msgid "Question - Klassy Settings"
@@ -79,16 +80,14 @@ msgid "Remove selected exception?"
 msgstr "選択した例外を削除しますか？"
 
 #. i18n: ectx: property (text), widget (QPushButton, removeButton)
-#: config/breezeexceptionlistwidget.cpp:172
-#: config/loadpreset.cpp:134 config/ui/breezeexceptionlistwidget.ui:91
-#: config/ui/loadpreset.ui:62
+#: config/breezeexceptionlistwidget.cpp:172 config/loadpreset.cpp:134
+#: config/ui/breezeexceptionlistwidget.ui:91 config/ui/loadpreset.ui:62
 #, kde-format
 msgid "Remove"
 msgstr "削除"
 
 #: config/breezeexceptionlistwidget.cpp:306
-#: config/breezeexceptionlistwidget.cpp:308
-#: config/loadpreset.cpp:70
+#: config/breezeexceptionlistwidget.cpp:308 config/loadpreset.cpp:70
 #, kde-format
 msgid "Warning - Klassy Settings"
 msgstr "警告 - Klassy設定"
@@ -324,6 +323,7 @@ msgid "White close when hovered/pressed"
 msgstr "ホバー/押下時に白い閉じる"
 
 #: config/buttoncolors.cpp:945 config/buttoncolors.h:220
+#: config/buttoncolors.h:221
 #, kde-format
 msgid "White"
 msgstr "白"
@@ -578,11 +578,6 @@ msgstr "ポジティブ（彩度低）"
 msgid "Positive, saturated"
 msgstr "ポジティブ（彩度高）"
 
-#: config/buttoncolors.h:221
-#, kde-format
-msgid "White"
-msgstr "白"
-
 #: config/buttoncolors.h:222
 #, kde-format
 msgid "Window outline, auto"
@@ -776,7 +771,8 @@ msgid ""
 msgstr ""
 "<html><head/><body><p><a href=\"https://github.com/paulmcauley/klassy/"
 "discussions/102\"><span style=\" text-decoration: underline; "
-"color:#2980b9;\">Klassyプリセットファイルをダウンロード</span></a></p></body></html>"
+"color:#2980b9;\">Klassyプリセットファイルをダウンロード</span></a></p></"
+"body></html>"
 
 #. i18n: ectx: property (text), widget (QPushButton, importButton)
 #: config/ui/addpreset.ui:45
@@ -1089,7 +1085,8 @@ msgid ""
 "code</span></a></p></body></html>"
 msgstr ""
 "<html><head/><body><p><a href=\"https://github.com/paulmcauley/"
-"klassy\"><span style=\" text-decoration: underline; color:#2980b9;\">ソースコード</span></a></p></body></html>"
+"klassy\"><span style=\" text-decoration: underline; color:#2980b9;\">ソース"
+"コード</span></a></p></body></html>"
 
 #. i18n: ectx: property (text), widget (QPushButton, buttonSizingButton)
 #: config/ui/breezeconfigurationui.ui:804
@@ -1172,8 +1169,7 @@ msgid "&Window"
 msgstr "ウィンドウ(&W)"
 
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox_5)
-#: config/ui/breezeconfigurationui.ui:1146
-#: config/ui/shadowstyle.ui:20
+#: config/ui/breezeconfigurationui.ui:1146 config/ui/shadowstyle.ui:20
 #, kde-format
 msgid "Shadows"
 msgstr "シャドウ"
@@ -1234,7 +1230,9 @@ msgstr "<html><head/><body><p><br/></p></body></html>"
 #: config/ui/breezeconfigurationui.ui:1376
 #, kde-format
 msgid "Round all corners when no borders (clips window content)"
-msgstr "ボーダーがないときはすべてのコーナーを丸める（ウィンドウコンテンツがクリップされます）"
+msgstr ""
+"ボーダーがないときはすべてのコーナーを丸める（ウィンドウコンテンツがクリップ"
+"されます）"
 
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox)
 #: config/ui/breezeconfigurationui.ui:1392
@@ -1480,7 +1478,8 @@ msgid ""
 "<html><head/><body><p><span style=\"font-style:italic;\">Application name</"
 "span> regular expression to match:</p></body></html>"
 msgstr ""
-"<html><head/><body><p><span style=\"font-style:italic;\">アプリケーション名</span> の正規表現でマッチ:</p></body></html>"
+"<html><head/><body><p><span style=\"font-style:italic;\">アプリケーション名</"
+"span> の正規表現でマッチ:</p></body></html>"
 
 #. i18n: ectx: property (text), widget (QCheckBox, preventApplyOpacityToHeader)
 #: config/ui/breezeexceptiondialog.ui:274
@@ -1603,7 +1602,8 @@ msgid ""
 "<html><head/><body><p><span style=\" font-size:11pt; font-weight:600;\">Icon "
 "colours:</span></p></body></html>"
 msgstr ""
-"<html><head/><body><p><span style=\" font-size:11pt; font-weight:600;\">アイコン色:</span></p></body></html>"
+"<html><head/><body><p><span style=\" font-size:11pt; font-weight:600;\">アイ"
+"コン色:</span></p></body></html>"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, buttonIconColorsActive)
 #. i18n: ectx: property (text), item, widget (QComboBox, buttonBackgroundColorsActive)
@@ -1763,8 +1763,8 @@ msgid ""
 "weight:600;\">Background &amp;&amp; outline<br/>colours:</span></p></body></"
 "html>"
 msgstr ""
-"<html><head/><body><p><span style=\" font-size:11pt; font-"
-"weight:600;\">背景とアウトライン<br/>色:</span></p></body></html>"
+"<html><head/><body><p><span style=\" font-size:11pt; font-weight:600;\">背景"
+"とアウトライン<br/>色:</span></p></body></html>"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, buttonBackgroundColorsActive)
 #. i18n: ectx: property (text), item, widget (QComboBox, buttonBackgroundColorsInactive)
@@ -1897,7 +1897,8 @@ msgstr ""
 msgid ""
 "Lock to make Left-hand button width margin and Right-hand button width "
 "margin have the same value"
-msgstr "左側ボタンの幅マージンと右側ボタンの幅マージンを同じ値にするためにロック"
+msgstr ""
+"左側ボタンの幅マージンと右側ボタンの幅マージンを同じ値にするためにロック"
 
 #. i18n: ectx: property (text), widget (QLabel, fullHeightButtonWidthMarginLeftLabel)
 #: config/ui/buttonsizing.ui:336
@@ -2080,9 +2081,12 @@ msgid ""
 "Icons unrelated to window control are inherited from another icon theme, as "
 "set below:"
 msgstr ""
-"「Klassy」および「Klassy Dark」システムアイコンテーマは自動生成されます。これらはPlasmaのいくつかの場所でウィンドウ制御アイコンを提供するために使用されます。\n"
+"「Klassy」および「Klassy Dark」システムアイコンテーマは自動生成されます。これ"
+"らはPlasmaのいくつかの場所でウィンドウ制御アイコンを提供するために使用されま"
+"す。\n"
 "\n"
-"ウィンドウ制御に関係ないアイコンは、以下に設定された別のアイコンテーマから継承されます:"
+"ウィンドウ制御に関係ないアイコンは、以下に設定された別のアイコンテーマから継"
+"承されます:"
 
 #. i18n: ectx: property (text), widget (QLabel, label_2)
 #: config/ui/systemicongeneration.ui:40
@@ -2292,7 +2296,9 @@ msgstr "ウィンドウアウトラインスタイル:"
 #, kde-format
 msgid ""
 "Lock to make Active and Inactive Thin Window Outlines have the same style"
-msgstr "アクティブと非アクティブの細いウィンドウアウトラインを同じスタイルにするためにロック"
+msgstr ""
+"アクティブと非アクティブの細いウィンドウアウトラインを同じスタイルにするため"
+"にロック"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, windowOutlineStyleActive)
 #. i18n: ectx: property (text), item, widget (QComboBox, windowOutlineStyleInactive)
@@ -2364,7 +2370,9 @@ msgstr "非アクティブウィンドウ"
 #, kde-format
 msgid ""
 "Lock to make Inactive and Active Thin Window Outlines have the same style"
-msgstr "非アクティブとアクティブの細いウィンドウアウトラインを同じスタイルにするためにロック"
+msgstr ""
+"非アクティブとアクティブの細いウィンドウアウトラインを同じスタイルにするため"
+"にロック"
 
 #. i18n: ectx: property (toolTip), widget (QPushButton, lockWindowOutlineCustomColorInactive)
 #. i18n: ectx: property (toolTip), widget (QPushButton, lockWindowOutlineCustomColorInactive_2)
