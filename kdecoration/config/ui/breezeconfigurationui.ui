@@ -1768,79 +1768,6 @@
             <property name="labelAlignment">
              <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
             </property>
-            <item row="3" column="0">
-             <widget class="QLabel" name="integratedMenuButtonHorizontalMarginLabel">
-              <property name="text">
-               <string>Horizontal margin:</string>
-              </property>
-              <property name="buddy">
-               <cstring>integratedMenuButtonHorizontalMargin</cstring>
-              </property>
-             </widget>
-            </item>
-            <item row="3" column="1">
-             <widget class="QDoubleSpinBox" name="integratedMenuButtonHorizontalMargin">
-              <property name="decimals">
-               <number>2</number>
-              </property>
-              <property name="minimum">
-               <double>0.000000000000000</double>
-              </property>
-              <property name="maximum">
-               <double>20.000000000000000</double>
-              </property>
-              <property name="singleStep">
-               <double>0.100000000000000</double>
-              </property>
-             </widget>
-            </item>
-            <item row="4" column="1">
-             <widget class="QDoubleSpinBox" name="integratedMenuButtonHorizontalPadding">
-              <property name="decimals">
-               <number>2</number>
-              </property>
-              <property name="minimum">
-               <double>0.000000000000000</double>
-              </property>
-              <property name="maximum">
-               <double>20.000000000000000</double>
-              </property>
-              <property name="singleStep">
-               <double>0.100000000000000</double>
-              </property>
-             </widget>
-            </item>
-            <item row="4" column="0">
-             <widget class="QLabel" name="integratedMenuButtonHorizontalPaddingLabel">
-              <property name="text">
-               <string>Horizontal padding:</string>
-              </property>
-              <property name="buddy">
-               <cstring>integratedMenuButtonHorizontalPadding</cstring>
-              </property>
-             </widget>
-            </item>
-            <item row="7" column="1">
-             <widget class="QCheckBox" name="integratedMenuButtonUseTitleColor">
-              <property name="text">
-               <string>Use title color for text</string>
-              </property>
-             </widget>
-            </item>
-            <item row="8" column="1">
-             <widget class="QCheckBox" name="integratedMenuButtonUseSystemMenuFont">
-              <property name="text">
-               <string>Use system menu font</string>
-              </property>
-             </widget>
-            </item>
-            <item row="9" column="1">
-             <widget class="QCheckBox" name="integratedMenuButtonCanDragWindow">
-              <property name="text">
-               <string>Allow dragging window</string>
-              </property>
-             </widget>
-            </item>
             <item row="2" column="0">
              <widget class="QLabel" name="integratedMenuButtonShapeLabel">
               <property name="text">
@@ -1893,6 +1820,72 @@
                 <string>Rounded Rectangle, grouped</string>
                </property>
               </item>
+             </widget>
+            </item>
+            <item row="3" column="0">
+             <widget class="QLabel" name="integratedMenuButtonHorizontalMarginLabel">
+              <property name="text">
+               <string>Horizontal margin:</string>
+              </property>
+              <property name="buddy">
+               <cstring>integratedMenuButtonHorizontalMargin</cstring>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="1">
+             <widget class="QDoubleSpinBox" name="integratedMenuButtonHorizontalMargin">
+              <property name="decimals">
+               <number>2</number>
+              </property>
+              <property name="minimum">
+               <double>0.000000000000000</double>
+              </property>
+              <property name="maximum">
+               <double>20.000000000000000</double>
+              </property>
+              <property name="singleStep">
+               <double>0.100000000000000</double>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="0">
+             <widget class="QLabel" name="integratedMenuButtonHorizontalPaddingLabel">
+              <property name="text">
+               <string>Horizontal padding:</string>
+              </property>
+              <property name="buddy">
+               <cstring>integratedMenuButtonHorizontalPadding</cstring>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="1">
+             <widget class="QDoubleSpinBox" name="integratedMenuButtonHorizontalPadding">
+              <property name="decimals">
+               <number>2</number>
+              </property>
+              <property name="minimum">
+               <double>0.000000000000000</double>
+              </property>
+              <property name="maximum">
+               <double>20.000000000000000</double>
+              </property>
+              <property name="singleStep">
+               <double>0.100000000000000</double>
+              </property>
+             </widget>
+            </item>
+            <item row="7" column="1">
+             <widget class="QCheckBox" name="integratedMenuButtonUseSystemMenuFont">
+              <property name="text">
+               <string>Use system menu font</string>
+              </property>
+             </widget>
+            </item>
+            <item row="8" column="1">
+             <widget class="QCheckBox" name="integratedMenuButtonCanDragWindow">
+              <property name="text">
+               <string>Allow dragging window</string>
+              </property>
              </widget>
             </item>
            </layout>
