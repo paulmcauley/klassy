@@ -902,8 +902,8 @@ void DecorationButtonPalette::generateButtonForegroundPalette(const bool active)
     const int buttonIconColors = _decorationSettings->buttonIconColors(active);
     const int closeButtonIconColor = _decorationSettings->closeButtonIconColor(active);
 
-    bool defaultButton =
-        true; // flag indicates the button has standard colours for the behaviour and selected colour (i.e. is not a close/max/min with special colours)
+    bool defaultButton = true; // flag indicates the button has standard colours for the behaviour and selected colour (i.e. is not a close/max/min with special
+                               // colours and is not an integrated menu text button)
 
     const bool &drawIconNormally =
         (_buttonType == DecorationButtonType::Close) ? _decorationSettings->showCloseIconNormally(active) : _decorationSettings->showIconNormally(active);
@@ -1084,6 +1084,14 @@ void DecorationButtonPalette::generateButtonForegroundPalette(const bool active)
                     foregroundPress = bistate2;
             }
         }
+    }
+
+    if (_buttonType == DecorationButtonType::CustomIntegratedMenuMenu) {
+        // Integrated menu buttons default to using the titlebar text to ensure they're legible
+        defaultButton = false;
+        foregroundNormal = decorationColors->titleBarText;
+        foregroundHover = decorationColors->titleBarText;
+        foregroundPress = decorationColors->titleBarText;
     }
 
     if (defaultButton) {
