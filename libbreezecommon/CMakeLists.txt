@@ -21,7 +21,6 @@ set(breezecommon_LIB_SRCS
     stylemetro.cpp
     stylefluent.cpp
     systemicontheme.cpp
-    setqdebug_logging.h
 )
 
 if(HAVE_QTDBUS)
