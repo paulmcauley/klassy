@@ -167,12 +167,13 @@
 
     <entry name="IntegratedMenuStyle" type="Enum">
         <choices>
-            <choice name="Always" />
+            <choice name="AlwaysExpandOnHover" />
+            <choice name="AlwaysTakeRoom" />
             <choice name="RevealOnHover" />
             <choice name="ReplaceTitleOnHover" />
             <choice name="SearchOnly" />
         </choices>
-        <default>Always</default>
+        <default>AlwaysExpandOnHover</default>
     </entry>
 
     <entry name="IntegratedMenuPosition" type="Enum">

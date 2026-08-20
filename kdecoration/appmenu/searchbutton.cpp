@@ -45,7 +45,7 @@ void AppMenuSearchButton::reconfigure()
 {
     AppMenuIconButton::reconfigure();
     auto settings = m_d->internalSettings();
-    this->setVisible(static_cast<AppMenuStyle>(settings->integratedMenuStyle()) != AppMenuStyle::Disabled && settings->integratedMenuSearchEnabled());
+    this->setVisible(settings->integratedMenuSearchEnabled());
 }
 
 void AppMenuSearchButton::filter(const QString &text)
