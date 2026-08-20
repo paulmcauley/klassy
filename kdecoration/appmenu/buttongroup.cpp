@@ -94,7 +94,7 @@ AppMenuButtonGroup::AppMenuButtonGroup(Decoration *decoration)
     // Assign showing and opacity before we bind the onShowingChanged animation
     // so that new windows do not animate.
     updateShowing();
-    setOpacity(m_showing ? 1 : 0);
+    setOpacity((m_showing || expandsOnHover()) ? 1 : 0);
 
     connect(this, &AppMenuButtonGroup::showingChanged, this, &AppMenuButtonGroup::onShowingChanged);
     connect(this, &AppMenuButtonGroup::hoveredChanged, this, &AppMenuButtonGroup::updateShowing);
@@ -113,7 +113,11 @@ AppMenuButtonGroup::AppMenuButtonGroup(Decoration *decoration)
     m_animation->setEndValue(1.0);
     m_animation->setEasingCurve(QEasingCurve::InOutCubic);
     connect(m_animation, &QVariantAnimation::valueChanged, this, [this](const QVariant &value) {
-        setOpacity(value.toReal());
+        if (m_style == AppMenuStyle::ReplaceTitleOnHover || m_style == AppMenuStyle::RevealOnHover) {
+            setOpacity(value.toReal());
+        } else if (expandsOnHover()) {
+            setExpansionPercent(value.toReal());
+        }
     });
 
     auto decoratedClient = decoration->window();
@@ -150,7 +154,11 @@ AppMenuButtonGroup::~AppMenuButtonGroup()
 void AppMenuButtonGroup::reconfigure()
 {
     auto internalSettings = m_decoration->internalSettings();
-    setStyle(static_cast<AppMenuStyle>(internalSettings->integratedMenuStyle()));
+    if (internalSettings->exceptionIntegratedMenuShow()) {
+        setStyle(static_cast<AppMenuStyle>(internalSettings->exceptionIntegratedMenuShow() - 1));
+    } else {
+        setStyle(static_cast<AppMenuStyle>(internalSettings->integratedMenuStyle()));
+    }
     setPosition(static_cast<AppMenuPosition>(internalSettings->integratedMenuPosition()));
     setUnisonHoveringType(static_cast<AppMenuUnisonHovering>(internalSettings->integratedMenuUnisonHovering()));
 
@@ -171,7 +179,8 @@ void AppMenuButtonGroup::reconfigure()
 
 bool AppMenuButtonGroup::alwaysShow() const
 {
-    return m_style != AppMenuStyle::ReplaceTitleOnHover && m_style != AppMenuStyle::RevealOnHover;
+    // NOTE: AlwaysExpandOnHover is excluded because it's not 'fully' shown until hovered.
+    return m_style != AppMenuStyle::AlwaysExpandOnHover && m_style != AppMenuStyle::ReplaceTitleOnHover && m_style != AppMenuStyle::RevealOnHover;
 }
 
 KDecoration3::DecorationButton *AppMenuButtonGroup::buttonAt(QPoint pos) const
@@ -459,19 +468,35 @@ void AppMenuButtonGroup::updateAppMenuModel()
     }
 }
 
+// NOTE: fuzzyLessThanOrEqual was needed in updateOverflow to prevent flickering due to small rounding errors
+bool fuzzyLessThanOrEqual(qreal a, qreal b)
+{
+    return a <= b || qFuzzyCompare(a, b);
+}
+
 void AppMenuButtonGroup::updateOverflow(QRectF availableRect)
 {
-    const qreal availableWidth = availableRect.width();
-
-    qreal fixedWidth = 0;
-    if (m_searchButton && m_searchButton->isVisible()) {
-        fixedWidth += m_searchButton->geometry().width() + spacing();
+    const qreal availableExpandedWidth = availableRect.width();
+    if (m_style == AppMenuStyle::AlwaysExpandOnHover) {
+        const QPair<QRectF, Qt::Alignment> captionRect = m_decoration->captionRect(false, true);
+        const QRectF maxCaptionSize = m_decoration->getMaxCaptionSize();
+        const qreal captionOffset = qMin(captionRect.first.width(), maxCaptionSize.width()) + m_decoration->internalSettings()->titleBarLeftMargin()
+            + m_decoration->internalSettings()->titleBarRightMargin();
+        if (m_position == AppMenuPosition::Left) {
+            availableRect.adjust(0, 0, -captionOffset, 0);
+        } else {
+            availableRect.adjust(captionOffset, 0, 0, 0);
+        }
     }
+    const qreal availableUnexpandedWidth = availableRect.width();
 
-    bool showOverflow = false;
-    qreal currentVisibleWidth = fixedWidth;
+    const qreal overflowBtnWidth = m_overflowButton ? m_overflowButton->geometry().width() + spacing() : 0;
+    const qreal searchBtnWidth = m_searchButton ? m_searchButton->geometry().width() + spacing() : 0;
 
-    if (m_style == AppMenuStyle::SearchOnly || m_style == AppMenuStyle::Disabled) {
+    qreal minVisibleWidth = searchBtnWidth;
+    qreal maxVisibleWidth = searchBtnWidth;
+
+    if (m_style == AppMenuStyle::SearchOnly) {
         for (auto &tb : std::as_const(m_textButtons)) {
             if (tb)
                 tb->setVisible(false);
@@ -480,32 +505,118 @@ void AppMenuButtonGroup::updateOverflow(QRectF availableRect)
         // First pass: check if all enabled text buttons fit without overflow button.
         // We perform this pass without side effects to avoid layout thrashing in Qt.
         qreal totalTextWidth = 0;
-        int enabledCount = 0;
         bool allFit = true;
         for (auto &tb : std::as_const(m_textButtons)) {
-            if (tb && tb->isEnabled()) {
+            if (tb->isEnabled()) {
                 totalTextWidth += tb->geometry().width() + spacing();
-                enabledCount++;
-                if (fixedWidth + totalTextWidth > availableWidth) {
+                if (searchBtnWidth + totalTextWidth > availableUnexpandedWidth) {
                     allFit = false;
                     break;
                 }
             }
         }
 
-        if (allFit && enabledCount > 0) {
-            showOverflow = false;
-            currentVisibleWidth += totalTextWidth;
+        // NOTE: If no buttons are enabled, then totalTextWidth is 0 & allFit is true
+        if (allFit) {
+            minVisibleWidth += totalTextWidth;
+            maxVisibleWidth += totalTextWidth;
             // Second pass: apply visibility
             for (auto &tb : std::as_const(m_textButtons)) {
                 if (tb) {
                     tb->setVisible(tb->isEnabled());
+                    tb->setExpansionOpacity(1);
                 }
             }
-        } else if (enabledCount > 0) {
-            showOverflow = true;
-            const qreal overflowBtnWidth = m_overflowButton ? m_overflowButton->geometry().width() + spacing() : 0;
-            qreal remainingWidth = availableWidth - fixedWidth - overflowBtnWidth;
+            m_overflowButton->setVisible(false);
+            if (m_searchButton) {
+                m_searchButton->setVisible(true);
+                m_searchButton->setExpansionOpacity(1);
+            }
+        } else if (expandsOnHover()) {
+            qreal remainingMaxWidth = availableExpandedWidth - searchBtnWidth - overflowBtnWidth;
+            qreal remainingMinWidth = availableUnexpandedWidth - searchBtnWidth - overflowBtnWidth;
+            qreal remainingExpandedWidth = remainingMinWidth + (availableExpandedWidth - availableUnexpandedWidth) * m_expansionPercent;
+
+            const bool isUnexpanded = qFuzzyCompare(m_expansionPercent, 0);
+
+            // Second pass: apply visibility and calculate final width
+            bool fitsInMin = true;
+            bool fitsInExpanded = true;
+            bool fitsInCurrentExpansion = true;
+            bool partialButtonExists = false;
+            for (auto &tb : std::as_const(m_textButtons)) {
+                if (!tb) {
+                    continue;
+                }
+                if (!tb->isEnabled()) {
+                    tb->setVisible(false);
+                    continue;
+                }
+                const qreal w = tb->geometry().width() + spacing();
+                bool visible = false;
+                qreal opacity = 0;
+                if (fitsInMin && fuzzyLessThanOrEqual(w, remainingMinWidth)) {
+                    visible = true;
+                    opacity = 1;
+                    remainingMinWidth -= w;
+                } else {
+                    fitsInMin = false;
+                }
+
+                if (fitsInCurrentExpansion && fuzzyLessThanOrEqual(w, remainingExpandedWidth)) {
+                    visible = true;
+                    opacity = qMax(opacity, m_expansionPercent);
+                    remainingExpandedWidth -= w;
+                    minVisibleWidth += w;
+                } else if (fitsInCurrentExpansion && fuzzyLessThanOrEqual(w, remainingMaxWidth)) {
+                    if (!isUnexpanded) {
+                        visible = true;
+                        opacity = qMax(opacity, remainingExpandedWidth / w * m_expansionPercent);
+                    }
+                    partialButtonExists = true;
+                    fitsInCurrentExpansion = false;
+                } else {
+                    fitsInCurrentExpansion = false;
+                }
+
+                if (fitsInExpanded && fuzzyLessThanOrEqual(w, remainingMaxWidth)) {
+                    // If visible has been set, don't override the current opacity
+                    if (!visible)
+                        opacity = 0;
+                    visible = true;
+                    remainingMaxWidth -= w;
+                    maxVisibleWidth += w;
+                } else {
+                    fitsInExpanded = false;
+                }
+
+                tb->setVisible(visible);
+                tb->setExpansionOpacity(opacity);
+            }
+
+            remainingExpandedWidth += ((fitsInExpanded ? 0 : overflowBtnWidth) + searchBtnWidth) * m_expansionPercent;
+            m_overflowButton->setVisible(!fitsInExpanded);
+            if (!fitsInExpanded) {
+                maxVisibleWidth += overflowBtnWidth;
+                if (!partialButtonExists) {
+                    m_overflowButton->setExpansionOpacity(qMin(1.0, remainingExpandedWidth / overflowBtnWidth) * m_expansionPercent);
+                    remainingExpandedWidth -= overflowBtnWidth;
+                    partialButtonExists |= !fuzzyLessThanOrEqual(overflowBtnWidth, remainingExpandedWidth);
+                } else {
+                    m_overflowButton->setExpansionOpacity(0);
+                }
+            }
+            if (m_searchButton) {
+                maxVisibleWidth += searchBtnWidth;
+                m_searchButton->setVisible(true);
+                if (!partialButtonExists) {
+                    m_searchButton->setExpansionOpacity(qMin(1.0, remainingExpandedWidth / overflowBtnWidth) * m_expansionPercent);
+                } else {
+                    m_searchButton->setExpansionOpacity(0);
+                }
+            }
+        } else {
+            qreal remainingWidth = availableExpandedWidth - searchBtnWidth - overflowBtnWidth;
 
             // Second pass: apply visibility and calculate final width
             bool fits = true;
@@ -517,7 +628,7 @@ void AppMenuButtonGroup::updateOverflow(QRectF availableRect)
                     const qreal w = tb->geometry().width() + spacing();
                     if (w <= remainingWidth) {
                         tb->setVisible(true);
-                        currentVisibleWidth += w;
+                        minVisibleWidth += w;
                         remainingWidth -= w;
                         continue;
                     }
@@ -525,27 +636,21 @@ void AppMenuButtonGroup::updateOverflow(QRectF availableRect)
                 }
                 tb->setVisible(false);
             }
-        } else {
-            showOverflow = false;
-            for (auto &tb : std::as_const(m_textButtons)) {
-                if (tb)
-                    tb->setVisible(false);
+            if (m_overflowButton) {
+                m_overflowButton->setVisible(true);
+                minVisibleWidth += overflowBtnWidth;
             }
+            maxVisibleWidth = minVisibleWidth;
         }
     }
 
-    if (m_overflowButton) {
-        m_overflowButton->setVisible(showOverflow);
-        if (showOverflow) {
-            currentVisibleWidth += m_overflowButton->geometry().width() + spacing();
-        }
-    }
-    setOverflowing(showOverflow);
+    setOverflowing(m_overflowButton && m_overflowButton->isVisible());
 
     updateAdjacencyFlags();
 
-    if (m_visibleWidth != currentVisibleWidth) {
-        m_visibleWidth = currentVisibleWidth;
+    if (!(qFuzzyCompare(m_minimumWidth, minVisibleWidth) && qFuzzyCompare(m_maximumWidth, maxVisibleWidth))) {
+        m_minimumWidth = minVisibleWidth;
+        m_maximumWidth = maxVisibleWidth;
         Q_EMIT menuUpdated();
     }
 }
@@ -605,9 +710,7 @@ void AppMenuButtonGroup::updateGeometry()
     // Handle the case where the button size is smaller than the height we need for text buttons
     const qreal realButtonHeight = qMax(captionHeight, baseButtonHeight);
     const qreal iconTranslation = (m_decoration->smallButtonPaddedSize() - m_decoration->iconSize()) / 2;
-    const QPointF iconOffset = {
-        iconTranslation,
-        iconTranslation + (realButtonHeight - contentOffset - m_decoration->smallButtonPaddedSize()) / 2}; // (realButtonHeight - baseButtonHeight) / 2
+    const QPointF iconOffset = {iconTranslation, iconTranslation + (realButtonHeight - contentOffset - m_decoration->smallButtonPaddedSize()) / 2};
     QRectF availableRect(leftOffset, topOffset, m_decoration->size().width() - leftOffset - rightOffset, m_decoration->titleBarHeight() + contentOffset);
 
     for (auto *button : buttons()) {
@@ -645,7 +748,7 @@ void AppMenuButtonGroup::updateGeometry()
 
 qreal AppMenuButtonGroup::visibleWidth() const
 {
-    return m_visibleWidth;
+    return m_minimumWidth + (m_maximumWidth - m_minimumWidth) * m_expansionPercent;
 }
 
 bool AppMenuButtonGroup::menuLoadedOnce() const
@@ -919,7 +1022,8 @@ void AppMenuButtonGroup::onShowingChanged(bool showing)
             m_animation->start();
         }
     } else {
-        setOpacity(showing ? 1 : 0);
+        setOpacity((showing || expandsOnHover()) ? 1 : 0);
+        setExpansionPercent(showing ? 1 : 0);
     }
 }
 
