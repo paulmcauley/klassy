@@ -46,6 +46,18 @@ public:
 
     void paint(QPainter *painter, const QRectF &repaintRegion) override;
 
+    void setExpansionOpacity(qreal value)
+    {
+        if (qFuzzyCompare(m_expansionOpacity, value))
+            return;
+        m_expansionOpacity = value;
+        update();
+    }
+    qreal expansionOpacity() const
+    {
+        return m_expansionOpacity;
+    }
+
     void setOpacity(qreal value)
     {
         if (qFuzzyCompare(m_opacity, value))
@@ -168,6 +180,7 @@ private:
 
     qreal m_buttonHeight = 0;
     qreal m_opacity = 0;
+    qreal m_expansionOpacity = 1;
     qreal m_transition = 0;
     qreal m_verticalContentOffset = 0;
     QSizeF m_backgroundVisibleSize;
