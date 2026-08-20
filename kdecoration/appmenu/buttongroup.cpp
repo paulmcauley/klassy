@@ -157,7 +157,7 @@ void AppMenuButtonGroup::reconfigure()
     if (internalSettings->exceptionIntegratedMenuShowStyle()) {
         setStyle(static_cast<AppMenuStyle>(internalSettings->exceptionIntegratedMenuShowStyle() - 1));
     } else {
-        setStyle(static_cast<AppMenuStyle>(internalSettings->integratedMenuStyle()));
+        setStyle(static_cast<AppMenuStyle>(internalSettings->integratedMenuShowStyle()));
     }
     setPosition(static_cast<AppMenuPosition>(internalSettings->integratedMenuPosition()));
     setUnisonHoveringType(static_cast<AppMenuUnisonHovering>(internalSettings->integratedMenuUnisonHovering()));
