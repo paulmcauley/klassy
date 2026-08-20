@@ -1230,6 +1230,18 @@
        <default>false</default>
     </entry>
 
+    <entry name="ExceptionIntegratedMenuShowStyle" type="Enum">
+        <choices>
+            <choice name="NoOverride" />
+            <choice name="AlwaysExpandOnHover" />
+            <choice name="AlwaysTakeRoom" />
+            <choice name="RevealOnHover" />
+            <choice name="ReplaceTitleOnHover" />
+            <choice name="SearchOnly" />
+        </choices>
+        <default>AlwaysExpandOnHover</default>
+    </entry>
+
     <entry name="ExceptionMatchTitleBarToApplicationColor" type = "Bool">
         <default>false</default>
     </entry>
