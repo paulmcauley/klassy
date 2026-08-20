@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>672</width>
-    <height>582</height>
+    <height>654</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -99,10 +99,89 @@
       <string>Window Decoration Options</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_3">
-      <item row="7" column="0">
-       <widget class="QCheckBox" name="borderSizeCheckBox">
+      <item row="2" column="1">
+       <layout class="QHBoxLayout" name="horizontalLayout_4">
+        <item>
+         <widget class="QCheckBox" name="exceptioniShowTitleDocumentName">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="text">
+           <string>Window/Document name</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer_9">
+          <property name="orientation">
+           <enum>Qt::Orientation::Horizontal</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Policy::Fixed</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>10</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="exceptionShowTitleAppIcon">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="text">
+           <string>App icon</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer_10">
+          <property name="orientation">
+           <enum>Qt::Orientation::Horizontal</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Policy::Fixed</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>10</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="exceptionShowTitleAppName">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="text">
+           <string>App name</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer_8">
+          <property name="orientation">
+           <enum>Qt::Orientation::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </item>
+      <item row="4" column="0">
+       <widget class="QCheckBox" name="opaqueTitleBar">
         <property name="text">
-         <string>Border size:</string>
+         <string>&amp;Opaque titlebar</string>
         </property>
        </widget>
       </item>
@@ -113,7 +192,7 @@
         </property>
        </widget>
       </item>
-      <item row="7" column="1">
+      <item row="9" column="1">
        <widget class="QComboBox" name="borderSizeComboBox">
         <property name="enabled">
          <bool>false</bool>
@@ -165,17 +244,17 @@
         </item>
        </widget>
       </item>
-      <item row="2" column="0">
-       <widget class="QCheckBox" name="exceptionMatchTitleBarToApplicationColor">
-        <property name="text">
-         <string>Match titlebar to application colour</string>
+      <item row="0" column="1">
+       <widget class="QComboBox" name="exceptionPresetComboBox">
+        <property name="enabled">
+         <bool>false</bool>
         </property>
        </widget>
       </item>
-      <item row="3" column="0">
-       <widget class="QCheckBox" name="opaqueTitleBar">
+      <item row="9" column="0">
+       <widget class="QCheckBox" name="borderSizeCheckBox">
         <property name="text">
-         <string>&amp;Opaque titlebar</string>
+         <string>Border size:</string>
         </property>
        </widget>
       </item>
@@ -211,6 +290,52 @@
         </item>
        </widget>
       </item>
+      <item row="6" column="1">
+       <widget class="QComboBox" name="appMenuBarBehaviour">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <item>
+         <property name="text">
+          <string>Always show, prefer title, expand menu on hover</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Always show, prefer menu</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Reveal and expand menu on hover</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Replace title on hover</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Show search button only</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QCheckBox" name="exceptionShowInTitle">
+        <property name="text">
+         <string>Show in title:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QCheckBox" name="exceptionMatchTitleBarToApplicationColor">
+        <property name="text">
+         <string>Match titlebar to application colour</string>
+        </property>
+       </widget>
+      </item>
       <item row="1" column="0">
        <widget class="QCheckBox" name="exceptionHideTitleBarCheckBox">
         <property name="text">
@@ -218,10 +343,10 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="1">
-       <widget class="QComboBox" name="exceptionPresetComboBox">
-        <property name="enabled">
-         <bool>false</bool>
+      <item row="6" column="0">
+       <widget class="QCheckBox" name="appMenuBarBehaviourCheckBox">
+        <property name="text">
+         <string>Titlebar menubar behaviour:</string>
         </property>
        </widget>
       </item>
@@ -306,8 +431,14 @@
   <tabstop>exceptionPresetComboBox</tabstop>
   <tabstop>exceptionHideTitleBarCheckBox</tabstop>
   <tabstop>hideTitleBar</tabstop>
+  <tabstop>exceptionShowInTitle</tabstop>
+  <tabstop>exceptioniShowTitleDocumentName</tabstop>
+  <tabstop>exceptionShowTitleAppIcon</tabstop>
+  <tabstop>exceptionShowTitleAppName</tabstop>
   <tabstop>exceptionMatchTitleBarToApplicationColor</tabstop>
   <tabstop>opaqueTitleBar</tabstop>
+  <tabstop>appMenuBarBehaviourCheckBox</tabstop>
+  <tabstop>appMenuBarBehaviour</tabstop>
   <tabstop>borderSizeCheckBox</tabstop>
   <tabstop>borderSizeComboBox</tabstop>
   <tabstop>exceptionProgramNameEditor</tabstop>
@@ -376,6 +507,70 @@
     <hint type="destinationlabel">
      <x>360</x>
      <y>283</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>exceptionShowInTitle</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>exceptioniShowTitleDocumentName</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>96</x>
+     <y>314</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>313</x>
+     <y>322</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>exceptionShowInTitle</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>exceptionShowTitleAppIcon</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>211</x>
+     <y>322</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>485</x>
+     <y>303</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>exceptionShowInTitle</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>exceptionShowTitleAppName</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>149</x>
+     <y>311</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>591</x>
+     <y>309</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>appMenuBarBehaviourCheckBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>appMenuBarBehaviour</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>188</x>
+     <y>403</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>312</x>
+     <y>401</y>
     </hint>
    </hints>
   </connection>

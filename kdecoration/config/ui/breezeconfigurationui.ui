@@ -966,151 +966,326 @@
         <attribute name="title">
          <string>&amp;Titlebar</string>
         </attribute>
-        <layout class="QVBoxLayout" name="verticalLayout_5">
+        <layout class="QHBoxLayout" name="horizontalLayout_3">
          <item>
-          <spacer name="verticalSpacer_22">
+          <layout class="QVBoxLayout" name="verticalLayout_4">
+           <item>
+            <spacer name="verticalSpacer_18">
+             <property name="orientation">
+              <enum>Qt::Orientation::Vertical</enum>
+             </property>
+             <property name="sizeType">
+              <enum>QSizePolicy::Policy::Fixed</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_4">
+             <item>
+              <widget class="QLabel" name="label_2">
+               <property name="text">
+                <string>Show in title:</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QCheckBox" name="showTitleDocumentName">
+               <property name="text">
+                <string>Window/Document name</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <spacer name="horizontalSpacer_9">
+               <property name="orientation">
+                <enum>Qt::Orientation::Horizontal</enum>
+               </property>
+               <property name="sizeType">
+                <enum>QSizePolicy::Policy::Fixed</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>10</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item>
+              <widget class="QCheckBox" name="showTitleAppIcon">
+               <property name="text">
+                <string>Application/Window icon</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <spacer name="horizontalSpacer_10">
+               <property name="orientation">
+                <enum>Qt::Orientation::Horizontal</enum>
+               </property>
+               <property name="sizeType">
+                <enum>QSizePolicy::Policy::Fixed</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>10</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item>
+              <widget class="QCheckBox" name="showTitleAppName">
+               <property name="text">
+                <string>Application name</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <spacer name="horizontalSpacer_8">
+               <property name="orientation">
+                <enum>Qt::Orientation::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <spacer name="verticalSpacer_9">
+             <property name="orientation">
+              <enum>Qt::Orientation::Vertical</enum>
+             </property>
+             <property name="sizeType">
+              <enum>QSizePolicy::Policy::Fixed</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <widget class="QPushButton" name="titleBarSpacingButton">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>237</width>
+               <height>40</height>
+              </size>
+             </property>
+             <property name="text">
+              <string>Titlebar &amp;Spacing...</string>
+             </property>
+             <property name="icon">
+              <iconset theme="transform-crop-and-resize">
+               <normaloff>../.designer/backup</normaloff>../.designer/backup</iconset>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="verticalSpacer_4">
+             <property name="orientation">
+              <enum>Qt::Orientation::Vertical</enum>
+             </property>
+             <property name="sizeType">
+              <enum>QSizePolicy::Policy::Fixed</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="matchTitleBarToApplicationColor">
+             <property name="text">
+              <string>Match titlebar to application colour</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="titleBarOpacityButton">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>237</width>
+               <height>40</height>
+              </size>
+             </property>
+             <property name="text">
+              <string>Titlebar &amp;Opacity...</string>
+             </property>
+             <property name="icon">
+              <iconset theme="edit-opacity"/>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="verticalSpacer_17">
+             <property name="orientation">
+              <enum>Qt::Orientation::Vertical</enum>
+             </property>
+             <property name="sizeType">
+              <enum>QSizePolicy::Policy::Fixed</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="titleBarMenuGroup">
+             <item>
+              <widget class="QCheckBox" name="titleBarAppMenuBarEnabled">
+               <property name="text">
+                <string/>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="titleBarAppMenuBarButton">
+               <property name="minimumSize">
+                <size>
+                 <width>210</width>
+                 <height>40</height>
+                </size>
+               </property>
+               <property name="text">
+                <string>Application Menubar...</string>
+               </property>
+               <property name="icon">
+                <iconset theme="application-menu"/>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <spacer name="horizontalSpacer_6">
+               <property name="orientation">
+                <enum>Qt::Orientation::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <spacer name="verticalSpacer_8">
+             <property name="orientation">
+              <enum>Qt::Orientation::Vertical</enum>
+             </property>
+             <property name="sizeType">
+              <enum>QSizePolicy::Policy::Fixed</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <widget class="QGroupBox" name="groupBox_6">
+             <property name="title">
+              <string/>
+             </property>
+             <layout class="QVBoxLayout" name="verticalLayout_14">
+              <item>
+               <widget class="QLabel" name="label">
+                <property name="text">
+                 <string>On active window:</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QCheckBox" name="drawBackgroundGradient">
+                <property name="text">
+                 <string>Draw titlebar background &amp;gradient</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QCheckBox" name="drawTitleBarSeparator">
+                <property name="text">
+                 <string>Draw separator under titlebar</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QCheckBox" name="boldTitle">
+                <property name="text">
+                 <string>Make title bold</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QCheckBox" name="underlineTitle">
+                <property name="text">
+                 <string>Underline title</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <spacer name="verticalSpacer_19">
+             <property name="orientation">
+              <enum>Qt::Orientation::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer_7">
            <property name="orientation">
-            <enum>Qt::Orientation::Vertical</enum>
-           </property>
-           <property name="sizeType">
-            <enum>QSizePolicy::Policy::Fixed</enum>
+            <enum>Qt::Orientation::Horizontal</enum>
            </property>
            <property name="sizeHint" stdset="0">
             <size>
-             <width>20</width>
+             <width>40</width>
              <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item>
-          <widget class="QPushButton" name="titleBarSpacingButton">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="minimumSize">
-            <size>
-             <width>237</width>
-             <height>40</height>
-            </size>
-           </property>
-           <property name="text">
-            <string>Titlebar &amp;Spacing...</string>
-           </property>
-           <property name="icon">
-            <iconset theme="transform-crop-and-resize">
-             <normaloff>../.designer/backup</normaloff>../.designer/backup</iconset>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="titleBarOpacityButton">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="minimumSize">
-            <size>
-             <width>237</width>
-             <height>40</height>
-            </size>
-           </property>
-           <property name="text">
-            <string>Titlebar &amp;Opacity...</string>
-           </property>
-           <property name="icon">
-            <iconset theme="edit-opacity"/>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <spacer name="verticalSpacer_8">
-           <property name="orientation">
-            <enum>Qt::Orientation::Vertical</enum>
-           </property>
-           <property name="sizeType">
-            <enum>QSizePolicy::Policy::Fixed</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>20</width>
-             <height>5</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item>
-          <widget class="QCheckBox" name="matchTitleBarToApplicationColor">
-           <property name="text">
-            <string>Match titlebar to application colour</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <spacer name="verticalSpacer_4">
-           <property name="orientation">
-            <enum>Qt::Orientation::Vertical</enum>
-           </property>
-           <property name="sizeType">
-            <enum>QSizePolicy::Policy::Fixed</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>20</width>
-             <height>5</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item>
-          <widget class="QLabel" name="label">
-           <property name="text">
-            <string>On active window:</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QCheckBox" name="drawBackgroundGradient">
-           <property name="text">
-            <string>Draw titlebar background &amp;gradient</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QCheckBox" name="drawTitleBarSeparator">
-           <property name="text">
-            <string>Draw separator under titlebar</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QCheckBox" name="boldTitle">
-           <property name="text">
-            <string>Make title bold</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QCheckBox" name="underlineTitle">
-           <property name="text">
-            <string>Underline title</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <spacer name="verticalSpacer_19">
-           <property name="orientation">
-            <enum>Qt::Orientation::Vertical</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>20</width>
-             <height>40</height>
             </size>
            </property>
           </spacer>
@@ -1591,423 +1766,6 @@
          </item>
         </layout>
        </widget>
-       <widget class="QWidget" name="tab_integratedmenu">
-        <attribute name="title">
-         <string>&amp;Integrated Menu</string>
-        </attribute>
-        <layout class="QVBoxLayout" name="verticalLayout_integratedmenu">
-         <property name="topMargin">
-          <number>6</number>
-         </property>
-         <item>
-          <spacer name="verticalSpacer_integratedmenu_top">
-           <property name="orientation">
-            <enum>Qt::Orientation::Vertical</enum>
-           </property>
-           <property name="sizeType">
-            <enum>QSizePolicy::Policy::Fixed</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>20</width>
-             <height>10</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item>
-          <widget class="QLabel" name="integratedMenuCanNotBeEnabledLabel">
-           <property name="text">
-            <string>Integrated menu requires an application menu button be configured in the window decorations.</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QGroupBox" name="integratedMenuBox">
-           <property name="title">
-            <string>Integrated Menu</string>
-           </property>
-           <property name="checkable">
-            <bool>true</bool>
-           </property>
-           <layout class="QFormLayout" name="formLayout_integratedmenu">
-            <property name="leftMargin">
-             <number>12</number>
-            </property>
-            <property name="topMargin">
-             <number>12</number>
-            </property>
-            <property name="rightMargin">
-             <number>12</number>
-            </property>
-            <property name="bottomMargin">
-             <number>12</number>
-            </property>
-            <item row="0" column="0">
-             <widget class="QLabel" name="integratedMenuStyleLabel">
-              <property name="text">
-               <string>Style:</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
-              </property>
-              <property name="buddy">
-               <cstring>integratedMenuStyle</cstring>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="1">
-             <widget class="QComboBox" name="integratedMenuStyle">
-              <item>
-               <property name="text">
-                <string>Always, prefer title, expand menu on hover</string>
-               </property>
-              </item>
-              <item>
-                <property name = "text">
-                  <string>Always, prefer menu over title</string>
-                </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Reveal on hover</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Replace title on hover</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Search only</string>
-               </property>
-              </item>
-             </widget>
-            </item>
-            <item row="4" column="1">
-             <widget class="QCheckBox" name="integratedMenuReplacesMenuButton">
-              <property name="text">
-               <string>Replace application menu button</string>
-              </property>
-             </widget>
-            </item>
-            <item row="3" column="0">
-             <widget class="QLabel" name="integratedMenuUnisonHoveringLabel">
-              <property name="text">
-               <string>Unison hovering:</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
-              </property>
-              <property name="buddy">
-               <cstring>integratedMenuUnisonHovering</cstring>
-              </property>
-             </widget>
-            </item>
-            <item row="3" column="1">
-             <widget class="QComboBox" name="integratedMenuUnisonHovering">
-              <item>
-               <property name="text">
-                <string>Disabled</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Separate</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Together</string>
-               </property>
-              </item>
-             </widget>
-            </item>
-            <item row="2" column="0">
-             <widget class="QLabel" name="integratedMenuPositionLabel">
-              <property name="text">
-               <string>Position:</string>
-              </property>
-              <property name="buddy">
-               <cstring>integratedMenuPosition</cstring>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="1">
-             <widget class="QComboBox" name="integratedMenuPosition">
-              <item>
-               <property name="text">
-                <string>Left</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Center (Replace title on hover only)</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Center (Full-Width) (Replace title on hover only)</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Right</string>
-               </property>
-              </item>
-             </widget>
-            </item>
-           </layout>
-          </widget>
-         </item>
-         <item>
-          <widget class="QGroupBox" name="integratedMenuButtonsBox">
-           <property name="title">
-            <string>Menu Buttons</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
-           </property>
-           <layout class="QFormLayout" name="formLayout_2">
-            <property name="labelAlignment">
-             <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
-            </property>
-            <item row="2" column="0">
-             <widget class="QLabel" name="integratedMenuButtonShapeLabel">
-              <property name="text">
-               <string>Shape:</string>
-              </property>
-              <property name="buddy">
-               <cstring>integratedMenuButtonShape</cstring>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="1">
-             <widget class="QComboBox" name="integratedMenuButtonShape">
-              <item>
-               <property name="text">
-                <string>Full Height Rectangle</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Full Height Rounded Rectangle</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Full Height Rounded Rectangle, grouped</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Integrated Rounded Rectangle</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Integrated Rounded Rectangle, grouped</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Rectangle</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Rounded Rectangle</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Rounded Rectangle, grouped</string>
-               </property>
-              </item>
-             </widget>
-            </item>
-            <item row="3" column="0">
-             <widget class="QLabel" name="integratedMenuButtonHorizontalMarginLabel">
-              <property name="text">
-               <string>Horizontal margin:</string>
-              </property>
-              <property name="buddy">
-               <cstring>integratedMenuButtonHorizontalMargin</cstring>
-              </property>
-             </widget>
-            </item>
-            <item row="3" column="1">
-             <widget class="QDoubleSpinBox" name="integratedMenuButtonHorizontalMargin">
-              <property name="decimals">
-               <number>2</number>
-              </property>
-              <property name="minimum">
-               <double>0.000000000000000</double>
-              </property>
-              <property name="maximum">
-               <double>20.000000000000000</double>
-              </property>
-              <property name="singleStep">
-               <double>0.100000000000000</double>
-              </property>
-             </widget>
-            </item>
-            <item row="4" column="0">
-             <widget class="QLabel" name="integratedMenuButtonHorizontalPaddingLabel">
-              <property name="text">
-               <string>Horizontal padding:</string>
-              </property>
-              <property name="buddy">
-               <cstring>integratedMenuButtonHorizontalPadding</cstring>
-              </property>
-             </widget>
-            </item>
-            <item row="4" column="1">
-             <widget class="QDoubleSpinBox" name="integratedMenuButtonHorizontalPadding">
-              <property name="decimals">
-               <number>2</number>
-              </property>
-              <property name="minimum">
-               <double>0.000000000000000</double>
-              </property>
-              <property name="maximum">
-               <double>20.000000000000000</double>
-              </property>
-              <property name="singleStep">
-               <double>0.100000000000000</double>
-              </property>
-             </widget>
-            </item>
-            <item row="7" column="1">
-             <widget class="QCheckBox" name="integratedMenuButtonUseSystemMenuFont">
-              <property name="text">
-               <string>Use system menu font</string>
-              </property>
-             </widget>
-            </item>
-            <item row="8" column="1">
-             <widget class="QCheckBox" name="integratedMenuButtonCanDragWindow">
-              <property name="text">
-               <string>Allow dragging window</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </widget>
-         </item>
-         <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_3">
-           <item>
-            <widget class="QGroupBox" name="integratedMenuMenuBox">
-             <property name="title">
-              <string>Menu</string>
-             </property>
-             <property name="alignment">
-              <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
-             </property>
-             <layout class="QVBoxLayout" name="verticalLayout_4">
-              <item>
-               <widget class="QCheckBox" name="integratedMenuEnableBlur">
-                <property name="text">
-                 <string>Enable Blur</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <spacer name="verticalSpacer_9">
-                <property name="orientation">
-                 <enum>Qt::Orientation::Vertical</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>20</width>
-                  <height>40</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-             </layout>
-            </widget>
-           </item>
-           <item>
-            <widget class="QGroupBox" name="integratedMenuSearchBox">
-             <property name="title">
-              <string>Integrated Search</string>
-             </property>
-             <property name="checkable">
-              <bool>true</bool>
-             </property>
-             <property name="checked">
-              <bool>true</bool>
-             </property>
-             <layout class="QVBoxLayout" name="verticalLayout_integratedSearch">
-              <property name="leftMargin">
-               <number>6</number>
-              </property>
-              <property name="topMargin">
-               <number>6</number>
-              </property>
-              <property name="rightMargin">
-               <number>6</number>
-              </property>
-              <property name="bottomMargin">
-               <number>6</number>
-              </property>
-              <item>
-               <widget class="QCheckBox" name="integratedMenuSearchShowDisabledActions">
-                <property name="text">
-                 <string>Show disabled actions</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QCheckBox" name="integratedMenuSearchIgnoreSubMenus">
-                <property name="text">
-                 <string>Ignores sub-menus</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QCheckBox" name="integratedMenuSearchIgnoreTopLevel">
-                <property name="text">
-                 <string>Ignores top-level items</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <spacer name="verticalSpacer_10">
-                <property name="orientation">
-                 <enum>Qt::Orientation::Vertical</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>20</width>
-                  <height>40</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-             </layout>
-            </widget>
-           </item>
-          </layout>
-         </item>
-         <item>
-          <spacer name="verticalSpacer_integratedmenu_bottom">
-           <property name="orientation">
-            <enum>Qt::Orientation::Vertical</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>20</width>
-             <height>40</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-        </layout>
-       </widget>
        <widget class="QWidget" name="tab_overrides">
         <attribute name="title">
          <string>Window-Specific Overrides</string>
@@ -2166,9 +1924,15 @@
   <tabstop>buttonSizingButton</tabstop>
   <tabstop>buttonColorsButton</tabstop>
   <tabstop>buttonBehaviourButton</tabstop>
+  <tabstop>klassy_logo</tabstop>
+  <tabstop>showTitleDocumentName</tabstop>
+  <tabstop>showTitleAppIcon</tabstop>
+  <tabstop>showTitleAppName</tabstop>
   <tabstop>titleBarSpacingButton</tabstop>
-  <tabstop>titleBarOpacityButton</tabstop>
   <tabstop>matchTitleBarToApplicationColor</tabstop>
+  <tabstop>titleBarOpacityButton</tabstop>
+  <tabstop>titleBarAppMenuBarEnabled</tabstop>
+  <tabstop>titleBarAppMenuBarButton</tabstop>
   <tabstop>drawBackgroundGradient</tabstop>
   <tabstop>drawTitleBarSeparator</tabstop>
   <tabstop>boldTitle</tabstop>
@@ -2182,7 +1946,6 @@
   <tabstop>shadowStyleButton</tabstop>
   <tabstop>animationsEnabled</tabstop>
   <tabstop>animationsSpeedRelativeSystem</tabstop>
-  <tabstop>klassy_logo</tabstop>
  </tabstops>
  <resources>
   <include location="klassydecoration_config.qrc"/>
@@ -2195,60 +1958,12 @@
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>85</x>
-     <y>200</y>
+     <x>96</x>
+     <y>176</y>
     </hint>
     <hint type="destinationlabel">
-     <x>102</x>
-     <y>287</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>integratedMenuBox</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>integratedMenuButtonsBox</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>363</x>
-     <y>161</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>363</x>
-     <y>347</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>integratedMenuBox</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>integratedMenuMenuBox</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>363</x>
-     <y>161</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>191</x>
-     <y>525</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>integratedMenuBox</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>integratedMenuSearchBox</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>363</x>
-     <y>161</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>535</x>
-     <y>525</y>
+     <x>121</x>
+     <y>410</y>
     </hint>
    </hints>
   </connection>
