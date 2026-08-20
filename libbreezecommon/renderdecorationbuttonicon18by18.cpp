@@ -1533,7 +1533,7 @@ void RenderDecorationButtonIcon18By18::renderIntegratedMenuSearchIcon()
     m_painter->drawEllipse(circleCenter, circleRadius, circleRadius);
 
     const qreal handleLength = 5.0;
-    const qreal sqrt2 = qSqrt(2);
+    const qreal sqrt2 = std::sqrt(2);
     const qreal handleAttachOffset = circleRadius / sqrt2;
     const QPointF handleStart = circleCenter + QPointF(handleAttachOffset, handleAttachOffset);
     const qreal handleEndOffset = (circleRadius + handleLength) / sqrt2;
