@@ -46,11 +46,11 @@ class AppMenuOverflowButton;
 class AppMenuSearchButton;
 
 enum class AppMenuStyle {
-    Always,
+    AlwaysExpandOnHover,
+    AlwaysTakeSpace,
     RevealOnHover,
     ReplaceTitleOnHover,
     SearchOnly,
-    Disabled,
 };
 
 enum class AppMenuPosition {
@@ -82,6 +82,10 @@ public:
     {
         return m_style != AppMenuStyle::ReplaceTitleOnHover;
     };
+    inline bool expandsOnHover() const
+    {
+        return m_style == AppMenuStyle::AlwaysExpandOnHover;
+    }
 
     qreal visibleWidth() const;
 
@@ -98,6 +102,7 @@ public:
     Q_PROPERTY(int animationDuration READ animationDuration WRITE setAnimationDuration NOTIFY animationDurationChanged)
     Q_PROPERTY(bool animationEnabled READ animationEnabled WRITE setAnimationEnabled NOTIFY animationEnabledChanged)
     Q_PROPERTY(int currentIndex READ currentIndex WRITE setCurrentIndex NOTIFY currentIndexChanged)
+    Q_PROPERTY(qreal expansionPercent READ expansionPercent WRITE setExpansionPercent NOTIFY expansionPercentChanged)
     Q_PROPERTY(bool hovered READ hovered WRITE setHovered NOTIFY hoveredChanged)
     Q_PROPERTY(qreal opacity READ opacity WRITE setOpacity NOTIFY opacityChanged)
     Q_PROPERTY(int overflowing READ overflowing WRITE setOverflowing NOTIFY overflowingChanged)
@@ -129,6 +134,18 @@ public:
             return;
         m_animationEnabled = value;
         Q_EMIT animationEnabledChanged(value);
+    }
+
+    qreal expansionPercent() const
+    {
+        return m_expansionPercent;
+    }
+    void setExpansionPercent(qreal value)
+    {
+        if (qFuzzyCompare(m_expansionPercent, value))
+            return;
+        m_expansionPercent = value;
+        Q_EMIT expansionPercentChanged(value);
     }
 
     void setHovered(bool value)
@@ -224,6 +241,11 @@ public:
         Q_EMIT unisonHoveringTypeChanged(value);
     }
 
+    qreal minimumWidth() const
+    {
+        return m_minimumWidth;
+    }
+
 public:
     void updateAppMenuModel();
     void updateOverflow(QRectF availableRect);
@@ -257,6 +279,7 @@ signals:
     void animationEnabledChanged(bool);
     void animationDurationChanged(int);
     void currentIndexChanged();
+    void expansionPercentChanged(qreal);
     void hoveredChanged(bool);
     void opacityChanged(qreal);
     void positionChanged(AppMenuPosition);
@@ -322,12 +345,14 @@ private:
     bool m_showing = true;
     bool m_animationEnabled = true;
     bool m_unisonHovered = false;
-    AppMenuStyle m_style = AppMenuStyle::Always;
+    qreal m_expansionPercent = 0;
+    AppMenuStyle m_style = AppMenuStyle::AlwaysExpandOnHover;
     AppMenuPosition m_position = AppMenuPosition::Left;
     AppMenuUnisonHovering m_unisonHoveringType = AppMenuUnisonHovering::Disabled;
     QVariantAnimation *m_animation;
     qreal m_opacity = 1;
-    qreal m_visibleWidth = 0;
+    qreal m_minimumWidth = 0;
+    qreal m_maximumWidth = 0;
     QPointer<QMenu> m_currentMenu;
     int m_buttonIndexWaitingForPopup = -1;
     int m_buttonIndexOfMenuToCache = -1;
