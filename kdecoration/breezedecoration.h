@@ -73,6 +73,9 @@ public:
     {
         return m_captionOpacity;
     }
+    QRectF getMaxCaptionSize() const;
+    //* return the rect in which caption will be drawn
+    QPair<QRectF, Qt::Alignment> captionRect(bool nextState, bool minimumIntegratedMenu) const;
 
     //*@name active state change animation
     //@{
@@ -241,9 +244,6 @@ protected:
     void mouseReleaseEvent(QMouseEvent *event) override;
 
 private:
-    //* return the rect in which caption will be drawn
-    QPair<QRectF, Qt::Alignment> captionRect(bool nextState) const;
-
     void reconfigureMain(const bool noUpdateShadow = false);
     void updateDecorationColors(const QPalette &clientPalette, QByteArray uuid = "");
     void createButtons();
