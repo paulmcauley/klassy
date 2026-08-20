@@ -154,8 +154,8 @@ AppMenuButtonGroup::~AppMenuButtonGroup()
 void AppMenuButtonGroup::reconfigure()
 {
     auto internalSettings = m_decoration->internalSettings();
-    if (internalSettings->exceptionIntegratedMenuShow()) {
-        setStyle(static_cast<AppMenuStyle>(internalSettings->exceptionIntegratedMenuShow() - 1));
+    if (internalSettings->exceptionIntegratedMenuShowStyle()) {
+        setStyle(static_cast<AppMenuStyle>(internalSettings->exceptionIntegratedMenuShowStyle() - 1));
     } else {
         setStyle(static_cast<AppMenuStyle>(internalSettings->integratedMenuStyle()));
     }

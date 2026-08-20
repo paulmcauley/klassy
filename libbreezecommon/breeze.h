@@ -186,6 +186,7 @@ static QStringList windecoExceptionKeys = {
     "ExceptionWindowPropertyType",
     "ExceptionPreset",
     "HideTitleBar",
+    "ExceptionIntegratedMenuShowStyle",
     "OpaqueTitleBar",
     "ExceptionMatchTitleBarToApplicationColor",
     "ExceptionBorder",
