@@ -125,8 +125,8 @@ Button *Button::create(KDecoration3::DecorationButtonType type, KDecoration3::De
         const auto internalSettings = d->internalSettings();
         if (type == KDecoration3::DecorationButtonType::ApplicationMenu && internalSettings->integratedMenuReplacesMenuButton()
             && internalSettings->integratedMenuEnabled()) {
-            const auto menuStyle = d->internalSettings()->integratedMenuStyle();
-            if (menuStyle != InternalSettings::EnumIntegratedMenuStyle::SearchOnly) {
+            const auto menuStyle = d->internalSettings()->integratedMenuShowStyle();
+            if (menuStyle != InternalSettings::EnumIntegratedMenuShowStyle::SearchOnly) {
                 return nullptr;
             }
         }
