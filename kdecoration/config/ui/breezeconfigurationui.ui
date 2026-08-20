@@ -1660,8 +1660,13 @@
              <widget class="QComboBox" name="integratedMenuStyle">
               <item>
                <property name="text">
-                <string>Always</string>
+                <string>Always, prefer title, expand menu on hover</string>
                </property>
+              </item>
+              <item>
+                <property name = "text">
+                  <string>Always, prefer menu over title</string>
+                </property>
               </item>
               <item>
                <property name="text">

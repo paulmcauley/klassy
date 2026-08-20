@@ -190,6 +190,11 @@ void Decoration::setCaptionOpacity(qreal value)
     update();
 }
 
+QRectF Decoration::getMaxCaptionSize() const
+{
+    return settings()->fontMetrics().boundingRect(window()->caption());
+}
+
 //________________________________________________________________
 void Decoration::setOpacity(qreal value)
 {
@@ -936,6 +941,7 @@ void Decoration::updateIntegratedMenu()
     if (window()->hasApplicationMenu() && !m_integratedMenuButtons) {
         m_integratedMenuButtons = new AppMenuButtonGroup(this);
         connect(m_integratedMenuButtons, &AppMenuButtonGroup::menuUpdated, this, &Decoration::updateButtonsGeometry);
+        connect(m_integratedMenuButtons, &AppMenuButtonGroup::expansionPercentChanged, this, &Decoration::updateButtonsGeometryDelayed);
         m_integratedMenuButtons->updateAppMenuModel();
     } else if (!window()->hasApplicationMenu() && m_integratedMenuButtons) {
         m_integratedMenuButtons->deleteLater();
@@ -1546,7 +1552,7 @@ void Decoration::paintTitleBar(QPainter *painter, const QRectF &repaintRegion)
     QColor fontColor = this->fontColor();
     fontColor.setAlphaF(this->m_captionOpacity);
     painter->setPen(fontColor);
-    const auto [maxCaptionRectangle, alignment] = captionRect();
+    const auto [maxCaptionRectangle, alignment] = captionRect(false);
     const QString caption = painter->fontMetrics().elidedText(c->caption(), Qt::ElideMiddle, maxCaptionRectangle.width());
     QRectF captionBoundingRect;
     painter->drawText(maxCaptionRectangle, alignment | Qt::TextSingleLine, caption, &captionBoundingRect);
@@ -1678,7 +1684,11 @@ qreal Decoration::captionHeight(qreal scaledTitleBarTopMargin, qreal scaledTitle
 }
 
 //________________________________________________________________
+<<<<<<< HEAD
 QPair<QRectF, Qt::Alignment> Decoration::captionRect() const
+=======
+QPair<QRectF, Qt::Alignment> Decoration::captionRect(bool nextState, bool minimumIntegratedMenu) const
+>>>>>>> 22180a47 (Add always show, prefer title, expand on hover style)
 {
     if (hideTitleBar()) {
         return qMakePair(QRect(), Qt::AlignCenter);
@@ -1696,7 +1706,7 @@ QPair<QRectF, Qt::Alignment> Decoration::captionRect() const
         qreal rightOffset = m_rightButtons->buttons().isEmpty() ? padding : size().width() - m_rightButtons->geometry().x() + padding;
 
         if (m_integratedMenuButtons && !m_integratedMenuButtons->buttons().isEmpty() && m_integratedMenuButtons->takesSpace()) {
-            const qreal menuWidth = m_integratedMenuButtons->visibleWidth() + padding;
+            const qreal menuWidth = padding + (minimumIntegratedMenu ? m_integratedMenuButtons->minimumWidth() : m_integratedMenuButtons->visibleWidth());
             if (m_integratedMenuButtons->position() == AppMenuPosition::Right) {
                 rightOffset += menuWidth;
             } else {
@@ -1721,7 +1731,7 @@ QPair<QRectF, Qt::Alignment> Decoration::captionRect() const
         case InternalSettings::EnumTitleAlignment::AlignCenterFullWidth: {
             // full caption rect
             const QRectF fullRect = QRectF(0, yOffset, size().width(), captionHeight);
-            QRectF boundingRect(settings()->fontMetrics().boundingRect(c->caption()).toRect());
+            QRectF boundingRect = getMaxCaptionSize();
 
             // text bounding rect
             boundingRect.setTop(yOffset);

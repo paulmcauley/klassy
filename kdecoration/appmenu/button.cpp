@@ -102,7 +102,7 @@ void AppMenuButton::paint(QPainter *painter, const QRectF &repaintRegion)
     }
 
     // Nothing to paint when fully transparent
-    if (qFuzzyIsNull(m_opacity)) {
+    if (qFuzzyIsNull(m_opacity) || qFuzzyIsNull(m_expansionOpacity)) {
         return;
     }
 
@@ -113,7 +113,7 @@ void AppMenuButton::paint(QPainter *painter, const QRectF &repaintRegion)
     backgroundBoundingRect = KDecoration3::snapToPixelGrid(backgroundBoundingRect, m_devicePixelRatio);
     painter->setClipRect(backgroundBoundingRect);
     painter->setRenderHints(QPainter::Antialiasing);
-    painter->setOpacity(m_opacity);
+    painter->setOpacity(m_opacity * m_expansionOpacity);
     painter->translate(geometry().topLeft());
 
     m_buttonPalette = m_d->decorationColors()->buttonPalette(m_type);
