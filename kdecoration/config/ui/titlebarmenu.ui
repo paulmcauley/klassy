@@ -215,6 +215,11 @@
          </item>
          <item>
           <property name="text">
+           <string>Tab</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
            <string>Rectangle</string>
           </property>
          </item>
