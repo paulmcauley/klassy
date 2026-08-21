@@ -112,6 +112,7 @@ ConfigWidget::ConfigWidget(QObject *parent, const KPluginMetaData &data, const Q
     m_buttonBehaviourDialog = new ButtonBehaviour(m_configuration, m_presetsConfiguration, this);
     m_titleBarSpacingDialog = new TitleBarSpacing(m_configuration, m_presetsConfiguration, this);
     m_titleBarOpacityDialog = new TitleBarOpacity(m_configuration, m_presetsConfiguration, this);
+    m_titleBarMenuDialog = new TitleBarMenu(m_configuration, m_presetsConfiguration, this);
     m_windowOutlineStyleDialog = new WindowOutlineStyle(m_configuration, m_presetsConfiguration, this);
     m_shadowStyleDialog = new ShadowStyle(m_configuration, m_presetsConfiguration, this);
 
@@ -121,6 +122,7 @@ ConfigWidget::ConfigWidget(QObject *parent, const KPluginMetaData &data, const Q
     connect(m_buttonBehaviourDialog, &ButtonBehaviour::changed, this, &ConfigWidget::updateChanged, Qt::ConnectionType::DirectConnection);
     connect(m_titleBarSpacingDialog, &TitleBarSpacing::changed, this, &ConfigWidget::updateChanged, Qt::ConnectionType::DirectConnection);
     connect(m_titleBarOpacityDialog, &TitleBarOpacity::changed, this, &ConfigWidget::updateChanged, Qt::ConnectionType::DirectConnection);
+    connect(m_titleBarMenuDialog, &TitleBarMenu::changed, this, &ConfigWidget::updateChanged, Qt::ConnectionType::DirectConnection);
     connect(m_windowOutlineStyleDialog, &WindowOutlineStyle::changed, this, &ConfigWidget::updateChanged, Qt::ConnectionType::DirectConnection);
     connect(m_shadowStyleDialog, &ShadowStyle::changed, this, &ConfigWidget::updateChanged, Qt::ConnectionType::DirectConnection);
 
@@ -142,6 +144,7 @@ ConfigWidget::ConfigWidget(QObject *parent, const KPluginMetaData &data, const Q
     connect(m_ui.buttonBehaviourButton, &QAbstractButton::clicked, this, &ConfigWidget::buttonBehaviourButtonClicked);
     connect(m_ui.titleBarSpacingButton, &QAbstractButton::clicked, this, &ConfigWidget::titleBarSpacingButtonClicked);
     connect(m_ui.titleBarOpacityButton, &QAbstractButton::clicked, this, &ConfigWidget::titleBarOpacityButtonClicked);
+    connect(m_ui.titleBarMenuButton, &QAbstractButton::clicked, this, &ConfigWidget::titleBarMenuButtonClicked);
     connect(m_ui.windowOutlineStyleButton, &QAbstractButton::clicked, this, &ConfigWidget::windowOutlineStyleButtonClicked);
     connect(m_ui.shadowStyleButton, &QAbstractButton::clicked, this, &ConfigWidget::shadowStyleButtonClicked);
 
@@ -159,6 +162,7 @@ ConfigWidget::ConfigWidget(QObject *parent, const KPluginMetaData &data, const Q
     connect(m_ui.boldButtonIcons, qOverload<int>(&QComboBox::currentIndexChanged), this, &ConfigWidget::updateWindowControlPreviewIcons);
     connect(m_ui.drawBorderOnMaximizedWindows, &QAbstractButton::toggled, this, &ConfigWidget::updateChanged, Qt::ConnectionType::DirectConnection);
     connect(m_ui.matchTitleBarToApplicationColor, &QAbstractButton::toggled, this, &ConfigWidget::updateChanged, Qt::ConnectionType::DirectConnection);
+    connect(m_ui.titleBarMenuEnabled, SIGNAL(checkStateChanged(Qt::CheckState)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
     connect(m_ui.drawBackgroundGradient, &QAbstractButton::toggled, this, &ConfigWidget::updateChanged, Qt::ConnectionType::DirectConnection);
     connect(m_ui.drawTitleBarSeparator, &QAbstractButton::toggled, this, &ConfigWidget::updateChanged, Qt::ConnectionType::DirectConnection);
     connect(m_ui.boldTitle, &QAbstractButton::toggled, this, &ConfigWidget::updateChanged, Qt::ConnectionType::DirectConnection);
@@ -173,40 +177,6 @@ ConfigWidget::ConfigWidget(QObject *parent, const KPluginMetaData &data, const Q
     // track animations changes
     connect(m_ui.animationsEnabled, &QAbstractButton::toggled, this, &ConfigWidget::updateChanged, Qt::ConnectionType::DirectConnection);
     connect(m_ui.animationsSpeedRelativeSystem, SIGNAL(valueChanged(int)), SLOT(updateChanged()));
-
-    // track integrated menu changes
-    connect(m_ui.integratedMenuBox, SIGNAL(toggled(bool)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
-    connect(m_ui.integratedMenuShowStyle, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
-    connect(m_ui.integratedMenuPosition, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
-    connect(m_ui.integratedMenuUnisonHovering, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
-    connect(m_ui.integratedMenuReplacesMenuButton, SIGNAL(toggled(bool)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
-    connect(m_ui.integratedMenuButtonShape, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
-    connect(m_ui.integratedMenuButtonHorizontalMargin, SIGNAL(valueChanged(double)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
-    connect(m_ui.integratedMenuButtonHorizontalPadding, SIGNAL(valueChanged(double)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
-    connect(m_ui.integratedMenuButtonUseSystemMenuFont, SIGNAL(toggled(bool)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
-    connect(m_ui.integratedMenuButtonCanDragWindow, SIGNAL(toggled(bool)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
-    connect(m_ui.integratedMenuEnableBlur, SIGNAL(toggled(bool)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
-    connect(m_ui.integratedMenuSearchBox, SIGNAL(toggled(bool)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
-    connect(m_ui.integratedMenuSearchShowDisabledActions, SIGNAL(toggled(bool)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
-    connect(m_ui.integratedMenuSearchIgnoreTopLevel, SIGNAL(toggled(bool)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
-    connect(m_ui.integratedMenuSearchIgnoreSubMenus, SIGNAL(toggled(bool)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
-    // ensure certain positions are only available in certain styles
-    auto onShapeChangeUpdatePositions = [this]() {
-        QStandardItemModel *integratedMenuPositionModel = qobject_cast<QStandardItemModel *>(m_ui.integratedMenuPosition->model());
-        QStandardItem *centerItem = integratedMenuPositionModel->item(InternalSettings::EnumIntegratedMenuPosition::Center);
-        QStandardItem *centerFullWidthItem = integratedMenuPositionModel->item(InternalSettings::EnumIntegratedMenuPosition::CenterFullWidth);
-        const bool isReplaceTitle = m_ui.integratedMenuShowStyle->currentIndex() == InternalSettings::EnumIntegratedMenuShowStyle::ReplaceTitleOnHover;
-        centerItem->setEnabled(isReplaceTitle);
-        centerFullWidthItem->setEnabled(isReplaceTitle);
-        const int currentIndex = m_ui.integratedMenuPosition->currentIndex();
-        if (!isReplaceTitle
-            && (currentIndex == InternalSettings::EnumIntegratedMenuPosition::Center
-                || currentIndex == InternalSettings::EnumIntegratedMenuPosition::CenterFullWidth)) {
-            m_ui.integratedMenuPosition->setCurrentIndex(InternalSettings::EnumIntegratedMenuPosition::Left);
-        }
-    };
-    onShapeChangeUpdatePositions();
-    connect(m_ui.integratedMenuShowStyle, &QComboBox::currentIndexChanged, this, onShapeChangeUpdatePositions);
 
     connect(m_ui.colorizeWindowOutlineWithButton, &QAbstractButton::toggled, this, &ConfigWidget::updateChanged, Qt::ConnectionType::DirectConnection);
 
@@ -246,6 +216,7 @@ void ConfigWidget::load()
     m_ui.drawBorderOnMaximizedWindows->setChecked(m_internalSettings->drawBorderOnMaximizedWindows());
     m_ui.boldButtonIcons->setCurrentIndex(m_internalSettings->boldButtonIcons());
     m_ui.matchTitleBarToApplicationColor->setChecked(m_internalSettings->matchTitleBarToApplicationColor());
+    m_ui.titleBarMenuEnabled->setChecked(m_internalSettings->integratedMenuEnabled());
     m_ui.drawBackgroundGradient->setChecked(m_internalSettings->drawBackgroundGradient());
     m_ui.drawTitleBarSeparator->setChecked(m_internalSettings->drawTitleBarSeparator());
     m_ui.boldTitle->setChecked(m_internalSettings->boldTitle());
@@ -260,27 +231,14 @@ void ConfigWidget::load()
 
     // == integrated menu
     // -- Enable/Disable based on application menu
-    m_ui.integratedMenuBox->setEnabled(m_hasApplicationMenu);
-    m_ui.integratedMenuButtonsBox->setEnabled(m_hasApplicationMenu);
-    m_ui.integratedMenuBox->setEnabled(m_hasApplicationMenu);
-    m_ui.integratedMenuSearchBox->setEnabled(m_hasApplicationMenu);
-    m_ui.integratedMenuCanNotBeEnabledLabel->setVisible(!m_hasApplicationMenu);
-    // -- Load state
-    m_ui.integratedMenuBox->setChecked(m_internalSettings->integratedMenuEnabled());
-    m_ui.integratedMenuShowStyle->setCurrentIndex(m_internalSettings->integratedMenuShowStyle());
-    m_ui.integratedMenuPosition->setCurrentIndex(m_internalSettings->integratedMenuPosition());
-    m_ui.integratedMenuUnisonHovering->setCurrentIndex(m_internalSettings->integratedMenuUnisonHovering());
-    m_ui.integratedMenuReplacesMenuButton->setChecked(m_internalSettings->integratedMenuReplacesMenuButton());
-    m_ui.integratedMenuButtonShape->setCurrentIndex(m_internalSettings->integratedMenuButtonShape());
-    m_ui.integratedMenuButtonHorizontalMargin->setValue(m_internalSettings->integratedMenuButtonHorizontalMargin());
-    m_ui.integratedMenuButtonHorizontalPadding->setValue(m_internalSettings->integratedMenuButtonHorizontalPadding());
-    m_ui.integratedMenuButtonUseSystemMenuFont->setChecked(m_internalSettings->integratedMenuButtonUseSystemMenuFont());
-    m_ui.integratedMenuButtonCanDragWindow->setChecked(m_internalSettings->integratedMenuButtonCanDragWindow());
-    m_ui.integratedMenuEnableBlur->setChecked(m_internalSettings->integratedMenuEnableBlur());
-    m_ui.integratedMenuSearchBox->setChecked(m_internalSettings->integratedMenuSearchEnabled());
-    m_ui.integratedMenuSearchShowDisabledActions->setChecked(m_internalSettings->integratedMenuSearchShowDisabledActions());
-    m_ui.integratedMenuSearchIgnoreTopLevel->setChecked(m_internalSettings->integratedMenuSearchIgnoreTopLevel());
-    m_ui.integratedMenuSearchIgnoreSubMenus->setChecked(m_internalSettings->integratedMenuSearchIgnoreSubMenus());
+    m_ui.titleBarMenuEnabled->setEnabled(m_hasApplicationMenu);
+    m_ui.titleBarMenuButton->setEnabled(m_hasApplicationMenu && m_ui.titleBarMenuEnabled->isChecked());
+    QString integratedMenuToolTip = "";
+    if (!m_hasApplicationMenu)
+        integratedMenuToolTip = i18n(
+            "Integrating the application menu into the titlebar requires an application menu button be configured on either the left or right. "
+            "You currently don't have one");
+    m_ui.titleBarMenuEnabled->setToolTip(integratedMenuToolTip);
 
     onIconsChanged();
 
@@ -291,6 +249,7 @@ void ConfigWidget::load()
     m_buttonBehaviourDialog->load();
     m_titleBarSpacingDialog->load();
     m_titleBarOpacityDialog->load();
+    m_titleBarMenuDialog->load();
     m_windowOutlineStyleDialog->load();
     m_shadowStyleDialog->load();
 
@@ -330,6 +289,7 @@ void ConfigWidget::saveMain(QString saveAsPresetName)
     m_internalSettings->setBoldButtonIcons(m_ui.boldButtonIcons->currentIndex());
     m_internalSettings->setDrawBorderOnMaximizedWindows(m_ui.drawBorderOnMaximizedWindows->isChecked());
     m_internalSettings->setMatchTitleBarToApplicationColor(m_ui.matchTitleBarToApplicationColor->isChecked());
+    m_internalSettings->setIntegratedMenuEnabled(m_ui.titleBarMenuEnabled->isChecked());
     m_internalSettings->setDrawBackgroundGradient(m_ui.drawBackgroundGradient->isChecked());
     m_internalSettings->setDrawTitleBarSeparator(m_ui.drawTitleBarSeparator->isChecked());
     m_internalSettings->setBoldTitle(m_ui.boldTitle->isChecked());
@@ -341,29 +301,13 @@ void ConfigWidget::saveMain(QString saveAsPresetName)
     m_internalSettings->setForceColorizeSystemIcons(m_ui.forceColorizeSystemIcons->isChecked());
     m_internalSettings->setColorizeWindowOutlineWithButton(m_ui.colorizeWindowOutlineWithButton->isChecked());
 
-    // integrated menu
-    m_internalSettings->setIntegratedMenuEnabled(m_ui.integratedMenuBox->isChecked());
-    m_internalSettings->setIntegratedMenuShowStyle(m_ui.integratedMenuShowStyle->currentIndex());
-    m_internalSettings->setIntegratedMenuPosition(m_ui.integratedMenuPosition->currentIndex());
-    m_internalSettings->setIntegratedMenuUnisonHovering(m_ui.integratedMenuUnisonHovering->currentIndex());
-    m_internalSettings->setIntegratedMenuReplacesMenuButton(m_ui.integratedMenuReplacesMenuButton->isChecked());
-    m_internalSettings->setIntegratedMenuButtonShape(m_ui.integratedMenuButtonShape->currentIndex());
-    m_internalSettings->setIntegratedMenuButtonHorizontalMargin(m_ui.integratedMenuButtonHorizontalMargin->value());
-    m_internalSettings->setIntegratedMenuButtonHorizontalPadding(m_ui.integratedMenuButtonHorizontalPadding->value());
-    m_internalSettings->setIntegratedMenuButtonUseSystemMenuFont(m_ui.integratedMenuButtonUseSystemMenuFont->isChecked());
-    m_internalSettings->setIntegratedMenuButtonCanDragWindow(m_ui.integratedMenuButtonCanDragWindow->isChecked());
-    m_internalSettings->setIntegratedMenuEnableBlur(m_ui.integratedMenuEnableBlur->isChecked());
-    m_internalSettings->setIntegratedMenuSearchEnabled(m_ui.integratedMenuSearchBox->isChecked());
-    m_internalSettings->setIntegratedMenuSearchShowDisabledActions(m_ui.integratedMenuSearchShowDisabledActions->isChecked());
-    m_internalSettings->setIntegratedMenuSearchIgnoreTopLevel(m_ui.integratedMenuSearchIgnoreTopLevel->isChecked());
-    m_internalSettings->setIntegratedMenuSearchIgnoreSubMenus(m_ui.integratedMenuSearchIgnoreSubMenus->isChecked());
-
     m_systemIconGenerationDialog->save(false);
     m_buttonSizingDialog->save(false);
     m_buttonColorsDialog->save(false);
     m_buttonBehaviourDialog->save(false);
     m_titleBarSpacingDialog->save(false);
     m_titleBarOpacityDialog->save(false);
+    m_titleBarMenuDialog->save(false);
     m_shadowStyleDialog->save(false);
     m_windowOutlineStyleDialog->save(false);
 
@@ -421,6 +365,7 @@ void ConfigWidget::defaults()
     m_ui.boldButtonIcons->setCurrentIndex(m_internalSettings->boldButtonIcons());
     m_ui.drawBorderOnMaximizedWindows->setChecked(m_internalSettings->drawBorderOnMaximizedWindows());
     m_ui.matchTitleBarToApplicationColor->setChecked(m_internalSettings->matchTitleBarToApplicationColor());
+    m_ui.titleBarMenuEnabled->setChecked(m_internalSettings->integratedMenuEnabled());
     m_ui.drawBackgroundGradient->setChecked(m_internalSettings->drawBackgroundGradient());
     m_ui.animationsEnabled->setChecked(m_internalSettings->animationsEnabled());
     m_ui.animationsSpeedRelativeSystem->setValue(m_internalSettings->animationsSpeedRelativeSystem());
@@ -432,23 +377,6 @@ void ConfigWidget::defaults()
     m_ui.forceColorizeSystemIcons->setChecked(m_internalSettings->forceColorizeSystemIcons());
     m_ui.colorizeWindowOutlineWithButton->setChecked(m_internalSettings->colorizeWindowOutlineWithButton());
 
-    // integrated menu
-    m_ui.integratedMenuBox->setChecked(m_internalSettings->integratedMenuEnabled());
-    m_ui.integratedMenuShowStyle->setCurrentIndex(m_internalSettings->integratedMenuShowStyle());
-    m_ui.integratedMenuPosition->setCurrentIndex(m_internalSettings->integratedMenuPosition());
-    m_ui.integratedMenuUnisonHovering->setCurrentIndex(m_internalSettings->integratedMenuUnisonHovering());
-    m_ui.integratedMenuReplacesMenuButton->setChecked(m_internalSettings->integratedMenuReplacesMenuButton());
-    m_ui.integratedMenuButtonShape->setCurrentIndex(m_internalSettings->integratedMenuButtonShape());
-    m_ui.integratedMenuButtonHorizontalMargin->setValue(m_internalSettings->integratedMenuButtonHorizontalMargin());
-    m_ui.integratedMenuButtonHorizontalPadding->setValue(m_internalSettings->integratedMenuButtonHorizontalPadding());
-    m_ui.integratedMenuButtonUseSystemMenuFont->setChecked(m_internalSettings->integratedMenuButtonUseSystemMenuFont());
-    m_ui.integratedMenuButtonCanDragWindow->setChecked(m_internalSettings->integratedMenuButtonCanDragWindow());
-    m_ui.integratedMenuEnableBlur->setChecked(m_internalSettings->integratedMenuEnableBlur());
-    m_ui.integratedMenuSearchBox->setChecked(m_internalSettings->integratedMenuSearchEnabled());
-    m_ui.integratedMenuSearchShowDisabledActions->setChecked(m_internalSettings->integratedMenuSearchShowDisabledActions());
-    m_ui.integratedMenuSearchIgnoreTopLevel->setChecked(m_internalSettings->integratedMenuSearchIgnoreTopLevel());
-    m_ui.integratedMenuSearchIgnoreSubMenus->setChecked(m_internalSettings->integratedMenuSearchIgnoreSubMenus());
-
     // set defaults in dialogs
     m_systemIconGenerationDialog->defaults();
     m_buttonSizingDialog->defaults();
@@ -456,6 +384,7 @@ void ConfigWidget::defaults()
     m_buttonBehaviourDialog->defaults();
     m_titleBarSpacingDialog->defaults();
     m_titleBarOpacityDialog->defaults();
+    m_titleBarMenuDialog->defaults();
     m_windowOutlineStyleDialog->defaults();
     m_shadowStyleDialog->defaults();
 
@@ -513,6 +442,10 @@ bool ConfigWidget::isDefaults()
         return false;
     }
 
+    if (!m_titleBarMenuDialog->isDefaults()) {
+        return false;
+    }
+
     if (!m_windowOutlineStyleDialog->isDefaults()) {
         return false;
     }
@@ -564,6 +497,8 @@ void ConfigWidget::updateChanged()
         modified = true;
     else if (m_ui.matchTitleBarToApplicationColor->isChecked() != m_internalSettings->matchTitleBarToApplicationColor())
         modified = true;
+    else if (m_ui.titleBarMenuEnabled->isChecked() != m_internalSettings->integratedMenuEnabled())
+        modified = true;
     else if (m_ui.drawBackgroundGradient->isChecked() != m_internalSettings->drawBackgroundGradient())
         modified = true;
     else if (qAbs(m_ui.cornerRadius->value() - m_internalSettings->windowCornerRadius()) > 0.001)
@@ -575,38 +510,6 @@ void ConfigWidget::updateChanged()
     else if (m_ui.animationsEnabled->isChecked() != m_internalSettings->animationsEnabled())
         modified = true;
     else if (m_ui.animationsSpeedRelativeSystem->value() != m_internalSettings->animationsSpeedRelativeSystem())
-        modified = true;
-
-    // integrated menu
-    else if (m_ui.integratedMenuBox->isChecked() != m_internalSettings->integratedMenuEnabled())
-        modified = true;
-    else if (m_ui.integratedMenuShowStyle->currentIndex() != m_internalSettings->integratedMenuShowStyle())
-        modified = true;
-    else if (m_ui.integratedMenuPosition->currentIndex() != m_internalSettings->integratedMenuPosition())
-        modified = true;
-    else if (m_ui.integratedMenuUnisonHovering->currentIndex() != m_internalSettings->integratedMenuUnisonHovering())
-        modified = true;
-    else if (m_ui.integratedMenuReplacesMenuButton->isChecked() != m_internalSettings->integratedMenuReplacesMenuButton())
-        modified = true;
-    else if (m_ui.integratedMenuButtonShape->currentIndex() != m_internalSettings->integratedMenuButtonShape())
-        modified = true;
-    else if (m_ui.integratedMenuButtonHorizontalMargin->value() != m_internalSettings->integratedMenuButtonHorizontalMargin())
-        modified = true;
-    else if (m_ui.integratedMenuButtonHorizontalPadding->value() != m_internalSettings->integratedMenuButtonHorizontalPadding())
-        modified = true;
-    else if (m_ui.integratedMenuButtonUseSystemMenuFont->isChecked() != m_internalSettings->integratedMenuButtonUseSystemMenuFont())
-        modified = true;
-    else if (m_ui.integratedMenuButtonCanDragWindow->isChecked() != m_internalSettings->integratedMenuButtonCanDragWindow())
-        modified = true;
-    else if (m_ui.integratedMenuEnableBlur->isChecked() != m_internalSettings->integratedMenuEnableBlur())
-        modified = true;
-    else if (m_ui.integratedMenuSearchBox->isChecked() != m_internalSettings->integratedMenuSearchEnabled())
-        modified = true;
-    else if (m_ui.integratedMenuSearchShowDisabledActions->isChecked() != m_internalSettings->integratedMenuSearchShowDisabledActions())
-        modified = true;
-    else if (m_ui.integratedMenuSearchIgnoreTopLevel->isChecked() != m_internalSettings->integratedMenuSearchIgnoreTopLevel())
-        modified = true;
-    else if (m_ui.integratedMenuSearchIgnoreSubMenus->isChecked() != m_internalSettings->integratedMenuSearchIgnoreSubMenus())
         modified = true;
 
     // dialogs
@@ -621,6 +524,8 @@ void ConfigWidget::updateChanged()
     else if (m_titleBarSpacingDialog->m_changed)
         modified = true;
     else if (m_titleBarOpacityDialog->m_changed)
+        modified = true;
+    else if (m_titleBarMenuDialog->m_changed)
         modified = true;
     else if (m_windowOutlineStyleDialog->m_changed)
         modified = true;
@@ -703,6 +608,12 @@ void ConfigWidget::titleBarOpacityButtonClicked()
 {
     m_titleBarOpacityDialog->setWindowTitle(i18n("Titlebar Opacity - Klassy Settings"));
     m_titleBarOpacityDialog->show();
+}
+
+void ConfigWidget::titleBarMenuButtonClicked()
+{
+    m_titleBarMenuDialog->setWindowTitle(i18n("Titlebar Integrated Menu - Klassy Settings"));
+    m_titleBarMenuDialog->show();
 }
 
 void ConfigWidget::shadowStyleButtonClicked()
