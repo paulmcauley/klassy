@@ -697,9 +697,10 @@ void AppMenuButtonGroup::updateGeometry()
     const int buttonShape = internalSettings->integratedMenuButtonShape();
     const bool isFullHeight = AppMenuButton::isShapeFullHeight(buttonShape);
     const qreal baseSize = qMax(m_decoration->smallButtonPaddedSize(), captionHeight);
-    const qreal verticalIconOffsetNormal = isFullHeight
-        ? scaledTitleBarTopMargin + qreal(captionHeight - baseSize - scaledIntegratedRoundedRectangleBottomPadding) / 2
-        : scaledTitleBarTopMargin + qreal(captionHeight - baseSize) / 2;
+    const qreal integratedPadding =
+        (buttonShape == InternalSettings::EnumIntegratedMenuButtonShape::Tab ? -1 : 1) * scaledIntegratedRoundedRectangleBottomPadding;
+    const qreal verticalIconOffsetNormal = isFullHeight ? scaledTitleBarTopMargin + qreal(captionHeight - baseSize - integratedPadding) / 2
+                                                        : scaledTitleBarTopMargin + qreal(captionHeight - baseSize) / 2;
     const qreal topOffset = isFullHeight ? 0 : verticalIconOffsetNormal;
     const qreal contentOffset = isFullHeight ? verticalIconOffsetNormal : 0;
 
