@@ -91,8 +91,14 @@ AppMenuButtonGroup::AppMenuButtonGroup(Decoration *decoration)
         }
     });
 
-    // Assign showing and opacity before we bind the onShowingChanged animation
+    // Assign style, showing, and opacity before we bind the onShowingChanged animation
     // so that new windows do not animate.
+    auto internalSettings = m_decoration->internalSettings();
+    if (internalSettings->exceptionIntegratedMenuShowStyle()) {
+        setStyle(static_cast<AppMenuStyle>(internalSettings->exceptionIntegratedMenuShowStyle() - 1));
+    } else {
+        setStyle(static_cast<AppMenuStyle>(internalSettings->integratedMenuShowStyle()));
+    }
     updateShowing();
     setOpacity((m_showing || expandsOnHover()) ? 1 : 0);
 
