@@ -159,95 +159,6 @@
         <max>10</max>
     </entry>
 
-    <!-- ______________________________MENU______________________________ -->
-
-    <entry name="IntegratedMenuEnabled" type="Bool">
-        <default>false</default>
-    </entry>
-
-    <entry name="IntegratedMenuShowStyle" type="Enum">
-        <choices>
-            <choice name="AlwaysExpandOnHover" />
-            <choice name="AlwaysTakeRoom" />
-            <choice name="RevealOnHover" />
-            <choice name="ReplaceTitleOnHover" />
-            <choice name="SearchOnly" />
-        </choices>
-        <default>AlwaysExpandOnHover</default>
-    </entry>
-
-    <entry name="IntegratedMenuPosition" type="Enum">
-        <choices>
-            <choice name="Left" />
-            <choice name="Center" />
-            <choice name="CenterFullWidth" />
-            <choice name="Right" />
-        </choices>
-        <default>Left</default>
-    </entry>
-
-    <entry name="IntegratedMenuUnisonHovering" type="Enum">
-        <choices>
-            <choice name="Disabled" />
-            <choice name="Separate" />
-            <choice name="Together" />
-        </choices>
-        <default>Disabled</default>
-    </entry>
-
-    <entry name="IntegratedMenuReplacesMenuButton" type="Bool">
-        <default>true</default>
-    </entry>
-
-    <entry name="IntegratedMenuButtonHorizontalMargin" type="Double">
-        <default>0.0</default>
-    </entry>
-
-    <entry name="IntegratedMenuButtonHorizontalPadding" type="Double">
-        <default>4.0</default>
-    </entry>
-
-    <entry name="IntegratedMenuButtonUseSystemMenuFont" type="Bool">
-        <default>false</default>
-    </entry>
-
-    <entry name="IntegratedMenuButtonCanDragWindow" type="Bool">
-        <default>true</default>
-    </entry>
-
-    <entry name="IntegratedMenuButtonShape" type="Enum">
-        <choices>
-            <choice name="FullHeightRectangle" />
-            <choice name="FullHeightRoundedRectangle" />
-            <choice name="FullHeightRoundedRectangleGrouped" />
-            <choice name="IntegratedRoundedRectangle" />
-            <choice name="IntegratedRoundedRectangleGrouped" />
-            <choice name="Rectangle" />
-            <choice name="RoundedRectangle" />
-            <choice name="RoundedRectangleGrouped" />
-        </choices>
-        <default>RoundedRectangle</default>
-    </entry>
-
-    <entry name="IntegratedMenuEnableBlur" type="Bool">
-        <default>true</default>
-    </entry>
-
-    <entry name="IntegratedMenuSearchEnabled" type="Bool">
-        <default>true</default>
-    </entry>
-
-    <entry name="IntegratedMenuSearchShowDisabledActions" type="Bool">
-        <default>false</default>
-    </entry>
-
-    <entry name="IntegratedMenuSearchIgnoreTopLevel" type="Bool">
-        <default>true</default>
-    </entry>
-
-    <entry name="IntegratedMenuSearchIgnoreSubMenus" type="Bool">
-        <default>false</default>
-    </entry>
   </group>
 
 
@@ -1034,6 +945,99 @@
     </entry>
 
     <entry name="OverrideInactiveTitleBarOpacity" type = "Bool">
+        <default>false</default>
+    </entry>
+
+  </group>
+
+  <group name="IntegratedMenu">
+    <!-- ______________________________MENU______________________________ -->
+
+    <entry name="IntegratedMenuEnabled" key="Enabled" type="Bool">
+        <default>false</default>
+    </entry>
+
+    <entry name="IntegratedMenuShowStyle" key="ShowStyle" type="Enum">
+        <choices>
+            <choice name="AlwaysExpandOnHover" />
+            <choice name="AlwaysTakeRoom" />
+            <choice name="RevealOnHover" />
+            <choice name="ReplaceTitleOnHover" />
+            <choice name="SearchOnly" />
+        </choices>
+        <default>AlwaysExpandOnHover</default>
+    </entry>
+
+    <entry name="IntegratedMenuPosition" key="Position" type="Enum">
+        <choices>
+            <choice name="Left" />
+            <choice name="Center" />
+            <choice name="CenterFullWidth" />
+            <choice name="Right" />
+        </choices>
+        <default>Left</default>
+    </entry>
+
+    <entry name="IntegratedMenuUnisonHovering" key="UnisonHovering" type="Enum">
+        <choices>
+            <choice name="Disabled" />
+            <choice name="Separate" />
+            <choice name="Together" />
+        </choices>
+        <default>Disabled</default>
+    </entry>
+
+    <entry name="IntegratedMenuReplacesMenuButton" key="ReplacesMenuButton" type="Bool">
+        <default>true</default>
+    </entry>
+
+    <entry name="IntegratedMenuEnableBlur" key="EnableBlur" type="Bool">
+        <default>true</default>
+    </entry>
+
+    <entry name="IntegratedMenuButtonShape" key="ButtonShape" type="Enum">
+        <choices>
+            <choice name="FullHeightRectangle" />
+            <choice name="FullHeightRoundedRectangle" />
+            <choice name="FullHeightRoundedRectangleGrouped" />
+            <choice name="IntegratedRoundedRectangle" />
+            <choice name="IntegratedRoundedRectangleGrouped" />
+            <choice name="Rectangle" />
+            <choice name="RoundedRectangle" />
+            <choice name="RoundedRectangleGrouped" />
+        </choices>
+        <default>FullHeightRoundedRectangle</default>
+    </entry>
+
+    <entry name="IntegratedMenuButtonHorizontalMargin" key="ButtonHorizontalMargin" type="Double">
+        <default>0.0</default>
+    </entry>
+
+    <entry name="IntegratedMenuButtonHorizontalPadding" key="ButtonHorizontalPadding" type="Double">
+        <default>4.0</default>
+    </entry>
+
+    <entry name="IntegratedMenuButtonUseSystemMenuFont" key="ButtonUseSystemMenuFont" type="Bool">
+        <default>false</default>
+    </entry>
+
+    <entry name="IntegratedMenuButtonCanDragWindow" key="ButtonCanDragWindow" type="Bool">
+        <default>true</default>
+    </entry>
+
+    <entry name="IntegratedMenuSearchEnabled" key="SearchEnabled" type="Bool">
+        <default>true</default>
+    </entry>
+
+    <entry name="IntegratedMenuSearchIgnoreDisabled" key="SearchIgnoreDisabled" type="Bool">
+        <default>true</default>
+    </entry>
+
+    <entry name="IntegratedMenuSearchIgnoreTopLevel" key="SearchIgnoreTopLevel" type="Bool">
+        <default>true</default>
+    </entry>
+
+    <entry name="IntegratedMenuSearchIgnoreSubMenus" key="SearchIgnoreSubMenus" type="Bool">
         <default>false</default>
     </entry>
 
