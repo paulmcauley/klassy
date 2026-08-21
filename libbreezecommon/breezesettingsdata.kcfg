@@ -1002,6 +1002,7 @@
             <choice name="FullHeightRoundedRectangleGrouped" />
             <choice name="IntegratedRoundedRectangle" />
             <choice name="IntegratedRoundedRectangleGrouped" />
+            <choice name="Tab" />
             <choice name="Rectangle" />
             <choice name="RoundedRectangle" />
             <choice name="RoundedRectangleGrouped" />
