@@ -125,7 +125,7 @@ void AppMenuSearchButton::filter(const QString &text)
 
         const ActionInfo &info = result.info;
         QAction *action = result.action;
-        if (!info.isEffectivelyEnabled && !deco->internalSettings()->integratedMenuSearchShowDisabledActions()) {
+        if (!info.isEffectivelyEnabled && deco->internalSettings()->integratedMenuSearchIgnoreDisabled()) {
             continue;
         }
         QAction *newAction = new QAction(action->icon(), info.path, m_menu.get());
