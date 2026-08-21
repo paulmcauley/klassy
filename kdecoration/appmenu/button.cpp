@@ -160,6 +160,8 @@ void AppMenuButton::paint(QPainter *painter, const QRectF &repaintRegion)
         if (buttonShape == InternalSettings::EnumIntegratedMenuButtonShape::IntegratedRoundedRectangle
             || buttonShape == InternalSettings::EnumIntegratedMenuButtonShape::IntegratedRoundedRectangleGrouped) {
             backgroundRect.adjust(geometryShrinkOffset, -geometryShrinkOffset, -geometryShrinkOffset, -geometryShrinkOffset);
+        } else if (buttonShape == InternalSettings::EnumIntegratedMenuButtonShape::Tab) {
+            backgroundRect.adjust(geometryShrinkOffset, geometryShrinkOffset, -geometryShrinkOffset, geometryShrinkOffset);
         } else {
             backgroundRect.adjust(geometryShrinkOffset, geometryShrinkOffset, -geometryShrinkOffset, -geometryShrinkOffset);
         }
@@ -189,6 +191,8 @@ void AppMenuButton::paint(QPainter *painter, const QRectF &repaintRegion)
                 if (m_rightmostVisible) {
                     corners |= CornerBottomRight;
                 }
+            } else if (buttonShape == InternalSettings::EnumIntegratedMenuButtonShape::Tab) {
+                corners |= CornerTopLeft | CornerTopRight;
             }
 
             QPainterPath background;

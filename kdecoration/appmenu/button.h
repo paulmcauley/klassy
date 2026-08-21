@@ -148,6 +148,7 @@ public:
         case InternalSettings::EnumIntegratedMenuButtonShape::FullHeightRoundedRectangleGrouped:
         case InternalSettings::EnumIntegratedMenuButtonShape::IntegratedRoundedRectangle:
         case InternalSettings::EnumIntegratedMenuButtonShape::IntegratedRoundedRectangleGrouped:
+        case InternalSettings::EnumIntegratedMenuButtonShape::Tab:
             return true;
         default:
             return false;
