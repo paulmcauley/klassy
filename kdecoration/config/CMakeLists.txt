@@ -15,6 +15,7 @@ set(breezedecoration_config_SRCS
     systemicongeneration.cpp
     titlebarspacing.cpp
     titlebaropacity.cpp
+    titlebarmenu.cpp
     shadowstyle.cpp
 )
 
@@ -31,6 +32,7 @@ ki18n_wrap_ui(breezedecoration_config_SRCS
    ui/systemicongeneration.ui
    ui/titlebarspacing.ui
    ui/titlebaropacity.ui
+   ui/titlebarmenu.ui
    ui/shadowstyle.ui
 )
 
