@@ -1239,7 +1239,7 @@
             <choice name="ReplaceTitleOnHover" />
             <choice name="SearchOnly" />
         </choices>
-        <default>AlwaysExpandOnHover</default>
+        <default>NoOverride</default>
     </entry>
 
     <entry name="ExceptionMatchTitleBarToApplicationColor" type = "Bool">
