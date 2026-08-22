@@ -11,6 +11,7 @@
 #include <QPushButton>
 #include <QStandardItemModel>
 #include <qnamespace.h>
+#include <qobjectdefs.h>
 
 namespace Breeze
 {
@@ -24,6 +25,8 @@ TitleBarMenu::TitleBarMenu(KSharedConfig::Ptr config, KSharedConfig::Ptr presets
 {
     m_ui->setupUi(this);
 
+    m_ui->buttonCornerRadiusIcon->setPixmap(QIcon::fromTheme(QStringLiteral("tool_curve")).pixmap(16, 16));
+
     // track ui changes
     // direct connections are used in several places so the slot can detect the immediate m_loading status (not available in a queued connection)
     connect(m_ui->menuShows, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
@@ -35,6 +38,8 @@ TitleBarMenu::TitleBarMenu(KSharedConfig::Ptr config, KSharedConfig::Ptr presets
     connect(m_ui->buttonShape, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
     connect(m_ui->buttonHorizontalMargin, SIGNAL(valueChanged(qreal)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
     connect(m_ui->buttonHorizontalPadding, SIGNAL(valueChanged(qreal)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
+    connect(m_ui->buttonCornerRadius, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
+    connect(m_ui->buttonCustomCornerRadius, SIGNAL(valueChanged(qreal)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
     connect(m_ui->buttonUseSystemMenuFont, SIGNAL(checkStateChanged(Qt::CheckState)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
     connect(m_ui->buttonAllowDraggingWindow, SIGNAL(checkStateChanged(Qt::CheckState)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
 
@@ -44,7 +49,6 @@ TitleBarMenu::TitleBarMenu(KSharedConfig::Ptr config, KSharedConfig::Ptr presets
     connect(m_ui->searchIgnoresTopLevel, SIGNAL(checkStateChanged(Qt::CheckState)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
 
     // Ensure certain position options can only be selected in certain show styles:
-
     auto onShapeChangeUpdatePositions = [this]() {
         QStandardItemModel *integratedMenuPositionModel = qobject_cast<QStandardItemModel *>(m_ui->menuPosition->model());
         QStandardItem *centerItem = integratedMenuPositionModel->item(InternalSettings::EnumIntegratedMenuPosition::Center);
@@ -61,6 +65,10 @@ TitleBarMenu::TitleBarMenu(KSharedConfig::Ptr config, KSharedConfig::Ptr presets
     };
     onShapeChangeUpdatePositions();
     connect(m_ui->menuShows, &QComboBox::currentIndexChanged, this, onShapeChangeUpdatePositions);
+
+    connect(m_ui->buttonCornerRadius, &QComboBox::currentIndexChanged, this, [this](int index) {
+        m_ui->buttonCustomCornerRadius->setVisible(index == InternalSettings::EnumIntegratedMenuButtonCornerRadius::IMCR_Custom);
+    });
 
     connect(m_ui->buttonBox->button(QDialogButtonBox::RestoreDefaults), &QAbstractButton::clicked, this, &TitleBarMenu::defaults);
     connect(m_ui->buttonBox->button(QDialogButtonBox::Reset), &QAbstractButton::clicked, this, &TitleBarMenu::load);
@@ -82,6 +90,7 @@ void TitleBarMenu::loadMain(const bool assignUiValuesOnly)
         m_internalSettings->load();
     }
 
+    // Load configuration data
     m_ui->menuShows->setCurrentIndex(m_internalSettings->integratedMenuShowStyle());
     m_ui->menuPosition->setCurrentIndex(m_internalSettings->integratedMenuPosition());
     m_ui->menuUnisonHovering->setCurrentIndex(m_internalSettings->integratedMenuUnisonHovering());
@@ -91,6 +100,8 @@ void TitleBarMenu::loadMain(const bool assignUiValuesOnly)
     m_ui->buttonShape->setCurrentIndex(m_internalSettings->integratedMenuButtonShape());
     m_ui->buttonHorizontalMargin->setValue(m_internalSettings->integratedMenuButtonHorizontalMargin());
     m_ui->buttonHorizontalPadding->setValue(m_internalSettings->integratedMenuButtonHorizontalPadding());
+    m_ui->buttonCornerRadius->setCurrentIndex(m_internalSettings->integratedMenuButtonCornerRadius());
+    m_ui->buttonCustomCornerRadius->setValue(m_internalSettings->integratedMenuButtonCustomCornerRadius());
     m_ui->buttonUseSystemMenuFont->setChecked(m_internalSettings->integratedMenuButtonUseSystemMenuFont());
     m_ui->buttonAllowDraggingWindow->setChecked(m_internalSettings->integratedMenuButtonCanDragWindow());
 
@@ -98,6 +109,10 @@ void TitleBarMenu::loadMain(const bool assignUiValuesOnly)
     m_ui->searchIgnoresDisabled->setChecked(m_internalSettings->integratedMenuSearchIgnoreDisabled());
     m_ui->searchIgnoresSubMenus->setChecked(m_internalSettings->integratedMenuSearchIgnoreSubMenus());
     m_ui->searchIgnoresTopLevel->setChecked(m_internalSettings->integratedMenuSearchIgnoreTopLevel());
+
+    // Set up UI
+    m_ui->buttonCustomCornerRadius->setVisible(m_internalSettings->integratedMenuButtonCornerRadius()
+                                               == InternalSettings::EnumIntegratedMenuButtonCornerRadius::IMCR_Custom);
 
     if (!assignUiValuesOnly) {
         setChanged(false);
@@ -122,6 +137,8 @@ void TitleBarMenu::save(const bool reloadKwinConfig)
     m_internalSettings->setIntegratedMenuButtonShape(m_ui->buttonShape->currentIndex());
     m_internalSettings->setIntegratedMenuButtonHorizontalMargin(m_ui->buttonHorizontalMargin->value());
     m_internalSettings->setIntegratedMenuButtonHorizontalPadding(m_ui->buttonHorizontalPadding->value());
+    m_internalSettings->setIntegratedMenuButtonCornerRadius(m_ui->buttonCornerRadius->currentIndex());
+    m_internalSettings->setIntegratedMenuButtonCustomCornerRadius(m_ui->buttonCustomCornerRadius->value());
     m_internalSettings->setIntegratedMenuButtonUseSystemMenuFont(m_ui->buttonUseSystemMenuFont->isChecked());
     m_internalSettings->setIntegratedMenuButtonCanDragWindow(m_ui->buttonAllowDraggingWindow->isChecked());
 
@@ -218,6 +235,10 @@ void TitleBarMenu::updateChanged()
     else if (m_ui->buttonHorizontalMargin->value() != m_internalSettings->integratedMenuButtonHorizontalMargin())
         modified = true;
     else if (m_ui->buttonHorizontalPadding->value() != m_internalSettings->integratedMenuButtonHorizontalPadding())
+        modified = true;
+    else if (m_ui->buttonCornerRadius->currentIndex() != m_internalSettings->integratedMenuButtonCornerRadius())
+        modified = true;
+    else if (m_ui->buttonCustomCornerRadius->value() != m_internalSettings->integratedMenuButtonCustomCornerRadius())
         modified = true;
     else if (m_ui->buttonUseSystemMenuFont->isChecked() != m_internalSettings->integratedMenuButtonUseSystemMenuFont())
         modified = true;
