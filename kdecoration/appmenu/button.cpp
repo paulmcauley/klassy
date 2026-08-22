@@ -127,12 +127,12 @@ void AppMenuButton::paint(QPainter *painter, const QRectF &repaintRegion)
     setDevicePixelRatio(painter);
 
     painter->save();
-    QRectF backgroundBoundingRect = (QRectF(geometry().topLeft(), m_backgroundVisibleSize));
+    QRectF backgroundBoundingRect = (QRectF(geometry().topLeft() + QPointF(0, m_verticalBackgroundOffset), m_backgroundVisibleSize));
     backgroundBoundingRect = KDecoration3::snapToPixelGrid(backgroundBoundingRect, m_devicePixelRatio);
     painter->setClipRect(backgroundBoundingRect);
     painter->setRenderHints(QPainter::Antialiasing);
     painter->setOpacity(m_opacity * m_expansionOpacity);
-    painter->translate(geometry().topLeft());
+    painter->translate(geometry().topLeft() + QPointF(0, m_verticalBackgroundOffset));
 
     m_buttonPalette = m_d->decorationColors()->buttonPalette(m_type);
 
@@ -141,7 +141,7 @@ void AppMenuButton::paint(QPainter *painter, const QRectF &repaintRegion)
 
     if (background.isValid() || outline.isValid()) {
         const QRectF contentRect(QPointF(geometry().topLeft() + QPointF(geometry().width() - m_backgroundVisibleSize.width(), m_verticalContentOffset)),
-                                 geometry().size() - QSizeF(0, m_verticalContentOffset));
+                                 geometry().size() - QSizeF(0, m_verticalBackgroundOffset * 2 + m_verticalContentOffset));
 
         if (outline.isValid()) {
             QPen pen(outline);
@@ -213,7 +213,7 @@ void AppMenuButton::paint(QPainter *painter, const QRectF &repaintRegion)
         }
     }
 
-    const QPointF offsetDecorationTopLeftToIconTopLeft = geometry().topLeft() - QPointF(0, m_verticalContentOffset);
+    const QPointF offsetDecorationTopLeftToIconTopLeft = geometry().topLeft() + QPointF(0, m_verticalBackgroundOffset - m_verticalContentOffset);
     drawContent(painter, offsetDecorationTopLeftToIconTopLeft);
 
     painter->restore();
