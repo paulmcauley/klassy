@@ -162,6 +162,7 @@ signals:
 
 public Q_SLOTS:
     virtual void trigger();
+    void forceUnpress();
 
 protected:
     virtual void drawContent(QPainter *, QPointF offsetDecorationTopLeftToIconTopLeft) const = 0;
