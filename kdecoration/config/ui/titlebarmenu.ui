@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>490</width>
-    <height>294</height>
+    <width>552</width>
+    <height>307</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -140,7 +140,7 @@
          </property>
         </widget>
        </item>
-       <item row="6" column="1">
+       <item row="7" column="1">
         <spacer name="verticalSpacer_3">
          <property name="orientation">
           <enum>Qt::Orientation::Vertical</enum>
@@ -168,6 +168,52 @@
           </size>
          </property>
         </spacer>
+       </item>
+       <item row="6" column="1">
+        <layout class="QHBoxLayout" name="horizontalLayout_2">
+         <item>
+          <widget class="QComboBox" name="menuBlurCornerRadius">
+           <item>
+            <property name="text">
+             <string>Same as Application Style</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Custom</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+         <item>
+          <widget class="QDoubleSpinBox" name="menuBlurCustomCornerRadius">
+           <property name="singleStep">
+            <double>0.100000000000000</double>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item row="6" column="0">
+        <layout class="QHBoxLayout" name="horizontalLayout_4">
+         <item>
+          <widget class="QLabel" name="menuBlurCornerRadiusIcon">
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="menuBlurCornerRadiusLabel">
+           <property name="text">
+            <string>Blur Corner Radius:</string>
+           </property>
+           <property name="buddy">
+            <cstring>menuBlurCornerRadius</cstring>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </item>
       </layout>
      </widget>
@@ -492,6 +538,70 @@
     <hint type="destinationlabel">
      <x>244</x>
      <y>88</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>menuEnableBlurEffect</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>menuBlurCornerRadiusLabel</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>346</x>
+     <y>200</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>94</x>
+     <y>232</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>menuEnableBlurEffect</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>menuBlurCornerRadius</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>346</x>
+     <y>200</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>254</x>
+     <y>231</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>menuEnableBlurEffect</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>menuBlurCustomCornerRadius</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>346</x>
+     <y>200</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>441</x>
+     <y>232</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>menuEnableBlurEffect</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>menuBlurCornerRadiusIcon</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>346</x>
+     <y>200</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>24</x>
+     <y>232</y>
     </hint>
    </hints>
   </connection>
