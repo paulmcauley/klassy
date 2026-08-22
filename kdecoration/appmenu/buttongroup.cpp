@@ -727,10 +727,13 @@ void AppMenuButtonGroup::updateGeometry()
         baseButtonHeight = m_decoration->smallButtonBackgroundSize();
     }
     // Handle the case where the button size is smaller than the height we need for text buttons
-    const qreal realButtonHeight = qMax(captionHeight, baseButtonHeight);
+    const qreal realButtonHeight = qMax(captionHeight, baseButtonHeight) + topOffset * 2;
     const qreal iconTranslation = (m_decoration->smallButtonPaddedSize() - m_decoration->iconSize()) / 2;
     const QPointF iconOffset = {iconTranslation, iconTranslation + (realButtonHeight - contentOffset - m_decoration->smallButtonPaddedSize()) / 2};
-    QRectF availableRect(leftOffset, topOffset, m_decoration->size().width() - leftOffset - rightOffset, m_decoration->titleBarHeight() + contentOffset);
+    QRectF availableRect(leftOffset,
+                         0,
+                         m_decoration->size().width() - leftOffset - rightOffset,
+                         m_decoration->titleBarHeight() + contentOffset + topOffset * 2);
 
     for (auto *button : buttons()) {
         AppMenuButton *appMenuButton;
@@ -744,6 +747,7 @@ void AppMenuButtonGroup::updateGeometry()
             continue;
         }
 
+        appMenuButton->setVerticalBackgroundOffset(topOffset);
         appMenuButton->setVerticalContentOffset(contentOffset);
         appMenuButton->setButtonHeight(realButtonHeight);
     }
@@ -812,7 +816,12 @@ void AppMenuButtonGroup::popupMenu(QMenu *menu, int buttonIndex)
     }
 
     KDecoration3::Positioner positioner;
-    positioner.setAnchorRect(button->geometry());
+    // Shrink the geometry by half of normal to potentially allow the menu to align with the button (if it can position on the left edge)
+    const qreal halfShrinkOffset = PenWidth::Symbol * 1.5 * (KWindowSystem::isPlatformX11() ? m_decoration->systemScaleFactorX11() : 1) / 2;
+    positioner.setAnchorRect(button->geometry().adjusted(halfShrinkOffset,
+                                                         button->verticalBackgroundOffset() + halfShrinkOffset,
+                                                         -halfShrinkOffset,
+                                                         -button->verticalBackgroundOffset() - halfShrinkOffset));
     deco->popup(positioner, menu);
 
     if (buttonIndex == m_searchIndex) {
