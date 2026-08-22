@@ -50,7 +50,7 @@ void AppMenuIconButton::updateGeometry()
     setGeometry(QRectF(geometry().topLeft(), QSizeF(paddedSize, buttonHeight())));
     setSmallButtonPaddedWidth(paddedSize);
     setIconWidth(m_d->iconSize());
-    setBackgroundVisibleSize(QSizeF(paddedSize, buttonHeight()));
+    setBackgroundVisibleSize(QSizeF(paddedSize, buttonHeight() - verticalBackgroundOffset() * 2));
 }
 
 void AppMenuIconButton::drawContent(QPainter *painter, QPointF offsetDecorationTopLeftToContentTopLeft) const
