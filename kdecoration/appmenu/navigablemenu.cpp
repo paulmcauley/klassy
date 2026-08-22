@@ -25,6 +25,7 @@
 #include <KWindowEffects>
 #include <QGuiApplication>
 #include <QKeyEvent>
+#include <QPainterPath>
 #include <QStyle>
 
 namespace Breeze
@@ -70,8 +71,29 @@ void NavigableMenu::keyPressEvent(QKeyEvent *event)
 void NavigableMenu::showEvent(QShowEvent *event)
 {
     QMenu::showEvent(event);
-    if (windowHandle()) {
-        KWindowEffects::enableBlurBehind(windowHandle(), m_decoration->internalSettings()->integratedMenuEnableBlur());
+    if (!windowHandle()) {
+        return;
+    }
+
+    if (!m_decoration->internalSettings()->integratedMenuEnableBlur()) {
+        KWindowEffects::enableBlurBehind(windowHandle(), false);
+    } else {
+        const auto internalSettings = m_decoration->internalSettings();
+        qreal cornerRadius;
+        if (internalSettings->integratedMenuBlurCornerRadius()) {
+            cornerRadius = internalSettings->integratedMenuBlurCustomCornerRadius();
+        } else if (internalSettings->frameCornerRadius()) {
+            cornerRadius = internalSettings->frameCustomCornerRadius();
+        } else {
+            cornerRadius = qMin(5.0, internalSettings->windowCornerRadius());
+        }
+        if (cornerRadius < 0.1)
+            cornerRadius = 0;
+        // Restrict the blur to the area inside the menu's rounded corners, otherwise
+        // the blur is visible outside of the menu's borders.
+        QPainterPath path;
+        path.addRoundedRect(QRectF(rect()), cornerRadius, cornerRadius);
+        KWindowEffects::enableBlurBehind(windowHandle(), true, QRegion(path.toFillPolygon().toPolygon()));
     }
 }
 
