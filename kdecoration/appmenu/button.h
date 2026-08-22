@@ -42,6 +42,7 @@ public:
     Q_PROPERTY(int buttonIndex READ buttonIndex)
     Q_PROPERTY(qreal buttonHeight READ buttonHeight WRITE setButtonHeight NOTIFY buttonHeightChanged)
     Q_PROPERTY(qreal transition READ transition WRITE setTransition NOTIFY transitionChanged)
+    Q_PROPERTY(qreal verticalBackgroundOffset READ verticalBackgroundOffset WRITE setVerticalBackgroundOffset NOTIFY verticalBackgroundOffsetChanged)
     Q_PROPERTY(qreal verticalContentOffset READ verticalContentOffset WRITE setVerticalContentOffset NOTIFY verticalContentOffsetChanged)
 
     void paint(QPainter *painter, const QRectF &repaintRegion) override;
@@ -94,6 +95,19 @@ public:
     QSizeF backgroundVisibleSize() const
     {
         return m_backgroundVisibleSize;
+    }
+
+    void setVerticalBackgroundOffset(qreal value)
+    {
+        if (qFuzzyCompare(m_verticalBackgroundOffset, value))
+            return;
+        m_verticalBackgroundOffset = value;
+        verticalBackgroundOffsetChanged();
+        update();
+    }
+    qreal verticalBackgroundOffset() const
+    {
+        return m_verticalBackgroundOffset;
     }
 
     void setVerticalContentOffset(qreal value)
@@ -158,6 +172,7 @@ public:
 signals:
     void buttonHeightChanged();
     void transitionChanged();
+    void verticalBackgroundOffsetChanged();
     void verticalContentOffsetChanged();
 
 public Q_SLOTS:
@@ -185,6 +200,7 @@ private:
     qreal m_opacity = 0;
     qreal m_expansionOpacity = 1;
     qreal m_transition = 0;
+    qreal m_verticalBackgroundOffset = 0;
     qreal m_verticalContentOffset = 0;
     QSizeF m_backgroundVisibleSize;
     QVariantAnimation *m_animation;
