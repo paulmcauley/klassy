@@ -1010,6 +1010,20 @@
         <default>true</default>
     </entry>
 
+    <entry name="IntegratedMenuBlurCornerRadius" key="BlurCornerRadiusType" type="Enum">
+        <choices>
+            <choice name="IMBCR_DerivedFromApplicationStyle" />
+            <choice name="IMBCR_Custom" />
+        </choices>
+        <default>IMBCR_DerivedFromApplicationStyle</default>
+    </entry>
+
+    <entry name="IntegratedMenuBlurCustomCornerRadius" key="BlurCustomCornerRadius" type="Double">
+        <default>5.0</default>
+        <min>0</min>
+        <max>24.0</max>
+    </entry>
+
     <entry name="IntegratedMenuButtonShape" key="ButtonShape" type="Enum">
         <choices>
             <choice name="FullHeightRectangle" />
