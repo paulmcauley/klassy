@@ -91,6 +91,24 @@ void AppMenuButton::updateAnimationState(bool hovered)
 void AppMenuButton::reconfigure()
 {
     m_animation->setDuration(m_d->animationsDuration());
+
+    const auto internalSettings = m_d->internalSettings();
+    switch (internalSettings->integratedMenuButtonCornerRadius()) {
+    case InternalSettings::EnumIntegratedMenuButtonCornerRadius::IMCR_DerivedFromApplicationStyle:
+        m_cornerRadius =
+            internalSettings->frameCornerRadius() ? internalSettings->frameCustomCornerRadius() : qMin(5.0, internalSettings->windowCornerRadius());
+        break;
+    case InternalSettings::EnumIntegratedMenuButtonCornerRadius::IMCR_DerivedFromWindowButton:
+        m_cornerRadius = internalSettings->buttonCornerRadius() ? internalSettings->buttonCustomCornerRadius() : internalSettings->windowCornerRadius();
+        break;
+    default:
+        m_cornerRadius = internalSettings->integratedMenuButtonCustomCornerRadius();
+        break;
+    }
+    m_cornerRadius *= m_d->x11Scale();
+    if (m_cornerRadius < 0.1) {
+        m_cornerRadius = 0;
+    }
 }
 
 void AppMenuButton::paint(QPainter *painter, const QRectF &repaintRegion)
@@ -136,16 +154,6 @@ void AppMenuButton::paint(QPainter *painter, const QRectF &repaintRegion)
             painter->setBrush(background);
         else
             painter->setBrush(Qt::NoBrush);
-
-        qreal cornerRadius = 0;
-        if (m_d->internalSettings()->buttonCornerRadius() == InternalSettings::EnumButtonCornerRadius::Custom) {
-            cornerRadius = m_d->internalSettings()->buttonCustomCornerRadius() * m_d->x11Scale();
-        } else {
-            cornerRadius = m_d->scaledCornerRadius();
-        }
-        if (cornerRadius < 0.1) {
-            cornerRadius = 0;
-        }
 
         qreal geometryShrinkOffset = PenWidth::Symbol * 1.5;
         if (KWindowSystem::isPlatformX11())
@@ -199,7 +207,7 @@ void AppMenuButton::paint(QPainter *painter, const QRectF &repaintRegion)
             if (!corners) {
                 background.addRect(backgroundRect);
             } else {
-                background = GeometryTools::roundedPath(backgroundRect, corners, cornerRadius);
+                background = GeometryTools::roundedPath(backgroundRect, corners, m_cornerRadius);
             }
             painter->drawPath(background);
         }
