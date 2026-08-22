@@ -179,6 +179,7 @@ private:
     void setDevicePixelRatio(QPainter *painter);
     void updateAnimationState(bool hovered);
 
+    qreal m_cornerRadius = 0;
     qreal m_buttonHeight = 0;
     qreal m_opacity = 0;
     qreal m_expansionOpacity = 1;
