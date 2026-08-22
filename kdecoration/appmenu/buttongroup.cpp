@@ -119,10 +119,10 @@ AppMenuButtonGroup::AppMenuButtonGroup(Decoration *decoration)
     m_animation->setEndValue(1.0);
     m_animation->setEasingCurve(QEasingCurve::InOutCubic);
     connect(m_animation, &QVariantAnimation::valueChanged, this, [this](const QVariant &value) {
-        if (m_style == AppMenuStyle::ReplaceTitleOnHover || m_style == AppMenuStyle::RevealOnHover) {
-            setOpacity(value.toReal());
-        } else if (expandsOnHover()) {
+        if (expandsOnHover()) {
             setExpansionPercent(value.toReal());
+        } else {
+            setOpacity(value.toReal());
         }
     });
 
@@ -181,6 +181,12 @@ void AppMenuButtonGroup::reconfigure()
         if (auto appMenuButton = qobject_cast<AppMenuButton *>(button))
             appMenuButton->reconfigure();
     }
+
+    updateShowing();
+    if (m_style == AppMenuStyle::ReplaceTitleOnHover || m_style == AppMenuStyle::RevealOnHover)
+        setOpacity(m_animation->currentValue().toReal());
+    if (m_style == AppMenuStyle::AlwaysExpandOnHover)
+        setOpacity(1);
 }
 
 bool AppMenuButtonGroup::alwaysShow() const
@@ -534,6 +540,7 @@ void AppMenuButtonGroup::updateOverflow(QRectF availableRect)
                 }
             }
             m_overflowButton->setVisible(false);
+            m_overflowButton->setExpansionOpacity(1);
             if (m_searchButton) {
                 m_searchButton->setVisible(true);
                 m_searchButton->setExpansionOpacity(1);
@@ -634,6 +641,7 @@ void AppMenuButtonGroup::updateOverflow(QRectF availableRect)
                     const qreal w = tb->geometry().width() + spacing();
                     if (w <= remainingWidth) {
                         tb->setVisible(true);
+                        tb->setExpansionOpacity(1);
                         minVisibleWidth += w;
                         remainingWidth -= w;
                         continue;
@@ -644,8 +652,11 @@ void AppMenuButtonGroup::updateOverflow(QRectF availableRect)
             }
             if (m_overflowButton) {
                 m_overflowButton->setVisible(true);
+                m_overflowButton->setExpansionOpacity(1);
                 minVisibleWidth += overflowBtnWidth;
             }
+            if (m_searchButton)
+                m_searchButton->setExpansionOpacity(1);
             maxVisibleWidth = minVisibleWidth;
         }
     }
