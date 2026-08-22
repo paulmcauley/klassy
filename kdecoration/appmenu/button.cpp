@@ -305,4 +305,15 @@ void AppMenuButton::trigger()
     }
 }
 
+void AppMenuButton::forceUnpress()
+{
+    // HACK: There is no public API to set the pressed state of a
+    // KDecoration3::DecorationButton. This works around the issue by toggling
+    // the enabled state, which has the side effect of resetting the
+    // button's internal pressed state.
+    const bool wasEnabled = isEnabled();
+    setEnabled(!wasEnabled);
+    setEnabled(wasEnabled);
+}
+
 } // namespace Breeze
