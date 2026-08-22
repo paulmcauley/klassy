@@ -53,7 +53,7 @@ void AppMenuTextButton::drawContent(QPainter *painter, QPointF offsetDecorationT
     // const bool isAltPressed = (QGuiApplication::keyboardModifiers() & Qt::AltModifier) != 0;
     const bool isAltPressed = false;
     const Qt::TextFlag mnemonicFlag = isAltPressed ? Qt::TextShowMnemonic : Qt::TextHideMnemonic;
-    painter->drawText(QRectF(geometry().topLeft() - offsetDecorationTopLeftToContentTopLeft, m_textSize),
+    painter->drawText(QRectF(geometry().topLeft() - offsetDecorationTopLeftToContentTopLeft + QPointF(0, verticalBackgroundOffset()), m_textSize),
                       mnemonicFlag | Qt::AlignCenter | Qt::TextSingleLine,
                       m_text);
 }
@@ -91,7 +91,7 @@ void AppMenuTextButton::updateGeometry()
     const qreal width = textSize.width() + m_horizontalPadding * 2;
     const QSizeF size = QSizeF(width, buttonHeight());
     setGeometry(QRectF(geometry().topLeft(), size));
-    setBackgroundVisibleSize(QSizeF(size.width(), buttonHeight()));
+    setBackgroundVisibleSize(QSizeF(size.width(), buttonHeight() - verticalBackgroundOffset() * 2));
     setTextSize(QSizeF(size.width(), textSize.height()));
 }
 
