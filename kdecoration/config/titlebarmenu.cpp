@@ -25,6 +25,7 @@ TitleBarMenu::TitleBarMenu(KSharedConfig::Ptr config, KSharedConfig::Ptr presets
 {
     m_ui->setupUi(this);
 
+    m_ui->menuBlurCornerRadiusIcon->setPixmap(QIcon::fromTheme(QStringLiteral("tool_curve")).pixmap(16, 16));
     m_ui->buttonCornerRadiusIcon->setPixmap(QIcon::fromTheme(QStringLiteral("tool_curve")).pixmap(16, 16));
 
     // track ui changes
@@ -34,6 +35,8 @@ TitleBarMenu::TitleBarMenu(KSharedConfig::Ptr config, KSharedConfig::Ptr presets
     connect(m_ui->menuUnisonHovering, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
     connect(m_ui->menuReplacesApplicationMenuButton, SIGNAL(checkStateChanged(Qt::CheckState)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
     connect(m_ui->menuEnableBlurEffect, SIGNAL(checkStateChanged(Qt::CheckState)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
+    connect(m_ui->menuBlurCornerRadius, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
+    connect(m_ui->menuBlurCustomCornerRadius, SIGNAL(valueChanged(qreal)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
 
     connect(m_ui->buttonShape, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
     connect(m_ui->buttonHorizontalMargin, SIGNAL(valueChanged(qreal)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
@@ -66,6 +69,9 @@ TitleBarMenu::TitleBarMenu(KSharedConfig::Ptr config, KSharedConfig::Ptr presets
     onShapeChangeUpdatePositions();
     connect(m_ui->menuShows, &QComboBox::currentIndexChanged, this, onShapeChangeUpdatePositions);
 
+    connect(m_ui->menuBlurCornerRadius, &QComboBox::currentIndexChanged, this, [this](int index) {
+        m_ui->menuBlurCustomCornerRadius->setVisible(index == InternalSettings::EnumIntegratedMenuBlurCornerRadius::IMBCR_Custom);
+    });
     connect(m_ui->buttonCornerRadius, &QComboBox::currentIndexChanged, this, [this](int index) {
         m_ui->buttonCustomCornerRadius->setVisible(index == InternalSettings::EnumIntegratedMenuButtonCornerRadius::IMCR_Custom);
     });
@@ -96,6 +102,8 @@ void TitleBarMenu::loadMain(const bool assignUiValuesOnly)
     m_ui->menuUnisonHovering->setCurrentIndex(m_internalSettings->integratedMenuUnisonHovering());
     m_ui->menuReplacesApplicationMenuButton->setChecked(m_internalSettings->integratedMenuReplacesMenuButton());
     m_ui->menuEnableBlurEffect->setChecked(m_internalSettings->integratedMenuEnableBlur());
+    m_ui->menuBlurCornerRadius->setCurrentIndex(m_internalSettings->integratedMenuBlurCornerRadius());
+    m_ui->menuBlurCustomCornerRadius->setValue(m_internalSettings->integratedMenuBlurCustomCornerRadius());
 
     m_ui->buttonShape->setCurrentIndex(m_internalSettings->integratedMenuButtonShape());
     m_ui->buttonHorizontalMargin->setValue(m_internalSettings->integratedMenuButtonHorizontalMargin());
@@ -111,6 +119,12 @@ void TitleBarMenu::loadMain(const bool assignUiValuesOnly)
     m_ui->searchIgnoresTopLevel->setChecked(m_internalSettings->integratedMenuSearchIgnoreTopLevel());
 
     // Set up UI
+    m_ui->menuBlurCustomCornerRadius->setVisible(m_internalSettings->integratedMenuBlurCornerRadius()
+                                                 == InternalSettings::EnumIntegratedMenuBlurCornerRadius::IMBCR_Custom);
+    m_ui->menuBlurCornerRadiusIcon->setEnabled(m_ui->menuEnableBlurEffect->isChecked());
+    m_ui->menuBlurCornerRadiusLabel->setEnabled(m_ui->menuEnableBlurEffect->isChecked());
+    m_ui->menuBlurCornerRadius->setEnabled(m_ui->menuEnableBlurEffect->isChecked());
+    m_ui->menuBlurCustomCornerRadius->setEnabled(m_ui->menuEnableBlurEffect->isChecked());
     m_ui->buttonCustomCornerRadius->setVisible(m_internalSettings->integratedMenuButtonCornerRadius()
                                                == InternalSettings::EnumIntegratedMenuButtonCornerRadius::IMCR_Custom);
 
@@ -133,6 +147,8 @@ void TitleBarMenu::save(const bool reloadKwinConfig)
     m_internalSettings->setIntegratedMenuUnisonHovering(m_ui->menuUnisonHovering->currentIndex());
     m_internalSettings->setIntegratedMenuReplacesMenuButton(m_ui->menuReplacesApplicationMenuButton->isChecked());
     m_internalSettings->setIntegratedMenuEnableBlur(m_ui->menuEnableBlurEffect->isChecked());
+    m_internalSettings->setIntegratedMenuBlurCornerRadius(m_ui->menuBlurCornerRadius->currentIndex());
+    m_internalSettings->setIntegratedMenuBlurCustomCornerRadius(m_ui->menuBlurCustomCornerRadius->value());
 
     m_internalSettings->setIntegratedMenuButtonShape(m_ui->buttonShape->currentIndex());
     m_internalSettings->setIntegratedMenuButtonHorizontalMargin(m_ui->buttonHorizontalMargin->value());
@@ -229,6 +245,10 @@ void TitleBarMenu::updateChanged()
     else if (m_ui->menuReplacesApplicationMenuButton->isChecked() != m_internalSettings->integratedMenuReplacesMenuButton())
         modified = true;
     else if (m_ui->menuEnableBlurEffect->isChecked() != m_internalSettings->integratedMenuEnableBlur())
+        modified = true;
+    else if (m_ui->menuBlurCornerRadius->currentIndex() != m_internalSettings->integratedMenuBlurCornerRadius())
+        modified = true;
+    else if (m_ui->menuBlurCustomCornerRadius->value() != m_internalSettings->integratedMenuBlurCustomCornerRadius())
         modified = true;
     else if (m_ui->buttonShape->currentIndex() != m_internalSettings->integratedMenuButtonShape())
         modified = true;
