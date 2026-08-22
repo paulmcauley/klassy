@@ -230,6 +230,7 @@ bool AppMenuButtonGroup::dragMoveTick(const QPoint &pos)
     const QPoint diff = pos - m_pressedPoint;
     if (diff.manhattanLength() >= QApplication::startDragDistance()) {
         resetDragMove();
+        unpressAllButtons();
         return true;
     }
     return false;
@@ -980,13 +981,13 @@ void AppMenuButtonGroup::unpressAllButtons()
 {
     for (auto &tb : std::as_const(m_textButtons)) {
         if (tb)
-            tb->setChecked(false);
+            tb->forceUnpress();
     }
     if (m_overflowButton) {
-        m_overflowButton->setChecked(false);
+        m_overflowButton->forceUnpress();
     }
     if (m_searchButton) {
-        m_searchButton->setChecked(false);
+        m_searchButton->forceUnpress();
     }
 }
 
