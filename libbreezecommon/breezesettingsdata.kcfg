@@ -12,6 +12,23 @@
     <entry name="RefreshedConfig" type="String" />
   </group>
 
+  <!-- used to provide access to the application-style corner radius -->
+  <group name="Style">
+    <entry name="FrameCornerRadius" type="Enum">
+      <choices>
+          <choice name="FCR_DerivedFromWindow" />
+          <choice name="FCR_Custom" />
+      </choices>
+      <default>FCR_DerivedFromWindow</default>
+    </entry>
+
+    <entry name="FrameCustomCornerRadius" type="Double">
+      <default>3.0</default>
+      <min>0</min>
+      <max>24.0</max>
+    </entry>
+  </group>
+
   <group name="Windeco">
     
     <!-- ______________________________BUTTONS______________________________ -->
@@ -444,6 +461,9 @@
                 <value>KeepBelow</value>
                 <value>KeepAbove</value>
                 <value>ExcludeFromCapture</value>
+                <value>IntegratedMenuMenu</value>
+                <value>IntegratedMenuOverflow</value>
+                <value>IntegratedMenuSearch</value>
             </values>
         </parameter>
     </entry>
@@ -462,6 +482,9 @@
                 <value>KeepBelow</value>
                 <value>KeepAbove</value>
                 <value>ExcludeFromCapture</value>
+                <value>IntegratedMenuMenu</value>
+                <value>IntegratedMenuOverflow</value>
+                <value>IntegratedMenuSearch</value>
             </values>
         </parameter>
     </entry>
@@ -944,6 +967,129 @@
 
   </group>
 
+  <group name="IntegratedMenu">
+    <!-- ______________________________MENU______________________________ -->
+
+    <entry name="IntegratedMenuEnabled" key="Enabled" type="Bool">
+        <default>false</default>
+    </entry>
+
+    <entry name="IntegratedMenuShowStyle" key="ShowStyle" type="Enum">
+        <choices>
+            <choice name="AlwaysExpandOnHover" />
+            <choice name="AlwaysTakeRoom" />
+            <choice name="RevealOnHover" />
+            <choice name="ReplaceTitleOnHover" />
+            <choice name="SearchOnly" />
+        </choices>
+        <default>AlwaysExpandOnHover</default>
+    </entry>
+
+    <entry name="IntegratedMenuPosition" key="Position" type="Enum">
+        <choices>
+            <choice name="Left" />
+            <choice name="Center" />
+            <choice name="CenterFullWidth" />
+            <choice name="Right" />
+        </choices>
+        <default>Left</default>
+    </entry>
+
+    <entry name="IntegratedMenuUnisonHovering" key="UnisonHovering" type="Enum">
+        <choices>
+            <choice name="Disabled" />
+            <choice name="Separate" />
+            <choice name="Together" />
+        </choices>
+        <default>Disabled</default>
+    </entry>
+
+    <entry name="IntegratedMenuReplacesMenuButton" key="ReplacesMenuButton" type="Bool">
+        <default>true</default>
+    </entry>
+
+    <entry name="IntegratedMenuEnableBlur" key="EnableBlur" type="Bool">
+        <default>true</default>
+    </entry>
+
+    <entry name="IntegratedMenuBlurCornerRadius" key="BlurCornerRadiusType" type="Enum">
+        <choices>
+            <choice name="IMBCR_DerivedFromApplicationStyle" />
+            <choice name="IMBCR_Custom" />
+        </choices>
+        <default>IMBCR_DerivedFromApplicationStyle</default>
+    </entry>
+
+    <entry name="IntegratedMenuBlurCustomCornerRadius" key="BlurCustomCornerRadius" type="Double">
+        <default>5.0</default>
+        <min>0</min>
+        <max>24.0</max>
+    </entry>
+
+    <entry name="IntegratedMenuButtonShape" key="ButtonShape" type="Enum">
+        <choices>
+            <choice name="FullHeightRectangle" />
+            <choice name="FullHeightRoundedRectangle" />
+            <choice name="FullHeightRoundedRectangleGrouped" />
+            <choice name="IntegratedRoundedRectangle" />
+            <choice name="IntegratedRoundedRectangleGrouped" />
+            <choice name="Tab" />
+            <choice name="Rectangle" />
+            <choice name="RoundedRectangle" />
+            <choice name="RoundedRectangleGrouped" />
+        </choices>
+        <default>FullHeightRoundedRectangle</default>
+    </entry>
+
+    <entry name="IntegratedMenuButtonHorizontalMargin" key="ButtonHorizontalMargin" type="Double">
+        <default>0.0</default>
+    </entry>
+
+    <entry name="IntegratedMenuButtonHorizontalPadding" key="ButtonHorizontalPadding" type="Double">
+        <default>4.0</default>
+    </entry>
+
+    <entry name="IntegratedMenuButtonCornerRadius" key="ButtonCornerRadiusType" type="Enum">
+        <choices>
+            <choice name="IMCR_DerivedFromApplicationStyle" />
+            <choice name="IMCR_DerivedFromWindowButton" />
+            <choice name="IMCR_Custom" />
+        </choices>
+        <default>IMCR_DerivedFromApplicationStyle</default>
+    </entry>
+
+    <entry name="IntegratedMenuButtonCustomCornerRadius" key="ButtonCustomCornerRadius" type="Double">
+        <default>5.0</default>
+        <min>0</min>
+        <max>24.0</max>
+    </entry>
+
+    <entry name="IntegratedMenuButtonUseSystemMenuFont" key="ButtonUseSystemMenuFont" type="Bool">
+        <default>false</default>
+    </entry>
+
+    <entry name="IntegratedMenuButtonCanDragWindow" key="ButtonCanDragWindow" type="Bool">
+        <default>true</default>
+    </entry>
+
+    <entry name="IntegratedMenuSearchEnabled" key="SearchEnabled" type="Bool">
+        <default>true</default>
+    </entry>
+
+    <entry name="IntegratedMenuSearchIgnoreDisabled" key="SearchIgnoreDisabled" type="Bool">
+        <default>true</default>
+    </entry>
+
+    <entry name="IntegratedMenuSearchIgnoreTopLevel" key="SearchIgnoreTopLevel" type="Bool">
+        <default>true</default>
+    </entry>
+
+    <entry name="IntegratedMenuSearchIgnoreSubMenus" key="SearchIgnoreSubMenus" type="Bool">
+        <default>false</default>
+    </entry>
+
+  </group>
+
   <group name="WindowOutlineStyle">
     <!-- Draw thin window outline -->
 
@@ -1133,6 +1279,18 @@
     <!-- opaque title bar (exception) -->
     <entry name="OpaqueTitleBar" type = "Bool">
        <default>false</default>
+    </entry>
+
+    <entry name="ExceptionIntegratedMenuShowStyle" type="Enum">
+        <choices>
+            <choice name="NoOverride" />
+            <choice name="AlwaysExpandOnHover" />
+            <choice name="AlwaysTakeRoom" />
+            <choice name="RevealOnHover" />
+            <choice name="ReplaceTitleOnHover" />
+            <choice name="SearchOnly" />
+        </choices>
+        <default>NoOverride</default>
     </entry>
 
     <entry name="ExceptionMatchTitleBarToApplicationColor" type = "Bool">

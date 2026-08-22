@@ -1,0 +1,609 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>TitleBarMenu</class>
+ <widget class="QDialog" name="TitleBarMenu">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>552</width>
+    <height>307</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Dialog</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QTabWidget" name="tabWidget">
+     <property name="currentIndex">
+      <number>0</number>
+     </property>
+     <widget class="QWidget" name="menuTab">
+      <attribute name="title">
+       <string>Menu</string>
+      </attribute>
+      <layout class="QFormLayout" name="formLayout">
+       <item row="0" column="0">
+        <widget class="QLabel" name="menuShowsLabel">
+         <property name="text">
+          <string>Shows:</string>
+         </property>
+         <property name="buddy">
+          <cstring>menuShows</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QComboBox" name="menuShows">
+         <item>
+          <property name="text">
+           <string>Always, prefer title, expand menu on hover</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Always, prefer menu</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Reveal on hover, reserve space for menu</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Replace title on hover</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Search button only</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="menuPositionLabel">
+         <property name="text">
+          <string>Position:</string>
+         </property>
+         <property name="buddy">
+          <cstring>menuPosition</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QComboBox" name="menuPosition">
+         <item>
+          <property name="text">
+           <string>Left</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Center (Replace title on hover only)</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Center (Full-width) (Replace title on hover only)</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Right</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="menuUnisonHoveringLabel">
+         <property name="text">
+          <string>Unison Hovering:</string>
+         </property>
+         <property name="buddy">
+          <cstring>menuUnisonHovering</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QComboBox" name="menuUnisonHovering">
+         <item>
+          <property name="text">
+           <string>Disabled</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Separate</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Together</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="3" column="1">
+        <widget class="QCheckBox" name="menuReplacesApplicationMenuButton">
+         <property name="text">
+          <string>Replace application menu button</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="1">
+        <widget class="QCheckBox" name="menuEnableBlurEffect">
+         <property name="text">
+          <string>Enable blur effect</string>
+         </property>
+        </widget>
+       </item>
+       <item row="7" column="1">
+        <spacer name="verticalSpacer_3">
+         <property name="orientation">
+          <enum>Qt::Orientation::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="4" column="1">
+        <spacer name="verticalSpacer_4">
+         <property name="orientation">
+          <enum>Qt::Orientation::Vertical</enum>
+         </property>
+         <property name="sizeType">
+          <enum>QSizePolicy::Policy::Fixed</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>10</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="6" column="1">
+        <layout class="QHBoxLayout" name="horizontalLayout_2">
+         <item>
+          <widget class="QComboBox" name="menuBlurCornerRadius">
+           <item>
+            <property name="text">
+             <string>Same as Application Style</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Custom</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+         <item>
+          <widget class="QDoubleSpinBox" name="menuBlurCustomCornerRadius">
+           <property name="singleStep">
+            <double>0.100000000000000</double>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item row="6" column="0">
+        <layout class="QHBoxLayout" name="horizontalLayout_4">
+         <item>
+          <widget class="QLabel" name="menuBlurCornerRadiusIcon">
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="menuBlurCornerRadiusLabel">
+           <property name="text">
+            <string>Blur Corner Radius:</string>
+           </property>
+           <property name="buddy">
+            <cstring>menuBlurCornerRadius</cstring>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tab">
+      <attribute name="title">
+       <string>Buttons</string>
+      </attribute>
+      <layout class="QFormLayout" name="formLayout_2">
+       <item row="0" column="0">
+        <widget class="QLabel" name="buttonShapeLabel">
+         <property name="text">
+          <string>Shape:</string>
+         </property>
+         <property name="buddy">
+          <cstring>buttonShape</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QComboBox" name="buttonShape">
+         <item>
+          <property name="text">
+           <string>Full Height Rectangle</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Full Height Rounded Rectangle</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Full Height Rounded Rectangle, Grouped</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Integrated Rounded Rectangle</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Integrated Rounded Rectangle, Grouped</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Tab</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Rectangle</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Rounded Rectangle</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Rounded Rectangle, Grouped</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="buttonHorizontalMarginLabel">
+         <property name="text">
+          <string>Horizontal margin:</string>
+         </property>
+         <property name="buddy">
+          <cstring>buttonHorizontalMargin</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QDoubleSpinBox" name="buttonHorizontalMargin">
+         <property name="singleStep">
+          <double>0.100000000000000</double>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="buttonHorizontalPaddingLabel">
+         <property name="text">
+          <string>Horizontal padding:</string>
+         </property>
+         <property name="buddy">
+          <cstring>buttonHorizontalPadding</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QDoubleSpinBox" name="buttonHorizontalPadding">
+         <property name="singleStep">
+          <double>0.100000000000000</double>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="1">
+        <widget class="QCheckBox" name="buttonUseSystemMenuFont">
+         <property name="text">
+          <string>Use system menu font</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="1">
+        <widget class="QCheckBox" name="buttonAllowDraggingWindow">
+         <property name="text">
+          <string>Allow dragging window</string>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="1">
+        <spacer name="verticalSpacer">
+         <property name="orientation">
+          <enum>Qt::Orientation::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="3" column="1">
+        <layout class="QHBoxLayout" name="horizontalLayout">
+         <item>
+          <widget class="QComboBox" name="buttonCornerRadius">
+           <item>
+            <property name="text">
+             <string>Same as Application Style</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Same as Window Buttons</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Custom</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+         <item>
+          <widget class="QDoubleSpinBox" name="buttonCustomCornerRadius">
+           <property name="singleStep">
+            <double>0.100000000000000</double>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item row="3" column="0">
+        <layout class="QHBoxLayout" name="horizontalLayout_3">
+         <item>
+          <widget class="QLabel" name="buttonCornerRadiusIcon">
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="buttonCornerRadiusLabel">
+           <property name="text">
+            <string>Corner Radius:</string>
+           </property>
+           <property name="buddy">
+            <cstring>buttonCornerRadius</cstring>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tab_2">
+      <attribute name="title">
+       <string>Search</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_2">
+       <item>
+        <widget class="QCheckBox" name="searchEnabled">
+         <property name="text">
+          <string>Show search button</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="searchIgnoresDisabled">
+         <property name="text">
+          <string>Ignores disabled actions</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="searchIgnoresSubMenus">
+         <property name="text">
+          <string>Ignores sub-menus</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="searchIgnoresTopLevel">
+         <property name="text">
+          <string>Ignores top-level items</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="verticalSpacer_2">
+         <property name="orientation">
+          <enum>Qt::Orientation::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+   <item>
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Orientation::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::StandardButton::Apply|QDialogButtonBox::StandardButton::Cancel|QDialogButtonBox::StandardButton::Ok|QDialogButtonBox::StandardButton::Reset|QDialogButtonBox::StandardButton::RestoreDefaults</set>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources>
+  <include location="klassydecoration_config.qrc"/>
+ </resources>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>TitleBarMenu</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>358</x>
+     <y>453</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>329</x>
+     <y>450</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>TitleBarMenu</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>546</x>
+     <y>456</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>563</x>
+     <y>447</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>searchEnabled</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>searchIgnoresSubMenus</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>244</x>
+     <y>59</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>244</x>
+     <y>117</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>searchEnabled</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>searchIgnoresTopLevel</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>244</x>
+     <y>59</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>244</x>
+     <y>146</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>searchEnabled</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>searchIgnoresDisabled</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>244</x>
+     <y>59</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>244</x>
+     <y>88</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>menuEnableBlurEffect</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>menuBlurCornerRadiusLabel</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>346</x>
+     <y>200</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>94</x>
+     <y>232</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>menuEnableBlurEffect</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>menuBlurCornerRadius</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>346</x>
+     <y>200</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>254</x>
+     <y>231</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>menuEnableBlurEffect</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>menuBlurCustomCornerRadius</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>346</x>
+     <y>200</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>441</x>
+     <y>232</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>menuEnableBlurEffect</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>menuBlurCornerRadiusIcon</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>346</x>
+     <y>200</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>24</x>
+     <y>232</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

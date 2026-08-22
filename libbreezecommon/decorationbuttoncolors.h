@@ -11,6 +11,7 @@
 #include "decorationcolors.h"
 #include <KColorScheme>
 #include <QColor>
+#include <QVariantAnimation>
 #include <memory>
 
 namespace Breeze
@@ -32,6 +33,9 @@ const QList<DecorationButtonType> coloredWindowDecorationButtonTypes{
     DecorationButtonType::KeepAbove,
     DecorationButtonType::Custom,
     DecorationButtonType::ExcludeFromCapture,
+    DecorationButtonType::CustomIntegratedMenuMenu,
+    DecorationButtonType::CustomIntegratedMenuOverflow,
+    DecorationButtonType::CustomIntegratedMenuSearch,
 };
 
 const QList<DecorationButtonType> coloredAppStyleDecorationButtonTypes{
@@ -154,6 +158,17 @@ public:
                                                  const DecorationPaletteGroup *decorationColorsInactive,
                                                  const int overrideColorItemsIndex,
                                                  const bool active);
+
+    //* gets base button state colors with the active change state animation considered
+    QColor foregroundNormalActiveStateAnimated(const bool active, const QVariantAnimation *activeStateAnimation) const;
+    QColor foregroundHoverActiveStateAnimated(const bool active, const QVariantAnimation *activeStateAnimation) const;
+    QColor foregroundPressActiveStateAnimated(const bool active, const QVariantAnimation *activeStateAnimation) const;
+    QColor backgroundNormalActiveStateAnimated(const bool active, const QVariantAnimation *activeStateAnimation) const;
+    QColor backgroundHoverActiveStateAnimated(const bool active, const QVariantAnimation *activeStateAnimation) const;
+    QColor backgroundPressActiveStateAnimated(const bool active, const QVariantAnimation *activeStateAnimation) const;
+    QColor outlineNormalActiveStateAnimated(const bool active, const QVariantAnimation *activeStateAnimation) const;
+    QColor outlineHoverActiveStateAnimated(const bool active, const QVariantAnimation *activeStateAnimation) const;
+    QColor outlinePressActiveStateAnimated(const bool active, const QVariantAnimation *activeStateAnimation) const;
 
 private:
     void decodeButtonOverrideColors(const bool active);

@@ -67,6 +67,14 @@ public:
 
     //* caption height
     qreal captionHeight(const bool nextState, qreal scaledTitleBarTopMargin, qreal scaledTitleBarBottomMargin) const;
+    void setCaptionOpacity(qreal);
+    qreal captionOpacity() const
+    {
+        return m_captionOpacity;
+    }
+    QRectF getMaxCaptionSize() const;
+    //* return the rect in which caption will be drawn
+    QPair<QRectF, Qt::Alignment> captionRect(bool nextState, bool minimumIntegratedMenu) const;
 
     //*@name active state change animation
     //@{
@@ -76,7 +84,6 @@ public:
     {
         return m_opacity;
     }
-
     //@}
 
     //*@name colors
@@ -92,6 +99,14 @@ public:
     QColor overriddenOutlineColorAnimateIn() const;
     QColor overriddenOutlineColorAnimateOut(const QColor &destinationColor);
     //@}
+
+    //*@name locally integrated menu
+    //@{
+    void updateIntegratedMenu();
+    qreal titleBarHeight() const;
+    QPoint windowPos() const;
+    //@}
+
     //
     //*@name maximization modes
     //@{
@@ -177,6 +192,12 @@ public:
         return m_buttonUnisonHovered;
     }
 
+    void scaledTitleBarTopBottomMargins(qreal scale,
+                                        qreal &scaledTitleBarTopMargin,
+                                        qreal &scaledTitleBarBottomMargin,
+                                        qreal &scaledIntegratedRoundedRectangleBottomPadding) const;
+    qreal titleBarSeparatorHeight(qreal scale) const;
+
 Q_SIGNALS:
     void reconfigured();
     void buttonUnisonHoveredChanged(bool); // for unison hovering
@@ -218,11 +239,10 @@ private Q_SLOTS:
 protected:
     void hoverMoveEvent(QHoverEvent *event) override; // override decoration hover events for Unison hovering
     void hoverLeaveEvent(QHoverEvent *event) override;
+    void mousePressEvent(QMouseEvent *event) override;
+    void mouseReleaseEvent(QMouseEvent *event) override;
 
 private:
-    //* return the rect in which caption will be drawn
-    QPair<QRectF, Qt::Alignment> captionRect(bool nextState) const;
-
     void reconfigureMain(const bool noUpdateShadow = false);
     void updateDecorationColors(const QPalette &clientPalette, QByteArray uuid = "");
     void createButtons();
@@ -241,13 +261,9 @@ private:
     inline bool hasNoSideBorders() const;
     //@}
 
-    void scaledTitleBarTopBottomMargins(qreal scale,
-                                        qreal &scaledTitleBarTopMargin,
-                                        qreal &scaledTitleBarBottomMargin,
-                                        qreal &scaledIntegratedRoundedRectangleBottomPadding) const;
     void scaledTitleBarSideMargins(qreal scale, qreal &scaledTitleBarLeftMargin, qreal &scaledTitleBarRightMargin) const;
     bool isOpaqueTitleBar();
-    qreal titleBarSeparatorHeight(qreal scale) const;
+
     qreal devicePixelRatio(QPainter *painter) const;
 
     //* icon + padding sizes
@@ -265,6 +281,7 @@ private:
     InternalSettingsPtr m_internalSettings;
     KDecoration3::DecorationButtonGroup *m_leftButtons = nullptr;
     KDecoration3::DecorationButtonGroup *m_rightButtons = nullptr;
+    class AppMenuButtonGroup *m_integratedMenuButtons = nullptr;
 
     Side m_taskManagerSide = SideBottom;
 
@@ -287,6 +304,8 @@ private:
     qreal m_shadowOpacity = 0;
     //* overridden thin window outline change animation progress
     qreal m_overrideOutlineAnimationProgress = 0;
+    //* titlebar caption opacity
+    qreal m_captionOpacity = 1;
 
     //* frame corner radius, scaled according to smallspacing
     qreal m_scaledCornerRadius = 3.0;

@@ -230,6 +230,50 @@
         </item>
        </widget>
       </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="integratedMenuShowsLabel">
+        <property name="text">
+         <string>       Integrated menu shows:</string>
+        </property>
+        <property name="buddy">
+         <cstring>integratedMenuShows</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QComboBox" name="integratedMenuShows">
+        <item>
+         <property name="text">
+          <string>No override</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Always, prefer title, expand menu on hover</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Always, prefer menu over title</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Reveal on hover</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Replace title on hover</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Search only</string>
+         </property>
+        </item>
+       </widget>
+      </item>
      </layout>
     </widget>
    </item>

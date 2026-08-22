@@ -48,7 +48,7 @@ struct BREEZECOMMON_EXPORT PenWidth {
     static constexpr int NoPen = 0;
 };
 
-// copied from KDecoration3/src/decorationdefines.h -- needs to be kept in sync
+// copied from KDecoration3/src/decorationdefines.h -- needs to be kept in sync but with the two extra values
 // originally Klassy linked directly to KDecoration3 but this did not work on the combined Qt5/Qt6 build on Plasma 6 with Qt5 applications
 enum class DecorationButtonType {
     /**
@@ -116,6 +116,22 @@ enum class DecorationButtonType {
      * but it can be made always visible via settings.
      **/
     ExcludeFromCapture,
+
+    /**
+     * Custom value for the integrated menu text buttons.
+     * Is only used internally & for configuration.
+     */
+    CustomIntegratedMenuMenu = 10000,
+    /**
+     * Custom value for the integrated menu overflow button.
+     * Is only used internally & for configuration.
+     */
+    CustomIntegratedMenuOverflow = 10001,
+    /**
+     * Custom value for the integrated menu search button.
+     * Is only used internally & for configuration.
+     */
+    CustomIntegratedMenuSearch = 10002,
 };
 
 inline DecorationButtonType buttonTypeFromKcfgColorIndex(int index)
@@ -132,6 +148,9 @@ inline DecorationButtonType buttonTypeFromKcfgColorIndex(int index)
         DecorationButtonType::KeepBelow,
         DecorationButtonType::KeepAbove,
         DecorationButtonType::ExcludeFromCapture,
+        DecorationButtonType::CustomIntegratedMenuMenu,
+        DecorationButtonType::CustomIntegratedMenuOverflow,
+        DecorationButtonType::CustomIntegratedMenuSearch,
     };
     if (index < 0 || index >= kcfgIndexToButtonType.length())
         return DecorationButtonType::Custom;
@@ -152,6 +171,9 @@ inline int buttonTypeToKcfgColorIndex(DecorationButtonType type)
         {DecorationButtonType::KeepBelow, 8},
         {DecorationButtonType::KeepAbove, 9},
         {DecorationButtonType::ExcludeFromCapture, 10},
+        {DecorationButtonType::CustomIntegratedMenuMenu, 11},
+        {DecorationButtonType::CustomIntegratedMenuOverflow, 12},
+        {DecorationButtonType::CustomIntegratedMenuSearch, 13},
     };
     return buttonTypeToKcfgIndex[type];
 }
@@ -164,6 +186,7 @@ static QStringList windecoExceptionKeys = {
     "ExceptionWindowPropertyType",
     "ExceptionPreset",
     "HideTitleBar",
+    "ExceptionIntegratedMenuShowStyle",
     "OpaqueTitleBar",
     "ExceptionMatchTitleBarToApplicationColor",
     "ExceptionBorder",

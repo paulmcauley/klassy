@@ -1,0 +1,2 @@
+Contains a patched version of the import path of libdbusmenu-qt
+Remove when next version of libdbusmenu-qt is released.

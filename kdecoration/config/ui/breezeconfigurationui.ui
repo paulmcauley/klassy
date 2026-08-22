@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>717</width>
-    <height>630</height>
+    <width>727</width>
+    <height>651</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -1052,6 +1052,53 @@
           </widget>
          </item>
          <item>
+          <spacer name="verticalSpacer_12">
+           <property name="orientation">
+            <enum>Qt::Orientation::Vertical</enum>
+           </property>
+           <property name="sizeType">
+            <enum>QSizePolicy::Policy::Fixed</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>5</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="titleBarMenuGroup">
+           <item>
+            <widget class="QCheckBox" name="titleBarMenuEnabled">
+             <property name="text">
+              <string>Integrate application menu into titlebar</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="titleBarMenuButton">
+             <property name="text">
+              <string>Configure</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer_6">
+             <property name="orientation">
+              <enum>Qt::Orientation::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </item>
+         <item>
           <spacer name="verticalSpacer_4">
            <property name="orientation">
             <enum>Qt::Orientation::Vertical</enum>
@@ -1777,6 +1824,22 @@
     <hint type="destinationlabel">
      <x>102</x>
      <y>287</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>titleBarMenuEnabled</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>titleBarMenuButton</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>155</x>
+     <y>239</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>334</x>
+     <y>239</y>
     </hint>
    </hints>
   </connection>

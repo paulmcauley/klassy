@@ -1,0 +1,10 @@
+set(breezedecoration_appmenu_SRCS
+    appmenu/button.cpp
+    appmenu/buttongroup.cpp
+    appmenu/iconbutton.cpp
+    appmenu/model.cpp
+    appmenu/navigablemenu.cpp
+    appmenu/searchbutton.cpp
+    appmenu/textbutton.cpp
+    PARENT_SCOPE
+)
