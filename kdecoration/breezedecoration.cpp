@@ -1710,9 +1710,9 @@ QPair<QRectF, Qt::Alignment> Decoration::captionRect(bool nextState, bool minimu
         if (m_integratedMenuButtons && !m_integratedMenuButtons->buttons().isEmpty() && m_integratedMenuButtons->takesSpace()) {
             const qreal menuWidth = padding + (minimumIntegratedMenu ? m_integratedMenuButtons->minimumWidth() : m_integratedMenuButtons->visibleWidth());
             if (m_integratedMenuButtons->position() == AppMenuPosition::Right) {
-                rightOffset += menuWidth;
+                rightOffset += menuWidth + m_internalSettings->buttonSpacingRight() * scale;
             } else {
-                leftOffset += menuWidth;
+                leftOffset += menuWidth + m_internalSettings->buttonSpacingLeft() * scale;
             }
         }
 
