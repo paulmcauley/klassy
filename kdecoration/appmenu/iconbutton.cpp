@@ -34,6 +34,7 @@ AppMenuIconButton::AppMenuIconButton(const DecorationButtonType type, Decoration
 {
     reconfigure();
     connect(this, &AppMenuButton::buttonHeightChanged, this, &AppMenuIconButton::updateGeometry);
+    connect(this, &AppMenuButton::verticalBackgroundOffsetChanged, this, &AppMenuIconButton::updateGeometry);
     reconfigure();
     updateGeometry();
 }
