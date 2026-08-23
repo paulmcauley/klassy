@@ -31,6 +31,7 @@ AppMenuTextButton::AppMenuTextButton(Decoration *decoration, const int buttonInd
 {
     setVisible(true);
     connect(this, &AppMenuButton::buttonHeightChanged, this, &AppMenuTextButton::updateGeometry);
+    connect(this, &AppMenuButton::verticalBackgroundOffsetChanged, this, &AppMenuTextButton::updateGeometry);
     reconfigure();
     updateGeometry();
 }
