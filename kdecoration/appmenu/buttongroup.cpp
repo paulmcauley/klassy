@@ -100,7 +100,6 @@ AppMenuButtonGroup::AppMenuButtonGroup(Decoration *decoration)
         setStyle(static_cast<AppMenuStyle>(internalSettings->integratedMenuShowStyle()));
     }
     updateShowing();
-    setOpacity((m_showing || expandsOnHover()) ? 1 : 0);
 
     connect(this, &AppMenuButtonGroup::showingChanged, this, &AppMenuButtonGroup::onShowingChanged);
     connect(this, &AppMenuButtonGroup::hoveredChanged, this, &AppMenuButtonGroup::updateShowing);
@@ -118,13 +117,7 @@ AppMenuButtonGroup::AppMenuButtonGroup(Decoration *decoration)
     m_animation->setStartValue(0.0);
     m_animation->setEndValue(1.0);
     m_animation->setEasingCurve(QEasingCurve::InOutCubic);
-    connect(m_animation, &QVariantAnimation::valueChanged, this, [this](const QVariant &value) {
-        if (expandsOnHover()) {
-            setExpansionPercent(value.toReal());
-        } else {
-            setOpacity(value.toReal());
-        }
-    });
+    connect(m_animation, &QVariantAnimation::valueChanged, this, &AppMenuButtonGroup::onHoverAnimationValueChanged);
 
     auto decoratedClient = decoration->window();
     connect(decoratedClient, &KDecoration3::DecoratedWindow::hasApplicationMenuChanged, this, &AppMenuButtonGroup::onHasApplicationMenuChanged);
@@ -184,7 +177,7 @@ void AppMenuButtonGroup::reconfigure()
 
     updateShowing();
     if (m_style == AppMenuStyle::ReplaceTitleOnHover || m_style == AppMenuStyle::RevealOnHover)
-        setOpacity(m_animation->currentValue().toReal());
+        setOpacity(m_animationEnabled ? m_animation->currentValue().toReal() : (m_hovered ? 1 : 0));
     if (m_style == AppMenuStyle::AlwaysExpandOnHover)
         setOpacity(1);
 }
@@ -1041,17 +1034,28 @@ void AppMenuButtonGroup::onHitRight()
     trigger(desiredIndex, true);
 }
 
+void AppMenuButtonGroup::onHoverAnimationValueChanged(const QVariant &value)
+{
+    if (expandsOnHover()) {
+        setExpansionPercent(value.toReal());
+        if (m_style == AppMenuStyle::RevealOnHover)
+            setOpacity(value.toReal());
+    } else {
+        setOpacity(value.toReal());
+    }
+}
+
 void AppMenuButtonGroup::onShowingChanged(bool showing)
 {
-    if (m_animationEnabled) {
+    if (m_animationEnabled && m_animation->duration() > 0) {
         const QAbstractAnimation::Direction dir = showing ? QAbstractAnimation::Forward : QAbstractAnimation::Backward;
         m_animation->setDirection(dir);
         if (m_animation->state() != QAbstractAnimation::Running) {
             m_animation->start();
         }
     } else {
-        setOpacity((showing || expandsOnHover()) ? 1 : 0);
-        setExpansionPercent(showing ? 1 : 0);
+        const qreal target = showing ? 1.0 : 0.0;
+        onHoverAnimationValueChanged(QVariant(target));
     }
 }
 
