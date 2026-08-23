@@ -84,7 +84,7 @@ public:
     };
     inline bool expandsOnHover() const
     {
-        return m_style == AppMenuStyle::AlwaysExpandOnHover;
+        return m_style == AppMenuStyle::AlwaysExpandOnHover || m_style == AppMenuStyle::RevealOnHover;
     }
 
     qreal visibleWidth() const;
@@ -268,6 +268,7 @@ private:
     void performDebouncedMenuUpdate();
     void onMenuUpdateThrottleTimeout();
     void onDelayedCacheTimerTimeout();
+    void onHoverAnimationValueChanged(const QVariant &value);
     void onShowingChanged(bool hovered);
     void updateHoverAnimationState(bool hovered);
     void onSubMenuReady(QMenu *menu);

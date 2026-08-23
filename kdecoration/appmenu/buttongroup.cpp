@@ -180,6 +180,8 @@ void AppMenuButtonGroup::reconfigure()
         setOpacity(m_animationEnabled ? m_animation->currentValue().toReal() : (m_hovered ? 1 : 0));
     if (m_style == AppMenuStyle::AlwaysExpandOnHover)
         setOpacity(1);
+    if (m_style != AppMenuStyle::ReplaceTitleOnHover)
+        m_decoration->setCaptionOpacity(1);
 }
 
 bool AppMenuButtonGroup::alwaysShow() const
@@ -483,7 +485,7 @@ bool fuzzyLessThanOrEqual(qreal a, qreal b)
 void AppMenuButtonGroup::updateOverflow(QRectF availableRect)
 {
     const qreal availableExpandedWidth = availableRect.width();
-    if (m_style == AppMenuStyle::AlwaysExpandOnHover) {
+    if (expandsOnHover()) {
         const QPair<QRectF, Qt::Alignment> captionRect = m_decoration->captionRect(false, true);
         const QRectF maxCaptionSize = m_decoration->getMaxCaptionSize();
         const qreal captionOffset = qMin(captionRect.first.width(), maxCaptionSize.width()) + m_decoration->internalSettings()->titleBarLeftMargin()
@@ -622,6 +624,8 @@ void AppMenuButtonGroup::updateOverflow(QRectF availableRect)
                     m_searchButton->setExpansionOpacity(0);
                 }
             }
+            if (m_style == AppMenuStyle::RevealOnHover)
+                minVisibleWidth = 0;
         } else {
             qreal remainingWidth = availableExpandedWidth - searchBtnWidth - overflowBtnWidth;
 
