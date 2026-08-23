@@ -48,7 +48,7 @@
          </item>
          <item>
           <property name="text">
-           <string>Reveal on hover, reserve space for menu</string>
+           <string>Reveal and expand menu on hover</string>
           </property>
          </item>
          <item>
