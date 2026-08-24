@@ -168,6 +168,7 @@ void AppMenuButtonGroup::reconfigure()
         m_searchIndex = -1;
     }
 
+    m_animationEnabled = internalSettings->animationsEnabled();
     m_animation->setDuration(m_decoration->animationsDuration());
 
     for (KDecoration3::DecorationButton *button : this->buttons()) {
@@ -177,7 +178,7 @@ void AppMenuButtonGroup::reconfigure()
 
     updateShowing();
     if (m_style == AppMenuStyle::ReplaceTitleOnHover || m_style == AppMenuStyle::RevealOnHover)
-        setOpacity(m_animationEnabled ? m_animation->currentValue().toReal() : (m_hovered ? 1 : 0));
+        setOpacity(m_animationEnabled && m_animation->duration() > 0 ? m_animation->currentValue().toReal() : (m_hovered || m_showing ? 1 : 0));
     if (m_style == AppMenuStyle::AlwaysExpandOnHover)
         setOpacity(1);
     if (m_style != AppMenuStyle::ReplaceTitleOnHover)
