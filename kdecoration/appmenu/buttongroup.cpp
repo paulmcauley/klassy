@@ -696,7 +696,7 @@ void AppMenuButtonGroup::updateGeometry()
     const auto internalSettings = m_decoration->internalSettings();
     const qreal scale = m_decoration->window()->nextScale();
     const qreal leftOffset = m_decoration->leftButtons()->geometry().right() + internalSettings->buttonSpacingLeft() * scale;
-    const qreal rightOffset = m_decoration->rightButtons()->geometry().width() + internalSettings->buttonSpacingRight() * scale;
+    const qreal rightOffset = (m_decoration->size().width() - m_decoration->rightButtons()->geometry().left()) + internalSettings->buttonSpacingRight() * scale;
 
     const qreal titleBarSeparatorHeight = m_decoration->titleBarSeparatorHeight(scale);
     qreal scaledTitleBarTopMargin, scaledTitleBarBottomMargin, scaledIntegratedRoundedRectangleBottomPadding;
