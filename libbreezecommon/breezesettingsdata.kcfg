@@ -958,7 +958,7 @@
     </entry>
 
     <entry name="WindowOutlineOverlap" type = "Bool">
-        <default>true</default>
+        <default>false</default>
     </entry>
 
     <entry name="WindowOutlineStyle$(WindowOutlineStyleActive)" type = "Enum">
@@ -977,8 +977,8 @@
             <choice name="WindowOutlineCustomColor" />
             <choice name="WindowOutlineCustomWithContrast" />
         </choices>
-        <default param ="Active">WindowOutlineShadowColor</default>
-        <default param ="Inactive">WindowOutlineShadowColor</default>
+        <default param ="Active">WindowOutlineContrast</default>
+        <default param ="Inactive">WindowOutlineContrast</default>
     </entry>
 
 
@@ -1013,7 +1013,7 @@
                 <value>Active</value>
             </values>
         </parameter>
-       <default>25</default>
+       <default>20</default>
        <min>0</min>
        <max>100</max>
     </entry>
