@@ -696,12 +696,27 @@ void DecorationButtonPalette::generateButtonBackgroundPalette(const bool active)
 
     bool defaultButton =
         true; // flag indicates the button has standard colours for the behaviour and selected colour (i.e. is not a close/max/min with special colours)
-    const bool &drawBackgroundNormally = (_buttonType == DecorationButtonType::Close) ? _decorationSettings->showCloseBackgroundNormally(active)
-                                                                                      : _decorationSettings->showBackgroundNormally(active);
-    const bool &drawBackgroundOnHover = (_buttonType == DecorationButtonType::Close) ? _decorationSettings->showCloseBackgroundOnHover(active)
-                                                                                     : _decorationSettings->showBackgroundOnHover(active);
-    const bool &drawBackgroundOnPress = (_buttonType == DecorationButtonType::Close) ? _decorationSettings->showCloseBackgroundOnPress(active)
-                                                                                     : _decorationSettings->showBackgroundOnPress(active);
+
+    bool drawBackgroundNormally, drawBackgroundOnHover, drawBackgroundOnPress;
+    switch (_buttonType) {
+    default:
+        drawBackgroundNormally = _decorationSettings->showBackgroundNormally(active);
+        drawBackgroundOnHover = _decorationSettings->showBackgroundOnHover(active);
+        drawBackgroundOnPress = _decorationSettings->showBackgroundOnPress(active);
+        break;
+    case DecorationButtonType::Close:
+        drawBackgroundNormally = _decorationSettings->showCloseBackgroundNormally(active);
+        drawBackgroundOnHover = _decorationSettings->showCloseBackgroundOnHover(active);
+        drawBackgroundOnPress = _decorationSettings->showCloseBackgroundOnPress(active);
+        break;
+    case DecorationButtonType::CustomIntegratedMenuMenu:
+    case DecorationButtonType::CustomIntegratedMenuOverflow:
+    case DecorationButtonType::CustomIntegratedMenuSearch:
+        drawBackgroundNormally = false;
+        drawBackgroundOnHover = true;
+        drawBackgroundOnPress = true;
+        break;
+    }
 
     const bool replaceWithActiveHoverPress = !active && _decorationSettings->buttonColorsInactiveSameHoverPress();
 
@@ -1207,12 +1222,27 @@ void DecorationButtonPalette::generateButtonOutlinePalette(const bool active)
 
     bool defaultButton =
         true; // flag indicates the button has standard colours for the behaviour and selected colour (i.e. is not a close/max/min with special colours)
-    const bool &drawOutlineNormally =
-        (_buttonType == DecorationButtonType::Close) ? _decorationSettings->showCloseOutlineNormally(active) : _decorationSettings->showOutlineNormally(active);
-    const bool &drawOutlineOnHover =
-        (_buttonType == DecorationButtonType::Close) ? _decorationSettings->showCloseOutlineOnHover(active) : _decorationSettings->showOutlineOnHover(active);
-    const bool &drawOutlineOnPress =
-        (_buttonType == DecorationButtonType::Close) ? _decorationSettings->showCloseOutlineOnPress(active) : _decorationSettings->showOutlineOnPress(active);
+
+    bool drawOutlineNormally, drawOutlineOnHover, drawOutlineOnPress;
+    switch (_buttonType) {
+    default:
+        drawOutlineNormally = _decorationSettings->showOutlineNormally(active);
+        drawOutlineOnHover = _decorationSettings->showOutlineOnHover(active);
+        drawOutlineOnPress = _decorationSettings->showOutlineOnPress(active);
+        break;
+    case DecorationButtonType::Close:
+        drawOutlineNormally = _decorationSettings->showCloseOutlineNormally(active);
+        drawOutlineOnHover = _decorationSettings->showCloseOutlineOnHover(active);
+        drawOutlineOnPress = _decorationSettings->showCloseOutlineOnPress(active);
+        break;
+    case DecorationButtonType::CustomIntegratedMenuMenu:
+    case DecorationButtonType::CustomIntegratedMenuOverflow:
+    case DecorationButtonType::CustomIntegratedMenuSearch:
+        drawOutlineNormally = false;
+        drawOutlineOnHover = true;
+        drawOutlineOnPress = true;
+        break;
+    }
 
     const bool replaceWithActiveHoverPress = !active && _decorationSettings->buttonColorsInactiveSameHoverPress();
 
