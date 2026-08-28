@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>497</width>
-    <height>580</height>
+    <width>591</width>
+    <height>600</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -231,17 +231,17 @@
        </widget>
       </item>
       <item row="2" column="0">
-       <widget class="QLabel" name="integratedMenuShowsLabel">
+       <widget class="QLabel" name="appMenuBarBehaviourLabel">
         <property name="text">
-         <string>       Integrated menu shows:</string>
+         <string>       App menubar behaviour:</string>
         </property>
         <property name="buddy">
-         <cstring>integratedMenuShows</cstring>
+         <cstring>appMenuBarBehaviour</cstring>
         </property>
        </widget>
       </item>
       <item row="2" column="1">
-       <widget class="QComboBox" name="integratedMenuShows">
+       <widget class="QComboBox" name="appMenuBarBehaviour">
         <item>
          <property name="text">
           <string>No override</string>
@@ -249,12 +249,12 @@
         </item>
         <item>
          <property name="text">
-          <string>Always, prefer title, expand menu on hover</string>
+          <string>Always show, prefer title, expand menu on hover</string>
          </property>
         </item>
         <item>
          <property name="text">
-          <string>Always, prefer menu over title</string>
+          <string>Always show, prefer menu over title</string>
          </property>
         </item>
         <item>
@@ -269,7 +269,7 @@
         </item>
         <item>
          <property name="text">
-          <string>Search only</string>
+          <string>Show search only</string>
          </property>
         </item>
        </widget>
@@ -354,6 +354,7 @@
   <tabstop>exceptionPresetCheckBox</tabstop>
   <tabstop>exceptionPresetComboBox</tabstop>
   <tabstop>hideTitleBar</tabstop>
+  <tabstop>appMenuBarBehaviour</tabstop>
   <tabstop>opaqueTitleBar</tabstop>
   <tabstop>exceptionMatchTitleBarToApplicationColor</tabstop>
   <tabstop>borderSizeCheckBox</tabstop>
