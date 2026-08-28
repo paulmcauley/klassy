@@ -7,21 +7,21 @@
 #pragma once
 
 #include "breeze.h"
-#include "ui_titlebarmenu.h"
+#include "ui_titlebarappmenubar.h"
 #include <QDialog>
 
 namespace Breeze
 {
 
-class TitleBarMenu : public QDialog
+class TitleBarAppMenuBar : public QDialog
 {
     Q_OBJECT
 
     friend class ConfigWidget;
 
 public:
-    explicit TitleBarMenu(KSharedConfig::Ptr config, KSharedConfig::Ptr presetsConfig, QObject *parent = nullptr);
-    ~TitleBarMenu();
+    explicit TitleBarAppMenuBar(KSharedConfig::Ptr config, KSharedConfig::Ptr presetsConfig, QObject *parent = nullptr);
+    ~TitleBarAppMenuBar();
 
     void loadMain(const bool assignUiValuesOnly = false);
     void save(const bool reloadKwinConfig = true);
@@ -50,7 +50,7 @@ private:
     void setChanged(bool value);
     bool isDefaults();
 
-    Ui_TitleBarMenu *m_ui;
+    Ui_TitleBarAppMenuBar *m_ui;
 
     InternalSettingsPtr m_internalSettings;
     KSharedConfig::Ptr m_configuration;

@@ -94,10 +94,10 @@ AppMenuButtonGroup::AppMenuButtonGroup(Decoration *decoration)
     // Assign style, showing, and opacity before we bind the onShowingChanged animation
     // so that new windows do not animate.
     auto internalSettings = m_decoration->internalSettings();
-    if (internalSettings->exceptionIntegratedMenuShowStyle()) {
-        setStyle(static_cast<AppMenuStyle>(internalSettings->exceptionIntegratedMenuShowStyle() - 1));
+    if (internalSettings->exceptionAppMenuBarBehaviour()) {
+        setStyle(static_cast<AppMenuStyle>(internalSettings->exceptionAppMenuBarBehaviour() - 1));
     } else {
-        setStyle(static_cast<AppMenuStyle>(internalSettings->integratedMenuShowStyle()));
+        setStyle(static_cast<AppMenuStyle>(internalSettings->appMenuBarBehaviour()));
     }
     updateShowing();
 
@@ -105,7 +105,7 @@ AppMenuButtonGroup::AppMenuButtonGroup(Decoration *decoration)
     connect(this, &AppMenuButtonGroup::hoveredChanged, this, &AppMenuButtonGroup::updateShowing);
     connect(this, &AppMenuButtonGroup::currentIndexChanged, this, &AppMenuButtonGroup::updateShowing);
 
-    // Hover animation for integrated menu buttons
+    // Hover animation for AppMenuBar buttons
     connect(this, &AppMenuButtonGroup::hoveredChanged, this, [this](bool hovered) {
         if (!m_decoration->internalSettings()->unisonHovering()) {
             updateHoverAnimationState(hovered);
@@ -153,15 +153,15 @@ AppMenuButtonGroup::~AppMenuButtonGroup()
 void AppMenuButtonGroup::reconfigure()
 {
     auto internalSettings = m_decoration->internalSettings();
-    if (internalSettings->exceptionIntegratedMenuShowStyle()) {
-        setStyle(static_cast<AppMenuStyle>(internalSettings->exceptionIntegratedMenuShowStyle() - 1));
+    if (internalSettings->exceptionAppMenuBarBehaviour()) {
+        setStyle(static_cast<AppMenuStyle>(internalSettings->exceptionAppMenuBarBehaviour() - 1));
     } else {
-        setStyle(static_cast<AppMenuStyle>(internalSettings->integratedMenuShowStyle()));
+        setStyle(static_cast<AppMenuStyle>(internalSettings->appMenuBarBehaviour()));
     }
-    setPosition(static_cast<AppMenuPosition>(internalSettings->integratedMenuPosition()));
-    setUnisonHoveringType(static_cast<AppMenuUnisonHovering>(internalSettings->integratedMenuUnisonHovering()));
+    setPosition(static_cast<AppMenuPosition>(internalSettings->appMenuBarPosition()));
+    setUnisonHoveringType(static_cast<AppMenuUnisonHovering>(internalSettings->appMenuBarUnisonHovering()));
 
-    if (!internalSettings->integratedMenuSearchEnabled() && m_searchButton) {
+    if (!internalSettings->appMenuBarSearchEnabled() && m_searchButton) {
         removeButton(m_searchButton);
         m_searchButton->deleteLater();
         m_searchButton = nullptr;
@@ -384,7 +384,7 @@ void AppMenuButtonGroup::updateAppMenuModel()
         QPointer<QMenu> previousMenu = m_currentMenu;
 
         // Try in-place update if possible to reduce flicker and object churn
-        const bool searchEnabled = deco->internalSettings()->integratedMenuSearchEnabled();
+        const bool searchEnabled = deco->internalSettings()->appMenuBarSearchEnabled();
         const bool searchStateMatches = (m_searchButton.isNull() == !searchEnabled);
 
         if (m_textButtons.count() == menuActionCount && !m_textButtons.isEmpty() && searchStateMatches) {
@@ -439,7 +439,7 @@ void AppMenuButtonGroup::updateAppMenuModel()
 
             if (menuActionCount > 0) {
                 m_overflowIndex = menuActionCount;
-                m_overflowButton = new AppMenuIconButton(DecorationButtonType::CustomIntegratedMenuOverflow, deco, m_overflowIndex, this);
+                m_overflowButton = new AppMenuIconButton(DecorationButtonType::CustomAppMenuBarOverflow, deco, m_overflowIndex, this);
                 addButton(QPointer<KDecoration3::DecorationButton>(m_overflowButton));
 
                 if (searchEnabled) {
@@ -698,11 +698,10 @@ void AppMenuButtonGroup::updateGeometry()
     m_decoration->scaledTitleBarTopBottomMargins(scale, scaledTitleBarTopMargin, scaledTitleBarBottomMargin, scaledIntegratedRoundedRectangleBottomPadding);
     const qreal captionHeight = m_decoration->captionHeight(true, scaledTitleBarTopMargin, scaledTitleBarBottomMargin);
 
-    const int buttonShape = internalSettings->integratedMenuButtonShape();
+    const int buttonShape = internalSettings->appMenuBarButtonShape();
     const bool isFullHeight = AppMenuButton::isShapeFullHeight(buttonShape);
     const qreal baseSize = qMax(m_decoration->smallButtonPaddedSize(), captionHeight);
-    const qreal integratedPadding =
-        (buttonShape == InternalSettings::EnumIntegratedMenuButtonShape::Tab ? -1 : 1) * scaledIntegratedRoundedRectangleBottomPadding;
+    const qreal integratedPadding = (buttonShape == InternalSettings::EnumAppMenuBarButtonShape::Tab ? -1 : 1) * scaledIntegratedRoundedRectangleBottomPadding;
     const qreal verticalIconOffsetNormal = isFullHeight ? scaledTitleBarTopMargin + qreal(captionHeight - baseSize - integratedPadding) / 2
                                                         : scaledTitleBarTopMargin + qreal(captionHeight - baseSize) / 2;
     const qreal topOffset = isFullHeight ? 0 : verticalIconOffsetNormal;
@@ -711,8 +710,8 @@ void AppMenuButtonGroup::updateGeometry()
     qreal baseButtonHeight;
     if (isFullHeight) {
         baseButtonHeight = qMax(m_decoration->nextState()->borders().top() - titleBarSeparatorHeight, 0.0);
-        if (buttonShape == InternalSettings::EnumIntegratedMenuButtonShape::IntegratedRoundedRectangle
-            || buttonShape == InternalSettings::EnumIntegratedMenuButtonShape::IntegratedRoundedRectangleGrouped) {
+        if (buttonShape == InternalSettings::EnumAppMenuBarButtonShape::IntegratedRoundedRectangle
+            || buttonShape == InternalSettings::EnumAppMenuBarButtonShape::IntegratedRoundedRectangleGrouped) {
             baseButtonHeight = qMax(baseButtonHeight - scaledIntegratedRoundedRectangleBottomPadding, 0.0);
         }
     } else {
@@ -731,7 +730,7 @@ void AppMenuButtonGroup::updateGeometry()
         AppMenuButton *appMenuButton;
         if (auto *textButton = qobject_cast<AppMenuTextButton *>(button)) {
             appMenuButton = textButton;
-            textButton->setHorizontalPadding(internalSettings->integratedMenuButtonHorizontalPadding());
+            textButton->setHorizontalPadding(internalSettings->appMenuBarButtonHorizontalPadding());
         } else if (auto *iconButton = qobject_cast<AppMenuIconButton *>(button)) {
             appMenuButton = iconButton;
             iconButton->setIconOffset(iconOffset);
@@ -744,7 +743,7 @@ void AppMenuButtonGroup::updateGeometry()
         appMenuButton->setButtonHeight(realButtonHeight);
     }
 
-    setSpacing(internalSettings->integratedMenuButtonHorizontalMargin());
+    setSpacing(internalSettings->appMenuBarButtonHorizontalMargin());
     updateOverflow(availableRect);
 
     const bool isReplaceStyle = m_style == AppMenuStyle::ReplaceTitleOnHover;

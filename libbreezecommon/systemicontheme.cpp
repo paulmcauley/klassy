@@ -105,12 +105,12 @@ void SystemIconTheme::systemIconNames(DecorationButtonType type, QString &system
         systemIconCheckedName = systemIconName;
         break;
 
-    case DecorationButtonType::CustomIntegratedMenuOverflow:
+    case DecorationButtonType::CustomAppMenuBarOverflow:
         systemIconName = isSystemIconNameAvailable(QStringLiteral("overflow-menu-symbolic"), QStringLiteral("overflow-menu"));
         systemIconCheckedName = systemIconName;
         break;
 
-    case DecorationButtonType::CustomIntegratedMenuSearch:
+    case DecorationButtonType::CustomAppMenuBarSearch:
         systemIconName = isSystemIconNameAvailable(QStringLiteral("search-symbolic"), QStringLiteral("search"));
         systemIconCheckedName = systemIconName;
         break;

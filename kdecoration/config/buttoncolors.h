@@ -182,9 +182,9 @@ private:
         {DecorationButtonType::ExcludeFromCapture, i18n("Exclude from capture")},
         {DecorationButtonType::ApplicationMenu, i18n("Application menu")},
         {DecorationButtonType::Menu, i18n("Window menu")},
-        {DecorationButtonType::CustomIntegratedMenuMenu, i18n("Integrated menu buttons")},
-        {DecorationButtonType::CustomIntegratedMenuOverflow, i18n("Integrated menu overflow")},
-        {DecorationButtonType::CustomIntegratedMenuSearch, i18n("Integrated menu search")},
+        {DecorationButtonType::CustomAppMenuBarMenu, i18n("App menubar buttons")},
+        {DecorationButtonType::CustomAppMenuBarOverflow, i18n("App menubar overflow")},
+        {DecorationButtonType::CustomAppMenuBarSearch, i18n("App menubar search")},
     };
 
     // strings for UI corresponding to enum OverridableButtonColorStates in breeze.h

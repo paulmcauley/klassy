@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>TitleBarMenu</class>
- <widget class="QDialog" name="TitleBarMenu">
+ <class>TitleBarAppMenuBar</class>
+ <widget class="QDialog" name="TitleBarAppMenuBar">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>552</width>
-    <height>307</height>
+    <width>603</width>
+    <height>418</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -25,25 +25,25 @@
       </attribute>
       <layout class="QFormLayout" name="formLayout">
        <item row="0" column="0">
-        <widget class="QLabel" name="menuShowsLabel">
+        <widget class="QLabel" name="menuBehaviourLabel">
          <property name="text">
-          <string>Shows:</string>
+          <string>Behaviour:</string>
          </property>
          <property name="buddy">
-          <cstring>menuShows</cstring>
+          <cstring>menuBehaviour</cstring>
          </property>
         </widget>
        </item>
        <item row="0" column="1">
-        <widget class="QComboBox" name="menuShows">
+        <widget class="QComboBox" name="menuBehaviour">
          <item>
           <property name="text">
-           <string>Always, prefer title, expand menu on hover</string>
+           <string>Show always, prefer title, expand menu on hover</string>
           </property>
          </item>
          <item>
           <property name="text">
-           <string>Always, prefer menu</string>
+           <string>Show always, prefer menu</string>
           </property>
          </item>
          <item>
@@ -58,7 +58,7 @@
          </item>
          <item>
           <property name="text">
-           <string>Search button only</string>
+           <string>Show search button only</string>
           </property>
          </item>
         </widget>
@@ -457,6 +457,27 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>tabWidget</tabstop>
+  <tabstop>menuBehaviour</tabstop>
+  <tabstop>menuPosition</tabstop>
+  <tabstop>menuUnisonHovering</tabstop>
+  <tabstop>menuReplacesApplicationMenuButton</tabstop>
+  <tabstop>menuEnableBlurEffect</tabstop>
+  <tabstop>menuBlurCornerRadius</tabstop>
+  <tabstop>menuBlurCustomCornerRadius</tabstop>
+  <tabstop>buttonShape</tabstop>
+  <tabstop>buttonHorizontalMargin</tabstop>
+  <tabstop>buttonHorizontalPadding</tabstop>
+  <tabstop>buttonCornerRadius</tabstop>
+  <tabstop>buttonCustomCornerRadius</tabstop>
+  <tabstop>buttonUseSystemMenuFont</tabstop>
+  <tabstop>buttonAllowDraggingWindow</tabstop>
+  <tabstop>searchEnabled</tabstop>
+  <tabstop>searchIgnoresDisabled</tabstop>
+  <tabstop>searchIgnoresSubMenus</tabstop>
+  <tabstop>searchIgnoresTopLevel</tabstop>
+ </tabstops>
  <resources>
   <include location="klassydecoration_config.qrc"/>
  </resources>
@@ -464,7 +485,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>accepted()</signal>
-   <receiver>TitleBarMenu</receiver>
+   <receiver>TitleBarAppMenuBar</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -480,7 +501,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>
-   <receiver>TitleBarMenu</receiver>
+   <receiver>TitleBarAppMenuBar</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
