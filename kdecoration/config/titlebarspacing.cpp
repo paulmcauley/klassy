@@ -24,7 +24,6 @@ TitleBarSpacing::TitleBarSpacing(KSharedConfig::Ptr config, KSharedConfig::Ptr p
 
     // track ui changes
     // direct connections are used in several places so the slot can detect the immediate m_loading status (not available in a queued connection)
-    connect(m_ui->titleAlignment, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
     connect(m_ui->titleSidePadding, SIGNAL(valueChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
     connect(m_ui->titleBarTopMargin, SIGNAL(valueChanged(double)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
     connect(m_ui->titleBarBottomMargin, SIGNAL(valueChanged(double)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
@@ -59,7 +58,6 @@ void TitleBarSpacing::load()
     m_internalSettings = InternalSettingsPtr(new InternalSettings());
     m_internalSettings->load();
 
-    m_ui->titleAlignment->setCurrentIndex(m_internalSettings->titleAlignment());
     m_ui->titleSidePadding->setValue(m_internalSettings->titleSidePadding());
     m_ui->titleBarTopMargin->setValue(m_internalSettings->titleBarTopMargin());
     m_ui->titleBarBottomMargin->setValue(m_internalSettings->titleBarBottomMargin());
@@ -82,7 +80,6 @@ void TitleBarSpacing::save(const bool reloadKwinConfig)
     m_internalSettings->load();
 
     // apply modifications from ui
-    m_internalSettings->setTitleAlignment(m_ui->titleAlignment->currentIndex());
     m_internalSettings->setTitleSidePadding(m_ui->titleSidePadding->value());
     m_internalSettings->setTitleBarTopMargin(m_ui->titleBarTopMargin->value());
     m_internalSettings->setTitleBarBottomMargin(m_ui->titleBarBottomMargin->value());
@@ -107,7 +104,6 @@ void TitleBarSpacing::defaults()
     m_internalSettings->setDefaults();
 
     // assign to ui
-    m_ui->titleAlignment->setCurrentIndex(m_internalSettings->titleAlignment());
     m_ui->titleSidePadding->setValue(m_internalSettings->titleSidePadding());
     m_ui->titleBarTopMargin->setValue(m_internalSettings->titleBarTopMargin());
     m_ui->titleBarBottomMargin->setValue(m_internalSettings->titleBarBottomMargin());
@@ -166,9 +162,7 @@ void TitleBarSpacing::updateChanged()
     // track modifications
     bool modified(false);
 
-    if (m_ui->titleAlignment->currentIndex() != m_internalSettings->titleAlignment())
-        modified = true;
-    else if (m_ui->titleSidePadding->value() != m_internalSettings->titleSidePadding())
+    if (m_ui->titleSidePadding->value() != m_internalSettings->titleSidePadding())
         modified = true;
     else if (m_ui->titleBarTopMargin->value() != m_internalSettings->titleBarTopMargin())
         modified = true;
