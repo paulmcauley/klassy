@@ -8,8 +8,6 @@
   <group name="Global">
     <!-- used to indicate that Klassy settings have been set for the specified look-and-feel global theme -->
     <entry name="LookAndFeelSet" type="String" />
-    <!-- used to indicate if the Klassy settings have been refreshed -->
-    <entry name="RefreshedConfig" type="String" />
   </group>
 
   <group name="Windeco">
