@@ -27,7 +27,7 @@ namespace Breeze
 {
 
 AppMenuTextButton::AppMenuTextButton(Decoration *decoration, const int buttonIndex, AppMenuButtonGroup *parent)
-    : AppMenuButton(DecorationButtonType::CustomIntegratedMenuMenu, decoration, buttonIndex, parent)
+    : AppMenuButton(DecorationButtonType::CustomAppMenuBarMenu, decoration, buttonIndex, parent)
 {
     setVisible(true);
     connect(this, &AppMenuButton::buttonHeightChanged, this, &AppMenuTextButton::updateGeometry);
@@ -63,7 +63,7 @@ void AppMenuTextButton::reconfigure()
 {
     AppMenuButton::reconfigure();
 
-    m_font = m_d->internalSettings()->integratedMenuButtonUseSystemMenuFont() ? QApplication::font("QMenu") : m_d->settings()->font();
+    m_font = m_d->internalSettings()->appMenuBarButtonUseSystemMenuFont() ? QApplication::font("QMenu") : m_d->settings()->font();
 }
 
 QSizeF AppMenuTextButton::getTextSize() const
