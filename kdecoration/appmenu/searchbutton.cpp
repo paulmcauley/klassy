@@ -15,8 +15,8 @@ namespace Breeze
 static constexpr int MAX_SEARCH_RESULTS = 100;
 
 AppMenuSearchButton::AppMenuSearchButton(Decoration *decoration, const int buttonIndex, AppMenuButtonGroup *parent)
-    : AppMenuIconButton(DecorationButtonType::CustomIntegratedMenuSearch, decoration, buttonIndex, parent)
-    , m_integratedMenu(parent)
+    : AppMenuIconButton(DecorationButtonType::CustomAppMenuBarSearch, decoration, buttonIndex, parent)
+    , m_appMenuBar(parent)
     , m_menu(new NavigableMenu(nullptr, decoration))
     , m_lineEdit(new QLineEdit(m_menu.get()))
     , m_debounceTimer(new QTimer(this))
@@ -45,7 +45,7 @@ void AppMenuSearchButton::reconfigure()
 {
     AppMenuIconButton::reconfigure();
     auto settings = m_d->internalSettings();
-    this->setVisible(settings->integratedMenuSearchEnabled());
+    this->setVisible(settings->appMenuBarSearchEnabled());
 }
 
 void AppMenuSearchButton::filter(const QString &text)
@@ -76,18 +76,18 @@ void AppMenuSearchButton::filter(const QString &text)
         m_lineEdit->setClearButtonEnabled(true);
     }
 
-    if (!m_integratedMenu->model()) {
+    if (!m_appMenuBar->model()) {
         return;
     }
 
     // Find results
     QList<SearchResult> results;
-    QMenu *rootMenu = m_integratedMenu->model()->menu();
+    QMenu *rootMenu = m_appMenuBar->model()->menu();
     if (rootMenu) {
         QSet<QMenu *> visited;
         const auto *deco = qobject_cast<const Decoration *>(decoration());
-        const bool ignoreTopLevel = deco && deco->internalSettings()->integratedMenuSearchIgnoreTopLevel();
-        const bool ignoreSubMenus = deco && deco->internalSettings()->integratedMenuSearchIgnoreSubMenus();
+        const bool ignoreTopLevel = deco && deco->internalSettings()->appMenuBarSearchIgnoreTopLevel();
+        const bool ignoreSubMenus = deco && deco->internalSettings()->appMenuBarSearchIgnoreSubMenus();
         QStringList currentPath;
         QStringMatcher matcher(text, Qt::CaseInsensitive);
         searchMenu(rootMenu, matcher, results, visited, ignoreTopLevel, ignoreSubMenus, currentPath);
@@ -125,7 +125,7 @@ void AppMenuSearchButton::filter(const QString &text)
 
         const ActionInfo &info = result.info;
         QAction *action = result.action;
-        if (!info.isEffectivelyEnabled && deco->internalSettings()->integratedMenuSearchIgnoreDisabled()) {
+        if (!info.isEffectivelyEnabled && deco->internalSettings()->appMenuBarSearchIgnoreDisabled()) {
             continue;
         }
         QAction *newAction = new QAction(action->icon(), info.path, m_menu.get());
