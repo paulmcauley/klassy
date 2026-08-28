@@ -186,81 +186,6 @@
           <property name="verticalSpacing">
            <number>0</number>
           </property>
-          <item row="2" column="9">
-           <widget class="QSpinBox" name="titleBarRightMargin">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
-            <property name="minimum">
-             <number>0</number>
-            </property>
-            <property name="maximum">
-             <number>60</number>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="1">
-           <widget class="QPushButton" name="lockTitleBarLeftRightMargins">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="toolTip">
-             <string>Lock to make Titlebar left margin and Titlebar right margin have the same value</string>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-            <property name="checkable">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="8">
-           <spacer name="horizontalSpacer_13">
-            <property name="orientation">
-             <enum>Qt::Orientation::Horizontal</enum>
-            </property>
-            <property name="sizeType">
-             <enum>QSizePolicy::Policy::Expanding</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item row="0" column="8" colspan="3">
-           <widget class="QLabel" name="label_11">
-            <property name="text">
-             <string>Titlebar
-right margin:</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
-            </property>
-            <property name="buddy">
-             <cstring>titleBarRightMargin</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="7">
-           <spacer name="horizontalSpacer_21">
-            <property name="orientation">
-             <enum>Qt::Orientation::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
           <item row="2" column="10">
            <widget class="QPushButton" name="lockTitleBarLeftRightMargins_2">
             <property name="toolTip">
@@ -274,40 +199,17 @@ right margin:</string>
             </property>
            </widget>
           </item>
-          <item row="2" column="2">
-           <spacer name="horizontalSpacer_4">
-            <property name="orientation">
-             <enum>Qt::Orientation::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item row="0" column="0" colspan="3">
-           <widget class="QLabel" name="label_10">
+          <item row="0" column="8" colspan="3">
+           <widget class="QLabel" name="label_11">
             <property name="text">
              <string>Titlebar
-left margin:</string>
+right margin:</string>
             </property>
             <property name="alignment">
-             <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
+             <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
             </property>
             <property name="buddy">
-             <cstring>titleBarLeftMargin</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0">
-           <widget class="QSpinBox" name="titleBarLeftMargin">
-            <property name="minimum">
-             <number>0</number>
-            </property>
-            <property name="maximum">
-             <number>60</number>
+             <cstring>titleBarRightMargin</cstring>
             </property>
            </widget>
           </item>
@@ -337,6 +239,32 @@ left margin:</string>
             </property>
            </widget>
           </item>
+          <item row="2" column="2">
+           <spacer name="horizontalSpacer_4">
+            <property name="orientation">
+             <enum>Qt::Orientation::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="2" column="7">
+           <spacer name="horizontalSpacer_21">
+            <property name="orientation">
+             <enum>Qt::Orientation::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
           <item row="2" column="6">
            <widget class="QSpinBox" name="titleSidePadding_2">
             <property name="sizePolicy">
@@ -350,43 +278,21 @@ left margin:</string>
             </property>
            </widget>
           </item>
-          <item row="0" column="5">
-           <widget class="QLabel" name="label_3">
-            <property name="text">
-             <string>Title
-alignment:</string>
+          <item row="2" column="8">
+           <spacer name="horizontalSpacer_13">
+            <property name="orientation">
+             <enum>Qt::Orientation::Horizontal</enum>
             </property>
-            <property name="alignment">
-             <set>Qt::AlignmentFlag::AlignCenter</set>
+            <property name="sizeType">
+             <enum>QSizePolicy::Policy::Expanding</enum>
             </property>
-            <property name="buddy">
-             <cstring>titleAlignment</cstring>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>20</height>
+             </size>
             </property>
-           </widget>
-          </item>
-          <item row="2" column="5">
-           <widget class="QComboBox" name="titleAlignment">
-            <item>
-             <property name="text">
-              <string>Left</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Centre</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Centre (Full Width)</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Right</string>
-             </property>
-            </item>
-           </widget>
+           </spacer>
           </item>
           <item row="0" column="3" colspan="2">
            <widget class="QLabel" name="label_7">
@@ -407,6 +313,72 @@ padding:</string>
             <property name="text">
              <string>Title
 padding:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="9">
+           <widget class="QSpinBox" name="titleBarRightMargin">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
+            <property name="minimum">
+             <number>0</number>
+            </property>
+            <property name="maximum">
+             <number>60</number>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0" colspan="3">
+           <widget class="QLabel" name="label_10">
+            <property name="text">
+             <string>Titlebar
+left margin:</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
+            </property>
+            <property name="buddy">
+             <cstring>titleBarLeftMargin</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QPushButton" name="lockTitleBarLeftRightMargins">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="toolTip">
+             <string>Lock to make Titlebar left margin and Titlebar right margin have the same value</string>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QSpinBox" name="titleBarLeftMargin">
+            <property name="minimum">
+             <number>0</number>
+            </property>
+            <property name="maximum">
+             <number>60</number>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="5">
+           <widget class="QLabel" name="label_3">
+            <property name="text">
+             <string>  Title  </string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignmentFlag::AlignCenter</set>
             </property>
            </widget>
           </item>
@@ -614,7 +586,6 @@ padding:</string>
   <tabstop>titleBarLeftMargin</tabstop>
   <tabstop>lockTitleBarLeftRightMargins</tabstop>
   <tabstop>titleSidePadding</tabstop>
-  <tabstop>titleAlignment</tabstop>
   <tabstop>titleSidePadding_2</tabstop>
   <tabstop>titleBarRightMargin</tabstop>
   <tabstop>lockTitleBarLeftRightMargins_2</tabstop>
