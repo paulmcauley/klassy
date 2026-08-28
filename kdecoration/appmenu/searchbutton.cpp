@@ -32,7 +32,7 @@ AppMenuSearchButton::AppMenuSearchButton(Decoration *decoration, const int butto
 
     m_lineEdit->installEventFilter(this);
     m_lineEdit->setFocusPolicy(Qt::StrongFocus);
-    m_lineEdit->setPlaceholderText(i18nd("plasma_applet_org.kde.plasma.appmenu", "Search") + QStringLiteral("…"));
+    m_lineEdit->setPlaceholderText(i18nd("plasma_applet_org.kde.plasma.appmenu", "Search Menu") + QStringLiteral("…"));
     m_lineEdit->setClearButtonEnabled(false);
     connect(m_lineEdit, &QLineEdit::textChanged, m_debounceTimer, qOverload<>(&QTimer::start));
 
@@ -67,7 +67,7 @@ void AppMenuSearchButton::filter(const QString &text)
 
         if (text.isEmpty()) {
             m_lineEdit->setClearButtonEnabled(false);
-            m_lineEdit->setPlaceholderText(i18nd("plasma_applet_org.kde.plasma.appmenu", "Search") + QStringLiteral("…"));
+            m_lineEdit->setPlaceholderText(i18nd("plasma_applet_org.kde.plasma.appmenu", "Search Menu") + QStringLiteral("…"));
             return;
         }
         m_lineEdit->setClearButtonEnabled(true);
