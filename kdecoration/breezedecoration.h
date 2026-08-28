@@ -75,7 +75,7 @@ public:
     }
     QRectF getMaxCaptionSize() const;
     //* return the rect in which caption will be drawn
-    QPair<QRectF, Qt::Alignment> captionRect(bool minimumIntegratedMenu) const;
+    QPair<QRectF, Qt::Alignment> captionRect(bool minimumAppMenuBar) const;
 
     //*@name active state change animation
     //@{
@@ -101,9 +101,9 @@ public:
     QColor overriddenOutlineColorAnimateOut(const QColor &destinationColor);
     //@}
 
-    //*@name locally integrated menu
+    //*@name TitleBarAppMenuBar
     //@{
-    void updateIntegratedMenu();
+    void updateAppMenuBar();
     qreal titleBarHeight() const;
     QPoint windowPos() const;
     //@}
@@ -344,7 +344,7 @@ private:
     KDecoration3::DecorationButtonGroup *m_rightButtons = nullptr;
     bool m_leftButtonsVisible = false;
     bool m_rightButtonsVisible = false;
-    class AppMenuButtonGroup *m_integratedMenuButtons = nullptr;
+    class AppMenuButtonGroup *m_appMenuBarButtons = nullptr;
 
     TaskManagerType m_taskManagerType = TaskManagerType::IconsAndTextTaskManager;
     Side m_taskManagerSide = SideBottom;

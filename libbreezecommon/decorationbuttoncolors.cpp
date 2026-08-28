@@ -709,9 +709,9 @@ void DecorationButtonPalette::generateButtonBackgroundPalette(const bool active)
         drawBackgroundOnHover = _decorationSettings->showCloseBackgroundOnHover(active);
         drawBackgroundOnPress = _decorationSettings->showCloseBackgroundOnPress(active);
         break;
-    case DecorationButtonType::CustomIntegratedMenuMenu:
-    case DecorationButtonType::CustomIntegratedMenuOverflow:
-    case DecorationButtonType::CustomIntegratedMenuSearch:
+    case DecorationButtonType::CustomAppMenuBarMenu:
+    case DecorationButtonType::CustomAppMenuBarOverflow:
+    case DecorationButtonType::CustomAppMenuBarSearch:
         drawBackgroundNormally = false;
         drawBackgroundOnHover = true;
         drawBackgroundOnPress = true;
@@ -918,7 +918,7 @@ void DecorationButtonPalette::generateButtonForegroundPalette(const bool active)
     const int closeButtonIconColor = _decorationSettings->closeButtonIconColor(active);
 
     bool defaultButton = true; // flag indicates the button has standard colours for the behaviour and selected colour (i.e. is not a close/max/min with special
-                               // colours and is not an integrated menu text button)
+                               // colours and is not an AppMenuBar text button)
 
     const bool &drawIconNormally =
         (_buttonType == DecorationButtonType::Close) ? _decorationSettings->showCloseIconNormally(active) : _decorationSettings->showIconNormally(active);
@@ -1101,8 +1101,8 @@ void DecorationButtonPalette::generateButtonForegroundPalette(const bool active)
         }
     }
 
-    if (_buttonType == DecorationButtonType::CustomIntegratedMenuMenu) {
-        // Integrated menu buttons default to using the titlebar text to ensure they're legible
+    if (_buttonType == DecorationButtonType::CustomAppMenuBarMenu) {
+        // AppMenuBar buttons default to using the titlebar text to ensure they're legible
         defaultButton = false;
         foregroundNormal = decorationColors->titleBarText;
         foregroundHover = decorationColors->titleBarText;
@@ -1235,9 +1235,9 @@ void DecorationButtonPalette::generateButtonOutlinePalette(const bool active)
         drawOutlineOnHover = _decorationSettings->showCloseOutlineOnHover(active);
         drawOutlineOnPress = _decorationSettings->showCloseOutlineOnPress(active);
         break;
-    case DecorationButtonType::CustomIntegratedMenuMenu:
-    case DecorationButtonType::CustomIntegratedMenuOverflow:
-    case DecorationButtonType::CustomIntegratedMenuSearch:
+    case DecorationButtonType::CustomAppMenuBarMenu:
+    case DecorationButtonType::CustomAppMenuBarOverflow:
+    case DecorationButtonType::CustomAppMenuBarSearch:
         drawOutlineNormally = false;
         drawOutlineOnHover = true;
         drawOutlineOnPress = true;

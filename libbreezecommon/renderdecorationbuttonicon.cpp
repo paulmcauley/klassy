@@ -114,12 +114,12 @@ void RenderDecorationButtonIcon::renderIcon(DecorationButtonType type, bool chec
         renderExcludeFromCaptureIcon();
         break;
 
-    case DecorationButtonType::CustomIntegratedMenuOverflow:
-        renderIntegratedMenuOverflowIcon();
+    case DecorationButtonType::CustomAppMenuBarOverflow:
+        renderAppMenuBarOverflowIcon();
         break;
 
-    case DecorationButtonType::CustomIntegratedMenuSearch:
-        renderIntegratedMenuSearchIcon();
+    case DecorationButtonType::CustomAppMenuBarSearch:
+        renderAppMenuBarSearchIcon();
         break;
 
     default:

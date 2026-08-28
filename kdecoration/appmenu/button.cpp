@@ -65,7 +65,7 @@ AppMenuButton::AppMenuButton(DecorationButtonType type, Decoration *decoration, 
     }
 }
 
-bool AppMenuButton::hovered() const // for integrated menu unison hovering
+bool AppMenuButton::hovered() const // for AppMenuBar unison hovering
 {
     return isHovered() || qobject_cast<AppMenuButtonGroup *>(parent())->unisonHovered();
 }
@@ -93,16 +93,16 @@ void AppMenuButton::reconfigure()
     m_animation->setDuration(m_d->animationsDuration());
 
     const auto internalSettings = m_d->internalSettings();
-    switch (internalSettings->integratedMenuButtonCornerRadius()) {
-    case InternalSettings::EnumIntegratedMenuButtonCornerRadius::IMCR_DerivedFromApplicationStyle:
+    switch (internalSettings->appMenuBarButtonCornerRadius()) {
+    case InternalSettings::EnumAppMenuBarButtonCornerRadius::AMBCR_DerivedFromApplicationStyle:
         m_cornerRadius =
             internalSettings->frameCornerRadius() ? internalSettings->frameCustomCornerRadius() : qMin(5.0, internalSettings->windowCornerRadius());
         break;
-    case InternalSettings::EnumIntegratedMenuButtonCornerRadius::IMCR_DerivedFromWindowButton:
+    case InternalSettings::EnumAppMenuBarButtonCornerRadius::AMBCR_DerivedFromWindowButton:
         m_cornerRadius = internalSettings->buttonCornerRadius() ? internalSettings->buttonCustomCornerRadius() : internalSettings->windowCornerRadius();
         break;
     default:
-        m_cornerRadius = internalSettings->integratedMenuButtonCustomCornerRadius();
+        m_cornerRadius = internalSettings->appMenuBarButtonCustomCornerRadius();
         break;
     }
     m_cornerRadius *= m_d->x11Scale();
@@ -159,47 +159,47 @@ void AppMenuButton::paint(QPainter *painter, const QRectF &repaintRegion)
         if (KWindowSystem::isPlatformX11())
             geometryShrinkOffset *= m_devicePixelRatio;
 
-        const auto buttonShape = m_d->internalSettings()->integratedMenuButtonShape();
+        const auto buttonShape = m_d->internalSettings()->appMenuBarButtonShape();
         QRectF backgroundRect = contentRect;
         if (isShapeFullHeight(buttonShape)) {
             backgroundRect.adjust(0, -m_verticalContentOffset, 0, 0);
         }
         backgroundRect = KDecoration3::snapToPixelGrid(backgroundRect, m_devicePixelRatio);
-        if (buttonShape == InternalSettings::EnumIntegratedMenuButtonShape::IntegratedRoundedRectangle
-            || buttonShape == InternalSettings::EnumIntegratedMenuButtonShape::IntegratedRoundedRectangleGrouped) {
+        if (buttonShape == InternalSettings::EnumAppMenuBarButtonShape::IntegratedRoundedRectangle
+            || buttonShape == InternalSettings::EnumAppMenuBarButtonShape::IntegratedRoundedRectangleGrouped) {
             backgroundRect.adjust(geometryShrinkOffset, -geometryShrinkOffset, -geometryShrinkOffset, -geometryShrinkOffset);
-        } else if (buttonShape == InternalSettings::EnumIntegratedMenuButtonShape::Tab) {
+        } else if (buttonShape == InternalSettings::EnumAppMenuBarButtonShape::Tab) {
             backgroundRect.adjust(geometryShrinkOffset, geometryShrinkOffset, -geometryShrinkOffset, geometryShrinkOffset);
         } else {
             backgroundRect.adjust(geometryShrinkOffset, geometryShrinkOffset, -geometryShrinkOffset, -geometryShrinkOffset);
         }
         backgroundRect = backgroundRect.translated(-geometry().topLeft());
 
-        if (buttonShape == InternalSettings::EnumIntegratedMenuButtonShape::Rectangle) {
+        if (buttonShape == InternalSettings::EnumAppMenuBarButtonShape::Rectangle) {
             painter->drawRect(backgroundRect);
         } else {
             Corners corners = Corners();
-            if (buttonShape == InternalSettings::EnumIntegratedMenuButtonShape::RoundedRectangle
-                || buttonShape == InternalSettings::EnumIntegratedMenuButtonShape::FullHeightRoundedRectangle) {
+            if (buttonShape == InternalSettings::EnumAppMenuBarButtonShape::RoundedRectangle
+                || buttonShape == InternalSettings::EnumAppMenuBarButtonShape::FullHeightRoundedRectangle) {
                 corners = AllCorners;
-            } else if (buttonShape == InternalSettings::EnumIntegratedMenuButtonShape::IntegratedRoundedRectangle) {
+            } else if (buttonShape == InternalSettings::EnumAppMenuBarButtonShape::IntegratedRoundedRectangle) {
                 corners = CornerBottomLeft | CornerBottomRight;
-            } else if (buttonShape == InternalSettings::EnumIntegratedMenuButtonShape::RoundedRectangleGrouped
-                       || buttonShape == InternalSettings::EnumIntegratedMenuButtonShape::FullHeightRoundedRectangleGrouped) {
+            } else if (buttonShape == InternalSettings::EnumAppMenuBarButtonShape::RoundedRectangleGrouped
+                       || buttonShape == InternalSettings::EnumAppMenuBarButtonShape::FullHeightRoundedRectangleGrouped) {
                 if (m_leftmostVisible) {
                     corners |= CornerTopLeft | CornerBottomLeft;
                 }
                 if (m_rightmostVisible) {
                     corners |= CornerTopRight | CornerBottomRight;
                 }
-            } else if (buttonShape == InternalSettings::EnumIntegratedMenuButtonShape::IntegratedRoundedRectangleGrouped) {
+            } else if (buttonShape == InternalSettings::EnumAppMenuBarButtonShape::IntegratedRoundedRectangleGrouped) {
                 if (m_leftmostVisible) {
                     corners |= CornerBottomLeft;
                 }
                 if (m_rightmostVisible) {
                     corners |= CornerBottomRight;
                 }
-            } else if (buttonShape == InternalSettings::EnumIntegratedMenuButtonShape::Tab) {
+            } else if (buttonShape == InternalSettings::EnumAppMenuBarButtonShape::Tab) {
                 corners |= CornerTopLeft | CornerTopRight;
             }
 

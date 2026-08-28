@@ -75,13 +75,13 @@ void NavigableMenu::showEvent(QShowEvent *event)
         return;
     }
 
-    if (!m_decoration->internalSettings()->integratedMenuEnableBlur()) {
+    if (!m_decoration->internalSettings()->appMenuBarEnableBlur()) {
         KWindowEffects::enableBlurBehind(windowHandle(), false);
     } else {
         const auto internalSettings = m_decoration->internalSettings();
         qreal cornerRadius;
-        if (internalSettings->integratedMenuBlurCornerRadius()) {
-            cornerRadius = internalSettings->integratedMenuBlurCustomCornerRadius();
+        if (internalSettings->appMenuBarBlurCornerRadius()) {
+            cornerRadius = internalSettings->appMenuBarBlurCustomCornerRadius();
         } else if (internalSettings->frameCornerRadius()) {
             cornerRadius = internalSettings->frameCustomCornerRadius();
         } else {
