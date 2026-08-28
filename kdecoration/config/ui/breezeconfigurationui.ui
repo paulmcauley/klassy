@@ -1070,16 +1070,16 @@
          <item>
           <layout class="QHBoxLayout" name="titleBarMenuGroup">
            <item>
-            <widget class="QCheckBox" name="titleBarMenuEnabled">
+            <widget class="QCheckBox" name="titleBarAppMenuBarEnabled">
              <property name="text">
-              <string>Integrate application menu into titlebar</string>
+              <string>Integrate application menubar into titlebar</string>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QPushButton" name="titleBarMenuButton">
+            <widget class="QPushButton" name="titleBarAppMenuBarButton">
              <property name="text">
-              <string>Configure</string>
+              <string>Configure...</string>
              </property>
             </widget>
            </item>
@@ -1792,6 +1792,8 @@
   <tabstop>titleBarSpacingButton</tabstop>
   <tabstop>titleBarOpacityButton</tabstop>
   <tabstop>matchTitleBarToApplicationColor</tabstop>
+  <tabstop>titleBarAppMenuBarEnabled</tabstop>
+  <tabstop>titleBarAppMenuBarButton</tabstop>
   <tabstop>drawBackgroundGradient</tabstop>
   <tabstop>drawTitleBarSeparator</tabstop>
   <tabstop>boldTitle</tabstop>
@@ -1828,9 +1830,9 @@
    </hints>
   </connection>
   <connection>
-   <sender>titleBarMenuEnabled</sender>
+   <sender>titleBarAppMenuBarEnabled</sender>
    <signal>toggled(bool)</signal>
-   <receiver>titleBarMenuButton</receiver>
+   <receiver>titleBarAppMenuBarButton</receiver>
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
