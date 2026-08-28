@@ -1079,7 +1079,7 @@
     </entry>
 
     <entry name="AppMenuBarSearchEnabled" type="Bool">
-        <default>true</default>
+        <default>false</default>
     </entry>
 
     <entry name="AppMenuBarSearchIgnoreDisabled" type="Bool">
