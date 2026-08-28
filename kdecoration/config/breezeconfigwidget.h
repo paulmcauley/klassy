@@ -19,7 +19,7 @@
 #include "loadpreset.h"
 #include "shadowstyle.h"
 #include "systemicongeneration.h"
-#include "titlebarmenu.h"
+#include "titlebarappmenubar.h"
 #include "titlebaropacity.h"
 #include "titlebarspacing.h"
 #include "ui_breezeconfigurationui.h"
@@ -127,7 +127,7 @@ protected Q_SLOTS:
     void buttonBehaviourButtonClicked();
     void titleBarSpacingButtonClicked();
     void titleBarOpacityButtonClicked();
-    void titleBarMenuButtonClicked();
+    void titleBarAppMenuBarButtonClicked();
     void shadowStyleButtonClicked();
     void windowOutlineStyleButtonClicked();
     void presetsButtonClicked();
@@ -169,7 +169,7 @@ private:
     ButtonBehaviour *m_buttonBehaviourDialog;
     TitleBarSpacing *m_titleBarSpacingDialog;
     TitleBarOpacity *m_titleBarOpacityDialog;
-    TitleBarMenu *m_titleBarMenuDialog;
+    TitleBarAppMenuBar *m_titleBarMenuDialog;
     ShadowStyle *m_shadowStyleDialog;
     WindowOutlineStyle *m_windowOutlineStyleDialog;
     LoadPreset *m_loadPresetDialog;

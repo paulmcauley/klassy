@@ -118,20 +118,20 @@ enum class DecorationButtonType {
     ExcludeFromCapture,
 
     /**
-     * Custom value for the integrated menu text buttons.
+     * Custom value for the AppMenuBar text buttons.
      * Is only used internally & for configuration.
      */
-    CustomIntegratedMenuMenu = 10000,
+    CustomAppMenuBarMenu = 10000,
     /**
-     * Custom value for the integrated menu overflow button.
+     * Custom value for the AppMenuBar menu overflow button.
      * Is only used internally & for configuration.
      */
-    CustomIntegratedMenuOverflow = 10001,
+    CustomAppMenuBarOverflow = 10001,
     /**
-     * Custom value for the integrated menu search button.
+     * Custom value for the AppMenuBar menu search button.
      * Is only used internally & for configuration.
      */
-    CustomIntegratedMenuSearch = 10002,
+    CustomAppMenuBarSearch = 10002,
 };
 
 inline DecorationButtonType buttonTypeFromKcfgColorIndex(int index)
@@ -148,9 +148,9 @@ inline DecorationButtonType buttonTypeFromKcfgColorIndex(int index)
         DecorationButtonType::KeepBelow,
         DecorationButtonType::KeepAbove,
         DecorationButtonType::ExcludeFromCapture,
-        DecorationButtonType::CustomIntegratedMenuMenu,
-        DecorationButtonType::CustomIntegratedMenuOverflow,
-        DecorationButtonType::CustomIntegratedMenuSearch,
+        DecorationButtonType::CustomAppMenuBarMenu,
+        DecorationButtonType::CustomAppMenuBarOverflow,
+        DecorationButtonType::CustomAppMenuBarSearch,
     };
     if (index < 0 || index >= kcfgIndexToButtonType.length())
         return DecorationButtonType::Custom;
@@ -171,9 +171,9 @@ inline int buttonTypeToKcfgColorIndex(DecorationButtonType type)
         {DecorationButtonType::KeepBelow, 8},
         {DecorationButtonType::KeepAbove, 9},
         {DecorationButtonType::ExcludeFromCapture, 10},
-        {DecorationButtonType::CustomIntegratedMenuMenu, 11},
-        {DecorationButtonType::CustomIntegratedMenuOverflow, 12},
-        {DecorationButtonType::CustomIntegratedMenuSearch, 13},
+        {DecorationButtonType::CustomAppMenuBarMenu, 11},
+        {DecorationButtonType::CustomAppMenuBarOverflow, 12},
+        {DecorationButtonType::CustomAppMenuBarSearch, 13},
     };
     return buttonTypeToKcfgIndex[type];
 }
@@ -186,7 +186,7 @@ static QStringList windecoExceptionKeys = {
     "ExceptionWindowPropertyType",
     "ExceptionPreset",
     "HideTitleBar",
-    "ExceptionIntegratedMenuShowStyle",
+    "ExceptionAppMenuBarBehaviour",
     "OpaqueTitleBar",
     "ExceptionMatchTitleBarToApplicationColor",
     "ExceptionBorder",

@@ -33,9 +33,9 @@ const QList<DecorationButtonType> coloredWindowDecorationButtonTypes{
     DecorationButtonType::KeepAbove,
     DecorationButtonType::Custom,
     DecorationButtonType::ExcludeFromCapture,
-    DecorationButtonType::CustomIntegratedMenuMenu,
-    DecorationButtonType::CustomIntegratedMenuOverflow,
-    DecorationButtonType::CustomIntegratedMenuSearch,
+    DecorationButtonType::CustomAppMenuBarMenu,
+    DecorationButtonType::CustomAppMenuBarOverflow,
+    DecorationButtonType::CustomAppMenuBarSearch,
 };
 
 const QList<DecorationButtonType> coloredAppStyleDecorationButtonTypes{
