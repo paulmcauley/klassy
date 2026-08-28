@@ -167,11 +167,7 @@ void TitleBarMenu::save(const bool reloadKwinConfig)
     setChanged(false);
 
     if (reloadKwinConfig) {
-        DBusMessages::updateDecorationColorCache();
         DBusMessages::kwinReloadConfig();
-        // DBusMessages::kstyleReloadDecorationConfig(); //should reload anyway
-
-        static_cast<ConfigWidget *>(m_parent)->generateSystemIcons();
     }
 }
 
