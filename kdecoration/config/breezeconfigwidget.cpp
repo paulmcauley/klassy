@@ -112,7 +112,7 @@ ConfigWidget::ConfigWidget(QObject *parent, const KPluginMetaData &data, const Q
     m_buttonBehaviourDialog = new ButtonBehaviour(m_configuration, m_presetsConfiguration, this);
     m_titleBarSpacingDialog = new TitleBarSpacing(m_configuration, m_presetsConfiguration, this);
     m_titleBarOpacityDialog = new TitleBarOpacity(m_configuration, m_presetsConfiguration, this);
-    m_titleBarMenuDialog = new TitleBarMenu(m_configuration, m_presetsConfiguration, this);
+    m_titleBarMenuDialog = new TitleBarAppMenuBar(m_configuration, m_presetsConfiguration, this);
     m_windowOutlineStyleDialog = new WindowOutlineStyle(m_configuration, m_presetsConfiguration, this);
     m_shadowStyleDialog = new ShadowStyle(m_configuration, m_presetsConfiguration, this);
 
@@ -122,7 +122,7 @@ ConfigWidget::ConfigWidget(QObject *parent, const KPluginMetaData &data, const Q
     connect(m_buttonBehaviourDialog, &ButtonBehaviour::changed, this, &ConfigWidget::updateChanged, Qt::ConnectionType::DirectConnection);
     connect(m_titleBarSpacingDialog, &TitleBarSpacing::changed, this, &ConfigWidget::updateChanged, Qt::ConnectionType::DirectConnection);
     connect(m_titleBarOpacityDialog, &TitleBarOpacity::changed, this, &ConfigWidget::updateChanged, Qt::ConnectionType::DirectConnection);
-    connect(m_titleBarMenuDialog, &TitleBarMenu::changed, this, &ConfigWidget::updateChanged, Qt::ConnectionType::DirectConnection);
+    connect(m_titleBarMenuDialog, &TitleBarAppMenuBar::changed, this, &ConfigWidget::updateChanged, Qt::ConnectionType::DirectConnection);
     connect(m_windowOutlineStyleDialog, &WindowOutlineStyle::changed, this, &ConfigWidget::updateChanged, Qt::ConnectionType::DirectConnection);
     connect(m_shadowStyleDialog, &ShadowStyle::changed, this, &ConfigWidget::updateChanged, Qt::ConnectionType::DirectConnection);
 
@@ -144,7 +144,7 @@ ConfigWidget::ConfigWidget(QObject *parent, const KPluginMetaData &data, const Q
     connect(m_ui.buttonBehaviourButton, &QAbstractButton::clicked, this, &ConfigWidget::buttonBehaviourButtonClicked);
     connect(m_ui.titleBarSpacingButton, &QAbstractButton::clicked, this, &ConfigWidget::titleBarSpacingButtonClicked);
     connect(m_ui.titleBarOpacityButton, &QAbstractButton::clicked, this, &ConfigWidget::titleBarOpacityButtonClicked);
-    connect(m_ui.titleBarMenuButton, &QAbstractButton::clicked, this, &ConfigWidget::titleBarMenuButtonClicked);
+    connect(m_ui.titleBarAppMenuBarButton, &QAbstractButton::clicked, this, &ConfigWidget::titleBarAppMenuBarButtonClicked);
     connect(m_ui.windowOutlineStyleButton, &QAbstractButton::clicked, this, &ConfigWidget::windowOutlineStyleButtonClicked);
     connect(m_ui.shadowStyleButton, &QAbstractButton::clicked, this, &ConfigWidget::shadowStyleButtonClicked);
 
@@ -162,7 +162,7 @@ ConfigWidget::ConfigWidget(QObject *parent, const KPluginMetaData &data, const Q
     connect(m_ui.boldButtonIcons, qOverload<int>(&QComboBox::currentIndexChanged), this, &ConfigWidget::updateWindowControlPreviewIcons);
     connect(m_ui.drawBorderOnMaximizedWindows, &QAbstractButton::toggled, this, &ConfigWidget::updateChanged, Qt::ConnectionType::DirectConnection);
     connect(m_ui.matchTitleBarToApplicationColor, &QAbstractButton::toggled, this, &ConfigWidget::updateChanged, Qt::ConnectionType::DirectConnection);
-    connect(m_ui.titleBarMenuEnabled, SIGNAL(checkStateChanged(Qt::CheckState)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
+    connect(m_ui.titleBarAppMenuBarEnabled, SIGNAL(checkStateChanged(Qt::CheckState)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
     connect(m_ui.drawBackgroundGradient, &QAbstractButton::toggled, this, &ConfigWidget::updateChanged, Qt::ConnectionType::DirectConnection);
     connect(m_ui.drawTitleBarSeparator, &QAbstractButton::toggled, this, &ConfigWidget::updateChanged, Qt::ConnectionType::DirectConnection);
     connect(m_ui.boldTitle, &QAbstractButton::toggled, this, &ConfigWidget::updateChanged, Qt::ConnectionType::DirectConnection);
@@ -216,7 +216,7 @@ void ConfigWidget::load()
     m_ui.drawBorderOnMaximizedWindows->setChecked(m_internalSettings->drawBorderOnMaximizedWindows());
     m_ui.boldButtonIcons->setCurrentIndex(m_internalSettings->boldButtonIcons());
     m_ui.matchTitleBarToApplicationColor->setChecked(m_internalSettings->matchTitleBarToApplicationColor());
-    m_ui.titleBarMenuEnabled->setChecked(m_internalSettings->integratedMenuEnabled());
+    m_ui.titleBarAppMenuBarEnabled->setChecked(m_internalSettings->appMenuBarEnabled());
     m_ui.drawBackgroundGradient->setChecked(m_internalSettings->drawBackgroundGradient());
     m_ui.drawTitleBarSeparator->setChecked(m_internalSettings->drawTitleBarSeparator());
     m_ui.boldTitle->setChecked(m_internalSettings->boldTitle());
@@ -229,16 +229,16 @@ void ConfigWidget::load()
 
     m_ui.colorizeWindowOutlineWithButton->setChecked(m_internalSettings->colorizeWindowOutlineWithButton());
 
-    // == integrated menu
+    // == AppMenuBar
     // -- Enable/Disable based on application menu
-    m_ui.titleBarMenuEnabled->setEnabled(m_hasApplicationMenu);
-    m_ui.titleBarMenuButton->setEnabled(m_hasApplicationMenu && m_ui.titleBarMenuEnabled->isChecked());
-    QString integratedMenuToolTip = "";
+    m_ui.titleBarAppMenuBarEnabled->setEnabled(m_hasApplicationMenu);
+    m_ui.titleBarAppMenuBarButton->setEnabled(m_hasApplicationMenu && m_ui.titleBarAppMenuBarEnabled->isChecked());
+    QString appMenuBarToolTip = "";
     if (!m_hasApplicationMenu)
-        integratedMenuToolTip = i18n(
+        appMenuBarToolTip = i18n(
             "Integrating the application menu into the titlebar requires an application menu button be configured on either the left or right. "
             "You currently don't have one");
-    m_ui.titleBarMenuEnabled->setToolTip(integratedMenuToolTip);
+    m_ui.titleBarAppMenuBarEnabled->setToolTip(appMenuBarToolTip);
 
     onIconsChanged();
 
@@ -289,7 +289,7 @@ void ConfigWidget::saveMain(QString saveAsPresetName)
     m_internalSettings->setBoldButtonIcons(m_ui.boldButtonIcons->currentIndex());
     m_internalSettings->setDrawBorderOnMaximizedWindows(m_ui.drawBorderOnMaximizedWindows->isChecked());
     m_internalSettings->setMatchTitleBarToApplicationColor(m_ui.matchTitleBarToApplicationColor->isChecked());
-    m_internalSettings->setIntegratedMenuEnabled(m_ui.titleBarMenuEnabled->isChecked());
+    m_internalSettings->setAppMenuBarEnabled(m_ui.titleBarAppMenuBarEnabled->isChecked());
     m_internalSettings->setDrawBackgroundGradient(m_ui.drawBackgroundGradient->isChecked());
     m_internalSettings->setDrawTitleBarSeparator(m_ui.drawTitleBarSeparator->isChecked());
     m_internalSettings->setBoldTitle(m_ui.boldTitle->isChecked());
@@ -365,7 +365,7 @@ void ConfigWidget::defaults()
     m_ui.boldButtonIcons->setCurrentIndex(m_internalSettings->boldButtonIcons());
     m_ui.drawBorderOnMaximizedWindows->setChecked(m_internalSettings->drawBorderOnMaximizedWindows());
     m_ui.matchTitleBarToApplicationColor->setChecked(m_internalSettings->matchTitleBarToApplicationColor());
-    m_ui.titleBarMenuEnabled->setChecked(m_internalSettings->integratedMenuEnabled());
+    m_ui.titleBarAppMenuBarEnabled->setChecked(m_internalSettings->appMenuBarEnabled());
     m_ui.drawBackgroundGradient->setChecked(m_internalSettings->drawBackgroundGradient());
     m_ui.animationsEnabled->setChecked(m_internalSettings->animationsEnabled());
     m_ui.animationsSpeedRelativeSystem->setValue(m_internalSettings->animationsSpeedRelativeSystem());
@@ -497,7 +497,7 @@ void ConfigWidget::updateChanged()
         modified = true;
     else if (m_ui.matchTitleBarToApplicationColor->isChecked() != m_internalSettings->matchTitleBarToApplicationColor())
         modified = true;
-    else if (m_ui.titleBarMenuEnabled->isChecked() != m_internalSettings->integratedMenuEnabled())
+    else if (m_ui.titleBarAppMenuBarEnabled->isChecked() != m_internalSettings->appMenuBarEnabled())
         modified = true;
     else if (m_ui.drawBackgroundGradient->isChecked() != m_internalSettings->drawBackgroundGradient())
         modified = true;
@@ -610,9 +610,9 @@ void ConfigWidget::titleBarOpacityButtonClicked()
     m_titleBarOpacityDialog->show();
 }
 
-void ConfigWidget::titleBarMenuButtonClicked()
+void ConfigWidget::titleBarAppMenuBarButtonClicked()
 {
-    m_titleBarMenuDialog->setWindowTitle(i18n("Titlebar Integrated Menu - Klassy Settings"));
+    m_titleBarMenuDialog->setWindowTitle(i18n("App Menubar in Titlebar - Klassy Settings"));
     m_titleBarMenuDialog->show();
 }
 
@@ -900,12 +900,12 @@ void ConfigWidget::getButtonsOrderFromKwinConfig()
             m_hiddenButtons.append(buttonNames.key(*it));
         }
     }
-    // Have the integrated menu buttons appear before hidden ones if an application menu exists; otherwise at the end
+    // Have the AppMenuBar buttons appear before hidden ones if an application menu exists; otherwise at the end
     m_hasApplicationMenu = visibleButtons.contains('N');
-    int integratedMenuButtonIndex = m_hasApplicationMenu ? 0 : m_hiddenButtons.length();
-    m_hiddenButtons.insert(integratedMenuButtonIndex++, DecorationButtonType::CustomIntegratedMenuMenu);
-    m_hiddenButtons.insert(integratedMenuButtonIndex++, DecorationButtonType::CustomIntegratedMenuOverflow);
-    m_hiddenButtons.insert(integratedMenuButtonIndex++, DecorationButtonType::CustomIntegratedMenuSearch);
+    int appMenuBarButtonIndex = m_hasApplicationMenu ? 0 : m_hiddenButtons.length();
+    m_hiddenButtons.insert(appMenuBarButtonIndex++, DecorationButtonType::CustomAppMenuBarMenu);
+    m_hiddenButtons.insert(appMenuBarButtonIndex++, DecorationButtonType::CustomAppMenuBarOverflow);
+    m_hiddenButtons.insert(appMenuBarButtonIndex++, DecorationButtonType::CustomAppMenuBarSearch);
 
     // Place a custom button type in the average position of these "other" button types
     QList<int> otherButtonIndexes{

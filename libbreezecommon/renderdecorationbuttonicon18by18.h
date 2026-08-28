@@ -38,8 +38,8 @@ protected:
     virtual void renderApplicationMenuIcon() override;
     virtual void renderContextHelpIcon() override;
     virtual void renderExcludeFromCaptureIcon() override;
-    virtual void renderIntegratedMenuOverflowIcon() override;
-    virtual void renderIntegratedMenuSearchIcon() override;
+    virtual void renderAppMenuBarOverflowIcon() override;
+    virtual void renderAppMenuBarSearchIcon() override;
 
     void renderCloseIconAtSquareMaximizeSize();
     std::pair<QRectF, qreal> renderSquareMaximizeIcon(bool returnSizeOnly = false, qreal cornerRelativePercent = 0.025, bool showArrows = false);

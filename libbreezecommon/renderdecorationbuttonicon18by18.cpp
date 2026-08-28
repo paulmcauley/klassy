@@ -1508,12 +1508,12 @@ void RenderDecorationButtonIcon18By18::renderExcludeFromCaptureIcon()
     m_painter->drawPath(path);
 }
 
-void RenderDecorationButtonIcon18By18::renderIntegratedMenuOverflowIcon()
+void RenderDecorationButtonIcon18By18::renderAppMenuBarOverflowIcon()
 {
     renderApplicationMenuIcon();
 }
 
-void RenderDecorationButtonIcon18By18::renderIntegratedMenuSearchIcon()
+void RenderDecorationButtonIcon18By18::renderAppMenuBarSearchIcon()
 {
     QPen pen = m_painter->pen();
     if ((!m_fromKstyle) && m_boldButtonIcons) {

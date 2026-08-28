@@ -936,21 +936,21 @@ void Decoration::createButtons()
 }
 
 //________________________________________________________________
-void Decoration::updateIntegratedMenu()
+void Decoration::updateAppMenuBar()
 {
-    // Add/remove integrated menu buttons based on whether the application menu exists for the application
-    if (window()->hasApplicationMenu() && !m_integratedMenuButtons) {
-        m_integratedMenuButtons = new AppMenuButtonGroup(this);
-        connect(m_integratedMenuButtons, &AppMenuButtonGroup::menuUpdated, this, &Decoration::updateButtonsGeometry);
-        connect(m_integratedMenuButtons, &AppMenuButtonGroup::expansionPercentChanged, this, &Decoration::updateButtonsGeometryDelayed);
-        m_integratedMenuButtons->updateAppMenuModel();
-    } else if (!window()->hasApplicationMenu() && m_integratedMenuButtons) {
-        m_integratedMenuButtons->deleteLater();
-        m_integratedMenuButtons = nullptr;
+    // Add/remove AppMenuBar buttons based on whether the application menu exists for the application
+    if (window()->hasApplicationMenu() && !m_appMenuBarButtons) {
+        m_appMenuBarButtons = new AppMenuButtonGroup(this);
+        connect(m_appMenuBarButtons, &AppMenuButtonGroup::menuUpdated, this, &Decoration::updateButtonsGeometry);
+        connect(m_appMenuBarButtons, &AppMenuButtonGroup::expansionPercentChanged, this, &Decoration::updateButtonsGeometryDelayed);
+        m_appMenuBarButtons->updateAppMenuModel();
+    } else if (!window()->hasApplicationMenu() && m_appMenuBarButtons) {
+        m_appMenuBarButtons->deleteLater();
+        m_appMenuBarButtons = nullptr;
         setCaptionOpacity(1);
     }
-    if (m_integratedMenuButtons)
-        m_integratedMenuButtons->reconfigure();
+    if (m_appMenuBarButtons)
+        m_appMenuBarButtons->reconfigure();
 }
 
 //________________________________________________________________
@@ -1351,10 +1351,10 @@ void Decoration::updateButtonsGeometry()
     }
 
     // menu buttons
-    updateIntegratedMenu();
-    if (m_integratedMenuButtons) {
-        m_integratedMenuButtons->updateShowing();
-        m_integratedMenuButtons->updateGeometry();
+    updateAppMenuBar();
+    if (m_appMenuBarButtons) {
+        m_appMenuBarButtons->updateShowing();
+        m_appMenuBarButtons->updateGeometry();
     }
 
     update();
@@ -1583,8 +1583,8 @@ void Decoration::paintTitleBar(QPainter *painter, const QRectF &repaintRegion)
     painter->setPen(fontColor);
     m_leftButtons->paint(painter, repaintRegion);
     m_rightButtons->paint(painter, repaintRegion);
-    if (m_integratedMenuButtons) {
-        m_integratedMenuButtons->paint(painter, repaintRegion);
+    if (m_appMenuBarButtons) {
+        m_appMenuBarButtons->paint(painter, repaintRegion);
     }
 }
 
@@ -1691,7 +1691,7 @@ qreal Decoration::captionHeight(const bool nextState, qreal scaledTitleBarTopMar
 }
 
 //________________________________________________________________
-QPair<QRectF, Qt::Alignment> Decoration::captionRect(bool nextState, bool minimumIntegratedMenu) const
+QPair<QRectF, Qt::Alignment> Decoration::captionRect(bool nextState, bool minimumAppMenuBar) const
 {
     if (hideTitleBar()) {
         return qMakePair(QRect(), Qt::AlignCenter);
@@ -1707,9 +1707,9 @@ QPair<QRectF, Qt::Alignment> Decoration::captionRect(bool nextState, bool minimu
         qreal leftOffset = m_leftButtons->buttons().isEmpty() ? padding : m_leftButtons->geometry().x() + m_leftButtons->geometry().width() + padding;
         qreal rightOffset = m_rightButtons->buttons().isEmpty() ? padding : size().width() - m_rightButtons->geometry().x() + padding;
 
-        if (m_integratedMenuButtons && !m_integratedMenuButtons->buttons().isEmpty() && m_integratedMenuButtons->takesSpace()) {
-            const qreal menuWidth = padding + (minimumIntegratedMenu ? m_integratedMenuButtons->minimumWidth() : m_integratedMenuButtons->visibleWidth());
-            if (m_integratedMenuButtons->position() == AppMenuPosition::Right) {
+        if (m_appMenuBarButtons && !m_appMenuBarButtons->buttons().isEmpty() && m_appMenuBarButtons->takesSpace()) {
+            const qreal menuWidth = padding + (minimumAppMenuBar ? m_appMenuBarButtons->minimumWidth() : m_appMenuBarButtons->visibleWidth());
+            if (m_appMenuBarButtons->position() == AppMenuPosition::Right) {
                 rightOffset += menuWidth + m_internalSettings->buttonSpacingRight() * scale;
             } else {
                 leftOffset += menuWidth + m_internalSettings->buttonSpacingLeft() * scale;
@@ -2144,10 +2144,10 @@ void Decoration::hoverLeaveEvent(QHoverEvent *event)
         setButtonUnisonHovered(false);
     }
 
-    if (m_integratedMenuButtons) {
-        m_integratedMenuButtons->setHovered(false);
-        m_integratedMenuButtons->setUnisonHovered(false);
-        m_integratedMenuButtons->updateShowing();
+    if (m_appMenuBarButtons) {
+        m_appMenuBarButtons->setHovered(false);
+        m_appMenuBarButtons->setUnisonHovered(false);
+        m_appMenuBarButtons->updateShowing();
     }
     KDecoration3::Decoration::hoverLeaveEvent(event);
 }
@@ -2156,13 +2156,13 @@ void Decoration::mousePressEvent(QMouseEvent *event)
 {
     KDecoration3::Decoration::mousePressEvent(event);
 
-    if (!m_internalSettings->integratedMenuButtonCanDragWindow() || !m_integratedMenuButtons) {
+    if (!m_internalSettings->appMenuBarButtonCanDragWindow() || !m_appMenuBarButtons) {
         return;
     }
 
     const QPoint pos = event->position().toPoint();
-    if (m_integratedMenuButtons->geometry().contains(pos) && event->button() == Qt::LeftButton) {
-        m_integratedMenuButtons->startDragMove(pos);
+    if (m_appMenuBarButtons->geometry().contains(pos) && event->button() == Qt::LeftButton) {
+        m_appMenuBarButtons->startDragMove(pos);
         event->setAccepted(false);
     }
 }
@@ -2170,32 +2170,32 @@ void Decoration::mousePressEvent(QMouseEvent *event)
 void Decoration::mouseReleaseEvent(QMouseEvent *event)
 {
     KDecoration3::Decoration::mouseReleaseEvent(event);
-    if (m_integratedMenuButtons)
-        m_integratedMenuButtons->resetDragMove();
+    if (m_appMenuBarButtons)
+        m_appMenuBarButtons->resetDragMove();
 }
 
 void Decoration::hoverMoveEvent(QHoverEvent *event)
 {
-    const bool overIntegratedButtons = m_integratedMenuButtons && m_integratedMenuButtons->geometry().contains(event->position());
+    const bool overIntegratedButtons = m_appMenuBarButtons && m_appMenuBarButtons->geometry().contains(event->position());
     if (m_internalSettings->unisonHovering()) {
         const bool groupContains = m_leftButtons->geometry().contains(event->position()) || m_rightButtons->geometry().contains(event->position());
-        const bool integratedContains = overIntegratedButtons && m_integratedMenuButtons->unisonHoveringType() == AppMenuUnisonHovering::Together;
+        const bool integratedContains = overIntegratedButtons && m_appMenuBarButtons->unisonHoveringType() == AppMenuUnisonHovering::Together;
         setButtonUnisonHovered(groupContains || integratedContains);
     }
 
-    // Update integrated menu button showing state based on titlebar hover
-    if (m_integratedMenuButtons) {
+    // Update AppMenuBar button showing state based on titlebar hover
+    if (m_appMenuBarButtons) {
         const bool titleBarHovered = titleBar().contains(event->position());
-        m_integratedMenuButtons->setHovered(titleBarHovered);
-        m_integratedMenuButtons->updateShowing();
-        if (m_integratedMenuButtons->unisonHoveringType() != AppMenuUnisonHovering::Disabled) {
-            const bool togetherHovered = m_buttonUnisonHovered && m_integratedMenuButtons->unisonHoveringType() == AppMenuUnisonHovering::Together;
-            m_integratedMenuButtons->setUnisonHovered(overIntegratedButtons || togetherHovered);
+        m_appMenuBarButtons->setHovered(titleBarHovered);
+        m_appMenuBarButtons->updateShowing();
+        if (m_appMenuBarButtons->unisonHoveringType() != AppMenuUnisonHovering::Disabled) {
+            const bool togetherHovered = m_buttonUnisonHovered && m_appMenuBarButtons->unisonHoveringType() == AppMenuUnisonHovering::Together;
+            m_appMenuBarButtons->setUnisonHovered(overIntegratedButtons || togetherHovered);
         }
 
         if (overIntegratedButtons)
-            m_integratedMenuButtons->handleHoverMove(event->position());
-        if (m_integratedMenuButtons->dragMoveTick(event->position().toPoint()))
+            m_appMenuBarButtons->handleHoverMove(event->position());
+        if (m_appMenuBarButtons->dragMoveTick(event->position().toPoint()))
             return;
     }
 

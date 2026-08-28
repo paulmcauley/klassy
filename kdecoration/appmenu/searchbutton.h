@@ -72,7 +72,7 @@ private:
     void onTimerTimeout();
     void onMenuHide();
 
-    AppMenuButtonGroup *m_integratedMenu;
+    AppMenuButtonGroup *m_appMenuBar;
     std::unique_ptr<NavigableMenu> m_menu;
     QPointer<QLineEdit> m_lineEdit;
     QTimer *m_debounceTimer;

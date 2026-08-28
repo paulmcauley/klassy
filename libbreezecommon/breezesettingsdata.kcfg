@@ -459,9 +459,9 @@
                 <value>KeepBelow</value>
                 <value>KeepAbove</value>
                 <value>ExcludeFromCapture</value>
-                <value>IntegratedMenuMenu</value>
-                <value>IntegratedMenuOverflow</value>
-                <value>IntegratedMenuSearch</value>
+                <value>AppMenuBarMenu</value>
+                <value>AppMenuBarOverflow</value>
+                <value>AppMenuBarSearch</value>
             </values>
         </parameter>
     </entry>
@@ -480,9 +480,9 @@
                 <value>KeepBelow</value>
                 <value>KeepAbove</value>
                 <value>ExcludeFromCapture</value>
-                <value>IntegratedMenuMenu</value>
-                <value>IntegratedMenuOverflow</value>
-                <value>IntegratedMenuSearch</value>
+                <value>AppMenuBarMenu</value>
+                <value>AppMenuBarOverflow</value>
+                <value>AppMenuBarSearch</value>
             </values>
         </parameter>
     </entry>
@@ -965,14 +965,14 @@
 
   </group>
 
-  <group name="IntegratedMenu">
+  <group name="TitleBarAppMenuBar">
     <!-- ______________________________MENU______________________________ -->
 
-    <entry name="IntegratedMenuEnabled" key="Enabled" type="Bool">
+    <entry name="AppMenuBarEnabled" type="Bool">
         <default>false</default>
     </entry>
 
-    <entry name="IntegratedMenuShowStyle" key="ShowStyle" type="Enum">
+    <entry name="AppMenuBarBehaviour" type="Enum">
         <choices>
             <choice name="AlwaysExpandOnHover" />
             <choice name="AlwaysTakeRoom" />
@@ -983,7 +983,7 @@
         <default>AlwaysExpandOnHover</default>
     </entry>
 
-    <entry name="IntegratedMenuPosition" key="Position" type="Enum">
+    <entry name="AppMenuBarPosition" type="Enum">
         <choices>
             <choice name="Left" />
             <choice name="Center" />
@@ -993,7 +993,7 @@
         <default>Left</default>
     </entry>
 
-    <entry name="IntegratedMenuUnisonHovering" key="UnisonHovering" type="Enum">
+    <entry name="AppMenuBarUnisonHovering" type="Enum">
         <choices>
             <choice name="Disabled" />
             <choice name="Separate" />
@@ -1002,29 +1002,29 @@
         <default>Disabled</default>
     </entry>
 
-    <entry name="IntegratedMenuReplacesMenuButton" key="ReplacesMenuButton" type="Bool">
+    <entry name="AppMenuBarReplacesMenuButton" type="Bool">
         <default>true</default>
     </entry>
 
-    <entry name="IntegratedMenuEnableBlur" key="EnableBlur" type="Bool">
+    <entry name="AppMenuBarEnableBlur" type="Bool">
         <default>true</default>
     </entry>
 
-    <entry name="IntegratedMenuBlurCornerRadius" key="BlurCornerRadiusType" type="Enum">
+    <entry name="AppMenuBarBlurCornerRadius" type="Enum">
         <choices>
-            <choice name="IMBCR_DerivedFromApplicationStyle" />
-            <choice name="IMBCR_Custom" />
+            <choice name="AMBBCR_DerivedFromApplicationStyle" />
+            <choice name="AMBBCR_Custom" />
         </choices>
-        <default>IMBCR_DerivedFromApplicationStyle</default>
+        <default>AMBBCR_DerivedFromApplicationStyle</default>
     </entry>
 
-    <entry name="IntegratedMenuBlurCustomCornerRadius" key="BlurCustomCornerRadius" type="Double">
+    <entry name="AppMenuBarBlurCustomCornerRadius" type="Double">
         <default>5.0</default>
         <min>0</min>
         <max>24.0</max>
     </entry>
 
-    <entry name="IntegratedMenuButtonShape" key="ButtonShape" type="Enum">
+    <entry name="AppMenuBarButtonShape" type="Enum">
         <choices>
             <choice name="FullHeightRectangle" />
             <choice name="FullHeightRoundedRectangle" />
@@ -1039,50 +1039,50 @@
         <default>FullHeightRoundedRectangle</default>
     </entry>
 
-    <entry name="IntegratedMenuButtonHorizontalMargin" key="ButtonHorizontalMargin" type="Double">
+    <entry name="AppMenuBarButtonHorizontalMargin" type="Double">
         <default>0.0</default>
     </entry>
 
-    <entry name="IntegratedMenuButtonHorizontalPadding" key="ButtonHorizontalPadding" type="Double">
+    <entry name="AppMenuBarButtonHorizontalPadding" type="Double">
         <default>4.0</default>
     </entry>
 
-    <entry name="IntegratedMenuButtonCornerRadius" key="ButtonCornerRadiusType" type="Enum">
+    <entry name="AppMenuBarButtonCornerRadius" type="Enum">
         <choices>
-            <choice name="IMCR_DerivedFromApplicationStyle" />
-            <choice name="IMCR_DerivedFromWindowButton" />
-            <choice name="IMCR_Custom" />
+            <choice name="AMBCR_DerivedFromApplicationStyle" />
+            <choice name="AMBCR_DerivedFromWindowButton" />
+            <choice name="AMBCR_Custom" />
         </choices>
-        <default>IMCR_DerivedFromApplicationStyle</default>
+        <default>AMBCR_DerivedFromApplicationStyle</default>
     </entry>
 
-    <entry name="IntegratedMenuButtonCustomCornerRadius" key="ButtonCustomCornerRadius" type="Double">
+    <entry name="AppMenuBarButtonCustomCornerRadius" type="Double">
         <default>5.0</default>
         <min>0</min>
         <max>24.0</max>
     </entry>
 
-    <entry name="IntegratedMenuButtonUseSystemMenuFont" key="ButtonUseSystemMenuFont" type="Bool">
+    <entry name="AppMenuBarButtonUseSystemMenuFont" type="Bool">
         <default>false</default>
     </entry>
 
-    <entry name="IntegratedMenuButtonCanDragWindow" key="ButtonCanDragWindow" type="Bool">
+    <entry name="AppMenuBarButtonCanDragWindow" type="Bool">
         <default>true</default>
     </entry>
 
-    <entry name="IntegratedMenuSearchEnabled" key="SearchEnabled" type="Bool">
+    <entry name="AppMenuBarSearchEnabled" type="Bool">
         <default>true</default>
     </entry>
 
-    <entry name="IntegratedMenuSearchIgnoreDisabled" key="SearchIgnoreDisabled" type="Bool">
+    <entry name="AppMenuBarSearchIgnoreDisabled" type="Bool">
         <default>true</default>
     </entry>
 
-    <entry name="IntegratedMenuSearchIgnoreTopLevel" key="SearchIgnoreTopLevel" type="Bool">
+    <entry name="AppMenuBarSearchIgnoreTopLevel" type="Bool">
         <default>true</default>
     </entry>
 
-    <entry name="IntegratedMenuSearchIgnoreSubMenus" key="SearchIgnoreSubMenus" type="Bool">
+    <entry name="AppMenuBarSearchIgnoreSubMenus" type="Bool">
         <default>false</default>
     </entry>
 
@@ -1281,7 +1281,7 @@
        <default>false</default>
     </entry>
 
-    <entry name="ExceptionIntegratedMenuShowStyle" type="Enum">
+    <entry name="ExceptionAppMenuBarBehaviour" type="Enum">
         <choices>
             <choice name="NoOverride" />
             <choice name="AlwaysExpandOnHover" />

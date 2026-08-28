@@ -101,12 +101,12 @@ Button *Button::create(KDecoration3::DecorationButtonType type, KDecoration3::De
     if (auto d = qobject_cast<Decoration *>(decoration)) {
         auto c = d->window();
 
-        // Do not create the application menu button if the integrated menu replaces it.
+        // Do not create the application menu button if the AppMenuBar replaces it.
         const auto internalSettings = d->internalSettings();
-        if (type == KDecoration3::DecorationButtonType::ApplicationMenu && internalSettings->integratedMenuReplacesMenuButton()
-            && internalSettings->integratedMenuEnabled()) {
-            const auto menuStyle = d->internalSettings()->integratedMenuShowStyle();
-            if (menuStyle != InternalSettings::EnumIntegratedMenuShowStyle::SearchOnly) {
+        if (type == KDecoration3::DecorationButtonType::ApplicationMenu && internalSettings->appMenuBarReplacesMenuButton()
+            && internalSettings->appMenuBarEnabled()) {
+            const auto menuStyle = d->internalSettings()->appMenuBarBehaviour();
+            if (menuStyle != InternalSettings::EnumAppMenuBarBehaviour::SearchOnly) {
                 return nullptr;
             }
         }
