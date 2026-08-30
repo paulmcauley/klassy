@@ -697,7 +697,7 @@ void ConfigWidget::generateWindowControlPreviewIcon(QSize size, InternalSettings
     auto internalSettings = InternalSettingsPtr(new InternalSettings());
     internalSettings->setButtonIconStyle(iconStyle);
 
-    auto [iconRenderer, localRenderingWidth](RenderDecorationButtonIcon::factory(internalSettings, painter.get(), false, boldIcons, dpr));
+    auto [iconRenderer, localRenderingWidth](RenderDecorationButtonIcon::factory(internalSettings, painter.get(), false, boldIcons));
     iconRenderer->setTaskManagerSide(m_taskManagerSide);
 
     QPen pen("#bcc1c5");

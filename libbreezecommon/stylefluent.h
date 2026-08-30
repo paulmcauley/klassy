@@ -26,10 +26,10 @@ public:
     RenderStyleFluent18By18(QPainter *painter,
                             const bool fromKstyle,
                             const bool boldButtonIcons,
-                            const qreal devicePixelRatio,
+                            const qreal systemScale,
                             const QPointF &deviceOffsetTitleBarTopLeftToIconTopLeft,
                             const bool forceEvenSquares)
-        : RenderStyleMetro18By18(painter, fromKstyle, boldButtonIcons, devicePixelRatio, deviceOffsetTitleBarTopLeftToIconTopLeft, forceEvenSquares) { };
+        : RenderStyleMetro18By18(painter, fromKstyle, boldButtonIcons, systemScale, deviceOffsetTitleBarTopLeftToIconTopLeft, forceEvenSquares) { };
 
     void renderMaximizeIcon() override;
     void renderFloatIcon() override;
