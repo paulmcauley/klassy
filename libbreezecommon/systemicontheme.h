@@ -25,7 +25,7 @@ public:
      * @param iconWidth The width and height of the icon (assumed square) - will be converted to int internally at present
      * @param iconName The name of the icon in the system icon m_systemIconFromTheme
      * @param internalSettings Window Decoration internal settings pointer
-     * @param devicePixelRatio devicePixelRatio of paint device - set separately here as the value from the device does not work on X11
+     * @param systemScale systemScale - set separately here as the value from the device does not work on X11
      */
     SystemIconTheme(QPainter *painter,
                     const qreal iconWidth,
