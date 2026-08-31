@@ -28,7 +28,7 @@ void RenderStyleKisweetDynamic18By18::renderFloatIcon()
 
 void RenderStyleKisweetDynamic18By18::renderMinimizeIcon()
 {
-    if (m_taskManagerSide == SideDot) {
+    if ((m_taskManagerSide == SideLeft || m_taskManagerSide == SideRight) && m_taskManagerType == TaskManagerType::IconsOnlyTaskManager) {
         renderTinySquareMinimizeIcon(true);
         return;
     }

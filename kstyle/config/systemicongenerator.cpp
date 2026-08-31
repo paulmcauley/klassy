@@ -37,8 +37,7 @@ void SystemIconGenerator::generate()
 
     addSystemScales();
 
-    m_panelSide = PlasmaTools::taskManagerSide(false);
-    m_taskManagerSide = PlasmaTools::taskManagerSide(true);
+    PlasmaTools::taskManagerTypeAndSide(m_taskManagerType, m_taskManagerSide);
 
     QString iconsPath = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) % QStringLiteral("/icons");
 
@@ -222,6 +221,7 @@ void SystemIconGenerator::generateIconThemeDir(const QString themeDirPath,
                 painter->setPen(pen);
                 iconRenderer->setForceEvenSquares(true);
                 iconRenderer->setStrokeToFilledPath(true);
+                iconRenderer->setTaskManagerType(m_taskManagerType);
                 iconRenderer->setTaskManagerSide(m_taskManagerSide);
 
                 iconRenderer->renderIcon(iconType.type, iconType.checked);
@@ -321,7 +321,7 @@ void SystemIconGenerator::generateIconThemeDir(const QString themeDirPath,
     desktopDir.mkdir("96");
 
     QString basePanelDir;
-    switch (m_panelSide) {
+    switch (m_taskManagerSide) {
     case SideBottom:
     default:
         basePanelDir = ":/icons/bottompanel";

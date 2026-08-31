@@ -68,7 +68,7 @@ private:
         {DecorationButtonType::KeepAbove, false, QStringLiteral("window-keep-above")},
     };
 
-    Side m_panelSide = SideBottom;
+    TaskManagerType m_taskManagerType = TaskManagerType::IconsAndTextTaskManager;
     Side m_taskManagerSide = SideBottom;
 };
 

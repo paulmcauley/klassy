@@ -11,53 +11,59 @@
 namespace Breeze
 {
 
-Side PlasmaTools::taskManagerSide(const bool dotIfIconsOnlyTaskManager)
+void PlasmaTools::taskManagerTypeAndSide(TaskManagerType &taskManagerType, Side &taskManagerSide)
 {
+    // set defaults
+    taskManagerType = TaskManagerType::IconsAndTextTaskManager;
+    taskManagerSide = Side::SideBottom;
+
     KConfig plasmaAppletsConfig(QStringLiteral("plasma-org.kde.plasma.desktop-appletsrc"), KConfig::OpenFlag::SimpleConfig);
 
     if (!plasmaAppletsConfig.hasGroup(QStringLiteral("Containments"))) {
-        return SideBottom;
+        return;
     }
     KConfigGroup containments = plasmaAppletsConfig.group(QStringLiteral("Containments"));
 
-    std::map<int, int> taskPanelScreenAndLocation; // screen, location; auto-sorts by screen priority
+    struct LocationAndType {
+        int location;
+        TaskManagerType type;
+    };
+
+    std::map<int, LocationAndType> taskPanelScreenLocationAndType; // screen, location; auto-sorts by screen priority
 
     for (QString &containmentGroupString : containments.groupList()) {
         if (containments.group(containmentGroupString).readEntry(QStringLiteral("plugin"), QString()) == QStringLiteral("org.kde.panel")) {
             if (!containments.group(containmentGroupString).hasGroup(QStringLiteral("Applets")))
-                return SideBottom;
+                return;
 
             KConfigGroup panelAppletsGroup = containments.group(containmentGroupString).group(QStringLiteral("Applets"));
             for (QString &panelAppletsString : panelAppletsGroup.groupList()) {
                 if (panelAppletsGroup.group(panelAppletsString).readEntry(QStringLiteral("plugin"), QString())
                     == QStringLiteral("org.kde.plasma.taskmanager")) {
                     int location = containments.group(containmentGroupString).readEntry(QStringLiteral("location"), -1);
-                    if (location >= 0) {
+                    if (location > 0) {
                         int screen = containments.group(containmentGroupString).readEntry(QStringLiteral("lastScreen"), -1);
-                        if (screen >= 0 && !taskPanelScreenAndLocation.contains(screen)) {
-                            taskPanelScreenAndLocation.insert({screen, location});
+                        if (screen >= 0 && !taskPanelScreenLocationAndType.contains(screen)) {
+                            taskPanelScreenLocationAndType.insert({screen, {location, TaskManagerType::IconsAndTextTaskManager}});
                         }
                     }
                 } else if (panelAppletsGroup.group(panelAppletsString).readEntry(QStringLiteral("plugin"), QString())
                            == QStringLiteral("org.kde.plasma.icontasks")) {
-                    int location;
-                    if (dotIfIconsOnlyTaskManager)
-                        location = 0;
-                    else
-                        location = containments.group(containmentGroupString).readEntry(QStringLiteral("location"), -1);
-                    if (location >= 0) {
+                    int location = containments.group(containmentGroupString).readEntry(QStringLiteral("location"), -1);
+                    if (location > 0) {
                         int screen = containments.group(containmentGroupString).readEntry(QStringLiteral("lastScreen"), -1);
-                        if (screen >= 0 && !taskPanelScreenAndLocation.contains(screen)) {
-                            taskPanelScreenAndLocation.insert({screen, location});
+                        if (screen >= 0 && !taskPanelScreenLocationAndType.contains(screen)) {
+                            taskPanelScreenLocationAndType.insert({screen, {location, TaskManagerType::IconsOnlyTaskManager}});
                         }
                     }
+
                 } else if (panelAppletsGroup.group(panelAppletsString).readEntry(QStringLiteral("plugin"), QString())
                            == QStringLiteral("org.kde.plasma.windowlist")) {
                     int location = containments.group(containmentGroupString).readEntry(QStringLiteral("location"), -1);
-                    if (location >= 0) {
+                    if (location > 0) {
                         int screen = containments.group(containmentGroupString).readEntry(QStringLiteral("lastScreen"), -1);
-                        if (screen >= 0 && !taskPanelScreenAndLocation.contains(screen)) {
-                            taskPanelScreenAndLocation.insert({screen, location});
+                        if (screen >= 0 && !taskPanelScreenLocationAndType.contains(screen)) {
+                            taskPanelScreenLocationAndType.insert({screen, {location, TaskManagerType::WindowList}});
                         }
                     }
                 }
@@ -65,12 +71,11 @@ Side PlasmaTools::taskManagerSide(const bool dotIfIconsOnlyTaskManager)
         }
     }
 
-    if (taskPanelScreenAndLocation.size()) {
-        auto it = taskPanelScreenAndLocation.begin();
-        return (panelLocationToSide(it->second)); // use only the highest priority screen to determine the taskmanager location
+    if (taskPanelScreenLocationAndType.size()) {
+        auto it = taskPanelScreenLocationAndType.begin(); // use only the highest priority screen to determine the taskmanager location
+        taskManagerType = it->second.type;
+        taskManagerSide = panelLocationToSide(it->second.location);
     }
-
-    return SideBottom;
 }
 
 Side PlasmaTools::panelLocationToSide(const int panelLocation)
@@ -85,8 +90,6 @@ Side PlasmaTools::panelLocationToSide(const int panelLocation)
         return SideLeft;
     case 6:
         return SideRight;
-    case 0:
-        return SideDot;
     }
 }
 

@@ -310,6 +310,7 @@ void Button::drawIcon(QPainter *painter) const
         scale painter so that all further rendering is preformed inside QRect( 0, 0, localRenderingWidth, localRenderingWidth )
         */
         painter->scale(scaleFactor, scaleFactor);
+        iconRenderer->setTaskManagerType(g_taskManagerType);
         iconRenderer->setTaskManagerSide(g_taskManagerSide);
 
         iconRenderer->renderIcon(static_cast<DecorationButtonType>(type()), isChecked());
