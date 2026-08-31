@@ -125,6 +125,7 @@ namespace Breeze
 
 KSharedConfig::Ptr Decoration::s_kdeGlobalConfig = KSharedConfig::Ptr();
 Side g_taskManagerSide = SideBottom;
+TaskManagerType g_taskManagerType = TaskManagerType::IconsAndTextTaskManager;
 
 using KDecoration3::ColorGroup;
 using KDecoration3::ColorRole;
@@ -146,7 +147,7 @@ static bool g_hideTitleBar = false;
 static std::shared_ptr<KDecoration3::DecorationShadow> g_sShadow;
 static std::shared_ptr<KDecoration3::DecorationShadow> g_sShadowInactive;
 
-static QByteArray g_taskManagerSideUpdateUuid = QByteArray();
+static QByteArray g_taskManagerTypeAndSideUpdateUuid = QByteArray();
 
 //________________________________________________________________
 Decoration::Decoration(QObject *parent, const QVariantList &args)
@@ -349,7 +350,7 @@ bool Decoration::init()
         update(titleBar());
     });
     connect(c, &KDecoration3::DecoratedWindow::paletteChanged, this, &Decoration::generateDecorationColorsOnClientPaletteUpdate);
-    connect(&g_dBusUpdateNotifier, &DBusUpdateNotifier::appletSettingsUpdate, this, &Decoration::updateTaskManagerSide);
+    connect(&g_dBusUpdateNotifier, &DBusUpdateNotifier::appletSettingsUpdate, this, &Decoration::updateTaskManagerTypeAndSide);
 
     // buttons
     connect(s.get(), &KDecoration3::DecorationSettings::spacingChanged, this, &Decoration::updateButtonsGeometryDelayed);
@@ -566,7 +567,7 @@ void Decoration::reconfigureMain(const bool noUpdateShadow)
 
     QPalette clientPalette = c->palette();
     updateDecorationColors(clientPalette);
-    updateTaskManagerSide();
+    updateTaskManagerTypeAndSide();
 
     s_kdeGlobalConfig->reparseConfiguration();
     // settings()->smallSpacing() was used to scale on X11 and usually 2 on Wayland but not always and varies on X11, depending on font size
@@ -788,21 +789,23 @@ void Decoration::setGlobalLookAndFeelOptions(QString lookAndFeelPackageName)
     }
 }
 
-void Decoration::updateTaskManagerSide(QByteArray uuid)
+void Decoration::updateTaskManagerTypeAndSide(QByteArray uuid)
 {
     if (uuid.isEmpty()) {
-        if (g_taskManagerSideUpdateUuid.isEmpty()) {
-            g_taskManagerSideUpdateUuid = "1";
-            g_taskManagerSide = PlasmaTools::taskManagerSide(true);
+        if (g_taskManagerTypeAndSideUpdateUuid.isEmpty()) {
+            g_taskManagerTypeAndSideUpdateUuid = "1";
+            PlasmaTools::taskManagerTypeAndSide(g_taskManagerType, g_taskManagerSide);
+            m_taskManagerType = g_taskManagerType;
             m_taskManagerSide = g_taskManagerSide;
         }
     } else {
-        if (g_taskManagerSideUpdateUuid != uuid) {
-            g_taskManagerSideUpdateUuid = uuid;
-            g_taskManagerSide = PlasmaTools::taskManagerSide(true);
+        if (g_taskManagerTypeAndSideUpdateUuid != uuid) {
+            g_taskManagerTypeAndSideUpdateUuid = uuid;
+            PlasmaTools::taskManagerTypeAndSide(g_taskManagerType, g_taskManagerSide);
         }
-        if (m_taskManagerSide != g_taskManagerSide) {
+        if (m_taskManagerSide != g_taskManagerSide || m_taskManagerType != g_taskManagerType) {
             m_taskManagerSide = g_taskManagerSide;
+            m_taskManagerType = g_taskManagerType;
             update(titleBar());
         }
     }

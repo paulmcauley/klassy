@@ -182,7 +182,7 @@ void RenderDecorationButtonIcon18By18::renderDynamicMinimizeIcon(bool dynamicMin
             break;
         }
         case SideLeft:
-            renderCenteredLineMinimizeIcon();
+            (m_taskManagerType == TaskManagerType::IconsOnlyTaskManager) ? renderTinySquareMinimizeIcon() : renderCenteredLineMinimizeIcon();
             return;
         case SideTop: {
             auto [maximizeRect, maximizePenWidth] = renderSquareMaximizeIcon(true);
@@ -192,10 +192,7 @@ void RenderDecorationButtonIcon18By18::renderDynamicMinimizeIcon(bool dynamicMin
             break;
         }
         case SideRight:
-            renderCenteredLineMinimizeIcon();
-            return;
-        case SideDot:
-            renderTinySquareMinimizeIcon();
+            (m_taskManagerType == TaskManagerType::IconsOnlyTaskManager) ? renderTinySquareMinimizeIcon() : renderCenteredLineMinimizeIcon();
             return;
         }
     }

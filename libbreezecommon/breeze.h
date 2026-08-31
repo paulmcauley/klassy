@@ -171,6 +171,38 @@ static QStringList windecoExceptionKeys = {
     "PreventApplyOpacityToHeader",
 };
 
+//* corners
+enum BREEZECOMMON_EXPORT Corner {
+    CornerTopLeft = 0x1,
+    CornerTopRight = 0x2,
+    CornerBottomLeft = 0x4,
+    CornerBottomRight = 0x8,
+    CornersTop = CornerTopLeft | CornerTopRight,
+    CornersBottom = CornerBottomLeft | CornerBottomRight,
+    CornersLeft = CornerTopLeft | CornerBottomLeft,
+    CornersRight = CornerTopRight | CornerBottomRight,
+    AllCorners = CornerTopLeft | CornerTopRight | CornerBottomLeft | CornerBottomRight,
+};
+
+Q_DECLARE_FLAGS(Corners, Corner)
+
+//* sides
+enum BREEZECOMMON_EXPORT Side {
+    SideLeft = 0x1,
+    SideTop = 0x2,
+    SideRight = 0x4,
+    SideBottom = 0x8,
+    AllSides = SideLeft | SideTop | SideRight | SideBottom,
+};
+
+Q_DECLARE_FLAGS(Sides, Side)
+
+enum class TaskManagerType {
+    IconsAndTextTaskManager,
+    IconsOnlyTaskManager,
+    WindowList,
+};
+
 // KDECORATION-------------------------------------------------------------
 
 //* convenience typedefs
@@ -228,33 +260,6 @@ enum BREEZECOMMON_EXPORT AnimationMode {
 };
 
 Q_DECLARE_FLAGS(AnimationModes, AnimationMode)
-
-//* corners
-enum BREEZECOMMON_EXPORT Corner {
-    CornerTopLeft = 0x1,
-    CornerTopRight = 0x2,
-    CornerBottomLeft = 0x4,
-    CornerBottomRight = 0x8,
-    CornersTop = CornerTopLeft | CornerTopRight,
-    CornersBottom = CornerBottomLeft | CornerBottomRight,
-    CornersLeft = CornerTopLeft | CornerBottomLeft,
-    CornersRight = CornerTopRight | CornerBottomRight,
-    AllCorners = CornerTopLeft | CornerTopRight | CornerBottomLeft | CornerBottomRight,
-};
-
-Q_DECLARE_FLAGS(Corners, Corner)
-
-//* sides
-enum BREEZECOMMON_EXPORT Side {
-    SideLeft = 0x1,
-    SideTop = 0x2,
-    SideRight = 0x4,
-    SideBottom = 0x8,
-    SideDot = 0x10,
-    AllSides = SideLeft | SideTop | SideRight | SideBottom,
-};
-
-Q_DECLARE_FLAGS(Sides, Side)
 
 //* checkbox state
 enum BREEZECOMMON_EXPORT CheckBoxState {

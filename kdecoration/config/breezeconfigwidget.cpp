@@ -655,7 +655,7 @@ void ConfigWidget::updateWindowControlPreviewIcons()
 {
     QSize size(115, 72);
     m_ui.buttonIconStyle->setIconSize(size);
-    m_taskManagerSide = PlasmaTools::taskManagerSide(true);
+    PlasmaTools::taskManagerTypeAndSide(m_taskManagerType, m_taskManagerSide);
 
     for (int i = 0; i < InternalSettings::EnumButtonIconStyle::COUNT; i++) {
         if (i != static_cast<int>(InternalSettings::EnumButtonIconStyle::StyleSystemIconTheme)) {
@@ -698,6 +698,7 @@ void ConfigWidget::generateWindowControlPreviewIcon(QSize size, InternalSettings
     internalSettings->setButtonIconStyle(iconStyle);
 
     auto [iconRenderer, localRenderingWidth](RenderDecorationButtonIcon::factory(internalSettings, painter.get(), false, boldIcons));
+    iconRenderer->setTaskManagerType(m_taskManagerType);
     iconRenderer->setTaskManagerSide(m_taskManagerSide);
 
     QPen pen("#bcc1c5");
