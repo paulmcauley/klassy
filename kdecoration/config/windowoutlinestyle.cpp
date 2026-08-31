@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2023-2024 Paul A McAuley <kde@paulmcauley.com>
+ * SPDX-FileCopyrightText: 2023-2026 Paul A McAuley <kde@paulmcauley.com>
  *
  * SPDX-License-Identifier: MIT
  */
@@ -9,6 +9,7 @@
 #include "dbusmessages.h"
 #include "presetsmodel.h"
 #include <KColorButton>
+#include <KColorScheme>
 #include <QPushButton>
 
 namespace Breeze
@@ -35,6 +36,26 @@ WindowOutlineStyle::WindowOutlineStyle(KSharedConfig::Ptr config, KSharedConfig:
             Qt::ConnectionType::DirectConnection);
     connect(m_ui->lockWindowOutlineStyleActive, &QAbstractButton::toggled, this, &WindowOutlineStyle::updateChanged, Qt::ConnectionType::DirectConnection);
     connect(m_ui->windowOutlineShadowColorOpacity, SIGNAL(valueChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
+    connect(m_ui->windowOutlineContrastFromColorSchemeActive,
+            &QAbstractButton::toggled,
+            this,
+            &WindowOutlineStyle::updateChanged,
+            Qt::ConnectionType::DirectConnection);
+    connect(m_ui->windowOutlineContrastFromColorSchemeActive,
+            &QAbstractButton::toggled,
+            this,
+            &WindowOutlineStyle::contrastFromColorSchemeActiveUpdated,
+            Qt::ConnectionType::DirectConnection);
+    connect(m_ui->windowOutlineContrastFromColorSchemeInactive,
+            &QAbstractButton::toggled,
+            this,
+            &WindowOutlineStyle::updateChanged,
+            Qt::ConnectionType::DirectConnection);
+    connect(m_ui->windowOutlineContrastFromColorSchemeInactive,
+            &QAbstractButton::toggled,
+            this,
+            &WindowOutlineStyle::contrastFromColorSchemeInactiveUpdated,
+            Qt::ConnectionType::DirectConnection);
     connect(m_ui->windowOutlineContrastOpacityActive, SIGNAL(valueChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
     connect(m_ui->windowOutlineContrastOpacityInactive, SIGNAL(valueChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
     connect(m_ui->windowOutlineAccentColorOpacityActive, SIGNAL(valueChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
@@ -95,6 +116,8 @@ void WindowOutlineStyle::loadMain(const bool assignUiValuesOnly)
     m_ui->lockWindowOutlineStyleInactive->setChecked(m_internalSettings->lockWindowOutlineStyleActiveInactive());
     m_ui->windowOutlineShadowColorOpacity->setValue(m_internalSettings->windowOutlineShadowColorOpacity());
     m_ui->windowOutlineShadowColorOpacity_2->setValue(m_ui->windowOutlineShadowColorOpacity->value());
+    m_ui->windowOutlineContrastFromColorSchemeActive->setChecked(m_internalSettings->windowOutlineContrastFromColorScheme(true));
+    m_ui->windowOutlineContrastFromColorSchemeInactive->setChecked(m_internalSettings->windowOutlineContrastFromColorScheme(false));
     m_ui->windowOutlineContrastOpacityActive->setValue(m_internalSettings->windowOutlineContrastOpacity(true));
     m_ui->windowOutlineContrastOpacityActive_2->setValue(m_ui->windowOutlineContrastOpacityActive->value());
     m_ui->windowOutlineContrastOpacityInactive->setValue(m_internalSettings->windowOutlineContrastOpacity(false));
@@ -124,6 +147,9 @@ void WindowOutlineStyle::loadMain(const bool assignUiValuesOnly)
     m_ui->lockWindowOutlineCustomColorInactive->setChecked(m_internalSettings->lockWindowOutlineCustomColorActiveInactive());
     m_ui->lockWindowOutlineCustomColorInactive_2->setChecked(m_internalSettings->lockWindowOutlineCustomColorActiveInactive());
 
+    contrastFromColorSchemeActiveUpdated();
+    contrastFromColorSchemeInactiveUpdated();
+
     if (!assignUiValuesOnly) {
         setChanged(false);
 
@@ -144,8 +170,14 @@ void WindowOutlineStyle::save(const bool reloadKwinConfig)
     m_internalSettings->setWindowOutlineStyle(false, m_ui->windowOutlineStyleInactive->currentIndex());
     m_internalSettings->setLockWindowOutlineStyleActiveInactive(m_ui->lockWindowOutlineStyleActive->isChecked());
     m_internalSettings->setWindowOutlineShadowColorOpacity(qreal(m_ui->windowOutlineShadowColorOpacity->value()));
-    m_internalSettings->setWindowOutlineContrastOpacity(true, qreal(m_ui->windowOutlineContrastOpacityActive->value()));
-    m_internalSettings->setWindowOutlineContrastOpacity(false, qreal(m_ui->windowOutlineContrastOpacityInactive->value()));
+    m_internalSettings->setWindowOutlineContrastFromColorScheme(true, m_ui->windowOutlineContrastFromColorSchemeActive->isChecked());
+    m_internalSettings->setWindowOutlineContrastFromColorScheme(false, m_ui->windowOutlineContrastFromColorSchemeInactive->isChecked());
+    if (!m_ui->windowOutlineContrastFromColorSchemeActive->isChecked()) {
+        m_internalSettings->setWindowOutlineContrastOpacity(true, qreal(m_ui->windowOutlineContrastOpacityActive->value()));
+    }
+    if (!m_ui->windowOutlineContrastFromColorSchemeInactive->isChecked()) {
+        m_internalSettings->setWindowOutlineContrastOpacity(false, qreal(m_ui->windowOutlineContrastOpacityInactive->value()));
+    }
     m_internalSettings->setWindowOutlineAccentColorOpacity(true, qreal(m_ui->windowOutlineAccentColorOpacityActive->value()));
     m_internalSettings->setWindowOutlineAccentColorOpacity(false, qreal(m_ui->windowOutlineAccentColorOpacityInactive->value()));
     m_internalSettings->setWindowOutlineAccentWithContrastOpacity(true, qreal(m_ui->windowOutlineAccentWithContrastOpacityActive->value()));
@@ -240,9 +272,15 @@ void WindowOutlineStyle::updateChanged()
         modified = true;
     else if (m_ui->windowOutlineShadowColorOpacity->value() != m_internalSettings->windowOutlineShadowColorOpacity())
         modified = true;
-    else if (m_ui->windowOutlineContrastOpacityActive->value() != m_internalSettings->windowOutlineContrastOpacity(true))
+    else if (m_ui->windowOutlineContrastFromColorSchemeActive->isChecked() != m_internalSettings->windowOutlineContrastFromColorScheme(true))
         modified = true;
-    else if (m_ui->windowOutlineContrastOpacityInactive->value() != m_internalSettings->windowOutlineContrastOpacity(false))
+    else if (m_ui->windowOutlineContrastFromColorSchemeInactive->isChecked() != m_internalSettings->windowOutlineContrastFromColorScheme(false))
+        modified = true;
+    else if (!m_ui->windowOutlineContrastFromColorSchemeActive->isChecked()
+             && (m_ui->windowOutlineContrastOpacityActive->value() != m_internalSettings->windowOutlineContrastOpacity(true)))
+        modified = true;
+    else if (!m_ui->windowOutlineContrastFromColorSchemeInactive->isChecked()
+             && (m_ui->windowOutlineContrastOpacityInactive->value() != m_internalSettings->windowOutlineContrastOpacity(false)))
         modified = true;
     else if (m_ui->windowOutlineAccentColorOpacityActive->value() != m_internalSettings->windowOutlineAccentColorOpacity(true))
         modified = true;
@@ -297,6 +335,24 @@ void WindowOutlineStyle::windowOutlineCustomColorInactiveChanged()
 {
     if (m_ui->lockWindowOutlineCustomColorInactive->isChecked() && !m_processingDefaults && !m_loading)
         m_ui->windowOutlineCustomColorActive->setColor(m_ui->windowOutlineCustomColorInactive->color());
+}
+
+void WindowOutlineStyle::contrastFromColorSchemeActiveUpdated()
+{
+    if (m_ui->windowOutlineContrastFromColorSchemeActive->isChecked()) {
+        m_ui->windowOutlineContrastOpacityActive->setValue(qRound(KColorScheme::frameContrast() * 100));
+    } else {
+        m_ui->windowOutlineContrastOpacityActive->setValue(m_internalSettings->windowOutlineContrastOpacity(true));
+    }
+}
+
+void WindowOutlineStyle::contrastFromColorSchemeInactiveUpdated()
+{
+    if (m_ui->windowOutlineContrastFromColorSchemeInactive->isChecked()) {
+        m_ui->windowOutlineContrastOpacityInactive->setValue(qRound(KColorScheme::frameContrast() * 100));
+    } else {
+        m_ui->windowOutlineContrastOpacityInactive->setValue(m_internalSettings->windowOutlineContrastOpacity(false));
+    }
 }
 
 void WindowOutlineStyle::updateLockIcons()

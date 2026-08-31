@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>580</width>
-    <height>558</height>
+    <height>584</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -73,19 +73,6 @@
         </property>
        </spacer>
       </item>
-      <item row="0" column="0">
-       <widget class="QLabel" name="label">
-        <property name="text">
-         <string>Window Outline Style:</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
-        </property>
-        <property name="buddy">
-         <cstring>windowOutlineStyleActive</cstring>
-        </property>
-       </widget>
-      </item>
       <item row="0" column="2">
        <widget class="QPushButton" name="lockWindowOutlineStyleActive">
         <property name="sizePolicy">
@@ -105,43 +92,17 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="1">
-       <widget class="QComboBox" name="windowOutlineStyleActive">
-        <item>
-         <property name="text">
-          <string>None</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Shadow colour</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Contrast</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Accent colour</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Contrast blended with accent colour</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Custom colour</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Contrast blended with custom colour</string>
-         </property>
-        </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>Window Outline Style:</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
+        </property>
+        <property name="buddy">
+         <cstring>windowOutlineStyleActive</cstring>
+        </property>
        </widget>
       </item>
       <item row="1" column="0" colspan="4">
@@ -332,166 +293,177 @@
          </layout>
         </widget>
         <widget class="QWidget" name="contrastOpacityPageActive">
-         <layout class="QHBoxLayout" name="horizontalLayout_25">
+         <layout class="QVBoxLayout" name="verticalLayout_2">
           <item>
-           <spacer name="horizontalSpacer_7">
-            <property name="orientation">
-             <enum>Qt::Orientation::Horizontal</enum>
-            </property>
-            <property name="sizeType">
-             <enum>QSizePolicy::Policy::Fixed</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>72</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item>
-           <widget class="QLabel" name="label_7">
+           <widget class="QCheckBox" name="windowOutlineContrastFromColorSchemeActive">
             <property name="text">
-             <string>Opacity:</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
-            </property>
-            <property name="buddy">
-             <cstring>windowOutlineContrastOpacityActive</cstring>
+             <string>Set contrast intensity from colour scheme </string>
             </property>
            </widget>
           </item>
           <item>
-           <layout class="QVBoxLayout" name="verticalLayout_23">
+           <layout class="QHBoxLayout" name="horizontalLayout_9">
             <item>
-             <spacer name="verticalSpacer_4">
+             <spacer name="horizontalSpacer_7">
               <property name="orientation">
-               <enum>Qt::Orientation::Vertical</enum>
+               <enum>Qt::Orientation::Horizontal</enum>
               </property>
               <property name="sizeType">
                <enum>QSizePolicy::Policy::Fixed</enum>
               </property>
               <property name="sizeHint" stdset="0">
                <size>
-                <width>20</width>
-                <height>5</height>
+                <width>72</width>
+                <height>20</height>
                </size>
               </property>
              </spacer>
             </item>
             <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_16">
-              <property name="spacing">
-               <number>6</number>
+             <widget class="QLabel" name="label_7">
+              <property name="text">
+               <string>Opacity:</string>
               </property>
-              <property name="sizeConstraint">
-               <enum>QLayout::SizeConstraint::SetDefaultConstraint</enum>
+              <property name="alignment">
+               <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
               </property>
-              <item>
-               <widget class="QLabel" name="_menuOpacityTransparentLabel_27">
-                <property name="text">
-                 <string>Transparent</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <spacer name="horizontalSpacer_35">
-                <property name="orientation">
-                 <enum>Qt::Orientation::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>40</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-              <item>
-               <widget class="QSpinBox" name="windowOutlineContrastOpacityActive">
-                <property name="suffix">
-                 <string> %</string>
-                </property>
-                <property name="maximum">
-                 <number>100</number>
-                </property>
-                <property name="value">
-                 <number>0</number>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <spacer name="horizontalSpacer_36">
-                <property name="orientation">
-                 <enum>Qt::Orientation::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>40</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-              <item>
-               <widget class="QLabel" name="_menuOpacityTransparentLabel_28">
-                <property name="text">
-                 <string>Opaque</string>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </item>
-            <item>
-             <widget class="QSlider" name="windowOutlineContrastOpacityActive_2">
-              <property name="minimum">
-               <number>0</number>
-              </property>
-              <property name="maximum">
-               <number>100</number>
-              </property>
-              <property name="singleStep">
-               <number>1</number>
-              </property>
-              <property name="pageStep">
-               <number>10</number>
-              </property>
-              <property name="value">
-               <number>100</number>
-              </property>
-              <property name="orientation">
-               <enum>Qt::Orientation::Horizontal</enum>
-              </property>
-              <property name="invertedAppearance">
-               <bool>false</bool>
-              </property>
-              <property name="invertedControls">
-               <bool>false</bool>
-              </property>
-              <property name="tickPosition">
-               <enum>QSlider::TickPosition::TicksBelow</enum>
-              </property>
-              <property name="tickInterval">
-               <number>10</number>
+              <property name="buddy">
+               <cstring>windowOutlineContrastOpacityActive</cstring>
               </property>
              </widget>
             </item>
             <item>
-             <spacer name="verticalSpacer_8">
-              <property name="orientation">
-               <enum>Qt::Orientation::Vertical</enum>
-              </property>
-              <property name="sizeType">
-               <enum>QSizePolicy::Policy::Maximum</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>20</width>
-                <height>40</height>
-               </size>
-              </property>
-             </spacer>
+             <layout class="QVBoxLayout" name="verticalLayout_23">
+              <item>
+               <spacer name="verticalSpacer_4">
+                <property name="orientation">
+                 <enum>Qt::Orientation::Vertical</enum>
+                </property>
+                <property name="sizeType">
+                 <enum>QSizePolicy::Policy::Fixed</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>5</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_16">
+                <property name="spacing">
+                 <number>6</number>
+                </property>
+                <property name="sizeConstraint">
+                 <enum>QLayout::SizeConstraint::SetDefaultConstraint</enum>
+                </property>
+                <item>
+                 <widget class="QLabel" name="_menuOpacityTransparentLabel_27">
+                  <property name="text">
+                   <string>Transparent</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="horizontalSpacer_35">
+                  <property name="orientation">
+                   <enum>Qt::Orientation::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item>
+                 <widget class="QSpinBox" name="windowOutlineContrastOpacityActive">
+                  <property name="suffix">
+                   <string> %</string>
+                  </property>
+                  <property name="maximum">
+                   <number>100</number>
+                  </property>
+                  <property name="value">
+                   <number>0</number>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="horizontalSpacer_36">
+                  <property name="orientation">
+                   <enum>Qt::Orientation::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item>
+                 <widget class="QLabel" name="_menuOpacityTransparentLabel_28">
+                  <property name="text">
+                   <string>Opaque</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <widget class="QSlider" name="windowOutlineContrastOpacityActive_2">
+                <property name="minimum">
+                 <number>0</number>
+                </property>
+                <property name="maximum">
+                 <number>100</number>
+                </property>
+                <property name="singleStep">
+                 <number>1</number>
+                </property>
+                <property name="pageStep">
+                 <number>10</number>
+                </property>
+                <property name="value">
+                 <number>100</number>
+                </property>
+                <property name="orientation">
+                 <enum>Qt::Orientation::Horizontal</enum>
+                </property>
+                <property name="invertedAppearance">
+                 <bool>false</bool>
+                </property>
+                <property name="invertedControls">
+                 <bool>false</bool>
+                </property>
+                <property name="tickPosition">
+                 <enum>QSlider::TickPosition::TicksBelow</enum>
+                </property>
+                <property name="tickInterval">
+                 <number>10</number>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="verticalSpacer_8">
+                <property name="orientation">
+                 <enum>Qt::Orientation::Vertical</enum>
+                </property>
+                <property name="sizeType">
+                 <enum>QSizePolicy::Policy::Maximum</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>40</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
             </item>
            </layout>
           </item>
@@ -1261,6 +1233,45 @@
         </widget>
        </widget>
       </item>
+      <item row="0" column="1">
+       <widget class="QComboBox" name="windowOutlineStyleActive">
+        <item>
+         <property name="text">
+          <string>None</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Shadow colour</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Contrast</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Accent colour</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Contrast blended with accent colour</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Custom colour</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Contrast blended with custom colour</string>
+         </property>
+        </item>
+       </widget>
+      </item>
      </layout>
     </widget>
    </item>
@@ -1558,160 +1569,171 @@
          </layout>
         </widget>
         <widget class="QWidget" name="contrastOpacityPageInactive">
-         <layout class="QHBoxLayout" name="horizontalLayout_19">
+         <layout class="QVBoxLayout" name="verticalLayout_3">
           <item>
-           <spacer name="horizontalSpacer_14">
-            <property name="orientation">
-             <enum>Qt::Orientation::Horizontal</enum>
-            </property>
-            <property name="sizeType">
-             <enum>QSizePolicy::Policy::Fixed</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>72</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item>
-           <widget class="QLabel" name="label_8">
+           <widget class="QCheckBox" name="windowOutlineContrastFromColorSchemeInactive">
             <property name="text">
-             <string>Opacity:</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
-            </property>
-            <property name="buddy">
-             <cstring>windowOutlineContrastOpacityInactive</cstring>
+             <string>Set contrast intensity from colour scheme </string>
             </property>
            </widget>
           </item>
           <item>
-           <layout class="QVBoxLayout" name="verticalLayout_24">
+           <layout class="QHBoxLayout" name="horizontalLayout_10">
             <item>
-             <spacer name="verticalSpacer_5">
+             <spacer name="horizontalSpacer_14">
               <property name="orientation">
-               <enum>Qt::Orientation::Vertical</enum>
+               <enum>Qt::Orientation::Horizontal</enum>
               </property>
               <property name="sizeType">
                <enum>QSizePolicy::Policy::Fixed</enum>
               </property>
               <property name="sizeHint" stdset="0">
                <size>
-                <width>20</width>
-                <height>5</height>
+                <width>72</width>
+                <height>20</height>
                </size>
               </property>
              </spacer>
             </item>
             <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_18">
-              <item>
-               <widget class="QLabel" name="_menuOpacityTransparentLabel_31">
-                <property name="text">
-                 <string>Transparent</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <spacer name="horizontalSpacer_39">
-                <property name="orientation">
-                 <enum>Qt::Orientation::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>40</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-              <item>
-               <widget class="QSpinBox" name="windowOutlineContrastOpacityInactive">
-                <property name="suffix">
-                 <string> %</string>
-                </property>
-                <property name="maximum">
-                 <number>100</number>
-                </property>
-                <property name="value">
-                 <number>0</number>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <spacer name="horizontalSpacer_40">
-                <property name="orientation">
-                 <enum>Qt::Orientation::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>40</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-              <item>
-               <widget class="QLabel" name="_menuOpacityTransparentLabel_32">
-                <property name="text">
-                 <string>Opaque</string>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </item>
-            <item>
-             <widget class="QSlider" name="windowOutlineContrastOpacityInactive_2">
-              <property name="minimum">
-               <number>0</number>
+             <widget class="QLabel" name="label_8">
+              <property name="text">
+               <string>Opacity:</string>
               </property>
-              <property name="maximum">
-               <number>100</number>
+              <property name="alignment">
+               <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
               </property>
-              <property name="singleStep">
-               <number>1</number>
-              </property>
-              <property name="pageStep">
-               <number>10</number>
-              </property>
-              <property name="value">
-               <number>100</number>
-              </property>
-              <property name="orientation">
-               <enum>Qt::Orientation::Horizontal</enum>
-              </property>
-              <property name="invertedAppearance">
-               <bool>false</bool>
-              </property>
-              <property name="invertedControls">
-               <bool>false</bool>
-              </property>
-              <property name="tickPosition">
-               <enum>QSlider::TickPosition::TicksBelow</enum>
-              </property>
-              <property name="tickInterval">
-               <number>10</number>
+              <property name="buddy">
+               <cstring>windowOutlineContrastOpacityInactive</cstring>
               </property>
              </widget>
             </item>
             <item>
-             <spacer name="verticalSpacer_16">
-              <property name="orientation">
-               <enum>Qt::Orientation::Vertical</enum>
-              </property>
-              <property name="sizeType">
-               <enum>QSizePolicy::Policy::Maximum</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>20</width>
-                <height>40</height>
-               </size>
-              </property>
-             </spacer>
+             <layout class="QVBoxLayout" name="verticalLayout_24">
+              <item>
+               <spacer name="verticalSpacer_5">
+                <property name="orientation">
+                 <enum>Qt::Orientation::Vertical</enum>
+                </property>
+                <property name="sizeType">
+                 <enum>QSizePolicy::Policy::Fixed</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>5</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_18">
+                <item>
+                 <widget class="QLabel" name="_menuOpacityTransparentLabel_31">
+                  <property name="text">
+                   <string>Transparent</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="horizontalSpacer_39">
+                  <property name="orientation">
+                   <enum>Qt::Orientation::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item>
+                 <widget class="QSpinBox" name="windowOutlineContrastOpacityInactive">
+                  <property name="suffix">
+                   <string> %</string>
+                  </property>
+                  <property name="maximum">
+                   <number>100</number>
+                  </property>
+                  <property name="value">
+                   <number>0</number>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="horizontalSpacer_40">
+                  <property name="orientation">
+                   <enum>Qt::Orientation::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item>
+                 <widget class="QLabel" name="_menuOpacityTransparentLabel_32">
+                  <property name="text">
+                   <string>Opaque</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <widget class="QSlider" name="windowOutlineContrastOpacityInactive_2">
+                <property name="minimum">
+                 <number>0</number>
+                </property>
+                <property name="maximum">
+                 <number>100</number>
+                </property>
+                <property name="singleStep">
+                 <number>1</number>
+                </property>
+                <property name="pageStep">
+                 <number>10</number>
+                </property>
+                <property name="value">
+                 <number>100</number>
+                </property>
+                <property name="orientation">
+                 <enum>Qt::Orientation::Horizontal</enum>
+                </property>
+                <property name="invertedAppearance">
+                 <bool>false</bool>
+                </property>
+                <property name="invertedControls">
+                 <bool>false</bool>
+                </property>
+                <property name="tickPosition">
+                 <enum>QSlider::TickPosition::TicksBelow</enum>
+                </property>
+                <property name="tickInterval">
+                 <number>10</number>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="verticalSpacer_16">
+                <property name="orientation">
+                 <enum>Qt::Orientation::Vertical</enum>
+                </property>
+                <property name="sizeType">
+                 <enum>QSizePolicy::Policy::Maximum</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>40</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
             </item>
            </layout>
           </item>
@@ -2509,6 +2531,7 @@
   <tabstop>lockWindowOutlineStyleActive</tabstop>
   <tabstop>windowOutlineShadowColorOpacity</tabstop>
   <tabstop>windowOutlineShadowColorOpacity_2</tabstop>
+  <tabstop>windowOutlineContrastFromColorSchemeActive</tabstop>
   <tabstop>windowOutlineContrastOpacityActive</tabstop>
   <tabstop>windowOutlineContrastOpacityActive_2</tabstop>
   <tabstop>windowOutlineAccentColorOpacityActive</tabstop>
@@ -2527,6 +2550,7 @@
   <tabstop>lockWindowOutlineStyleInactive</tabstop>
   <tabstop>windowOutlineShadowColorOpacity_3</tabstop>
   <tabstop>windowOutlineShadowColorOpacity_4</tabstop>
+  <tabstop>windowOutlineContrastFromColorSchemeInactive</tabstop>
   <tabstop>windowOutlineContrastOpacityInactive</tabstop>
   <tabstop>windowOutlineContrastOpacityInactive_2</tabstop>
   <tabstop>windowOutlineAccentColorOpacityInactive</tabstop>
@@ -2553,8 +2577,8 @@
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>26</x>
-     <y>484</y>
+     <x>32</x>
+     <y>577</y>
     </hint>
     <hint type="destinationlabel">
      <x>20</x>
@@ -2569,8 +2593,8 @@
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>26</x>
-     <y>484</y>
+     <x>32</x>
+     <y>577</y>
     </hint>
     <hint type="destinationlabel">
      <x>20</x>
@@ -2585,12 +2609,12 @@
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>95</x>
-     <y>135</y>
+     <x>406</x>
+     <y>178</y>
     </hint>
     <hint type="destinationlabel">
-     <x>106</x>
-     <y>138</y>
+     <x>261</x>
+     <y>208</y>
     </hint>
    </hints>
   </connection>
@@ -2601,12 +2625,12 @@
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>95</x>
-     <y>135</y>
+     <x>406</x>
+     <y>178</y>
     </hint>
     <hint type="destinationlabel">
-     <x>95</x>
-     <y>352</y>
+     <x>406</x>
+     <y>431</y>
     </hint>
    </hints>
   </connection>
@@ -2617,12 +2641,12 @@
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>95</x>
-     <y>135</y>
+     <x>406</x>
+     <y>178</y>
     </hint>
     <hint type="destinationlabel">
-     <x>106</x>
-     <y>355</y>
+     <x>261</x>
+     <y>461</y>
     </hint>
    </hints>
   </connection>
@@ -2633,12 +2657,12 @@
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>106</x>
-     <y>138</y>
+     <x>261</x>
+     <y>208</y>
     </hint>
     <hint type="destinationlabel">
-     <x>95</x>
-     <y>135</y>
+     <x>406</x>
+     <y>178</y>
     </hint>
    </hints>
   </connection>
@@ -2649,12 +2673,12 @@
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>106</x>
-     <y>138</y>
+     <x>261</x>
+     <y>208</y>
     </hint>
     <hint type="destinationlabel">
-     <x>95</x>
-     <y>352</y>
+     <x>406</x>
+     <y>431</y>
     </hint>
    </hints>
   </connection>
@@ -2665,12 +2689,12 @@
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>106</x>
-     <y>138</y>
+     <x>261</x>
+     <y>208</y>
     </hint>
     <hint type="destinationlabel">
-     <x>106</x>
-     <y>355</y>
+     <x>261</x>
+     <y>461</y>
     </hint>
    </hints>
   </connection>
@@ -2681,12 +2705,12 @@
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>95</x>
-     <y>352</y>
+     <x>406</x>
+     <y>431</y>
     </hint>
     <hint type="destinationlabel">
-     <x>95</x>
-     <y>135</y>
+     <x>406</x>
+     <y>178</y>
     </hint>
    </hints>
   </connection>
@@ -2697,12 +2721,12 @@
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>95</x>
-     <y>352</y>
+     <x>406</x>
+     <y>431</y>
     </hint>
     <hint type="destinationlabel">
-     <x>106</x>
-     <y>138</y>
+     <x>261</x>
+     <y>208</y>
     </hint>
    </hints>
   </connection>
@@ -2713,12 +2737,12 @@
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>95</x>
-     <y>352</y>
+     <x>406</x>
+     <y>431</y>
     </hint>
     <hint type="destinationlabel">
-     <x>106</x>
-     <y>355</y>
+     <x>261</x>
+     <y>461</y>
     </hint>
    </hints>
   </connection>
@@ -2729,12 +2753,12 @@
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>106</x>
-     <y>355</y>
+     <x>261</x>
+     <y>461</y>
     </hint>
     <hint type="destinationlabel">
-     <x>95</x>
-     <y>135</y>
+     <x>406</x>
+     <y>178</y>
     </hint>
    </hints>
   </connection>
@@ -2745,12 +2769,12 @@
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>106</x>
-     <y>355</y>
+     <x>261</x>
+     <y>461</y>
     </hint>
     <hint type="destinationlabel">
-     <x>106</x>
-     <y>138</y>
+     <x>261</x>
+     <y>208</y>
     </hint>
    </hints>
   </connection>
@@ -2761,12 +2785,12 @@
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>106</x>
-     <y>355</y>
+     <x>261</x>
+     <y>461</y>
     </hint>
     <hint type="destinationlabel">
-     <x>95</x>
-     <y>352</y>
+     <x>406</x>
+     <y>431</y>
     </hint>
    </hints>
   </connection>
@@ -2777,12 +2801,12 @@
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>95</x>
-     <y>137</y>
+     <x>406</x>
+     <y>207</y>
     </hint>
     <hint type="destinationlabel">
-     <x>106</x>
-     <y>142</y>
+     <x>262</x>
+     <y>237</y>
     </hint>
    </hints>
   </connection>
@@ -2793,12 +2817,12 @@
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>106</x>
-     <y>142</y>
+     <x>262</x>
+     <y>237</y>
     </hint>
     <hint type="destinationlabel">
-     <x>95</x>
-     <y>137</y>
+     <x>406</x>
+     <y>207</y>
     </hint>
    </hints>
   </connection>
@@ -2809,12 +2833,12 @@
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>95</x>
-     <y>354</y>
+     <x>406</x>
+     <y>460</y>
     </hint>
     <hint type="destinationlabel">
-     <x>106</x>
-     <y>359</y>
+     <x>262</x>
+     <y>490</y>
     </hint>
    </hints>
   </connection>
@@ -2825,12 +2849,12 @@
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>106</x>
-     <y>359</y>
+     <x>262</x>
+     <y>490</y>
     </hint>
     <hint type="destinationlabel">
-     <x>95</x>
-     <y>354</y>
+     <x>406</x>
+     <y>460</y>
     </hint>
    </hints>
   </connection>
@@ -2841,12 +2865,12 @@
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>95</x>
-     <y>137</y>
+     <x>406</x>
+     <y>178</y>
     </hint>
     <hint type="destinationlabel">
-     <x>106</x>
-     <y>142</y>
+     <x>261</x>
+     <y>209</y>
     </hint>
    </hints>
   </connection>
@@ -2857,12 +2881,12 @@
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>106</x>
-     <y>142</y>
+     <x>261</x>
+     <y>209</y>
     </hint>
     <hint type="destinationlabel">
-     <x>95</x>
-     <y>137</y>
+     <x>406</x>
+     <y>178</y>
     </hint>
    </hints>
   </connection>
@@ -2873,12 +2897,12 @@
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>95</x>
-     <y>354</y>
+     <x>333</x>
+     <y>407</y>
     </hint>
     <hint type="destinationlabel">
-     <x>106</x>
-     <y>359</y>
+     <x>177</x>
+     <y>454</y>
     </hint>
    </hints>
   </connection>
@@ -2889,12 +2913,12 @@
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>106</x>
-     <y>359</y>
+     <x>177</x>
+     <y>454</y>
     </hint>
     <hint type="destinationlabel">
-     <x>95</x>
-     <y>354</y>
+     <x>333</x>
+     <y>407</y>
     </hint>
    </hints>
   </connection>
@@ -2905,12 +2929,12 @@
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>95</x>
-     <y>137</y>
+     <x>406</x>
+     <y>185</y>
     </hint>
     <hint type="destinationlabel">
-     <x>106</x>
-     <y>142</y>
+     <x>261</x>
+     <y>223</y>
     </hint>
    </hints>
   </connection>
@@ -2921,12 +2945,12 @@
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>106</x>
-     <y>142</y>
+     <x>261</x>
+     <y>223</y>
     </hint>
     <hint type="destinationlabel">
-     <x>95</x>
-     <y>137</y>
+     <x>406</x>
+     <y>185</y>
     </hint>
    </hints>
   </connection>
@@ -2938,11 +2962,11 @@
    <hints>
     <hint type="sourcelabel">
      <x>95</x>
-     <y>354</y>
+     <y>394</y>
     </hint>
     <hint type="destinationlabel">
      <x>106</x>
-     <y>359</y>
+     <y>399</y>
     </hint>
    </hints>
   </connection>
@@ -2954,11 +2978,11 @@
    <hints>
     <hint type="sourcelabel">
      <x>106</x>
-     <y>359</y>
+     <y>399</y>
     </hint>
     <hint type="destinationlabel">
      <x>95</x>
-     <y>354</y>
+     <y>394</y>
     </hint>
    </hints>
   </connection>
@@ -2970,11 +2994,11 @@
    <hints>
     <hint type="sourcelabel">
      <x>95</x>
-     <y>141</y>
+     <y>145</y>
     </hint>
     <hint type="destinationlabel">
      <x>106</x>
-     <y>144</y>
+     <y>148</y>
     </hint>
    </hints>
   </connection>
@@ -2986,11 +3010,11 @@
    <hints>
     <hint type="sourcelabel">
      <x>106</x>
-     <y>144</y>
+     <y>148</y>
     </hint>
     <hint type="destinationlabel">
      <x>95</x>
-     <y>141</y>
+     <y>145</y>
     </hint>
    </hints>
   </connection>
@@ -3002,11 +3026,11 @@
    <hints>
     <hint type="sourcelabel">
      <x>95</x>
-     <y>358</y>
+     <y>398</y>
     </hint>
     <hint type="destinationlabel">
      <x>106</x>
-     <y>361</y>
+     <y>401</y>
     </hint>
    </hints>
   </connection>
@@ -3018,11 +3042,11 @@
    <hints>
     <hint type="sourcelabel">
      <x>106</x>
-     <y>361</y>
+     <y>401</y>
     </hint>
     <hint type="destinationlabel">
      <x>95</x>
-     <y>358</y>
+     <y>398</y>
     </hint>
    </hints>
   </connection>
@@ -3033,12 +3057,12 @@
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>95</x>
-     <y>141</y>
+     <x>332</x>
+     <y>187</y>
     </hint>
     <hint type="destinationlabel">
-     <x>106</x>
-     <y>144</y>
+     <x>177</x>
+     <y>226</y>
     </hint>
    </hints>
   </connection>
@@ -3049,12 +3073,12 @@
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>106</x>
-     <y>144</y>
+     <x>177</x>
+     <y>226</y>
     </hint>
     <hint type="destinationlabel">
-     <x>95</x>
-     <y>141</y>
+     <x>332</x>
+     <y>187</y>
     </hint>
    </hints>
   </connection>
@@ -3066,11 +3090,11 @@
    <hints>
     <hint type="sourcelabel">
      <x>95</x>
-     <y>358</y>
+     <y>398</y>
     </hint>
     <hint type="destinationlabel">
      <x>106</x>
-     <y>361</y>
+     <y>401</y>
     </hint>
    </hints>
   </connection>
@@ -3082,11 +3106,11 @@
    <hints>
     <hint type="sourcelabel">
      <x>106</x>
-     <y>361</y>
+     <y>401</y>
     </hint>
     <hint type="destinationlabel">
      <x>95</x>
-     <y>358</y>
+     <y>398</y>
     </hint>
    </hints>
   </connection>
@@ -3113,12 +3137,12 @@
    <slot>setCurrentIndex(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>414</x>
-     <y>334</y>
+     <x>418</x>
+     <y>373</y>
     </hint>
     <hint type="destinationlabel">
-     <x>398</x>
-     <y>358</y>
+     <x>412</x>
+     <y>529</y>
     </hint>
    </hints>
   </connection>
@@ -3129,8 +3153,8 @@
    <slot>setChecked(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>451</x>
-     <y>334</y>
+     <x>471</x>
+     <y>374</y>
     </hint>
     <hint type="destinationlabel">
      <x>451</x>
@@ -3149,8 +3173,8 @@
      <y>117</y>
     </hint>
     <hint type="destinationlabel">
-     <x>451</x>
-     <y>334</y>
+     <x>471</x>
+     <y>374</y>
     </hint>
    </hints>
   </connection>
@@ -3162,11 +3186,11 @@
    <hints>
     <hint type="sourcelabel">
      <x>99</x>
-     <y>131</y>
+     <y>135</y>
     </hint>
     <hint type="destinationlabel">
      <x>99</x>
-     <y>348</y>
+     <y>388</y>
     </hint>
    </hints>
   </connection>
@@ -3178,11 +3202,11 @@
    <hints>
     <hint type="sourcelabel">
      <x>99</x>
-     <y>348</y>
+     <y>388</y>
     </hint>
     <hint type="destinationlabel">
      <x>99</x>
-     <y>131</y>
+     <y>135</y>
     </hint>
    </hints>
   </connection>
@@ -3193,12 +3217,12 @@
    <slot>setChecked(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>99</x>
-     <y>131</y>
+     <x>221</x>
+     <y>136</y>
     </hint>
     <hint type="destinationlabel">
      <x>99</x>
-     <y>348</y>
+     <y>388</y>
     </hint>
    </hints>
   </connection>
@@ -3210,11 +3234,11 @@
    <hints>
     <hint type="sourcelabel">
      <x>99</x>
-     <y>348</y>
+     <y>388</y>
     </hint>
     <hint type="destinationlabel">
-     <x>99</x>
-     <y>131</y>
+     <x>221</x>
+     <y>136</y>
     </hint>
    </hints>
   </connection>
@@ -3226,11 +3250,11 @@
    <hints>
     <hint type="sourcelabel">
      <x>99</x>
-     <y>131</y>
+     <y>135</y>
     </hint>
     <hint type="destinationlabel">
-     <x>99</x>
-     <y>131</y>
+     <x>221</x>
+     <y>136</y>
     </hint>
    </hints>
   </connection>
@@ -3241,12 +3265,12 @@
    <slot>setChecked(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>99</x>
-     <y>131</y>
+     <x>221</x>
+     <y>136</y>
     </hint>
     <hint type="destinationlabel">
      <x>99</x>
-     <y>131</y>
+     <y>135</y>
     </hint>
    </hints>
   </connection>
@@ -3258,11 +3282,11 @@
    <hints>
     <hint type="sourcelabel">
      <x>99</x>
-     <y>348</y>
+     <y>388</y>
     </hint>
     <hint type="destinationlabel">
      <x>99</x>
-     <y>348</y>
+     <y>388</y>
     </hint>
    </hints>
   </connection>
@@ -3274,11 +3298,75 @@
    <hints>
     <hint type="sourcelabel">
      <x>99</x>
-     <y>348</y>
+     <y>388</y>
     </hint>
     <hint type="destinationlabel">
      <x>99</x>
-     <y>348</y>
+     <y>388</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>windowOutlineContrastFromColorSchemeActive</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>windowOutlineContrastOpacityActive_2</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>81</x>
+     <y>151</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>242</x>
+     <y>225</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>windowOutlineContrastFromColorSchemeInactive</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>windowOutlineContrastOpacityInactive</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>181</x>
+     <y>396</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>353</x>
+     <y>442</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>windowOutlineContrastFromColorSchemeInactive</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>windowOutlineContrastOpacityInactive_2</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>91</x>
+     <y>392</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>172</x>
+     <y>470</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>windowOutlineContrastFromColorSchemeActive</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>windowOutlineContrastOpacityActive</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>242</x>
+     <y>149</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>335</x>
+     <y>192</y>
     </hint>
    </hints>
   </connection>

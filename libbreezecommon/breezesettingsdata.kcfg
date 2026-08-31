@@ -996,6 +996,16 @@
        <max>100</max>
     </entry>
 
+    <entry name="WindowOutlineContrastFromColorScheme$(WindowOutlineContrastFromColorSchemeActive)" type = "Bool">
+        <parameter name="WindowOutlineContrastFromColorSchemeActive" type="Enum">
+            <values>
+                <value>Inactive</value>
+                <value>Active</value>
+            </values>
+        </parameter>
+        <default>true</default>
+    </entry>
+
     <entry name="WindowOutlineContrastOpacity$(WindowOutlineContrastOpacityActive)" type = "Int">
        <parameter name="WindowOutlineContrastOpacityActive" type="Enum">
             <values>
