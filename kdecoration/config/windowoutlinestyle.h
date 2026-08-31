@@ -47,6 +47,8 @@ private Q_SLOTS:
     void windowOutlineStyleInactiveChanged();
     void windowOutlineCustomColorActiveChanged();
     void windowOutlineCustomColorInactiveChanged();
+    void contrastFromColorSchemeActiveUpdated();
+    void contrastFromColorSchemeInactiveUpdated();
     void updateLockIcons();
 
 Q_SIGNALS:
