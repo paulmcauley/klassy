@@ -6,10 +6,10 @@
     <defs/>
     <g fill="none" fill-rule="evenodd" stroke="black" stroke-linecap="square" stroke-linejoin="bevel" stroke-width="1">
         <g class="ColorScheme-Text" fill="currentColor" fill-opacity="0.8" font-family="Noto Sans" font-size="30" font-style="normal" font-weight="400" stroke="none" transform="matrix(2.27778,0,0,2.27778,0,0)">
-            <path d="M3.07317,3.95122 L7.90244,3.95122 L7.90244,7.90244 L3.07317,7.90244 L3.07317,3.95122" fill-rule="evenodd" vector-effect="none"/>
-            <path d="M10.0976,3.95122 L14.9268,3.95122 L14.9268,7.90244 L10.0976,7.90244 L10.0976,3.95122" fill-rule="evenodd" vector-effect="none"/>
-            <path d="M10.0976,10.0976 L14.9268,10.0976 L14.9268,14.0488 L10.0976,14.0488 L10.0976,10.0976" fill-rule="evenodd" vector-effect="none"/>
-            <path d="M3.07317,10.0976 L7.90244,10.0976 L7.90244,14.0488 L3.07317,14.0488 L3.07317,10.0976" fill-rule="evenodd" vector-effect="none"/>
+            <path d="M3.07317,3.95122 L7.90244,3.95122 L7.90244,7.90244 L3.07317,7.90244 L3.07317,3.95122 Z " fill-rule="evenodd" vector-effect="none"/>
+            <path d="M10.0976,3.95122 L14.9268,3.95122 L14.9268,7.90244 L10.0976,7.90244 L10.0976,3.95122 Z " fill-rule="evenodd" vector-effect="none"/>
+            <path d="M10.0976,10.0976 L14.9268,10.0976 L14.9268,14.0488 L10.0976,14.0488 L10.0976,10.0976 Z " fill-rule="evenodd" vector-effect="none"/>
+            <path d="M3.07317,10.0976 L7.90244,10.0976 L7.90244,14.0488 L3.07317,14.0488 L3.07317,10.0976 Z " fill-rule="evenodd" vector-effect="none"/>
         </g>
     </g>
 </svg>
