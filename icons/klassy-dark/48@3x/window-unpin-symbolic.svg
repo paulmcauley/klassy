@@ -6,10 +6,10 @@
     <defs/>
     <g fill="none" fill-rule="evenodd" stroke="black" stroke-linecap="square" stroke-linejoin="bevel" stroke-width="1">
         <g class="ColorScheme-Text" fill="currentColor" fill-opacity="0.8" font-family="Noto Sans" font-size="40" font-style="normal" font-weight="400" stroke="none" transform="matrix(8,0,0,8,0,0)">
-            <path d="M3,4 L8,4 L8,8 L3,8 L3,4" fill-rule="evenodd" vector-effect="none"/>
-            <path d="M10,4 L15,4 L15,8 L10,8 L10,4" fill-rule="evenodd" vector-effect="none"/>
-            <path d="M10,10 L15,10 L15,14 L10,14 L10,10" fill-rule="evenodd" vector-effect="none"/>
-            <path d="M3,10 L8,10 L8,14 L3,14 L3,10" fill-rule="evenodd" vector-effect="none"/>
+            <path d="M3,4 L8,4 L8,8 L3,8 L3,4 Z " fill-rule="evenodd" vector-effect="none"/>
+            <path d="M10,4 L15,4 L15,8 L10,8 L10,4 Z " fill-rule="evenodd" vector-effect="none"/>
+            <path d="M10,10 L15,10 L15,14 L10,14 L10,10 Z " fill-rule="evenodd" vector-effect="none"/>
+            <path d="M3,10 L8,10 L8,14 L3,14 L3,10 Z " fill-rule="evenodd" vector-effect="none"/>
         </g>
     </g>
 </svg>

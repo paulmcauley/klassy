@@ -6,7 +6,7 @@
     <defs/>
     <g fill="none" fill-rule="evenodd" stroke="black" stroke-linecap="square" stroke-linejoin="bevel" stroke-width="1">
         <g class="ColorScheme-Text" fill="currentColor" fill-opacity="0.949996" font-family="Noto Sans" font-size="16.6667" font-style="normal" font-weight="400" stroke="none" transform="matrix(1.38889,0,0,1.38889,0,0)">
-            <path d="M4.32,3.59928 L14.4,3.59928 L15.1207,3.59928 L15.1207,4.32 L15.1207,14.4 L15.1207,15.1207 L14.4,15.1207 L4.32,15.1207 L3.59928,15.1207 L3.59928,14.4 L3.59928,4.32 L3.59928,3.59928 L4.32,3.59928 M5.04072,4.32 L5.04072,14.4 L4.32,14.4 L4.32,13.6793 L14.4,13.6793 L14.4,14.4 L13.6793,14.4 L13.6793,4.32 L14.4,4.32 L14.4,5.04072 L4.32,5.04072 L4.32,4.32 L5.04072,4.32" fill-rule="nonzero" vector-effect="none"/>
+            <path d="M4.32,3.59928 L14.4,3.59928 L15.1207,3.59928 L15.1207,4.32 L15.1207,14.4 L15.1207,15.1207 L14.4,15.1207 L4.32,15.1207 L3.59928,15.1207 L3.59928,14.4 L3.59928,4.32 L3.59928,3.59928 L4.32,3.59928 Z M5.04072,4.32 L5.04072,14.4 L4.32,14.4 L4.32,13.6793 L14.4,13.6793 L14.4,14.4 L13.6793,14.4 L13.6793,4.32 L14.4,4.32 L14.4,5.04072 L4.32,5.04072 L4.32,4.32 L5.04072,4.32 Z " fill-rule="nonzero" vector-effect="none"/>
         </g>
     </g>
 </svg>

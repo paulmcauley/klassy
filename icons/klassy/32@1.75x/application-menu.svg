@@ -6,13 +6,13 @@
     <defs/>
     <g fill="none" fill-rule="evenodd" stroke="black" stroke-linecap="square" stroke-linejoin="bevel" stroke-width="1">
         <g class="ColorScheme-Text" fill="currentColor" fill-opacity="1" font-family="Noto Sans" font-size="23.3333" font-style="normal" font-weight="400" stroke="none" transform="matrix(3.11111,0,0,3.11111,0,2)">
-            <path d="M3.53571,3.85634 L14.4643,3.85634 L14.4643,5.46509 L3.53571,5.46509 L3.53571,3.85634" fill-rule="nonzero" vector-effect="none"/>
+            <path d="M3.53571,3.85634 L14.4643,3.85634 L14.4643,5.46509 L3.53571,5.46509 L3.53571,3.85634 Z " fill-rule="nonzero" vector-effect="none"/>
         </g>
         <g class="ColorScheme-Text" fill="currentColor" fill-opacity="1" font-family="Noto Sans" font-size="23.3333" font-style="normal" font-weight="400" stroke="none" transform="matrix(3.11111,0,0,3.11111,0,2)">
-            <path d="M3.53571,7.71348 L14.4643,7.71348 L14.4643,9.32223 L3.53571,9.32223 L3.53571,7.71348" fill-rule="nonzero" vector-effect="none"/>
+            <path d="M3.53571,7.71348 L14.4643,7.71348 L14.4643,9.32223 L3.53571,9.32223 L3.53571,7.71348 Z " fill-rule="nonzero" vector-effect="none"/>
         </g>
         <g class="ColorScheme-Text" fill="currentColor" fill-opacity="1" font-family="Noto Sans" font-size="23.3333" font-style="normal" font-weight="400" stroke="none" transform="matrix(3.11111,0,0,3.11111,0,2)">
-            <path d="M3.53571,11.5706 L14.4643,11.5706 L14.4643,13.1794 L3.53571,13.1794 L3.53571,11.5706" fill-rule="nonzero" vector-effect="none"/>
+            <path d="M3.53571,11.5706 L14.4643,11.5706 L14.4643,13.1794 L3.53571,13.1794 L3.53571,11.5706 Z " fill-rule="nonzero" vector-effect="none"/>
         </g>
     </g>
 </svg>
