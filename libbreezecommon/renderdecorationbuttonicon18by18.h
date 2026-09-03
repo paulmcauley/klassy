@@ -19,7 +19,7 @@ protected:
     RenderDecorationButtonIcon18By18(QPainter *painter,
                                      const bool fromKstyle,
                                      const bool boldButtonIcons,
-                                     const qreal devicePixelRatio,
+                                     const qreal systemScale,
                                      const QPointF &deviceOffsetFromZeroReference,
                                      const bool forceEvenSquares);
 

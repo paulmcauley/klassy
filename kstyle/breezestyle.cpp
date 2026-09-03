@@ -834,7 +834,7 @@ int Style::pixelMetric(PixelMetric metric, const QStyleOption *option, const QWi
 
     // scrollbars
     case PM_ScrollBarExtent:
-        return Metrics::ScrollBar_Extend;
+        return Metrics::ScrollBar_Extent;
     case PM_ScrollBarSliderMin:
         return Metrics::ScrollBar_MinSliderHeight;
 
@@ -1068,8 +1068,21 @@ QRect Style::subElementRect(SubElement element, const QStyleOption *option, cons
         QRect rect = ParentStyleClass::subElementRect(element, option, widget);
         if (viewItem) {
             const QMargins margins = _helper->itemViewItemMargins(viewItem);
-            rect.setRight(rect.right() - margins.right() - Metrics::ItemView_ItemPaddingWidth);
-            rect.setLeft(rect.left() + margins.left() + Metrics::ItemView_ItemPaddingWidth);
+            const int leftInset = margins.left() + Metrics::ItemView_ItemPaddingWidth;
+            const int rightInset = margins.right() + Metrics::ItemView_ItemPaddingWidth;
+
+            // Use the font metrics to inset only as far as the text can spare,
+            // so the inset itself cannot cause elision.
+            const int textMargin = proxy()->pixelMetric(PM_FocusFrameHMargin, option, widget) + 1;
+            const int available = rect.width() - 2 * textMargin; // viewItemDrawText() removes textMargin again
+            const int required = viewItem->fontMetrics.horizontalAdvance(viewItem->text);
+            const int inset = qBound(0, available - required, leftInset + rightInset);
+
+            // Shrink both sides in proportion so the text stays where it was.
+            const int total = leftInset + rightInset;
+            const int right = total > 0 ? inset * rightInset / total : 0;
+            rect.setRight(rect.right() - right);
+            rect.setLeft(rect.left() + (inset - right));
             rect.moveTop(rect.top() + margins.top() - margins.bottom());
         }
 
@@ -2400,7 +2413,11 @@ void Style::loadConfiguration()
 
     default:
     case 2:
-        _addLineButtons = DoubleButton;
+        if (Metrics::LibreOfficeScrollBarException) {
+            _addLineButtons = SingleButton;
+        } else {
+            _addLineButtons = DoubleButton;
+        }
         break;
     }
 
@@ -2414,7 +2431,11 @@ void Style::loadConfiguration()
 
     default:
     case 2:
-        _subLineButtons = DoubleButton;
+        if (Metrics::LibreOfficeScrollBarException) {
+            _subLineButtons = SingleButton;
+        } else {
+            _subLineButtons = DoubleButton;
+        }
         break;
     }
 
@@ -3369,9 +3390,9 @@ QRect Style::scrollBarSubControlRect(const QStyleOptionComplex *option,
                 if (enlargeOverSubLine)
                     topLeftCorner = QPoint(subLineRect.left() + Metrics::ScrollBar_TopBottomMargins, subLineRect.top());
                 else
-                    topLeftCorner = QPoint(subLineRect.right() + 1 + StyleConfigData::scrollBarTopOneButtonSpacing(), subLineRect.top());
+                    topLeftCorner = QPoint(subLineRect.right() + 1 + Metrics::ScrollBarTopOneButtonSpacing, subLineRect.top());
             } else if (_subLineButtons == ScrollBarButtonType::DoubleButton) {
-                topLeftCorner = QPoint(subLineRect.right() + 1 + StyleConfigData::scrollBarTopTwoButtonSpacing(), subLineRect.top());
+                topLeftCorner = QPoint(subLineRect.right() + 1 + Metrics::ScrollBarTopTwoButtonSpacing, subLineRect.top());
             }
 
             if (_addLineButtons == ScrollBarButtonType::NoButton) {
@@ -3380,9 +3401,9 @@ QRect Style::scrollBarSubControlRect(const QStyleOptionComplex *option,
                 if (enlargeOverAddLine)
                     botRightCorner = QPoint(addLineRect.right() + 1 - Metrics::ScrollBar_TopBottomMargins, subLineRect.bottom() + 1);
                 else
-                    botRightCorner = QPoint(addLineRect.left() - StyleConfigData::scrollBarBottomOneButtonSpacing(), subLineRect.bottom() + 1);
+                    botRightCorner = QPoint(addLineRect.left() - Metrics::ScrollBarBottomOneButtonSpacing, subLineRect.bottom() + 1);
             } else if (_addLineButtons == ScrollBarButtonType::DoubleButton) {
-                botRightCorner = QPoint(addLineRect.left() - StyleConfigData::scrollBarBottomTwoButtonSpacing(), subLineRect.bottom() + 1);
+                botRightCorner = QPoint(addLineRect.left() - Metrics::ScrollBarBottomTwoButtonSpacing, subLineRect.bottom() + 1);
             }
 
         } else {
@@ -3392,9 +3413,9 @@ QRect Style::scrollBarSubControlRect(const QStyleOptionComplex *option,
                 if (enlargeOverSubLine)
                     topLeftCorner = QPoint(subLineRect.left(), subLineRect.top() + Metrics::ScrollBar_TopBottomMargins);
                 else
-                    topLeftCorner = QPoint(subLineRect.left(), subLineRect.bottom() + 1 + StyleConfigData::scrollBarTopOneButtonSpacing());
+                    topLeftCorner = QPoint(subLineRect.left(), subLineRect.bottom() + 1 + Metrics::ScrollBarTopOneButtonSpacing);
             } else if (_subLineButtons == ScrollBarButtonType::DoubleButton) {
-                topLeftCorner = QPoint(subLineRect.left(), subLineRect.bottom() + 1 + StyleConfigData::scrollBarTopTwoButtonSpacing());
+                topLeftCorner = QPoint(subLineRect.left(), subLineRect.bottom() + 1 + Metrics::ScrollBarTopTwoButtonSpacing);
             }
 
             if (_addLineButtons == ScrollBarButtonType::NoButton) {
@@ -3403,9 +3424,9 @@ QRect Style::scrollBarSubControlRect(const QStyleOptionComplex *option,
                 if (enlargeOverAddLine)
                     botRightCorner = QPoint(subLineRect.right() + 1, addLineRect.bottom() + 1 - Metrics::ScrollBar_TopBottomMargins);
                 else
-                    botRightCorner = QPoint(subLineRect.right() + 1, addLineRect.top() - StyleConfigData::scrollBarBottomOneButtonSpacing());
+                    botRightCorner = QPoint(subLineRect.right() + 1, addLineRect.top() - Metrics::ScrollBarBottomOneButtonSpacing);
             } else if (_addLineButtons == ScrollBarButtonType::DoubleButton) {
-                botRightCorner = QPoint(subLineRect.right() + 1, addLineRect.top() - StyleConfigData::scrollBarBottomTwoButtonSpacing());
+                botRightCorner = QPoint(subLineRect.right() + 1, addLineRect.top() - Metrics::ScrollBarBottomTwoButtonSpacing);
             }
         }
 
@@ -3482,19 +3503,20 @@ QRect Style::scrollBarSubControlRect(const QStyleOptionComplex *option,
 // do not auto-hide arrows with slider extension in these cases
 bool Style::scrollBarAutoHideArrowsException(const QWidget *widget) const
 {
-    bool exception = false;
-
     if (widget) {
         QList<const char *> exceptionClassNames = {"KateScrollBar"};
-        for (int i = 0; i < exceptionClassNames.size(); i++) {
+        for (int i = 0, numClassNames = exceptionClassNames.size(); i < numClassNames; i++) {
             if (widget->inherits(exceptionClassNames[i])) {
-                exception = true;
-                break;
+                return true;
             }
         }
     }
 
-    return exception;
+    if (Metrics::LibreOfficeScrollBarException) {
+        return true;
+    }
+
+    return false;
 }
 
 bool Style::shouldAutoHideArrows(const QWidget *widget) const

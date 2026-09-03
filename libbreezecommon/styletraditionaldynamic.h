@@ -19,10 +19,10 @@ public:
     RenderStyleTraditionalDynamic18By18(QPainter *painter,
                                         const bool fromKstyle,
                                         const bool boldButtonIcons,
-                                        const qreal devicePixelRatio,
+                                        const qreal systemScale,
                                         const QPointF &deviceOffsetTitleBarTopLeftToIconTopLeft,
                                         const bool forceEvenSquares)
-        : RenderStyleTraditional18By18(painter, fromKstyle, boldButtonIcons, devicePixelRatio, deviceOffsetTitleBarTopLeftToIconTopLeft, forceEvenSquares) { };
+        : RenderStyleTraditional18By18(painter, fromKstyle, boldButtonIcons, systemScale, deviceOffsetTitleBarTopLeftToIconTopLeft, forceEvenSquares) { };
 
     void renderMinimizeIcon() override
     {

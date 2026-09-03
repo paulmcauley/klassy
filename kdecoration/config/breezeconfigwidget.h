@@ -91,6 +91,11 @@ public:
         return m_taskManagerSide;
     }
 
+    TaskManagerType taskManagerType()
+    {
+        return m_taskManagerType;
+    }
+
     bool matchTitleBarToApplicationColor()
     {
         return m_ui.matchTitleBarToApplicationColor->isChecked();
@@ -172,6 +177,7 @@ private:
     QIcon m_lockedIcon;
     QIcon m_lockIcon; // bistate with both unlocked and locked
 
+    TaskManagerType m_taskManagerType = TaskManagerType::IconsAndTextTaskManager;
     Side m_taskManagerSide = SideBottom;
 
     bool isDefaults();

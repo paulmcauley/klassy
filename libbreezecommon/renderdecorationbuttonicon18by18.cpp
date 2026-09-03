@@ -15,10 +15,10 @@ namespace Breeze
 RenderDecorationButtonIcon18By18::RenderDecorationButtonIcon18By18(QPainter *painter,
                                                                    const bool fromKstyle,
                                                                    const bool boldButtonIcons,
-                                                                   const qreal devicePixelRatio,
+                                                                   const qreal systemScale,
                                                                    const QPointF &deviceOffsetFromZeroReference,
                                                                    const bool forceEvenSquares)
-    : RenderDecorationButtonIcon(painter, fromKstyle, boldButtonIcons, devicePixelRatio, deviceOffsetFromZeroReference, forceEvenSquares)
+    : RenderDecorationButtonIcon(painter, fromKstyle, boldButtonIcons, systemScale, deviceOffsetFromZeroReference, forceEvenSquares)
 {
 }
 
@@ -182,7 +182,7 @@ void RenderDecorationButtonIcon18By18::renderDynamicMinimizeIcon(bool dynamicMin
             break;
         }
         case SideLeft:
-            renderCenteredLineMinimizeIcon();
+            (m_taskManagerType == TaskManagerType::IconsOnlyTaskManager) ? renderTinySquareMinimizeIcon() : renderCenteredLineMinimizeIcon();
             return;
         case SideTop: {
             auto [maximizeRect, maximizePenWidth] = renderSquareMaximizeIcon(true);
@@ -192,10 +192,7 @@ void RenderDecorationButtonIcon18By18::renderDynamicMinimizeIcon(bool dynamicMin
             break;
         }
         case SideRight:
-            renderCenteredLineMinimizeIcon();
-            return;
-        case SideDot:
-            renderTinySquareMinimizeIcon();
+            (m_taskManagerType == TaskManagerType::IconsOnlyTaskManager) ? renderTinySquareMinimizeIcon() : renderCenteredLineMinimizeIcon();
             return;
         }
     }
@@ -809,8 +806,8 @@ void RenderDecorationButtonIcon18By18::renderOverlappingWindowsIcon(bool showArr
     foregroundPathItem->setPen(Qt::PenStyle::NoPen);
     foregroundFillPathItem->setPen(Qt::PenStyle::NoPen);
 
-    maxIterations = 6 * qRound(m_devicePixelRatio); // would rather have based this on m_totalScalingFactor, but for some strange reason this causes kwin to
-                                                    // crash in some circumstances
+    maxIterations = 6 * qRound(m_systemScale); // would rather have based this on m_totalScalingFactor, but for some strange reason this causes kwin to
+                                               // crash in some circumstances
 
     // calculate the geometry of the background square, iterate until an appropriate separation from foreground square achieved
     for (int i = 0; (shiftX || shiftY) && (i < maxIterations); i++) {

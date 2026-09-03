@@ -29,7 +29,7 @@ std::pair<std::unique_ptr<RenderDecorationButtonIcon>, int> RenderDecorationButt
                                                                                                 QPainter *painter,
                                                                                                 const bool fromKstyle,
                                                                                                 const bool boldButtonIcons,
-                                                                                                const qreal devicePixelRatio,
+                                                                                                const qreal systemScale,
                                                                                                 const QPointF &deviceOffsetFromZeroReference,
                                                                                                 const bool forceEvenSquares)
 {
@@ -39,7 +39,7 @@ std::pair<std::unique_ptr<RenderDecorationButtonIcon>, int> RenderDecorationButt
         return {std::make_unique<RenderStyleMaterialDynamic18By18>(painter,
                                                                    fromKstyle,
                                                                    boldButtonIcons,
-                                                                   devicePixelRatio,
+                                                                   systemScale,
                                                                    deviceOffsetFromZeroReference,
                                                                    forceEvenSquares),
                 18};
@@ -47,86 +47,67 @@ std::pair<std::unique_ptr<RenderDecorationButtonIcon>, int> RenderDecorationButt
         return {std::make_unique<RenderStyleMaterialCentered18By18>(painter,
                                                                     fromKstyle,
                                                                     boldButtonIcons,
-                                                                    devicePixelRatio,
+                                                                    systemScale,
                                                                     deviceOffsetFromZeroReference,
                                                                     forceEvenSquares),
                 18};
     case InternalSettings::EnumButtonIconStyle::StyleMaterial:
-        return {std::make_unique<RenderStyleMaterial18By18>(painter,
-                                                            fromKstyle,
-                                                            boldButtonIcons,
-                                                            devicePixelRatio,
-                                                            deviceOffsetFromZeroReference,
-                                                            forceEvenSquares),
+        return {std::make_unique<RenderStyleMaterial18By18>(painter, fromKstyle, boldButtonIcons, systemScale, deviceOffsetFromZeroReference, forceEvenSquares),
                 18};
     case InternalSettings::EnumButtonIconStyle::StyleOxygen:
-        return {
-            std::make_unique<RenderStyleOxygen18By18>(painter, fromKstyle, boldButtonIcons, devicePixelRatio, deviceOffsetFromZeroReference, forceEvenSquares),
-            18};
-    case InternalSettings::EnumButtonIconStyle::StyleKiteDynamic:
-        return {std::make_unique<RenderStyleKiteDynamic18By18>(painter,
-                                                               fromKstyle,
-                                                               boldButtonIcons,
-                                                               devicePixelRatio,
-                                                               deviceOffsetFromZeroReference,
-                                                               forceEvenSquares),
+        return {std::make_unique<RenderStyleOxygen18By18>(painter, fromKstyle, boldButtonIcons, systemScale, deviceOffsetFromZeroReference, forceEvenSquares),
                 18};
-    case InternalSettings::EnumButtonIconStyle::StyleKite:
+    case InternalSettings::EnumButtonIconStyle::StyleKiteDynamic:
         return {
-            std::make_unique<RenderStyleKite18By18>(painter, fromKstyle, boldButtonIcons, devicePixelRatio, deviceOffsetFromZeroReference, forceEvenSquares),
+            std::make_unique<RenderStyleKiteDynamic18By18>(painter, fromKstyle, boldButtonIcons, systemScale, deviceOffsetFromZeroReference, forceEvenSquares),
             18};
+    case InternalSettings::EnumButtonIconStyle::StyleKite:
+        return {std::make_unique<RenderStyleKite18By18>(painter, fromKstyle, boldButtonIcons, systemScale, deviceOffsetFromZeroReference, forceEvenSquares),
+                18};
     case InternalSettings::EnumButtonIconStyle::StyleTraditionalDynamic:
         return {std::make_unique<RenderStyleTraditionalDynamic18By18>(painter,
                                                                       fromKstyle,
                                                                       boldButtonIcons,
-                                                                      devicePixelRatio,
+                                                                      systemScale,
                                                                       deviceOffsetFromZeroReference,
                                                                       forceEvenSquares),
                 18};
     case InternalSettings::EnumButtonIconStyle::StyleTraditional:
-        return {std::make_unique<RenderStyleTraditional18By18>(painter,
-                                                               fromKstyle,
-                                                               boldButtonIcons,
-                                                               devicePixelRatio,
-                                                               deviceOffsetFromZeroReference,
-                                                               forceEvenSquares),
-                18};
+        return {
+            std::make_unique<RenderStyleTraditional18By18>(painter, fromKstyle, boldButtonIcons, systemScale, deviceOffsetFromZeroReference, forceEvenSquares),
+            18};
     case InternalSettings::EnumButtonIconStyle::StyleMetro:
-        return {
-            std::make_unique<RenderStyleMetro18By18>(painter, fromKstyle, boldButtonIcons, devicePixelRatio, deviceOffsetFromZeroReference, forceEvenSquares),
-            18};
-    case InternalSettings::EnumButtonIconStyle::StyleFluent:
-        return {
-            std::make_unique<RenderStyleFluent18By18>(painter, fromKstyle, boldButtonIcons, devicePixelRatio, deviceOffsetFromZeroReference, forceEvenSquares),
-            18};
-    case InternalSettings::EnumButtonIconStyle::StyleArk:
-        return {std::make_unique<RenderStyleArk18By18>(painter, fromKstyle, boldButtonIcons, devicePixelRatio, deviceOffsetFromZeroReference, forceEvenSquares),
+        return {std::make_unique<RenderStyleMetro18By18>(painter, fromKstyle, boldButtonIcons, systemScale, deviceOffsetFromZeroReference, forceEvenSquares),
                 18};
+    case InternalSettings::EnumButtonIconStyle::StyleFluent:
+        return {std::make_unique<RenderStyleFluent18By18>(painter, fromKstyle, boldButtonIcons, systemScale, deviceOffsetFromZeroReference, forceEvenSquares),
+                18};
+    case InternalSettings::EnumButtonIconStyle::StyleArk:
+        return {std::make_unique<RenderStyleArk18By18>(painter, fromKstyle, boldButtonIcons, systemScale, deviceOffsetFromZeroReference, forceEvenSquares), 18};
     case InternalSettings::EnumButtonIconStyle::StyleKisweetDynamic:
         return {std::make_unique<RenderStyleKisweetDynamic18By18>(painter,
                                                                   fromKstyle,
                                                                   boldButtonIcons,
-                                                                  devicePixelRatio,
+                                                                  systemScale,
                                                                   deviceOffsetFromZeroReference,
                                                                   forceEvenSquares),
                 18};
     case InternalSettings::EnumButtonIconStyle::StyleKisweet:
-        return {
-            std::make_unique<RenderStyleKisweet18By18>(painter, fromKstyle, boldButtonIcons, devicePixelRatio, deviceOffsetFromZeroReference, forceEvenSquares),
-            18};
+        return {std::make_unique<RenderStyleKisweet18By18>(painter, fromKstyle, boldButtonIcons, systemScale, deviceOffsetFromZeroReference, forceEvenSquares),
+                18};
     }
 }
 
 RenderDecorationButtonIcon::RenderDecorationButtonIcon(QPainter *painter,
                                                        const bool fromKstyle,
                                                        const bool boldButtonIcons,
-                                                       const qreal devicePixelRatio,
+                                                       const qreal systemScale,
                                                        const QPointF &deviceOffsetFromZeroReference,
                                                        const bool forceEvenSquares)
     : m_painter(painter)
     , m_fromKstyle(fromKstyle)
     , m_boldButtonIcons(boldButtonIcons)
-    , m_devicePixelRatio(devicePixelRatio)
+    , m_systemScale(systemScale)
     , m_deviceOffsetFromZeroReference(deviceOffsetFromZeroReference)
     , m_forceEvenSquares(forceEvenSquares)
 {

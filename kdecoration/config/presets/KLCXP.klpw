@@ -1,5 +1,5 @@
 [Klassy Window Decoration Preset File]
-version=6.7
+version=6.7.2
 
 [Windeco Preset KLCXP]
 ActiveTitleBarOpacity=100
@@ -170,17 +170,17 @@ WindowOutlineAccentColorOpacityActive=67
 WindowOutlineAccentColorOpacityInactive=25
 WindowOutlineAccentWithContrastOpacityActive=50
 WindowOutlineAccentWithContrastOpacityInactive=20
-WindowOutlineContrastOpacityActive=25
-WindowOutlineContrastOpacityInactive=25
+WindowOutlineContrastFromColorSchemeActive=true
+WindowOutlineContrastFromColorSchemeInactive=true
+WindowOutlineContrastOpacityActive=20
+WindowOutlineContrastOpacityInactive=20
 WindowOutlineCustomColorActive=0,0,0
 WindowOutlineCustomColorInactive=0,0,0
 WindowOutlineCustomColorOpacityActive=60
 WindowOutlineCustomColorOpacityInactive=25
 WindowOutlineCustomWithContrastOpacityActive=40
 WindowOutlineCustomWithContrastOpacityInactive=25
-WindowOutlineOverlap=true
 WindowOutlineShadowColorOpacity=20
-WindowOutlineSnapToWholePixel=true
 WindowOutlineStyleActive=WindowOutlineNone
 WindowOutlineStyleInactive=WindowOutlineNone
 WindowOutlineThickness=1.49

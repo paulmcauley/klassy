@@ -21,7 +21,6 @@ set(breezecommon_LIB_SRCS
     stylemetro.cpp
     stylefluent.cpp
     systemicontheme.cpp
-    setqdebug_logging.h
 )
 
 if(HAVE_QTDBUS)
@@ -70,4 +69,6 @@ set_target_properties(klassycommon${QT_MAJOR_VERSION} PROPERTIES
     OUTPUT_NAME klassycommon${QT_MAJOR_VERSION})
 
 install(TARGETS klassycommon${QT_MAJOR_VERSION} ${KDE_INSTALL_TARGETS_DEFAULT_ARGS} LIBRARY NAMELINK_SKIP)
-install(FILES breezesettingsdata.kcfg DESTINATION ${KDE_INSTALL_KCFGDIR} RENAME klassy-decoration.kcfg)
+if(QT_MAJOR_VERSION STREQUAL "6")
+    install(FILES breezesettingsdata.kcfg DESTINATION ${KDE_INSTALL_KCFGDIR} RENAME klassy-decoration.kcfg)
+endif()

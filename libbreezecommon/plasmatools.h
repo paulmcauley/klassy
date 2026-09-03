@@ -19,7 +19,11 @@ namespace Breeze
 class BREEZECOMMON_EXPORT PlasmaTools
 {
 public:
-    static Side taskManagerSide(const bool dotIfIconsOnlyTaskManager = false);
+    /**
+     * @param taskManagerType Outputs the first task manager type on the primary screen
+     * @param taskManagerSide Outputs the side of the primary screen on which the first task manager is placed
+     */
+    static void taskManagerTypeAndSide(TaskManagerType &taskMananagerType, Side &taskManagerSide);
     static Side panelLocationToSide(const int panelLocation);
 };
 

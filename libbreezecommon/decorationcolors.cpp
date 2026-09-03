@@ -197,10 +197,17 @@ void DecorationColors::generateDecorationPaletteGroup(const QPalette &palette,
     case InternalSettings::EnumWindowOutlineStyle::WindowOutlineNone:
         (*decorationPaletteGroup)->windowOutline = QColor();
         break;
-    case InternalSettings::EnumWindowOutlineStyle::WindowOutlineContrast:
-        (*decorationPaletteGroup)->windowOutline =
-            ColorTools::alphaMix((*decorationPaletteGroup)->titleBarText, decorationSettings->windowOutlineContrastOpacity(active) / 100.0f);
+    case InternalSettings::EnumWindowOutlineStyle::WindowOutlineContrast: {
+        qreal alphaFactor;
+#if (defined KCOLORSCHEME_VERSION) && (KCOLORSCHEME_VERSION >= QT_VERSION_CHECK(6, 20, 0))
+        alphaFactor = decorationSettings->windowOutlineContrastFromColorScheme(active) ? KColorScheme::frameContrast()
+                                                                                       : (decorationSettings->windowOutlineContrastOpacity(active) / 100.0f);
+#else
+        alphaFactor = decorationSettings->windowOutlineContrastOpacity(active) / 100.0f;
+#endif
+        (*decorationPaletteGroup)->windowOutline = ColorTools::alphaMix((*decorationPaletteGroup)->titleBarText, alphaFactor);
         break;
+    }
     case InternalSettings::EnumWindowOutlineStyle::WindowOutlineAccentColor:
         (*decorationPaletteGroup)->windowOutline = accentedWindowOutlineColor((*decorationPaletteGroup).get(), decorationSettings, active);
         break;

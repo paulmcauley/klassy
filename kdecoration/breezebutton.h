@@ -217,7 +217,7 @@ private:
 
     bool isCheckable() const;
 
-    void setDevicePixelRatio(QPainter *painter);
+    void setSystemScale(QPainter *painter);
     void setShouldDrawBoldButtonIcons();
     void setStandardScaledPenWidth();
 
@@ -284,7 +284,7 @@ private:
     QString m_systemIconName;
     QString m_systemIconCheckedName;
     bool m_isGtkCsdButton;
-    qreal m_devicePixelRatio = 1.0;
+    qreal m_systemScale = 1.0;
     bool m_boldButtonIcons;
     qreal m_standardScaledCosmeticPenWidth = 1.0;
     mutable qreal m_standardScaledNonCosmeticPenWidth = 1.0;

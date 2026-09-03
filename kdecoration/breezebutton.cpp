@@ -162,7 +162,7 @@ void Button::paint(QPainter *painter, const QRectF &repaintRegion)
     }
     m_titlebarTextPinnedInversion = titlebarTextPinnedInversion();
 
-    setDevicePixelRatio(painter);
+    setSystemScale(painter);
     setShouldDrawBoldButtonIcons();
     m_renderSystemIcon = m_d->internalSettings()->buttonIconStyle() == InternalSettings::EnumButtonIconStyle::StyleSystemIconTheme && isSystemIconAvailable();
     setStandardScaledPenWidth();
@@ -294,14 +294,14 @@ void Button::drawIcon(QPainter *painter) const
     } else {
         // at loDPI backgrounds are even, therefore need an even icon in such circumstances for correct centring
         bool forceEvenSquares = (m_isGtkCsdButton || isStandAlone()
-                                 || (m_devicePixelRatio <= 1.001
+                                 || (m_systemScale <= 1.001
                                      && (m_d->buttonBackgroundType() == ButtonBackgroundType::Small
                                          || m_d->internalSettings()->iconSize() < InternalSettings::EnumIconSize::IconLargeMedium)));
         auto [iconRenderer, localRenderingWidth] = RenderDecorationButtonIcon::factory(m_d->internalSettings(),
                                                                                        painter,
                                                                                        false,
                                                                                        m_boldButtonIcons,
-                                                                                       m_devicePixelRatio,
+                                                                                       m_systemScale,
                                                                                        deviceOffsetDecorationTopLeftToIconTopLeft,
                                                                                        forceEvenSquares);
 
@@ -310,6 +310,7 @@ void Button::drawIcon(QPainter *painter) const
         scale painter so that all further rendering is preformed inside QRect( 0, 0, localRenderingWidth, localRenderingWidth )
         */
         painter->scale(scaleFactor, scaleFactor);
+        iconRenderer->setTaskManagerType(g_taskManagerType);
         iconRenderer->setTaskManagerSide(g_taskManagerSide);
 
         iconRenderer->renderIcon(static_cast<DecorationButtonType>(type()), isChecked());
@@ -720,8 +721,8 @@ void Button::paintFullHeightButtonBackground(QPainter *painter) const
     qreal penWidth = PenWidth::Symbol;
     qreal geometryShrinkOffsetHorizontal = PenWidth::Symbol * 1.5;
     if (KWindowSystem::isPlatformX11()) {
-        penWidth *= m_devicePixelRatio;
-        geometryShrinkOffsetHorizontal *= m_devicePixelRatio;
+        penWidth *= m_systemScale;
+        geometryShrinkOffsetHorizontal *= m_systemScale;
     }
 
     if (m_outlineColor.isValid()) {
@@ -1037,7 +1038,7 @@ void Button::paintSmallSizedButtonBackground(QPainter *painter) const
 
     qreal penWidth = m_isGtkCsdButton ? m_standardScaledNonCosmeticPenWidth : PenWidth::Symbol;
     if (KWindowSystem::isPlatformX11()) {
-        penWidth *= m_devicePixelRatio;
+        penWidth *= m_systemScale;
     }
 
     if (m_outlineColor.isValid()) {
@@ -1101,24 +1102,24 @@ void Button::paintSmallSizedButtonBackground(QPainter *painter) const
     painter->restore();
 }
 
-void Button::setDevicePixelRatio(QPainter *painter)
+void Button::setSystemScale(QPainter *painter)
 {
     if (!m_d)
         return;
     // determine DPR
-    m_devicePixelRatio = painter->device()->devicePixelRatioF();
+    m_systemScale = painter->device()->devicePixelRatioF();
 
-    // on X11 Kwin just returns 1.0 for the DPR instead of the correct value, so use the scaling setting directly
+    // on X11 Kwin just returns 1.0 for the DPR, so use the scaling setting directly
     if (KWindowSystem::isPlatformX11())
-        m_devicePixelRatio = m_d->systemScaleFactorX11();
+        m_systemScale = m_d->systemScaleFactorX11();
     if (m_isGtkCsdButton)
-        m_devicePixelRatio = 1.0;
+        m_systemScale = 1.0;
 }
 
 void Button::setStandardScaledPenWidth()
 {
     m_standardScaledCosmeticPenWidth = PenWidth::Symbol;
-    m_standardScaledCosmeticPenWidth *= m_devicePixelRatio; // this is assuming you are going to use setCosmetic(true) for pen sizes
+    m_standardScaledCosmeticPenWidth *= m_systemScale; // this is assuming you are going to use setCosmetic(true) for pen sizes
 }
 
 void Button::setShouldDrawBoldButtonIcons()
@@ -1134,7 +1135,7 @@ void Button::setShouldDrawBoldButtonIcons()
         default:
             break;
         case InternalSettings::EnumBoldButtonIcons::BoldIconsActiveHiDpi:
-            if ((c->isActive() || m_isGtkCsdButton) && m_devicePixelRatio > 1.2)
+            if ((c->isActive() || m_isGtkCsdButton) && m_systemScale > 1.2)
                 m_boldButtonIcons = true;
             break;
         case InternalSettings::EnumBoldButtonIcons::BoldIconsActive:
@@ -1143,7 +1144,7 @@ void Button::setShouldDrawBoldButtonIcons()
             break;
         case InternalSettings::EnumBoldButtonIcons::BoldIconsHiDpiOnly:
             // If HiDPI system scaling use bold icons
-            if (m_devicePixelRatio > 1.2)
+            if (m_systemScale > 1.2)
                 m_boldButtonIcons = true;
             break;
         case InternalSettings::EnumBoldButtonIcons::BoldIconsBold:

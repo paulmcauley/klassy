@@ -78,16 +78,24 @@ static constexpr int MenuBarItem_MarginWidth = 10;
 static constexpr int MenuBarItem_MarginHeight = 6;
 
 // scrollbars
-static int const &ScrollBar_TopBottomMargins = StyleConfigData::scrollBarTopBottomMargins();
+static bool const LibreOfficeScrollBarException =
+    (qAppName() == QStringLiteral("soffice.bin")); // LibreOffice Qt renders scrollbars very badly if they are not limited to certain dimensions
+static int const &ScrollBar_TopBottomMargins = LibreOfficeScrollBarException ? 0 : StyleConfigData::scrollBarTopBottomMargins();
 static int const &ScrollBar_SliderWidthMouseOver = StyleConfigData::scrollBarSliderThicknessMouseOver();
 static int const &ScrollBar_SliderWidthMouseNotOver =
-    int(std::max(1.0, qreal(ScrollBar_SliderWidthMouseOver) * (qreal(StyleConfigData::scrollBarSliderThicknessMouseNotOverPercent()) / 100.0f)));
+    int(std::max(1.0,
+                 qreal(ScrollBar_SliderWidthMouseOver)
+                     * (LibreOfficeScrollBarException ? 1.0 : qreal(StyleConfigData::scrollBarSliderThicknessMouseNotOverPercent()) / 100.0f)));
 static int const &ScrollBar_MinSliderHeight = StyleConfigData::scrollBarMinSliderHeight();
 static int const &ScrollBarSliderPadding = StyleConfigData::scrollBarSliderPadding();
-static int const &ScrollBar_Extend = int(ScrollBar_SliderWidthMouseOver + (ScrollBarSliderPadding * 2) + 1);
-static int ScrollBar_NoButtonHeight = (ScrollBar_Extend - ScrollBar_SliderWidthMouseOver) / 2 + ScrollBar_TopBottomMargins;
-static int const &ScrollBar_SingleButtonHeight = ScrollBar_Extend + ScrollBar_TopBottomMargins;
-static int const &ScrollBar_DoubleButtonHeight = 2 * ScrollBar_Extend + ScrollBar_TopBottomMargins;
+static int const &ScrollBar_Extent = int(ScrollBar_SliderWidthMouseOver + (ScrollBarSliderPadding * 2) + 1);
+static int ScrollBar_NoButtonHeight = (ScrollBar_Extent - ScrollBar_SliderWidthMouseOver) / 2 + ScrollBar_TopBottomMargins;
+static int const &ScrollBar_SingleButtonHeight = ScrollBar_Extent + ScrollBar_TopBottomMargins;
+static int const &ScrollBar_DoubleButtonHeight = 2 * ScrollBar_Extent + ScrollBar_TopBottomMargins;
+static int const &ScrollBarTopOneButtonSpacing = LibreOfficeScrollBarException ? 0 : StyleConfigData::scrollBarTopOneButtonSpacing();
+static int const &ScrollBarBottomOneButtonSpacing = LibreOfficeScrollBarException ? 0 : StyleConfigData::scrollBarBottomOneButtonSpacing();
+static int const &ScrollBarTopTwoButtonSpacing = StyleConfigData::scrollBarTopTwoButtonSpacing();
+static int const &ScrollBarBottomTwoButtonSpacing = StyleConfigData::scrollBarBottomTwoButtonSpacing();
 
 // toolbars
 static constexpr int ToolBar_FrameWidth = 0;
