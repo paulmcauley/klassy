@@ -1906,21 +1906,5 @@
     </hint>
    </hints>
   </connection>
-  <connection>
-   <sender>titleBarAppMenuBarEnabled</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>titleBarAppMenuBarButton</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>155</x>
-     <y>239</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>334</x>
-     <y>239</y>
-    </hint>
-   </hints>
-  </connection>
  </connections>
 </ui>

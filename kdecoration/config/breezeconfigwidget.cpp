@@ -48,6 +48,7 @@ ConfigWidget::ConfigWidget(QObject *parent, const KPluginMetaData &data, const Q
     : KCModule(parent, data)
     , m_configuration(KSharedConfig::openConfig(QStringLiteral("klassy/klassyrc")))
     , m_presetsConfiguration(KSharedConfig::openConfig(QStringLiteral("klassy/windecopresetsrc")))
+    , m_kwinConfiguration(KSharedConfig::openConfig(QStringLiteral("kwinrc")))
     , m_changed(false)
 {
     // this is a hack to get an Apply button
@@ -167,7 +168,13 @@ ConfigWidget::ConfigWidget(QObject *parent, const KPluginMetaData &data, const Q
     // titlebar
     connect(m_ui.titleAlignment, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
     connect(m_ui.matchTitleBarToApplicationColor, &QAbstractButton::toggled, this, &ConfigWidget::updateChanged, Qt::ConnectionType::DirectConnection);
-    connect(m_ui.titleBarAppMenuBarEnabled, SIGNAL(checkStateChanged(Qt::CheckState)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
+    connect(m_ui.titleBarAppMenuBarEnabled,
+            &QAbstractButton::toggled,
+            this,
+            &ConfigWidget::getButtonsOrderFromKwinConfig,
+            Qt::ConnectionType::DirectConnection); // neded before updateChanged
+    connect(m_ui.titleBarAppMenuBarEnabled, &QAbstractButton::toggled, this, &ConfigWidget::updateChanged, Qt::ConnectionType::DirectConnection);
+    connect(m_ui.titleBarAppMenuBarEnabled, &QAbstractButton::toggled, this, &ConfigWidget::setAppMenuBarButtonEnabledState);
     connect(m_ui.drawBackgroundGradient, &QAbstractButton::toggled, this, &ConfigWidget::updateChanged, Qt::ConnectionType::DirectConnection);
     connect(m_ui.drawTitleBarSeparator, &QAbstractButton::toggled, this, &ConfigWidget::updateChanged, Qt::ConnectionType::DirectConnection);
     connect(m_ui.boldTitle, &QAbstractButton::toggled, this, &ConfigWidget::updateChanged, Qt::ConnectionType::DirectConnection);
@@ -226,7 +233,7 @@ void ConfigWidget::load()
     // titlebar
     m_ui.titleAlignment->setCurrentIndex(m_internalSettings->titleAlignment());
     m_ui.matchTitleBarToApplicationColor->setChecked(m_internalSettings->matchTitleBarToApplicationColor());
-    m_ui.titleBarAppMenuBarEnabled->setChecked(m_internalSettings->appMenuBarEnabled());
+    setAppMenuBarEnabledCheckBoxState();
     m_ui.drawBackgroundGradient->setChecked(m_internalSettings->drawBackgroundGradient());
     m_ui.drawTitleBarSeparator->setChecked(m_internalSettings->drawTitleBarSeparator());
     m_ui.boldTitle->setChecked(m_internalSettings->boldTitle());
@@ -242,17 +249,6 @@ void ConfigWidget::load()
     // animations
     m_ui.animationsEnabled->setChecked(m_internalSettings->animationsEnabled());
     m_ui.animationsSpeedRelativeSystem->setValue(m_internalSettings->animationsSpeedRelativeSystem());
-
-    // == AppMenuBar
-    // -- Enable/Disable based on application menu
-    m_ui.titleBarAppMenuBarEnabled->setEnabled(m_hasApplicationMenu);
-    m_ui.titleBarAppMenuBarButton->setEnabled(m_hasApplicationMenu && m_ui.titleBarAppMenuBarEnabled->isChecked());
-    QString appMenuBarToolTip = "";
-    if (!m_hasApplicationMenu)
-        appMenuBarToolTip = i18n(
-            "Integrating the application menu into the titlebar requires an application menu button be configured on either the left or right. "
-            "You currently don't have one");
-    m_ui.titleBarAppMenuBarEnabled->setToolTip(appMenuBarToolTip);
 
     onIconsChanged();
 
@@ -345,6 +341,8 @@ void ConfigWidget::saveMain(QString saveAsPresetName)
     // sync configuration for exceptions
     m_configuration->sync();
 
+    setAppMenuButtonInKwinConfig();
+
     setNeedsSave(false);
     Q_EMIT saved();
 
@@ -379,6 +377,7 @@ void ConfigWidget::defaults()
     m_internalSettings = InternalSettingsPtr(new InternalSettings());
     m_internalSettings->setDefaults();
 
+    getButtonsOrderFromKwinConfig(); // needed in setAppMenuBarEnabledCheckBoxState
     // assign to ui
 
     // buttons
@@ -392,7 +391,7 @@ void ConfigWidget::defaults()
     // titlebar
     m_ui.titleAlignment->setCurrentIndex(m_internalSettings->titleAlignment());
     m_ui.matchTitleBarToApplicationColor->setChecked(m_internalSettings->matchTitleBarToApplicationColor());
-    m_ui.titleBarAppMenuBarEnabled->setChecked(m_internalSettings->appMenuBarEnabled());
+    setAppMenuBarEnabledCheckBoxState();
     m_ui.drawBackgroundGradient->setChecked(m_internalSettings->drawBackgroundGradient());
     m_ui.drawTitleBarSeparator->setChecked(m_internalSettings->drawTitleBarSeparator());
     m_ui.boldTitle->setChecked(m_internalSettings->boldTitle());
@@ -521,6 +520,9 @@ void ConfigWidget::updateChanged()
     else if (m_ui.titleAlignment->currentIndex() != m_internalSettings->titleAlignment())
         modified = true;
     else if (m_ui.matchTitleBarToApplicationColor->isChecked() != m_internalSettings->matchTitleBarToApplicationColor())
+        modified = true;
+    else if (m_ui.titleBarAppMenuBarEnabled->isChecked() != m_internalSettings->appMenuBarEnabled()
+             || (m_ui.titleBarAppMenuBarEnabled->isChecked() && m_hasApplicationMenu == false))
         modified = true;
     else if (m_ui.titleBarAppMenuBarEnabled->isChecked() != m_internalSettings->appMenuBarEnabled())
         modified = true;
@@ -911,12 +913,14 @@ void ConfigWidget::getButtonsOrderFromKwinConfig()
     QString buttonsOnRight;
 
     //  read kwin button border setting
-    KSharedConfig::Ptr kwinConfig = KSharedConfig::openConfig(QStringLiteral("kwinrc"));
-    if (kwinConfig && kwinConfig->hasGroup(QStringLiteral("org.kde.kdecoration2"))) { // As of Plasma 6.3.3 this is still kdecoration2
-        KConfigGroup kdecoration3Group = kwinConfig->group(QStringLiteral("org.kde.kdecoration2"));
+    if (m_kwinConfiguration) {
+        m_kwinConfiguration->reparseConfiguration();
+    }
+    if (m_kwinConfiguration && m_kwinConfiguration->hasGroup(QStringLiteral("org.kde.kdecoration2"))) { // As of Plasma 6.7 this is still kdecoration2
+        KConfigGroup kdecorationGroup = m_kwinConfiguration->group(QStringLiteral("org.kde.kdecoration2"));
 
-        buttonsOnLeft = kdecoration3Group.readEntry(QStringLiteral("ButtonsOnLeft"), QStringLiteral("MSE"));
-        buttonsOnRight = kdecoration3Group.readEntry(QStringLiteral("ButtonsOnRight"), QStringLiteral("HIAX"));
+        buttonsOnLeft = kdecorationGroup.readEntry(QStringLiteral("ButtonsOnLeft"), QStringLiteral("MSE"));
+        buttonsOnRight = kdecorationGroup.readEntry(QStringLiteral("ButtonsOnRight"), QStringLiteral("HIAX"));
     } else {
         buttonsOnLeft = QStringLiteral("MSE");
         buttonsOnRight = QStringLiteral("HIAX");
@@ -940,7 +944,7 @@ void ConfigWidget::getButtonsOrderFromKwinConfig()
         }
     }
     // Have the AppMenuBar buttons appear before hidden ones if an application menu exists; otherwise at the end
-    m_hasApplicationMenu = visibleButtons.contains('N');
+    m_hasApplicationMenu = visibleButtons.contains(QChar('N'));
     int appMenuBarButtonIndex = m_hasApplicationMenu ? 0 : m_hiddenButtons.length();
     m_hiddenButtons.insert(appMenuBarButtonIndex++, DecorationButtonType::CustomAppMenuBarMenu);
     m_hiddenButtons.insert(appMenuBarButtonIndex++, DecorationButtonType::CustomAppMenuBarOverflow);
@@ -1014,5 +1018,71 @@ void ConfigWidget::getButtonsOrderFromKwinConfig()
 
     m_visibleButtonsOrder.insert(indexOfCustom,
                                  DecorationButtonType::Custom); // dummy Custom button inserted for illustrating colour palettes in icons
+}
+
+void ConfigWidget::setAppMenuBarEnabledCheckBoxState()
+{
+    if (m_internalSettings->appMenuBarEnabled()) {
+        if (m_hasApplicationMenu) {
+            m_ui.titleBarAppMenuBarEnabled->setChecked(true);
+        } else {
+            m_ui.titleBarAppMenuBarEnabled->setChecked(false);
+        }
+    } else {
+        m_ui.titleBarAppMenuBarEnabled->setChecked(false);
+    }
+
+    m_ui.titleBarAppMenuBarButton->setEnabled(m_ui.titleBarAppMenuBarEnabled->isChecked());
+}
+
+void ConfigWidget::setAppMenuBarButtonEnabledState()
+{
+    m_ui.titleBarAppMenuBarButton->setEnabled(m_ui.titleBarAppMenuBarEnabled->isChecked());
+}
+
+void ConfigWidget::setAppMenuButtonInKwinConfig()
+{
+    getButtonsOrderFromKwinConfig();
+
+    if (!m_kwinConfiguration) {
+        return;
+    }
+
+    if (m_ui.titleBarAppMenuBarEnabled->isChecked()) {
+        if (m_hasApplicationMenu) {
+            return;
+        }
+
+        if (!m_kwinConfiguration->hasGroup(QStringLiteral("org.kde.kdecoration2"))) {
+            return;
+        }
+        KConfigGroup kdecorationGroup = m_kwinConfiguration->group(QStringLiteral("org.kde.kdecoration2"));
+
+        // add the ApplicationMenu button to the end of the leftButtons
+        QString leftButtons = kdecorationGroup.readEntry(QStringLiteral("ButtonsOnLeft"), QStringLiteral("MSE")) + "N";
+        kdecorationGroup.writeEntry(QStringLiteral("ButtonsOnLeft"), leftButtons);
+
+        m_kwinConfiguration->sync();
+
+    } else {
+        if (!m_hasApplicationMenu) {
+            return;
+        }
+
+        if (!m_kwinConfiguration->hasGroup(QStringLiteral("org.kde.kdecoration2"))) {
+            return;
+        }
+        KConfigGroup kdecorationGroup = m_kwinConfiguration->group(QStringLiteral("org.kde.kdecoration2"));
+
+        // remove any ApplicationMenu buttons
+        QString leftButtons = kdecorationGroup.readEntry(QStringLiteral("ButtonsOnLeft"), QStringLiteral("MSE"));
+        QString rightButtons = kdecorationGroup.readEntry(QStringLiteral("ButtonsOnRight"), QStringLiteral("HIAX"));
+        leftButtons.remove(QChar('N'));
+        rightButtons.remove(QChar('N'));
+        kdecorationGroup.writeEntry(QStringLiteral("ButtonsOnLeft"), leftButtons);
+        kdecorationGroup.writeEntry(QStringLiteral("ButtonsOnRight"), rightButtons);
+
+        m_kwinConfiguration->sync();
+    }
 }
 }
