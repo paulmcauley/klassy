@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2026-08-19 05:57+0100\n"
-"PO-Revision-Date: 2026-08-20 10:56+0800\n"
+"POT-Creation-Date: 2026-09-02 17:27+0100\n"
+"PO-Revision-Date: 2026-09-03 11:53+0800\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: zh_CN\n"
@@ -281,13 +281,13 @@ msgstr "%"
 #. i18n: ectx: property (text), widget (QLabel, label_16)
 #: config/buttoncolors.cpp:477 config/ui/buttoncolors.ui:228
 #: config/ui/buttoncolors.ui:514 config/ui/buttoncolors.ui:1006
-#: config/ui/buttoncolors.ui:1292 config/ui/windowoutlinestyle.ui:184
-#: config/ui/windowoutlinestyle.ui:381 config/ui/windowoutlinestyle.ui:547
-#: config/ui/windowoutlinestyle.ui:707 config/ui/windowoutlinestyle.ui:913
-#: config/ui/windowoutlinestyle.ui:1090 config/ui/windowoutlinestyle.ui:1558
-#: config/ui/windowoutlinestyle.ui:1607 config/ui/windowoutlinestyle.ui:1767
-#: config/ui/windowoutlinestyle.ui:1927 config/ui/windowoutlinestyle.ui:2257
-#: config/ui/windowoutlinestyle.ui:2395
+#: config/ui/buttoncolors.ui:1292 config/ui/windowoutlinestyle.ui:119
+#: config/ui/windowoutlinestyle.ui:325 config/ui/windowoutlinestyle.ui:493
+#: config/ui/windowoutlinestyle.ui:653 config/ui/windowoutlinestyle.ui:859
+#: config/ui/windowoutlinestyle.ui:1036 config/ui/windowoutlinestyle.ui:1543
+#: config/ui/windowoutlinestyle.ui:1601 config/ui/windowoutlinestyle.ui:1763
+#: config/ui/windowoutlinestyle.ui:1923 config/ui/windowoutlinestyle.ui:2253
+#: config/ui/windowoutlinestyle.ui:2391
 #, kde-format
 msgid "Opacity:"
 msgstr "不透明度："
@@ -738,12 +738,12 @@ msgstr "系统图标生成 - Klassy 设置"
 #. i18n: ectx: property (windowTitle), widget (QDialog, TitleBarOpacity)
 #. i18n: ectx: property (windowTitle), widget (QDialog, SystemIconGeneration)
 #. i18n: ectx: property (windowTitle), widget (QDialog, ButtonBehaviour)
-#. i18n: ectx: property (windowTitle), widget (QDialog, TitleBarSpacing)
 #. i18n: ectx: property (windowTitle), widget (QDialog, ButtonColors)
-#. i18n: ectx: property (windowTitle), widget (QDialog, BreezeExceptionDialog)
 #. i18n: ectx: property (windowTitle), widget (QDialog, ButtonSizing)
-#. i18n: ectx: property (windowTitle), widget (QDialog, WindowOutlineStyle)
 #. i18n: ectx: property (windowTitle), widget (QDialog, ShadowStyle)
+#. i18n: ectx: property (windowTitle), widget (QDialog, BreezeExceptionDialog)
+#. i18n: ectx: property (windowTitle), widget (QDialog, TitleBarSpacing)
+#. i18n: ectx: property (windowTitle), widget (QDialog, WindowOutlineStyle)
 #: config/ui/addpreset.ui:14 config/ui/breezeexceptiondialog.ui:14
 #: config/ui/buttonbehaviour.ui:14 config/ui/buttoncolors.ui:14
 #: config/ui/buttonsizing.ui:14 config/ui/loadpreset.ui:14
@@ -1638,7 +1638,7 @@ msgstr "带 negative 关闭图标的标题栏文字颜色"
 #. i18n: ectx: property (text), item, widget (QComboBox, windowOutlineStyleInactive)
 #: config/ui/buttoncolors.ui:194 config/ui/buttoncolors.ui:480
 #: config/ui/buttoncolors.ui:972 config/ui/buttoncolors.ui:1258
-#: config/ui/windowoutlinestyle.ui:153 config/ui/windowoutlinestyle.ui:1360
+#: config/ui/windowoutlinestyle.ui:1255 config/ui/windowoutlinestyle.ui:1345
 #, kde-format
 msgid "Accent colour"
 msgstr "Accent 颜色"
@@ -1681,12 +1681,12 @@ msgstr "交通灯的 accent 色"
 #: config/ui/buttoncolors.ui:240 config/ui/buttoncolors.ui:533
 #: config/ui/buttoncolors.ui:1025 config/ui/buttoncolors.ui:1326
 #: config/ui/titlebaropacity.ui:79 config/ui/titlebaropacity.ui:136
-#: config/ui/windowoutlinestyle.ui:217 config/ui/windowoutlinestyle.ui:420
-#: config/ui/windowoutlinestyle.ui:580 config/ui/windowoutlinestyle.ui:740
-#: config/ui/windowoutlinestyle.ui:944 config/ui/windowoutlinestyle.ui:1190
-#: config/ui/windowoutlinestyle.ui:1467 config/ui/windowoutlinestyle.ui:1640
-#: config/ui/windowoutlinestyle.ui:1800 config/ui/windowoutlinestyle.ui:1960
-#: config/ui/windowoutlinestyle.ui:2125 config/ui/windowoutlinestyle.ui:2420
+#: config/ui/windowoutlinestyle.ui:152 config/ui/windowoutlinestyle.ui:364
+#: config/ui/windowoutlinestyle.ui:526 config/ui/windowoutlinestyle.ui:686
+#: config/ui/windowoutlinestyle.ui:890 config/ui/windowoutlinestyle.ui:1136
+#: config/ui/windowoutlinestyle.ui:1452 config/ui/windowoutlinestyle.ui:1634
+#: config/ui/windowoutlinestyle.ui:1796 config/ui/windowoutlinestyle.ui:1956
+#: config/ui/windowoutlinestyle.ui:2121 config/ui/windowoutlinestyle.ui:2416
 #, kde-format
 msgid "Transparent"
 msgstr "透明度"
@@ -1712,12 +1712,12 @@ msgstr "透明度"
 #: config/ui/buttoncolors.ui:285 config/ui/buttoncolors.ui:526
 #: config/ui/buttoncolors.ui:1018 config/ui/buttoncolors.ui:1333
 #: config/ui/titlebaropacity.ui:125 config/ui/titlebaropacity.ui:182
-#: config/ui/windowoutlinestyle.ui:263 config/ui/windowoutlinestyle.ui:466
-#: config/ui/windowoutlinestyle.ui:626 config/ui/windowoutlinestyle.ui:786
-#: config/ui/windowoutlinestyle.ui:990 config/ui/windowoutlinestyle.ui:1236
-#: config/ui/windowoutlinestyle.ui:1513 config/ui/windowoutlinestyle.ui:1686
-#: config/ui/windowoutlinestyle.ui:1846 config/ui/windowoutlinestyle.ui:2006
-#: config/ui/windowoutlinestyle.ui:2171 config/ui/windowoutlinestyle.ui:2466
+#: config/ui/windowoutlinestyle.ui:198 config/ui/windowoutlinestyle.ui:410
+#: config/ui/windowoutlinestyle.ui:572 config/ui/windowoutlinestyle.ui:732
+#: config/ui/windowoutlinestyle.ui:936 config/ui/windowoutlinestyle.ui:1182
+#: config/ui/windowoutlinestyle.ui:1498 config/ui/windowoutlinestyle.ui:1680
+#: config/ui/windowoutlinestyle.ui:1842 config/ui/windowoutlinestyle.ui:2002
+#: config/ui/windowoutlinestyle.ui:2167 config/ui/windowoutlinestyle.ui:2462
 #, kde-format
 msgid "Opaque"
 msgstr "不透明度"
@@ -1851,10 +1851,12 @@ msgstr "缩放按钮背景(&U)："
 
 #. i18n: ectx: property (suffix), widget (QSpinBox, activeTitleBarOpacity_2)
 #. i18n: ectx: property (suffix), widget (QSpinBox, inactiveTitleBarOpacity_2)
-#. i18n: ectx: property (suffix), widget (QSpinBox, percentMaximizedTopBottomMargins)
 #. i18n: ectx: property (suffix), widget (QSpinBox, scaleBackgroundPercent)
 #. i18n: ectx: property (suffix), widget (QSpinBox, spacerButtonWidthRelative)
 #. i18n: ectx: property (suffix), widget (QSpinBox, closeFullHeightButtonWidthMarginRelative)
+#. i18n: ectx: property (suffix), widget (QSpinBox, shadowStrengthActive)
+#. i18n: ectx: property (suffix), widget (QSpinBox, shadowStrengthInactive)
+#. i18n: ectx: property (suffix), widget (QSpinBox, percentMaximizedTopBottomMargins)
 #. i18n: ectx: property (suffix), widget (QSpinBox, windowOutlineShadowColorOpacity)
 #. i18n: ectx: property (suffix), widget (QSpinBox, windowOutlineContrastOpacityActive)
 #. i18n: ectx: property (suffix), widget (QSpinBox, windowOutlineAccentColorOpacityActive)
@@ -1867,18 +1869,16 @@ msgstr "缩放按钮背景(&U)："
 #. i18n: ectx: property (suffix), widget (QSpinBox, windowOutlineAccentWithContrastOpacityInactive)
 #. i18n: ectx: property (suffix), widget (QSpinBox, windowOutlineCustomColorOpacityInactive)
 #. i18n: ectx: property (suffix), widget (QSpinBox, windowOutlineCustomWithContrastOpacityInactive)
-#. i18n: ectx: property (suffix), widget (QSpinBox, shadowStrengthActive)
-#. i18n: ectx: property (suffix), widget (QSpinBox, shadowStrengthInactive)
 #: config/ui/buttonsizing.ui:83 config/ui/buttonsizing.ui:216
 #: config/ui/buttonsizing.ui:399 config/ui/shadowstyle.ui:93
 #: config/ui/shadowstyle.ui:198 config/ui/titlebaropacity.ui:99
 #: config/ui/titlebaropacity.ui:156 config/ui/titlebarspacing.ui:574
-#: config/ui/windowoutlinestyle.ui:237 config/ui/windowoutlinestyle.ui:440
-#: config/ui/windowoutlinestyle.ui:600 config/ui/windowoutlinestyle.ui:760
-#: config/ui/windowoutlinestyle.ui:964 config/ui/windowoutlinestyle.ui:1210
-#: config/ui/windowoutlinestyle.ui:1487 config/ui/windowoutlinestyle.ui:1660
-#: config/ui/windowoutlinestyle.ui:1820 config/ui/windowoutlinestyle.ui:1980
-#: config/ui/windowoutlinestyle.ui:2145 config/ui/windowoutlinestyle.ui:2440
+#: config/ui/windowoutlinestyle.ui:172 config/ui/windowoutlinestyle.ui:384
+#: config/ui/windowoutlinestyle.ui:546 config/ui/windowoutlinestyle.ui:706
+#: config/ui/windowoutlinestyle.ui:910 config/ui/windowoutlinestyle.ui:1156
+#: config/ui/windowoutlinestyle.ui:1472 config/ui/windowoutlinestyle.ui:1654
+#: config/ui/windowoutlinestyle.ui:1816 config/ui/windowoutlinestyle.ui:1976
+#: config/ui/windowoutlinestyle.ui:2141 config/ui/windowoutlinestyle.ui:2436
 #, no-c-format, kde-format
 msgid " %"
 msgstr " %"
@@ -2027,12 +2027,12 @@ msgstr "活动窗口阴影"
 msgid "Si&ze:"
 msgstr "大小(&Z)："
 
-#. i18n: ectx: property (text), item, widget (QComboBox, windowOutlineStyleActive)
-#. i18n: ectx: property (text), item, widget (QComboBox, windowOutlineStyleInactive)
 #. i18n: ectx: property (text), item, widget (QComboBox, shadowSizeActive)
 #. i18n: ectx: property (text), item, widget (QComboBox, shadowSizeInactive)
+#. i18n: ectx: property (text), item, widget (QComboBox, windowOutlineStyleActive)
+#. i18n: ectx: property (text), item, widget (QComboBox, windowOutlineStyleInactive)
 #: config/ui/shadowstyle.ui:52 config/ui/shadowstyle.ui:157
-#: config/ui/windowoutlinestyle.ui:138 config/ui/windowoutlinestyle.ui:1345
+#: config/ui/windowoutlinestyle.ui:1240 config/ui/windowoutlinestyle.ui:1330
 #, kde-format
 msgid "None"
 msgstr "无"
@@ -2290,105 +2290,100 @@ msgstr "最大化窗口时的标题栏上下边距："
 msgid "Window Outline Thickness:"
 msgstr "窗口轮廓粗细："
 
-#. i18n: ectx: property (text), widget (QCheckBox, windowOutlineSnapToWholePixel)
-#: config/ui/windowoutlinestyle.ui:64
-#, kde-format
-msgid "Snap to whole pixel"
-msgstr "对齐到完整像素"
-
-#. i18n: ectx: property (text), widget (QCheckBox, windowOutlineOverlap)
-#: config/ui/windowoutlinestyle.ui:77
-#, kde-format
-msgid "Overlap"
-msgstr "重叠"
-
 #. i18n: ectx: property (title), widget (QGroupBox, activeWindowGroupBox)
-#: config/ui/windowoutlinestyle.ui:86
+#: config/ui/windowoutlinestyle.ui:60
 #, kde-format
 msgid "Active Window"
 msgstr "活动窗口"
 
-#. i18n: ectx: property (text), widget (QLabel, label)
-#. i18n: ectx: property (text), widget (QLabel, label_2)
-#: config/ui/windowoutlinestyle.ui:105 config/ui/windowoutlinestyle.ui:1318
-#, kde-format
-msgid "Window Outline Style:"
-msgstr "窗口轮廓样式："
-
 #. i18n: ectx: property (toolTip), widget (QPushButton, lockWindowOutlineStyleActive)
-#: config/ui/windowoutlinestyle.ui:124
+#: config/ui/windowoutlinestyle.ui:85
 #, kde-format
 msgid ""
 "Lock to make Active and Inactive Thin Window Outlines have the same style"
 msgstr "在此处锁定以使活动与非活动窗口的细轮廓具有相同样式"
 
-#. i18n: ectx: property (text), item, widget (QComboBox, windowOutlineStyleActive)
-#. i18n: ectx: property (text), item, widget (QComboBox, windowOutlineStyleInactive)
-#: config/ui/windowoutlinestyle.ui:143 config/ui/windowoutlinestyle.ui:1350
+#. i18n: ectx: property (text), widget (QLabel, label)
+#. i18n: ectx: property (text), widget (QLabel, label_2)
+#: config/ui/windowoutlinestyle.ui:98 config/ui/windowoutlinestyle.ui:1303
 #, kde-format
-msgid "Shadow colour"
-msgstr "阴影颜色"
-
-#. i18n: ectx: property (text), item, widget (QComboBox, windowOutlineStyleActive)
-#. i18n: ectx: property (text), item, widget (QComboBox, windowOutlineStyleInactive)
-#: config/ui/windowoutlinestyle.ui:148 config/ui/windowoutlinestyle.ui:1355
-#, kde-format
-msgid "Contrast"
-msgstr "对比度"
-
-#. i18n: ectx: property (text), item, widget (QComboBox, windowOutlineStyleActive)
-#. i18n: ectx: property (text), item, widget (QComboBox, windowOutlineStyleInactive)
-#: config/ui/windowoutlinestyle.ui:158 config/ui/windowoutlinestyle.ui:1365
-#, kde-format
-msgid "Contrast blended with accent colour"
-msgstr "与 accent 色混合对比度"
-
-#. i18n: ectx: property (text), item, widget (QComboBox, windowOutlineStyleActive)
-#. i18n: ectx: property (text), item, widget (QComboBox, windowOutlineStyleInactive)
-#: config/ui/windowoutlinestyle.ui:163 config/ui/windowoutlinestyle.ui:1370
-#, kde-format
-msgid "Custom colour"
-msgstr "自定义颜色"
-
-#. i18n: ectx: property (text), item, widget (QComboBox, windowOutlineStyleActive)
-#. i18n: ectx: property (text), item, widget (QComboBox, windowOutlineStyleInactive)
-#: config/ui/windowoutlinestyle.ui:168 config/ui/windowoutlinestyle.ui:1375
-#, kde-format
-msgid "Contrast blended with custom colour"
-msgstr "与自定义颜色混合对比度"
+msgid "Window Outline Style:"
+msgstr "窗口轮廓样式："
 
 #. i18n: ectx: property (text), widget (QLabel, label_5)
 #. i18n: ectx: property (text), widget (QLabel, label_6)
-#: config/ui/windowoutlinestyle.ui:323 config/ui/windowoutlinestyle.ui:1425
+#: config/ui/windowoutlinestyle.ui:258 config/ui/windowoutlinestyle.ui:1410
 #, kde-format
 msgid "(relative to shadow opacity)"
 msgstr "（相对于阴影不透明度）"
+
+#. i18n: ectx: property (text), widget (QCheckBox, windowOutlineContrastFromColorSchemeActive)
+#. i18n: ectx: property (text), widget (QCheckBox, windowOutlineContrastFromColorSchemeInactive)
+#: config/ui/windowoutlinestyle.ui:300 config/ui/windowoutlinestyle.ui:1576
+#, kde-format
+msgid "Set contrast intensity from colour scheme "
+msgstr "使用配色方案中的对比度"
 
 #. i18n: ectx: property (text), widget (QLabel, label_17)
 #. i18n: ectx: property (text), widget (QLabel, label_19)
 #. i18n: ectx: property (text), widget (QLabel, label_18)
 #. i18n: ectx: property (text), widget (QLabel, label_20)
-#: config/ui/windowoutlinestyle.ui:869 config/ui/windowoutlinestyle.ui:1245
-#: config/ui/windowoutlinestyle.ui:2180 config/ui/windowoutlinestyle.ui:2408
+#: config/ui/windowoutlinestyle.ui:815 config/ui/windowoutlinestyle.ui:1191
+#: config/ui/windowoutlinestyle.ui:2176 config/ui/windowoutlinestyle.ui:2404
 #, kde-format
 msgid "Custom Colour:"
 msgstr "自定义颜色："
 
 #. i18n: ectx: property (toolTip), widget (QPushButton, lockWindowOutlineCustomColorActive)
 #. i18n: ectx: property (toolTip), widget (QPushButton, lockWindowOutlineCustomColorActive_2)
-#: config/ui/windowoutlinestyle.ui:1017 config/ui/windowoutlinestyle.ui:1155
+#: config/ui/windowoutlinestyle.ui:963 config/ui/windowoutlinestyle.ui:1101
 #, kde-format
 msgid "Lock to make Active and Inactive Custom Colours the same"
 msgstr "在此处锁定以使活动与非活动窗口的自定义颜色相同"
 
+#. i18n: ectx: property (text), item, widget (QComboBox, windowOutlineStyleActive)
+#. i18n: ectx: property (text), item, widget (QComboBox, windowOutlineStyleInactive)
+#: config/ui/windowoutlinestyle.ui:1245 config/ui/windowoutlinestyle.ui:1335
+#, kde-format
+msgid "Shadow colour"
+msgstr "阴影颜色"
+
+#. i18n: ectx: property (text), item, widget (QComboBox, windowOutlineStyleActive)
+#. i18n: ectx: property (text), item, widget (QComboBox, windowOutlineStyleInactive)
+#: config/ui/windowoutlinestyle.ui:1250 config/ui/windowoutlinestyle.ui:1340
+#, kde-format
+msgid "Contrast"
+msgstr "对比度"
+
+#. i18n: ectx: property (text), item, widget (QComboBox, windowOutlineStyleActive)
+#. i18n: ectx: property (text), item, widget (QComboBox, windowOutlineStyleInactive)
+#: config/ui/windowoutlinestyle.ui:1260 config/ui/windowoutlinestyle.ui:1350
+#, kde-format
+msgid "Contrast blended with accent colour"
+msgstr "与 accent 色混合对比度"
+
+#. i18n: ectx: property (text), item, widget (QComboBox, windowOutlineStyleActive)
+#. i18n: ectx: property (text), item, widget (QComboBox, windowOutlineStyleInactive)
+#: config/ui/windowoutlinestyle.ui:1265 config/ui/windowoutlinestyle.ui:1355
+#, kde-format
+msgid "Custom colour"
+msgstr "自定义颜色"
+
+#. i18n: ectx: property (text), item, widget (QComboBox, windowOutlineStyleActive)
+#. i18n: ectx: property (text), item, widget (QComboBox, windowOutlineStyleInactive)
+#: config/ui/windowoutlinestyle.ui:1270 config/ui/windowoutlinestyle.ui:1360
+#, kde-format
+msgid "Contrast blended with custom colour"
+msgstr "与自定义颜色混合对比度"
+
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox_7)
-#: config/ui/windowoutlinestyle.ui:1312
+#: config/ui/windowoutlinestyle.ui:1297
 #, kde-format
 msgid "Inactive Window"
 msgstr "非活动窗口"
 
 #. i18n: ectx: property (toolTip), widget (QPushButton, lockWindowOutlineStyleInactive)
-#: config/ui/windowoutlinestyle.ui:1389
+#: config/ui/windowoutlinestyle.ui:1374
 #, kde-format
 msgid ""
 "Lock to make Inactive and Active Thin Window Outlines have the same style"
@@ -2396,10 +2391,18 @@ msgstr "在此处锁定以使非活动与活动窗口的细轮廓具有相同样
 
 #. i18n: ectx: property (toolTip), widget (QPushButton, lockWindowOutlineCustomColorInactive)
 #. i18n: ectx: property (toolTip), widget (QPushButton, lockWindowOutlineCustomColorInactive_2)
-#: config/ui/windowoutlinestyle.ui:2208 config/ui/windowoutlinestyle.ui:2362
+#: config/ui/windowoutlinestyle.ui:2204 config/ui/windowoutlinestyle.ui:2358
 #, kde-format
 msgid "Lock to make Inactive and Active Custom Colours the same"
 msgstr "在此处锁定以使非活动与活动窗口的自定义颜色相同"
+
+#, kde-format
+#~ msgid "Snap to whole pixel"
+#~ msgstr "对齐到完整像素"
+
+#, kde-format
+#~ msgid "Overlap"
+#~ msgstr "重叠"
 
 #, kde-format
 #~ msgid "Scale &Touch Mode buttons:"
