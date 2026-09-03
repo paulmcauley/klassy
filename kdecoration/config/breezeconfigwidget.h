@@ -134,6 +134,8 @@ protected Q_SLOTS:
     void dialogChanged(bool changed);
     void kPageWidgetChanged(KPageWidgetItem *current, KPageWidgetItem *before);
     void updateWindowControlPreviewIcons();
+    void getButtonsOrderFromKwinConfig();
+    void setAppMenuBarButtonEnabledState();
 
 protected:
     bool eventFilter(QObject *obj, QEvent *event) override;
@@ -149,6 +151,9 @@ private:
 
     //* presets kconfiguration object
     KSharedConfig::Ptr m_presetsConfiguration;
+
+    //* presets kconfiguration object
+    KSharedConfig::Ptr m_kwinConfiguration;
 
     //* internal exception
     InternalSettingsPtr m_internalSettings;
@@ -192,6 +197,8 @@ private:
     void importBundledPresets();
     void updateIcons();
     void generateWindowControlPreviewIcon(QSize size, InternalSettings::EnumButtonIconStyle::type iconStyle);
-    void getButtonsOrderFromKwinConfig();
+
+    void setAppMenuBarEnabledCheckBoxState();
+    void setAppMenuButtonInKwinConfig();
 };
 }
