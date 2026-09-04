@@ -51,8 +51,8 @@ TitleBarAppMenuBar::TitleBarAppMenuBar(KSharedConfig::Ptr config, KSharedConfig:
     connect(m_ui->searchIgnoresSubMenus, SIGNAL(checkStateChanged(Qt::CheckState)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
     connect(m_ui->searchIgnoresTopLevel, SIGNAL(checkStateChanged(Qt::CheckState)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
 
-    // Ensure certain position options can only be selected in certain show styles:
-    auto onShapeChangeUpdatePositions = [this]() {
+    // Ensure certain position options can only be selected for certain behaviours:
+    auto onBehaviourChangeUpdatePositions = [this]() {
         QStandardItemModel *appMenuBarPositionModel = qobject_cast<QStandardItemModel *>(m_ui->menuPosition->model());
         QStandardItem *centerItem = appMenuBarPositionModel->item(InternalSettings::EnumAppMenuBarPosition::Center);
         QStandardItem *centerFullWidthItem = appMenuBarPositionModel->item(InternalSettings::EnumAppMenuBarPosition::CenterFullWidth);
@@ -66,8 +66,8 @@ TitleBarAppMenuBar::TitleBarAppMenuBar(KSharedConfig::Ptr config, KSharedConfig:
             m_ui->menuPosition->setCurrentIndex(InternalSettings::EnumAppMenuBarPosition::Left);
         }
     };
-    onShapeChangeUpdatePositions();
-    connect(m_ui->menuBehaviour, &QComboBox::currentIndexChanged, this, onShapeChangeUpdatePositions);
+    onBehaviourChangeUpdatePositions();
+    connect(m_ui->menuBehaviour, &QComboBox::currentIndexChanged, this, onBehaviourChangeUpdatePositions);
 
     connect(m_ui->menuBlurCornerRadius, &QComboBox::currentIndexChanged, this, [this](int index) {
         m_ui->menuBlurCustomCornerRadius->setVisible(index == InternalSettings::EnumAppMenuBarBlurCornerRadius::AMBBCR_Custom);
