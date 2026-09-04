@@ -133,6 +133,10 @@
         <default>false</default>
     </entry>
 
+    <entry name="AppMenuBarEnabled" type="Bool">
+        <default>false</default>
+    </entry>
+
     <entry name="DrawBackgroundGradient" type = "Bool">
         <default>false</default>
     </entry>
@@ -966,10 +970,6 @@
 
   <group name="TitleBarAppMenuBar">
     <!-- ______________________________MENU______________________________ -->
-
-    <entry name="AppMenuBarEnabled" type="Bool">
-        <default>false</default>
-    </entry>
 
     <entry name="AppMenuBarBehaviour" type="Enum">
         <choices>
