@@ -904,14 +904,14 @@
 
   <group name="TitleBarOpacity">
     <!-- Titlebar opacity for active window -->
-    <entry name="ActiveTitleBarOpacity" type = "Int">
+    <entry name="TitleBarOpacityActive" type = "Int">
        <default>100</default>
        <min>0</min>
        <max>100</max>
     </entry>
 
     <!-- Titlebar opacity for inactive window -->
-    <entry name="InactiveTitleBarOpacity" type = "Int">
+    <entry name="TitleBarOpacityInactive" type = "Int">
        <default>100</default>
        <min>0</min>
        <max>100</max>
@@ -932,11 +932,11 @@
         <default>true</default>
     </entry>
 
-    <entry name="OverrideActiveTitleBarOpacity" type = "Bool">
+    <entry name="OverrideTitleBarOpacityActive" type = "Bool">
         <default>false</default>
     </entry>
 
-    <entry name="OverrideInactiveTitleBarOpacity" type = "Bool">
+    <entry name="OverrideTitleBarOpacityInactive" type = "Bool">
         <default>false</default>
     </entry>
 

@@ -2,7 +2,7 @@
 version=6.7.3.git
 
 [Windeco Preset Klassy]
-ActiveTitleBarOpacity=100
+TitleBarOpacityActive=100
 AdjustBackgroundColorOnPoorContrastActive=true
 AdjustBackgroundColorOnPoorContrastInactive=true
 AnimationsEnabled=true
@@ -65,7 +65,7 @@ FullHeightButtonSpacingRight=4
 FullHeightButtonWidthMarginLeft=6
 FullHeightButtonWidthMarginRight=18
 IconSize=IconLargeMedium
-InactiveTitleBarOpacity=100
+TitleBarOpacityInactive=100
 IntegratedRoundedRectangleBottomPadding=1.5
 KlassyDarkIconThemeInherits=breeze-dark
 KlassyIconThemeInherits=breeze
@@ -89,8 +89,8 @@ NegativeCloseBackgroundHoverPressInactive=false
 OnPoorIconContrastActive=TitleBarBackground
 OnPoorIconContrastInactive=TitleBarBackground
 OpaqueMaximizedTitleBars=true
-OverrideActiveTitleBarOpacity=false
-OverrideInactiveTitleBarOpacity=false
+OverrideTitleBarOpacityActive=false
+OverrideTitleBarOpacityInactive=false
 PercentMaximizedTopBottomMargins=85
 PoorBackgroundContrastThresholdActive=1.1
 PoorBackgroundContrastThresholdInactive=1.1

@@ -2,7 +2,7 @@
 version=6.7.3.git
 
 [Windeco Preset Eaten Fruits]
-ActiveTitleBarOpacity=50
+TitleBarOpacityActive=50
 AdjustBackgroundColorOnPoorContrastActive=true
 AdjustBackgroundColorOnPoorContrastInactive=true
 AnimationsEnabled=true
@@ -65,7 +65,7 @@ FullHeightButtonSpacingRight=2
 FullHeightButtonWidthMarginLeft=6
 FullHeightButtonWidthMarginRight=18
 IconSize=IconMedium
-InactiveTitleBarOpacity=30
+TitleBarOpacityInactive=30
 IntegratedRoundedRectangleBottomPadding=2
 KlassyDarkIconThemeInherits=breeze-dark
 KlassyIconThemeInherits=breeze
@@ -89,8 +89,8 @@ NegativeCloseBackgroundHoverPressInactive=false
 OnPoorIconContrastActive=Nothing
 OnPoorIconContrastInactive=Nothing
 OpaqueMaximizedTitleBars=false
-OverrideActiveTitleBarOpacity=false
-OverrideInactiveTitleBarOpacity=false
+OverrideTitleBarOpacityActive=false
+OverrideTitleBarOpacityInactive=false
 PercentMaximizedTopBottomMargins=100
 PoorBackgroundContrastThresholdActive=1.1
 PoorBackgroundContrastThresholdInactive=1.1
