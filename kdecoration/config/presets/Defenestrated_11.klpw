@@ -2,7 +2,7 @@
 version=6.7.3.git
 
 [Windeco Preset Defenestrated 11]
-ActiveTitleBarOpacity=75
+TitleBarOpacityActive=75
 AdjustBackgroundColorOnPoorContrastActive=true
 AdjustBackgroundColorOnPoorContrastInactive=true
 AnimationsEnabled=true
@@ -65,7 +65,7 @@ FullHeightButtonSpacingRight=0
 FullHeightButtonWidthMarginLeft=6
 FullHeightButtonWidthMarginRight=28
 IconSize=IconMedium
-InactiveTitleBarOpacity=100
+TitleBarOpacityInactive=100
 IntegratedRoundedRectangleBottomPadding=1
 KlassyDarkIconThemeInherits=breeze-dark
 KlassyIconThemeInherits=breeze
@@ -89,8 +89,8 @@ NegativeCloseBackgroundHoverPressInactive=false
 OnPoorIconContrastActive=Nothing
 OnPoorIconContrastInactive=Nothing
 OpaqueMaximizedTitleBars=false
-OverrideActiveTitleBarOpacity=true
-OverrideInactiveTitleBarOpacity=true
+OverrideTitleBarOpacityActive=true
+OverrideTitleBarOpacityInactive=true
 PercentMaximizedTopBottomMargins=50
 PoorBackgroundContrastThresholdActive=1.1
 PoorBackgroundContrastThresholdInactive=1.1

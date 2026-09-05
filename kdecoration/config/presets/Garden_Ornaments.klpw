@@ -2,7 +2,7 @@
 version=6.7.3.git
 
 [Windeco Preset Garden Ornaments]
-ActiveTitleBarOpacity=100
+TitleBarOpacityActive=100
 AdjustBackgroundColorOnPoorContrastActive=true
 AdjustBackgroundColorOnPoorContrastInactive=true
 AnimationsEnabled=true
@@ -65,7 +65,7 @@ FullHeightButtonSpacingRight=2
 FullHeightButtonWidthMarginLeft=6
 FullHeightButtonWidthMarginRight=16
 IconSize=IconSmallMedium
-InactiveTitleBarOpacity=100
+TitleBarOpacityInactive=100
 IntegratedRoundedRectangleBottomPadding=2
 KlassyDarkIconThemeInherits=breeze-dark
 KlassyIconThemeInherits=breeze
@@ -89,8 +89,8 @@ NegativeCloseBackgroundHoverPressInactive=false
 OnPoorIconContrastActive=Nothing
 OnPoorIconContrastInactive=Nothing
 OpaqueMaximizedTitleBars=true
-OverrideActiveTitleBarOpacity=false
-OverrideInactiveTitleBarOpacity=false
+OverrideTitleBarOpacityActive=false
+OverrideTitleBarOpacityInactive=false
 PercentMaximizedTopBottomMargins=70
 PoorBackgroundContrastThresholdActive=1.1
 PoorBackgroundContrastThresholdInactive=1.1
