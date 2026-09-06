@@ -7,13 +7,13 @@
 #pragma once
 
 #include "breeze.h"
-#include "breezecommon_export.h"
 #include "decorationcolors.h"
+#include "klassycommon_export.h"
 #include <KColorScheme>
 #include <QColor>
 #include <memory>
 
-namespace Breeze
+namespace Klassy
 {
 
 struct DecorationPaletteGroup;
@@ -40,7 +40,7 @@ const QList<DecorationButtonType> coloredAppStyleDecorationButtonTypes{
     DecorationButtonType::Close,
 };
 
-enum struct BREEZECOMMON_EXPORT OverridableButtonColorState {
+enum struct KLASSYCOMMON_EXPORT OverridableButtonColorState {
     IconNormal,
     IconHover,
     IconPress,
@@ -53,7 +53,7 @@ enum struct BREEZECOMMON_EXPORT OverridableButtonColorState {
     COUNT,
 };
 
-enum struct BREEZECOMMON_EXPORT ButtonComponent {
+enum struct KLASSYCOMMON_EXPORT ButtonComponent {
     Icon,
     Background,
     Outline,
@@ -103,7 +103,7 @@ const QStringList overrideColorItems{
     QStringLiteral("WindowShadowInactive"),
 };
 
-struct BREEZECOMMON_EXPORT DecorationButtonPaletteGroup {
+struct KLASSYCOMMON_EXPORT DecorationButtonPaletteGroup {
     QColor foregroundPress;
     QColor foregroundHover;
     QColor foregroundNormal;
@@ -126,7 +126,7 @@ struct BREEZECOMMON_EXPORT DecorationButtonPaletteGroup {
 /**
  *  @brief Class to generate the colour palette used in a decoration button
  */
-class BREEZECOMMON_EXPORT DecorationButtonPalette
+class KLASSYCOMMON_EXPORT DecorationButtonPalette
 {
 public:
     DecorationButtonPalette(DecorationButtonType buttonType);

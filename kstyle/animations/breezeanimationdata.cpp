@@ -6,7 +6,7 @@
 
 #include "breezeanimationdata.h"
 
-namespace Breeze
+namespace Klassy
 {
 
 const qreal AnimationData::OpacityInvalid = -1;

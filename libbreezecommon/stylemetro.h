@@ -10,7 +10,7 @@
 
 #include <QPainter>
 
-namespace Breeze
+namespace Klassy
 {
 
 class RenderStyleMetro18By18 : public RenderDecorationButtonIcon18By18

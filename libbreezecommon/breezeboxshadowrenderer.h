@@ -7,7 +7,7 @@
 #pragma once
 
 // own
-#include "breezecommon_export.h"
+#include "klassycommon_export.h"
 
 // Qt
 #include <QColor>
@@ -15,10 +15,10 @@
 #include <QPoint>
 #include <QSize>
 
-namespace Breeze
+namespace Klassy
 {
 
-class BREEZECOMMON_EXPORT BoxShadowRenderer
+class KLASSYCOMMON_EXPORT BoxShadowRenderer
 {
 public:
     // Compiler generated constructors & destructor are fine.
@@ -83,4 +83,4 @@ private:
     QVector<Shadow> m_shadows;
 };
 
-} // namespace Breeze
+} // namespace Klassy

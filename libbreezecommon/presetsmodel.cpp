@@ -9,7 +9,7 @@
 #include <QDir>
 #include <QRegularExpression>
 
-namespace Breeze
+namespace Klassy
 {
 
 QString PresetsModel::presetGroupName(const QString str)

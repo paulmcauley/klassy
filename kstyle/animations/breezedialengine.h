@@ -9,7 +9,7 @@
 #include "breezedialdata.h"
 #include "breezewidgetstateengine.h"
 
-namespace Breeze
+namespace Klassy
 {
 
 //* stores dial hovered action and timeLine

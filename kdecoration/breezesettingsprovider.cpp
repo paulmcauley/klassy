@@ -14,7 +14,7 @@
 #include <QRegularExpression>
 #include <QTextStream>
 
-namespace Breeze
+namespace Klassy
 {
 
 SettingsProvider *SettingsProvider::s_self = nullptr;

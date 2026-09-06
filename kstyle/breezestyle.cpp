@@ -76,7 +76,7 @@ constexpr auto HighlightColor = QPalette::Accent;
 constexpr auto HighlightColor = QPalette::Highlight;
 #endif
 
-namespace BreezePrivate
+namespace KlassyPrivate
 {
 
 class PainterStateSaver
@@ -127,7 +127,7 @@ public:
 
 private:
     //* pointer to target tabBar
-    Breeze::WeakPointer<const QWidget> _tabBar;
+    Klassy::WeakPointer<const QWidget> _tabBar;
 };
 
 //* needed to have spacing added to items in combobox
@@ -138,7 +138,7 @@ public:
     explicit ComboBoxItemDelegate(QAbstractItemView *parent)
         : QItemDelegate(parent)
         , _proxy(parent->itemDelegate())
-        , _itemMargin(Breeze::Metrics::ComboBox_ItemMarginWidth)
+        , _itemMargin(Klassy::Metrics::ComboBox_ItemMarginWidth)
     {
     }
 
@@ -154,7 +154,7 @@ public:
 
         // otherwise we draw the selected/highlighted background ourselves.
         if (option.showDecorationSelected && (option.state & QStyle::State_Selected)) {
-            using namespace Breeze;
+            using namespace Klassy;
 
             auto c = option.palette.brush((option.state & QStyle::State_Enabled) ? QPalette::Normal : QPalette::Disabled, HighlightColor).color();
 
@@ -188,7 +188,7 @@ public:
 
 private:
     //* proxy
-    Breeze::WeakPointer<QAbstractItemDelegate> _proxy;
+    Klassy::WeakPointer<QAbstractItemDelegate> _proxy;
 
     //* margin
     int _itemMargin;
@@ -243,7 +243,7 @@ ToolButtonMenuArrowStyle toolButtonMenuArrowStyle(const QStyleOption *option)
 
 }
 
-namespace Breeze
+namespace Klassy
 {
 
 namespace Metrics
@@ -265,7 +265,7 @@ Style::Style()
     , _splitterFactory(std::make_unique<SplitterFactory>())
     , _toolsAreaManager(std::make_unique<ToolsAreaManager>(_helper))
     , _widgetExplorer(std::make_unique<WidgetExplorer>())
-    , _tabBarData(std::make_unique<BreezePrivate::TabBarData>())
+    , _tabBarData(std::make_unique<KlassyPrivate::TabBarData>())
 #if BREEZE_HAVE_KSTYLE
     , SH_ArgbDndWindow(newStyleHint(QStringLiteral("SH_ArgbDndWindow")))
     , CE_CapacityBar(newControlElement(QStringLiteral("CE_CapacityBar")))
@@ -444,7 +444,7 @@ void Style::polish(QWidget *widget)
         if (!hasParent(widget, "QWebView")) {
             auto itemView(comboBox->view());
             if (itemView && itemView->itemDelegate() && itemView->itemDelegate()->inherits("QComboBoxDelegate")) {
-                itemView->setItemDelegate(new BreezePrivate::ComboBoxItemDelegate(itemView));
+                itemView->setItemDelegate(new KlassyPrivate::ComboBoxItemDelegate(itemView));
             }
         }
 
@@ -2502,7 +2502,7 @@ QRect Style::progressBarGrooveRect(const QStyleOption *option, const QWidget *wi
     // get flags and orientation
     const bool textVisible(progressBarOption->textVisible);
     const bool busy(progressBarOption->minimum == 0 && progressBarOption->maximum == 0);
-    const bool horizontal(BreezePrivate::isProgressBarHorizontal(progressBarOption));
+    const bool horizontal(KlassyPrivate::isProgressBarHorizontal(progressBarOption));
 
     // copy rectangle and adjust
     auto rect(option->rect);
@@ -2549,7 +2549,7 @@ QRect Style::progressBarContentsRect(const QStyleOption *option, const QWidget *
     }
 
     // get orientation
-    const bool horizontal(BreezePrivate::isProgressBarHorizontal(progressBarOption));
+    const bool horizontal(KlassyPrivate::isProgressBarHorizontal(progressBarOption));
 
     // check inverted appearance
     bool reverse = (horizontal && (option->direction == Qt::RightToLeft)) || !horizontal;
@@ -2633,7 +2633,7 @@ QRect Style::progressBarLabelRect(const QStyleOption *option, const QWidget *) c
     }
 
     // get direction and check
-    const bool horizontal(BreezePrivate::isProgressBarHorizontal(progressBarOption));
+    const bool horizontal(KlassyPrivate::isProgressBarHorizontal(progressBarOption));
     if (!horizontal) {
         return QRect();
     }
@@ -3162,7 +3162,7 @@ QRect Style::toolButtonSubControlRect(const QStyleOptionComplex *option, SubCont
         return ParentStyleClass::subControlRect(CC_ToolButton, option, subControl, widget);
     }
 
-    const auto menuStyle = BreezePrivate::toolButtonMenuArrowStyle(toolButtonOption);
+    const auto menuStyle = KlassyPrivate::toolButtonMenuArrowStyle(toolButtonOption);
 
     // store rect
     const auto &rect(option->rect);
@@ -3170,12 +3170,12 @@ QRect Style::toolButtonSubControlRect(const QStyleOptionComplex *option, SubCont
     switch (subControl) {
     case SC_ToolButtonMenu: {
         // check features
-        if (menuStyle == BreezePrivate::ToolButtonMenuArrowStyle::None) {
+        if (menuStyle == KlassyPrivate::ToolButtonMenuArrowStyle::None) {
             return QRect();
         }
 
         auto menuRect(rect);
-        if (menuStyle == BreezePrivate::ToolButtonMenuArrowStyle::InlineSmall) {
+        if (menuStyle == KlassyPrivate::ToolButtonMenuArrowStyle::InlineSmall) {
             QRect arrowRect(0, 0, Metrics::SmallArrowSize, Metrics::SmallArrowSize);
             arrowRect.moveBottomRight(menuRect.bottomRight() - QPoint(4, 3));
             menuRect = arrowRect;
@@ -3187,7 +3187,7 @@ QRect Style::toolButtonSubControlRect(const QStyleOptionComplex *option, SubCont
     }
 
     case SC_ToolButton: {
-        if (menuStyle == BreezePrivate::ToolButtonMenuArrowStyle::SubControl) {
+        if (menuStyle == KlassyPrivate::ToolButtonMenuArrowStyle::SubControl) {
             auto contentsRect(rect);
             contentsRect.setRight(rect.right() - menuButtonWidth);
             return visualRect(option, contentsRect);
@@ -3898,8 +3898,8 @@ QSize Style::toolButtonSizeFromContents(const QStyleOption *option, const QSize 
     const State &state(option->state);
     const bool autoRaise(state & State_AutoRaise);
 
-    const auto menuStyle = BreezePrivate::toolButtonMenuArrowStyle(toolButtonOption);
-    if (menuStyle == BreezePrivate::ToolButtonMenuArrowStyle::InlineLarge) {
+    const auto menuStyle = KlassyPrivate::toolButtonMenuArrowStyle(toolButtonOption);
+    if (menuStyle == KlassyPrivate::ToolButtonMenuArrowStyle::InlineLarge) {
         size.rwidth() += Metrics::MenuButton_IndicatorWidth;
     }
 
@@ -4036,7 +4036,7 @@ QSize Style::progressBarSizeFromContents(const QStyleOption *option, const QSize
         return contentsSize;
     }
 
-    const bool horizontal(BreezePrivate::isProgressBarHorizontal(progressBarOption));
+    const bool horizontal(KlassyPrivate::isProgressBarHorizontal(progressBarOption));
 
     // make local copy
     QSize size(contentsSize);
@@ -4736,11 +4736,11 @@ bool Style::drawIndicatorArrowPrimitive(ArrowOrientation orientation, const QSty
 
         // cast option
         const QStyleOptionToolButton *toolButtonOption(static_cast<const QStyleOptionToolButton *>(option));
-        const auto menuStyle = BreezePrivate::toolButtonMenuArrowStyle(toolButtonOption);
+        const auto menuStyle = KlassyPrivate::toolButtonMenuArrowStyle(toolButtonOption);
         const bool sunken = state & State_Sunken;
         const bool checked = state & State_On;
         const bool arrowHover = mouseOver && (toolButtonOption->activeSubControls & SC_ToolButtonMenu);
-        if (flat && menuStyle != BreezePrivate::ToolButtonMenuArrowStyle::None) {
+        if (flat && menuStyle != KlassyPrivate::ToolButtonMenuArrowStyle::None) {
             if (sunken && !mouseOver) {
                 color = palette.color(QPalette::HighlightedText);
             } else if (checked && !mouseOver) {
@@ -4901,8 +4901,8 @@ bool Style::drawPanelButtonToolPrimitive(const QStyleOption *option, QPainter *p
 
     QRect baseRect = option->rect;
     // adjust frame in case of menu
-    const auto menuStyle = BreezePrivate::toolButtonMenuArrowStyle(option);
-    if (menuStyle == BreezePrivate::ToolButtonMenuArrowStyle::SubControl) {
+    const auto menuStyle = KlassyPrivate::toolButtonMenuArrowStyle(option);
+    if (menuStyle == KlassyPrivate::ToolButtonMenuArrowStyle::SubControl) {
         // NOTE: working around weird issue with flat toolbuttons having unusually wide rects
         const auto clipRect = baseRect.adjusted(0, 0, flat ? -Metrics::ToolButton_InlineIndicatorWidth - Metrics::ToolButton_ItemSpacing * 2 : 0, 0);
         painter->setClipRect(visualRect(option, clipRect));
@@ -5846,8 +5846,8 @@ bool Style::drawToolButtonLabelControl(const QStyleOption *option, QPainter *pai
     // contents
     auto contentsRect(rect);
 
-    const auto menuStyle = BreezePrivate::toolButtonMenuArrowStyle(option);
-    if (menuStyle == BreezePrivate::ToolButtonMenuArrowStyle::InlineLarge) {
+    const auto menuStyle = KlassyPrivate::toolButtonMenuArrowStyle(option);
+    if (menuStyle == KlassyPrivate::ToolButtonMenuArrowStyle::InlineLarge) {
         // Place contents to the left of the menu arrow.
         const auto arrowRect = toolButtonSubControlRect(toolButtonOption, SC_ToolButtonMenu, widget);
         contentsRect.setRight(contentsRect.right() - arrowRect.width());
@@ -6542,7 +6542,7 @@ bool Style::drawProgressBarContentsControl(const QStyleOption *option, QPainter 
     const auto &palette(option->palette);
 
     // get direction
-    const bool horizontal(BreezePrivate::isProgressBarHorizontal(progressBarOption));
+    const bool horizontal(KlassyPrivate::isProgressBarHorizontal(progressBarOption));
     const bool inverted(progressBarOption->invertedAppearance);
     bool reverse = horizontal && option->direction == Qt::RightToLeft;
     if (inverted) {
@@ -6609,7 +6609,7 @@ bool Style::drawProgressBarLabelControl(const QStyleOption *option, QPainter *pa
     }
 
     // get direction and check
-    const bool horizontal(BreezePrivate::isProgressBarHorizontal(progressBarOption));
+    const bool horizontal(KlassyPrivate::isProgressBarHorizontal(progressBarOption));
     if (!horizontal) {
         return true;
     }
@@ -7773,7 +7773,7 @@ bool Style::drawGroupBoxComplexControl(const QStyleOptionComplex *option, QPaint
         frame.lineWidth = groupBoxOption->lineWidth;
         frame.midLineWidth = groupBoxOption->midLineWidth;
         frame.rect = subControlRect(CC_GroupBox, option, SC_GroupBoxFrame, widget);
-        BreezePrivate::PainterStateSaver pss(painter);
+        KlassyPrivate::PainterStateSaver pss(painter);
         QRegion region(groupBoxOption->rect);
         if (!groupBoxOption->text.isEmpty()) {
             bool ltr = groupBoxOption->direction == Qt::LeftToRight;
@@ -7792,7 +7792,7 @@ bool Style::drawGroupBoxComplexControl(const QStyleOptionComplex *option, QPaint
 
     // Draw title
     if ((groupBoxOption->subControls & QStyle::SC_GroupBoxLabel) && !groupBoxOption->text.isEmpty()) {
-        BreezePrivate::PainterStateSaver painterStateSaver(painter);
+        KlassyPrivate::PainterStateSaver painterStateSaver(painter);
 
         painter->setFont(font);
 
@@ -7893,7 +7893,7 @@ bool Style::drawToolButtonComplexControl(const QStyleOptionComplex *option, QPai
     // copy option and alter palette
     QStyleOptionToolButton copy(*toolButtonOption);
 
-    const auto menuStyle = BreezePrivate::toolButtonMenuArrowStyle(option);
+    const auto menuStyle = KlassyPrivate::toolButtonMenuArrowStyle(option);
 
     const auto buttonRect(subControlRect(CC_ToolButton, option, SC_ToolButton, widget));
     const auto menuRect(subControlRect(CC_ToolButton, option, SC_ToolButtonMenu, widget));
@@ -7911,7 +7911,7 @@ bool Style::drawToolButtonComplexControl(const QStyleOptionComplex *option, QPai
     }
 
     // arrow
-    if (menuStyle == BreezePrivate::ToolButtonMenuArrowStyle::SubControl) {
+    if (menuStyle == KlassyPrivate::ToolButtonMenuArrowStyle::SubControl) {
         copy.rect = menuRect;
         drawPrimitive(PE_IndicatorButtonDropDown, &copy, painter, widget);
 
@@ -7920,13 +7920,13 @@ bool Style::drawToolButtonComplexControl(const QStyleOptionComplex *option, QPai
         copy.state &= ~State_On;
         drawPrimitive(PE_IndicatorArrowDown, &copy, painter, widget);
 
-    } else if (menuStyle == BreezePrivate::ToolButtonMenuArrowStyle::InlineSmall || menuStyle == BreezePrivate::ToolButtonMenuArrowStyle::InlineLarge) {
+    } else if (menuStyle == KlassyPrivate::ToolButtonMenuArrowStyle::InlineSmall || menuStyle == KlassyPrivate::ToolButtonMenuArrowStyle::InlineLarge) {
         copy.rect = menuRect;
         copy.state &= ~State_MouseOver;
         copy.state &= ~State_Sunken;
         copy.state &= ~State_On;
 
-        if (menuStyle == BreezePrivate::ToolButtonMenuArrowStyle::InlineSmall) {
+        if (menuStyle == KlassyPrivate::ToolButtonMenuArrowStyle::InlineSmall) {
             drawIndicatorArrowPrimitive(ArrowDown, &copy, painter, widget);
         } else {
             if (option->direction == Qt::RightToLeft) {

@@ -11,7 +11,7 @@
 #include "breezedatamap.h"
 #include "breezetabbardata.h"
 
-namespace Breeze
+namespace Klassy
 {
 
 //* stores tabbar hovered action and timeLine

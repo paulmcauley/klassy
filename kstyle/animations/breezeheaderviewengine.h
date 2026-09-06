@@ -10,7 +10,7 @@
 #include "breezedatamap.h"
 #include "breezeheaderviewdata.h"
 
-namespace Breeze
+namespace Klassy
 {
 
 //* stores headerview hovered action and timeLine

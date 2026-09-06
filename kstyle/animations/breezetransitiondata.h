@@ -16,7 +16,7 @@
 #include <QObject>
 #include <QWidget>
 
-namespace Breeze
+namespace Klassy
 {
 
 //* generic data

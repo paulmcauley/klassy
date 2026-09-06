@@ -10,7 +10,7 @@
 
 #include <QObject>
 
-namespace Breeze
+namespace Klassy
 {
 
 //* base class for all animation engines

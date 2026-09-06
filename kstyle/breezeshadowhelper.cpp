@@ -27,8 +27,8 @@
 
 namespace
 {
-using Breeze::CompositeShadowParams;
-using Breeze::ShadowParams;
+using Klassy::CompositeShadowParams;
+using Klassy::ShadowParams;
 
 const CompositeShadowParams s_shadowParams[] = {
     // None
@@ -43,7 +43,7 @@ const CompositeShadowParams s_shadowParams[] = {
     CompositeShadowParams(QPoint(0, 6), ShadowParams(QPoint(0, 0), 24, 0.2), ShadowParams(QPoint(0, -3), 12, 0.1))};
 }
 
-namespace Breeze
+namespace Klassy
 {
 
 //_____________________________________________________

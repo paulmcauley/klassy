@@ -11,7 +11,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 
-namespace Breeze
+namespace Klassy
 {
 
 DecorationButtonPalette::DecorationButtonPalette(DecorationButtonType buttonType)

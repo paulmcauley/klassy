@@ -12,7 +12,7 @@
 #include <KColorScheme>
 #include <QPushButton>
 
-namespace Breeze
+namespace Klassy
 {
 
 TitleBarOpacity::TitleBarOpacity(KSharedConfig::Ptr config, KSharedConfig::Ptr presetsConfig, QObject *parent)

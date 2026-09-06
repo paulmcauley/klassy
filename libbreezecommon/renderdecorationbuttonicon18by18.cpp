@@ -9,7 +9,7 @@
 #include <QPainterPathStroker>
 #include <cmath>
 
-namespace Breeze
+namespace Klassy
 {
 
 RenderDecorationButtonIcon18By18::RenderDecorationButtonIcon18By18(QPainter *painter)
@@ -538,7 +538,7 @@ void RenderDecorationButtonIcon18By18::renderApplicationMenuIcon()
     appMenu->render(m_painter, QRectF(0, 0, 18, 18), QRectF(0, 0, 18, 18));
 }
 
-void RenderDecorationButtonIcon18By18::renderBreezeOriginalContextHelpIcon()
+void RenderDecorationButtonIcon18By18::renderKlassyOriginalContextHelpIcon()
 {
     QPainterPath path;
     path.moveTo(5, 6);
@@ -1162,7 +1162,7 @@ void RenderDecorationButtonIcon18By18::renderTinySquareMinimizeIcon(bool showArr
 }
 
 // For consistency with breeze icon set
-void RenderDecorationButtonIcon18By18::renderKeepBehindIconAsFromBreezeIcons()
+void RenderDecorationButtonIcon18By18::renderKeepBehindIconAsFromKlassyIcons()
 {
     QPen pen = m_painter->pen();
 
@@ -1296,7 +1296,7 @@ void RenderDecorationButtonIcon18By18::renderKeepBehindIconAsFromBreezeIcons()
     }
 }
 
-void RenderDecorationButtonIcon18By18::renderKeepInFrontIconAsFromBreezeIcons()
+void RenderDecorationButtonIcon18By18::renderKeepInFrontIconAsFromKlassyIcons()
 {
     QPen pen = m_painter->pen();
 

@@ -10,7 +10,7 @@
 #include "breezedatamap.h"
 #include "breezespinboxdata.h"
 
-namespace Breeze
+namespace Klassy
 {
 
 //* handle spinbox arrows hover effect

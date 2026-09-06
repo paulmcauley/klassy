@@ -8,7 +8,7 @@
 
 #include "breezegenericdata.h"
 
-namespace Breeze
+namespace Klassy
 {
 
 //* handle widget state (hover/focus/enable) changes

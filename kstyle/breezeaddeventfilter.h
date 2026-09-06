@@ -9,7 +9,7 @@
 #include <QEvent>
 #include <QObject>
 
-namespace Breeze
+namespace Klassy
 {
 
 class AddEventFilter : public QObject

@@ -11,7 +11,7 @@
 #include "ui_buttonsizing.h"
 #include <QDialog>
 
-namespace Breeze
+namespace Klassy
 {
 
 class ButtonSizing : public QDialog

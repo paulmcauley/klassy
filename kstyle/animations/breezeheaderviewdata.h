@@ -9,7 +9,7 @@
 #include "breezeanimationdata.h"
 #include <QHeaderView>
 
-namespace Breeze
+namespace Klassy
 {
 
 //* headerviews

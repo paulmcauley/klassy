@@ -41,7 +41,7 @@
 #include <QTreeView>
 #include <QWindow>
 
-namespace Breeze
+namespace Klassy
 {
 
 //* contrast for arrow and treeline rendering
@@ -1752,7 +1752,7 @@ void Helper::renderViewItemPosition(QPainter *painter,
 {
     painter->save();
     painter->setRenderHint(QPainter::Antialiasing);
-    QFlags<Breeze::Side> sides;
+    QFlags<Klassy::Side> sides;
     const bool reverse = direction == Qt::RightToLeft;
 
     switch (pos) {
@@ -1828,7 +1828,7 @@ QMargins Helper::itemViewItemMargins(const QStyleOptionViewItem *option) const
         margins.setTop(Metrics::ItemView_FirstItemTopMarginHeight);
     }
 
-    // Breeze frame has one extra white pixel
+    // Klassy frame has one extra white pixel
     if (hasFrame) {
         margins -= {1, isFirst ? 1 : 0, 1, 0};
     }

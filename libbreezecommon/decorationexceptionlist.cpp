@@ -11,7 +11,7 @@
 
 #include "decorationexceptionlist.h"
 
-namespace Breeze
+namespace Klassy
 {
 
 //______________________________________________________________

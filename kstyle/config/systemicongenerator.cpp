@@ -21,7 +21,7 @@
 #include <QSvgGenerator>
 #include <QVariantMap>
 
-namespace Breeze
+namespace Klassy
 {
 
 SystemIconGenerator::SystemIconGenerator(InternalSettingsPtr internalSettings)

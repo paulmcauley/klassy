@@ -12,7 +12,7 @@
 
 #include "breezestyleconfigdata.h"
 
-namespace Breeze
+namespace Klassy
 {
 //* keyboard accelerators
 class Mnemonics : public QObject

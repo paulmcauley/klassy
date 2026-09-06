@@ -9,7 +9,7 @@
 #include <QDBusConnection>
 #include <QDBusMessage>
 
-namespace Breeze
+namespace Klassy
 {
 
 class DBusMessages

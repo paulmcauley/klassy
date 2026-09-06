@@ -35,8 +35,8 @@ kconfig_add_kcfg_files(breezecommon_LIB_SRCS breezesettings.kcfgc)
 add_library(klassycommon${QT_MAJOR_VERSION} ${breezecommon_LIB_SRCS})
 
 generate_export_header(klassycommon${QT_MAJOR_VERSION}
-    BASE_NAME breezecommon
-    EXPORT_FILE_NAME breezecommon_export.h)
+    BASE_NAME klassycommon
+    EXPORT_FILE_NAME klassycommon_export.h)
 
 target_link_libraries(klassycommon${QT_MAJOR_VERSION}
     PUBLIC

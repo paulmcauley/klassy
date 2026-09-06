@@ -19,7 +19,7 @@
 #include <QMainWindow>
 #include <QObject>
 
-namespace Breeze
+namespace Klassy
 {
 
 class DecorationSettingsProvider : public QObject

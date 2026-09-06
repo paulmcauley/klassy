@@ -10,7 +10,7 @@
 
 #include <QPainter>
 
-namespace Breeze
+namespace Klassy
 {
 
 class RenderStyleMaterialCentered18By18 : public RenderStyleMaterialDynamic18By18

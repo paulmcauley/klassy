@@ -11,7 +11,7 @@
 
 #include <KColorUtils>
 
-namespace Breeze
+namespace Klassy
 {
 ToolsAreaManager::ToolsAreaManager(std::shared_ptr<Helper> helper)
     : QObject()
@@ -331,7 +331,7 @@ void ToolsAreaManager::unregisterWidget(QWidget *widget)
     }
 }
 
-bool Breeze::ToolsAreaManager::hasHeaderColors()
+bool Klassy::ToolsAreaManager::hasHeaderColors()
 {
     return _colorSchemeHasHeaderColor || _helper->decorationConfig()->matchTitleBarToApplicationColor();
 }

@@ -56,7 +56,7 @@ inline T makeT(std::initializer_list<typename T::key_type> &&reference)
 }
 }
 
-namespace Breeze
+namespace Klassy
 {
 
 //* provide application-wise event filter

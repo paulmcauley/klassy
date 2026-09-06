@@ -6,7 +6,7 @@
 #include <QDir>
 #include <QTextStream>
 
-namespace Breeze
+namespace Klassy
 {
 
 using namespace std;

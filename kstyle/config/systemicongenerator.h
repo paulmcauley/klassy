@@ -9,7 +9,7 @@
 #include "breeze.h"
 #include "decorationcolors.h"
 
-namespace Breeze
+namespace Klassy
 {
 
 class SystemIconGenerator

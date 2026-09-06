@@ -9,7 +9,7 @@
 
 #include "breezeitemmodel.h"
 
-namespace Breeze
+namespace Klassy
 {
 
 //_______________________________________________________________

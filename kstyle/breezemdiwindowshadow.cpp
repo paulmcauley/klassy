@@ -17,7 +17,7 @@
 #include <QPainter>
 #include <QTextStream>
 
-namespace Breeze
+namespace Klassy
 {
 
 //____________________________________________________________________

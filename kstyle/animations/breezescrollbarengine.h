@@ -9,7 +9,7 @@
 #include "breezescrollbardata.h"
 #include "breezewidgetstateengine.h"
 
-namespace Breeze
+namespace Klassy
 {
 
 //* stores scrollbar hovered action and timeLine

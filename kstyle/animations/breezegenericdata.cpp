@@ -6,7 +6,7 @@
 
 #include "breezegenericdata.h"
 
-namespace Breeze
+namespace Klassy
 {
 
 //______________________________________________

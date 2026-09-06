@@ -8,7 +8,7 @@
 
 #include "breezewidgetstatedata.h"
 
-namespace Breeze
+namespace Klassy
 {
 
 //* Enable data

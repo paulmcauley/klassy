@@ -6,7 +6,7 @@
 
 #include "stylefluent.h"
 
-namespace Breeze
+namespace Klassy
 {
 
 void RenderStyleFluent18By18::renderMaximizeIcon()

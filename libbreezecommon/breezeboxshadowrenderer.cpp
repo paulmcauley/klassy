@@ -22,7 +22,7 @@
 #include <QPainter>
 #include <QtMath>
 
-namespace Breeze
+namespace Klassy
 {
 
 static inline int calculateBlurRadius(qreal stdDev)
@@ -340,4 +340,4 @@ QSize BoxShadowRenderer::calculateMinimumShadowTextureSize(const QSize &boxSize,
     return boxSize + 2 * calculateBlurExtent(radius) + QSize(qAbs(offset.x()), qAbs(offset.y()));
 }
 
-} // namespace Breeze
+} // namespace Klassy

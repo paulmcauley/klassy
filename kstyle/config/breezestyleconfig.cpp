@@ -20,11 +20,11 @@
 extern "C" {
 Q_DECL_EXPORT QWidget *allocate_kstyle_config(QWidget *parent)
 {
-    return new Breeze::StyleConfig(parent);
+    return new Klassy::StyleConfig(parent);
 }
 }
 
-namespace Breeze
+namespace Klassy
 {
 
 //__________________________________________________________________

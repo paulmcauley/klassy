@@ -22,7 +22,7 @@
 #include <QMenu>
 #include <QVector>
 
-namespace Breeze
+namespace Klassy
 {
 //___________________________________________________________
 BlurHelper::BlurHelper(const std::shared_ptr<Helper> &helper)

@@ -11,7 +11,7 @@
 #include "ui_windowoutlinestyle.h"
 #include <QDialog>
 
-namespace Breeze
+namespace Klassy
 {
 
 class WindowOutlineStyle : public QDialog

@@ -11,7 +11,7 @@
 #include "ui_systemicongeneration.h"
 #include <QDialog>
 
-namespace Breeze
+namespace Klassy
 {
 
 class SystemIconGeneration : public QDialog

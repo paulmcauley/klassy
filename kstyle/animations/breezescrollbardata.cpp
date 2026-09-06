@@ -12,7 +12,7 @@
 
 Q_GUI_EXPORT QStyleOptionSlider qt_qscrollbarStyleOption(QScrollBar *);
 
-namespace Breeze
+namespace Klassy
 {
 
 //______________________________________________

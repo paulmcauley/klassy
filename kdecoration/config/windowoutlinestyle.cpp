@@ -12,7 +12,7 @@
 #include <KColorScheme>
 #include <QPushButton>
 
-namespace Breeze
+namespace Klassy
 {
 
 WindowOutlineStyle::WindowOutlineStyle(KSharedConfig::Ptr config, KSharedConfig::Ptr presetsConfig, QObject *parent)

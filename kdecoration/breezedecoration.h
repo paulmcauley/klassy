@@ -32,7 +32,7 @@ class DecorationButton;
 class DecorationButtonGroup;
 }
 
-namespace Breeze
+namespace Klassy
 {
 
 enum struct ButtonBackgroundType {
@@ -444,4 +444,4 @@ bool Decoration::hideTitleBar() const
     }
     return hide;
 }
-} // end Breeze namespace
+} // end Klassy namespace

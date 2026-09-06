@@ -15,7 +15,7 @@
 #include <KSharedConfig>
 
 //* QDialog used to commit selected files
-namespace Breeze
+namespace Klassy
 {
 
 class ExceptionListWidget : public QWidget
@@ -108,7 +108,7 @@ private:
     ExceptionModel m_model;
 
     //* ui
-    Ui_BreezeExceptionListWidget m_ui;
+    Ui_KlassyExceptionListWidget m_ui;
 
     //* changed state
     bool m_changed = false;

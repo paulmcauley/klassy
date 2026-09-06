@@ -37,7 +37,7 @@
 void initKlassydecorationConfigQrc();
 void cleanupKlassydecorationConfigQrc();
 
-namespace Breeze
+namespace Klassy
 {
 
 enum struct LockIconState {
@@ -138,7 +138,7 @@ protected:
 
 private:
     //* ui
-    Ui_BreezeConfigurationUI m_ui;
+    Ui_KlassyConfigurationUI m_ui;
 
     QPushButton *m_presetsButton;
 

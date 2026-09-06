@@ -8,7 +8,7 @@
 #include <KColorUtils>
 #include <KStatefulBrush>
 
-namespace Breeze
+namespace Klassy
 {
 
 QPalette DecorationColors::s_cachedKdeGlobalPalette;

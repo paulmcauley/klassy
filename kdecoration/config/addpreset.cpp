@@ -6,7 +6,7 @@
 
 #include "addpreset.h"
 
-namespace Breeze
+namespace Klassy
 {
 
 AddPreset::AddPreset(QWidget *parent)

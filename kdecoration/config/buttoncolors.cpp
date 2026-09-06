@@ -25,7 +25,7 @@
 #include <QWindow>
 #include <memory>
 
-namespace Breeze
+namespace Klassy
 {
 
 ButtonColors::ButtonColors(KSharedConfig::Ptr config, KSharedConfig::Ptr presetsConfig, QObject *parent)
