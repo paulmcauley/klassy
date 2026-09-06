@@ -28,85 +28,89 @@ public:
      * @brief Factory to return a pointer to a new inherited object to render in the specified style.
      * @param internalSettings An InternalSettingsPtr from the Window decoration config
      * @param painter A QPainter object already initialised with an 18x18 reference window and pen.
-     * @param fromKstyle Indicates that button is not to be drawn in the title bar, but somewhere else in the UI -- ususally means will be smaller
-     * @param boldButtonIcons When in titlebar this will draw bolder button icons if true
-     * @param iconWidth the unscaled icon width -- used only when the system icon theme is used
-     * @param systemScale the system scale factor (set also for X11 from system scale factor)
-     * @param deviceOffsetFromZeroReference The offset of the top-left of this icon from a zero whole-pixel reference point (in device pixels)
      * @return static std::pair<std::unique_ptr<RenderDecorationButtonIcon>,int> Pointer to a new sub-style object, icon rendering width
      */
-    static std::pair<std::unique_ptr<RenderDecorationButtonIcon>, int> factory(const QSharedPointer<InternalSettings> internalSettings,
-                                                                               QPainter *painter,
-                                                                               const bool fromKstyle = false,
-                                                                               const bool boldButtonIcons = false,
-                                                                               const qreal systemScale = 1,
-                                                                               const QPointF &deviceOffsetFromZeroReference = QPointF(0, 0),
-                                                                               const bool forceEvenSquares = false);
+    static std::pair<std::unique_ptr<RenderDecorationButtonIcon>, int> factory(const QSharedPointer<InternalSettings> internalSettings, QPainter *painter);
 
     virtual ~RenderDecorationButtonIcon();
 
+    /**
+     * @brief Indicates that button is not to be drawn in the title bar, but somewhere else in the UI -- usually means will be smaller
+     */
     void setFromKstyle(bool v)
     {
         m_fromKstyle = v;
     }
 
+    /**
+     * @brief boldButtonIcons When in titlebar this will draw bolder button icons if true
+     */
     void setBoldButtonIcons(bool v)
     {
         m_boldButtonIcons = v;
     }
 
+    /**
+     * @brief systemScale the system scale factor (set also for X11 from system scale factor)
+     */
     void setSystemScale(qreal v)
     {
         m_systemScale = v;
     }
 
+    /**
+     * @brief The offset of the top-left of this icon from a zero whole-pixel reference point (in device pixels)
+     */
     void setDeviceOffsetFromZeroReference(QPointF v)
     {
         m_deviceOffsetFromZeroReference = v;
     }
 
+    /**
+     *  @brief When set, instructs the renderer to try to draw squares at an even device size - can help with centring with small button sizes
+     * which are also forced even
+     */
     void setForceEvenSquares(bool v)
     {
         m_forceEvenSquares = v;
     }
 
+    /**
+     * @brief When outputting icons for GTK and the system, closed pens get filled -- this flag is to convert pen strokes to filled paths to fix this
+     */
     void setStrokeToFilledPath(bool v)
     {
         m_strokeToFilledPath = v;
     }
 
+    /**
+     * @brief indicates the side of the screen on which a panel has a task manager (primary display)
+     */
     void setTaskManagerSide(Side taskManagerSide)
     {
         m_taskManagerSide = taskManagerSide;
     }
 
+    /**
+     * @brief indicates the type of task manager used on a panel on the primary display
+     */
     void setTaskManagerType(TaskManagerType taskManagerType)
     {
         m_taskManagerType = taskManagerType;
     }
 
+    /**
+     * @brief After configuring the RenderDecorationButtonIcon object, call this function to paint with QPainter
+     */
     void renderIcon(DecorationButtonType type, bool checked);
 
 protected:
     /**
      * @brief Constructor
      *
-     * @param internalSettings An InternalSettingsPtr from the Window decoration config
-     * @param painter A QPainter object already initialised with an 18x18 reference window and pen.
-     * @param fromKstyle Indicates that button is not to be drawn in the title bar, but somewhere else in the UI -- usually means will be smaller
-     * @param boldButtonIcons When in titlebar this will draw bolder button icons if true
-     * @param iconWidth the unscaled icon width -- used only when the system icon theme is used
-     * @param systemScale the system scale factor (set also for X11 from system scale factor)
-     * @param deviceOffsetFromZeroReference The offset of the top-left of this icon from a zero whole-pixel reference point (in device pixels)
-     * @param forceEvenSquares When set, instructs the renderer to try to draw squares at an even device size - can help with centring with small button sizes
-     * which are also forced even
+     * @param painter A QPainter object already initialised with a correctly sized (e.g. 18x18) reference window and pen.
      */
-    RenderDecorationButtonIcon(QPainter *painter,
-                               const bool fromKstyle,
-                               const bool boldButtonIcons,
-                               const qreal systemScale,
-                               const QPointF &deviceOffsetFromZeroReference,
-                               const bool forceEvenSquares);
+    RenderDecorationButtonIcon(QPainter *painter);
 
     /**
      * @brief Initialises pen to standardise cap and join styles.
@@ -238,14 +242,14 @@ protected:
     qreal straightLineOpacity();
 
     QPainter *m_painter;
-    bool m_fromKstyle;
-    bool m_boldButtonIcons;
-    qreal m_systemScale; // unlike getting it directly from the paint device, this scale is also set for X11, i.e. not just 1 on X11
+    bool m_fromKstyle = false;
+    bool m_boldButtonIcons = false;
+    qreal m_systemScale = 1.0; // unlike getting it directly from the paint device, this scale is also set for X11, i.e. not just 1 on X11
     qreal m_totalScalingFactor;
-    QPointF m_deviceOffsetFromZeroReference;
+    QPointF m_deviceOffsetFromZeroReference = QPointF(0, 0);
     bool m_forceEvenSquares = false;
     bool m_strokeToFilledPath =
-        false; // When outputting icons for GTK, closed pens get filled -- this flag is to convert pen strokes to filled paths to fix this
+        false; // When outputting icons for GTK and the system, closed pens get filled -- this flag is to convert pen strokes to filled paths to fix this
     Side m_taskManagerSide = SideBottom;
     TaskManagerType m_taskManagerType = TaskManagerType::IconsAndTextTaskManager;
 

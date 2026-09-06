@@ -292,18 +292,7 @@ void Button::drawIcon(QPainter *painter) const
                                      m_d->internalSettings()->forceColorizeSystemIcons() ? QPalette() : c->palette());
         iconRenderer.renderIcon();
     } else {
-        // at loDPI backgrounds are even, therefore need an even icon in such circumstances for correct centring
-        bool forceEvenSquares = (m_isGtkCsdButton || isStandAlone()
-                                 || (m_systemScale <= 1.001
-                                     && (m_d->buttonBackgroundType() == ButtonBackgroundType::Small
-                                         || m_d->internalSettings()->iconSize() < InternalSettings::EnumIconSize::IconLargeMedium)));
-        auto [iconRenderer, localRenderingWidth] = RenderDecorationButtonIcon::factory(m_d->internalSettings(),
-                                                                                       painter,
-                                                                                       false,
-                                                                                       m_boldButtonIcons,
-                                                                                       m_systemScale,
-                                                                                       deviceOffsetDecorationTopLeftToIconTopLeft,
-                                                                                       forceEvenSquares);
+        auto [iconRenderer, localRenderingWidth] = RenderDecorationButtonIcon::factory(m_d->internalSettings(), painter);
 
         qreal scaleFactor = iconWidth / localRenderingWidth;
         /*
@@ -312,6 +301,17 @@ void Button::drawIcon(QPainter *painter) const
         painter->scale(scaleFactor, scaleFactor);
         iconRenderer->setTaskManagerType(g_taskManagerType);
         iconRenderer->setTaskManagerSide(g_taskManagerSide);
+
+        iconRenderer->setBoldButtonIcons(m_boldButtonIcons);
+        iconRenderer->setSystemScale(m_systemScale);
+        iconRenderer->setDeviceOffsetFromZeroReference(deviceOffsetDecorationTopLeftToIconTopLeft);
+
+        // at loDPI backgrounds are even, therefore need an even icon in such circumstances for correct centring
+        bool forceEvenSquares = (m_isGtkCsdButton || isStandAlone()
+                                 || (m_systemScale <= 1.001
+                                     && (m_d->buttonBackgroundType() == ButtonBackgroundType::Small
+                                         || m_d->internalSettings()->iconSize() < InternalSettings::EnumIconSize::IconLargeMedium)));
+        iconRenderer->setForceEvenSquares(forceEvenSquares);
 
         iconRenderer->renderIcon(static_cast<DecorationButtonType>(type()), isChecked());
     }

@@ -22,13 +22,8 @@ public:
      * @param fromKstyle Indicates that button is not to be drawn in the title bar, but somewhere else in the UI -- ususally means will be smaller
      * @param boldButtonIcons When in titlebar this will draw bolder button icons if true
      */
-    RenderStyleArk18By18(QPainter *painter,
-                         const bool fromKstyle,
-                         const bool boldButtonIcons,
-                         const qreal systemScale,
-                         const QPointF &deviceOffsetTitleBarTopLeftToIconTopLeft,
-                         const bool forceEvenSquares)
-        : RenderDecorationButtonIcon18By18(painter, fromKstyle, boldButtonIcons, systemScale, deviceOffsetTitleBarTopLeftToIconTopLeft, forceEvenSquares) { };
+    RenderStyleArk18By18(QPainter *painter)
+        : RenderDecorationButtonIcon18By18(painter) { };
 
     void renderMinimizeIcon() override;
     void renderMaximizeIcon() override;

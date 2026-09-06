@@ -213,12 +213,14 @@ void SystemIconGenerator::generateIconThemeDir(const QString themeDirPath,
                 }
 
                 // paint the icon to SVG
-                auto [iconRenderer,
-                      localRenderingWidth](RenderDecorationButtonIcon::factory(m_internalSettings, painter.get(), false, boldButtons, m_scales.at(i)));
+                auto [iconRenderer, localRenderingWidth](RenderDecorationButtonIcon::factory(m_internalSettings, painter.get()));
                 painter->setWindow(0, 0, localRenderingWidth, localRenderingWidth);
 
                 pen.setWidthF(PenWidth::Symbol * qMax((qreal)1.0, qreal(localRenderingWidth) / iconSizeScaled.width()));
                 painter->setPen(pen);
+
+                iconRenderer->setBoldButtonIcons(boldButtons);
+                iconRenderer->setSystemScale(m_scales.at(i));
                 iconRenderer->setForceEvenSquares(true);
                 iconRenderer->setStrokeToFilledPath(true);
                 iconRenderer->setTaskManagerType(m_taskManagerType);
