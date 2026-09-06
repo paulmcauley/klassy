@@ -30,7 +30,7 @@
 class QSlider;
 class QStyleOptionSlider;
 
-namespace Breeze
+namespace Klassy
 {
 
 //* breeze style helper class.

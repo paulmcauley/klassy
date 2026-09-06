@@ -10,7 +10,7 @@
 
 #include <QPainter>
 
-namespace Breeze
+namespace Klassy
 {
 
 class RenderStyleTraditionalDynamic18By18 : public RenderStyleTraditional18By18

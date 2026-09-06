@@ -9,7 +9,7 @@
 #include "renderdecorationbuttonicon18by18.h"
 #include <QPainter>
 
-namespace Breeze
+namespace Klassy
 {
 
 class RenderStyleArk18By18 : public RenderDecorationButtonIcon18By18

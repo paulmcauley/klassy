@@ -8,7 +8,7 @@
 
 #include <QEvent>
 
-namespace Breeze
+namespace Klassy
 {
 
 //____________________________________________________________

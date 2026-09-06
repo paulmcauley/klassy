@@ -15,7 +15,7 @@
 tilesets are collections of stretchable pixmaps corresponding to a given widget corners, sides, and center.
 corner pixmaps are never stretched. center pixmaps are
 */
-namespace Breeze
+namespace Klassy
 {
 class TileSet
 {
@@ -108,4 +108,4 @@ private:
 };
 }
 
-Q_DECLARE_OPERATORS_FOR_FLAGS(Breeze::TileSet::Tiles)
+Q_DECLARE_OPERATORS_FOR_FLAGS(Klassy::TileSet::Tiles)

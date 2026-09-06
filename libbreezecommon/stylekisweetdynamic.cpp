@@ -8,7 +8,7 @@
 #include <cmath>
 #include <numbers>
 
-namespace Breeze
+namespace Klassy
 {
 
 void RenderStyleKisweetDynamic18By18::renderCloseIcon()

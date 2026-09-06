@@ -13,7 +13,7 @@
 #include "breezelistmodel.h"
 #include "breezesettings.h"
 
-namespace Breeze
+namespace Klassy
 {
 
 //* qlistview for object counters

@@ -11,7 +11,7 @@
 #include "ui_titlebaropacity.h"
 #include <QDialog>
 
-namespace Breeze
+namespace Klassy
 {
 
 class TitleBarOpacity : public QDialog

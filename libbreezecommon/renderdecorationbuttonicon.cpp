@@ -22,10 +22,10 @@
 #include <algorithm>
 #include <cmath>
 
-namespace Breeze
+namespace Klassy
 {
 
-std::pair<std::unique_ptr<RenderDecorationButtonIcon>, int> RenderDecorationButtonIcon::factory(const QSharedPointer<Breeze::InternalSettings> internalSettings,
+std::pair<std::unique_ptr<RenderDecorationButtonIcon>, int> RenderDecorationButtonIcon::factory(const QSharedPointer<Klassy::InternalSettings> internalSettings,
                                                                                                 QPainter *painter)
 {
     switch (internalSettings->buttonIconStyle()) {

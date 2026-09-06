@@ -11,8 +11,8 @@
 #define KLASSY_STYLE_DEBUG_MODE 0
 #define KLASSY_QDEBUG_OUTPUT_PATH_RELATIVE_HOME "/Desktop/klassy_debug.txt"
 
-#include "breezecommon_export.h"
 #include "breezesettings.h"
+#include "klassycommon_export.h"
 
 #include <QFlags>
 #include <QList>
@@ -21,15 +21,15 @@
 #include <QSharedPointer>
 #include <QWeakPointer>
 
-namespace Breeze
+namespace Klassy
 {
 
 // COMMON-------------------------------------------------------------------
 
-QString BREEZECOMMON_EXPORT klassyLongVersion();
+QString KLASSYCOMMON_EXPORT klassyLongVersion();
 
 //* standard pen widths
-struct BREEZECOMMON_EXPORT PenWidth {
+struct KLASSYCOMMON_EXPORT PenWidth {
     /* Using 1 instead of slightly more than 1 causes symbols drawn with
      * pen strokes to look skewed. The exact amount added does not matter
      * as long as it isn't too visible. Even with QPen::setCosmetic(true),
@@ -172,7 +172,7 @@ static QStringList windecoExceptionKeys = {
 };
 
 //* corners
-enum BREEZECOMMON_EXPORT Corner {
+enum KLASSYCOMMON_EXPORT Corner {
     CornerTopLeft = 0x1,
     CornerTopRight = 0x2,
     CornerBottomLeft = 0x4,
@@ -187,7 +187,7 @@ enum BREEZECOMMON_EXPORT Corner {
 Q_DECLARE_FLAGS(Corners, Corner)
 
 //* sides
-enum BREEZECOMMON_EXPORT Side {
+enum KLASSYCOMMON_EXPORT Side {
     SideLeft = 0x1,
     SideTop = 0x2,
     SideRight = 0x4,
@@ -251,7 +251,7 @@ using ScopedPointer = QScopedPointer<T, QScopedPointerPodDeleter>;
 //@}
 
 //* animation mode
-enum BREEZECOMMON_EXPORT AnimationMode {
+enum KLASSYCOMMON_EXPORT AnimationMode {
     AnimationNone = 0,
     AnimationHover = 0x1,
     AnimationFocus = 0x2,
@@ -262,7 +262,7 @@ enum BREEZECOMMON_EXPORT AnimationMode {
 Q_DECLARE_FLAGS(AnimationModes, AnimationMode)
 
 //* checkbox state
-enum BREEZECOMMON_EXPORT CheckBoxState {
+enum KLASSYCOMMON_EXPORT CheckBoxState {
     CheckOff,
     CheckPartial,
     CheckOn,
@@ -270,14 +270,14 @@ enum BREEZECOMMON_EXPORT CheckBoxState {
 };
 
 //* radio button state
-enum BREEZECOMMON_EXPORT RadioButtonState {
+enum KLASSYCOMMON_EXPORT RadioButtonState {
     RadioOff,
     RadioOn,
     RadioAnimated,
 };
 
 //* arrow orientation
-enum BREEZECOMMON_EXPORT ArrowOrientation {
+enum KLASSYCOMMON_EXPORT ArrowOrientation {
     ArrowNone,
     ArrowUp,
     ArrowDown,
@@ -286,6 +286,6 @@ enum BREEZECOMMON_EXPORT ArrowOrientation {
 };
 }
 
-Q_DECLARE_OPERATORS_FOR_FLAGS(Breeze::AnimationModes)
-Q_DECLARE_OPERATORS_FOR_FLAGS(Breeze::Corners)
-Q_DECLARE_OPERATORS_FOR_FLAGS(Breeze::Sides)
+Q_DECLARE_OPERATORS_FOR_FLAGS(Klassy::AnimationModes)
+Q_DECLARE_OPERATORS_FOR_FLAGS(Klassy::Corners)
+Q_DECLARE_OPERATORS_FOR_FLAGS(Klassy::Sides)

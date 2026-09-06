@@ -6,7 +6,7 @@
 
 #include "breezespinboxdata.h"
 
-namespace Breeze
+namespace Klassy
 {
 
 //________________________________________________

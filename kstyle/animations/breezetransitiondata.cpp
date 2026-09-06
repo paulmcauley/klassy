@@ -10,7 +10,7 @@
 
 #include "breezetransitiondata.h"
 
-namespace Breeze
+namespace Klassy
 {
 
 //_________________________________________________________________

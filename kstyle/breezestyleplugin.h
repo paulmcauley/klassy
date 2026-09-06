@@ -8,7 +8,7 @@
 
 #include <QStylePlugin>
 
-namespace Breeze
+namespace Klassy
 {
 
 class StylePlugin : public QStylePlugin

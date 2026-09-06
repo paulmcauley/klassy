@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>BreezeExceptionDialog</class>
- <widget class="QDialog" name="BreezeExceptionDialog">
+ <class>KlassyExceptionDialog</class>
+ <widget class="QDialog" name="KlassyExceptionDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -322,7 +322,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>accepted()</signal>
-   <receiver>BreezeExceptionDialog</receiver>
+   <receiver>KlassyExceptionDialog</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -338,7 +338,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>
-   <receiver>BreezeExceptionDialog</receiver>
+   <receiver>KlassyExceptionDialog</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">

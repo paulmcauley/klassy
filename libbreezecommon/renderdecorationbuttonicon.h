@@ -7,21 +7,21 @@
 #pragma once
 
 #include "breeze.h"
-#include "breezecommon_export.h"
 #include "breezesettings.h"
+#include "klassycommon_export.h"
 
 #include <QPainter>
 #include <QPainterPath>
 #include <memory>
 
-namespace Breeze
+namespace Klassy
 {
 
 /**
  * @brief Base Class to render decoration button icons in style set by EnumButtonIconStyle.
  *        To be used as common code base across both kdecoration and kstyle.
  */
-class BREEZECOMMON_EXPORT RenderDecorationButtonIcon
+class KLASSYCOMMON_EXPORT RenderDecorationButtonIcon
 {
 public:
     /**

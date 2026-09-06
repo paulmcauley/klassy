@@ -7,8 +7,8 @@
 #pragma once
 
 #include "breeze.h"
-#include "breezecommon_export.h"
 #include "decorationbuttoncolors.h"
+#include "klassycommon_export.h"
 #include <KColorScheme>
 #include <QColor>
 #include <QObject>
@@ -16,12 +16,12 @@
 #include <map>
 #include <memory>
 
-namespace Breeze
+namespace Klassy
 {
 
 class DecorationButtonPalette;
 
-struct BREEZECOMMON_EXPORT DecorationPaletteGroup {
+struct KLASSYCOMMON_EXPORT DecorationPaletteGroup {
     QColor titleBarBase;
     QColor titleBarText;
     QColor windowOutline;
@@ -42,10 +42,10 @@ struct BREEZECOMMON_EXPORT DecorationPaletteGroup {
     QColor positiveSaturated;
 };
 
-extern qreal BREEZECOMMON_EXPORT g_translucentButtonBackgroundsOpacityActive;
-extern qreal BREEZECOMMON_EXPORT g_translucentButtonBackgroundsOpacityInactive;
+extern qreal KLASSYCOMMON_EXPORT g_translucentButtonBackgroundsOpacityActive;
+extern qreal KLASSYCOMMON_EXPORT g_translucentButtonBackgroundsOpacityInactive;
 
-class BREEZECOMMON_EXPORT DecorationColors
+class KLASSYCOMMON_EXPORT DecorationColors
 {
 public:
     /**

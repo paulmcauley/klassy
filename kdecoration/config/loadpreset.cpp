@@ -15,7 +15,7 @@
 #include <QRegularExpression>
 #include <memory>
 
-namespace Breeze
+namespace Klassy
 {
 LoadPreset::LoadPreset(KSharedConfig::Ptr config, KSharedConfig::Ptr presetsConfig, QObject *parent)
     : QDialog(static_cast<ConfigWidget *>(parent)->widget())

@@ -10,7 +10,7 @@
 
 #include <QStyle>
 
-namespace Breeze
+namespace Klassy
 {
 
 //* handles spinbox arrows hover

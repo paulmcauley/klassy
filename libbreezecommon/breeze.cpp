@@ -6,7 +6,7 @@
 
 #include "breeze.h"
 
-namespace Breeze
+namespace Klassy
 {
 
 QString klassyLongVersion()

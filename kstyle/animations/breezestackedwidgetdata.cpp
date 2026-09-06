@@ -10,7 +10,7 @@
 
 #include "breezestackedwidgetdata.h"
 
-namespace Breeze
+namespace Klassy
 {
 
 //______________________________________________________

@@ -8,7 +8,7 @@
 #include <KColorUtils>
 #include <QIcon>
 
-namespace Breeze
+namespace Klassy
 {
 
 QColor ColorTools::getDifferentiatedSaturatedColor(const QColor &inputColor, bool noMandatoryDifferentiate)

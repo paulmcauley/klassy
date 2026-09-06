@@ -10,7 +10,7 @@
 
 #include <QStyle>
 
-namespace Breeze
+namespace Klassy
 {
 
 //* scrollbar data

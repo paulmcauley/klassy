@@ -7,7 +7,7 @@
 #include "stylematerialdynamic.h"
 #include <QPainterPathStroker>
 
-namespace Breeze
+namespace Klassy
 {
 
 void RenderStyleMaterialDynamic18By18::renderCloseIcon()

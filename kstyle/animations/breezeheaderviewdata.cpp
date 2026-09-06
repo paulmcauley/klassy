@@ -9,7 +9,7 @@
 #include <QHoverEvent>
 #include <QTextStream>
 
-namespace Breeze
+namespace Klassy
 {
 
 //______________________________________________

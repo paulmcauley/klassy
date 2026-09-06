@@ -11,7 +11,7 @@
 #include "ui_titlebarspacing.h"
 #include <QDialog>
 
-namespace Breeze
+namespace Klassy
 {
 
 class TitleBarSpacing : public QDialog

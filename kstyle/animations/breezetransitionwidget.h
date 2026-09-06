@@ -17,7 +17,7 @@
 
 #include <cmath>
 
-namespace Breeze
+namespace Klassy
 {
 
 //* temporary widget used to perform smooth transition between one widget state and another

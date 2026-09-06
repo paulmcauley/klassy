@@ -14,7 +14,7 @@
 #include <KColorButton>
 #include <QDialog>
 
-namespace Breeze
+namespace Klassy
 {
 
 struct ColumnsLoaded {
@@ -106,7 +106,7 @@ Q_SIGNALS:
     void changed(bool);
 
 private:
-    QList<Breeze::DecorationButtonPalette *> sortButtonsAsPerKwinConfig(QList<Breeze::DecorationButtonPalette *> inputlist);
+    QList<Klassy::DecorationButtonPalette *> sortButtonsAsPerKwinConfig(QList<Klassy::DecorationButtonPalette *> inputlist);
 
     void generateTableCells(QTableWidget *table);
 

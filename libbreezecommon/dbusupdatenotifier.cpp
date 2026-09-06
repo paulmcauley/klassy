@@ -7,7 +7,7 @@
 #include <QDBusConnection>
 #include <QDBusMessage>
 
-namespace Breeze
+namespace Klassy
 {
 
 DBusUpdateNotifier g_dBusUpdateNotifier;

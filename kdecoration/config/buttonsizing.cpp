@@ -9,7 +9,7 @@
 #include "dbusmessages.h"
 #include "presetsmodel.h"
 
-namespace Breeze
+namespace Klassy
 {
 
 ButtonSizing::ButtonSizing(KSharedConfig::Ptr config, KSharedConfig::Ptr presetsConfig, QObject *parent)

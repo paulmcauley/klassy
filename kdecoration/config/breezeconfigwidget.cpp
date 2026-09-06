@@ -39,7 +39,7 @@ void cleanupKlassydecorationConfigQrc()
     Q_CLEANUP_RESOURCE(klassydecoration_config);
 }
 
-namespace Breeze
+namespace Klassy
 {
 
 //_________________________________________________________

@@ -8,7 +8,7 @@
 
 #include <QObject>
 
-namespace Breeze
+namespace Klassy
 {
 
 class BusyIndicatorData : public QObject

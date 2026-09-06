@@ -11,7 +11,7 @@
 #include "ui_loadpreset.h"
 #include <QDialog>
 
-namespace Breeze
+namespace Klassy
 {
 
 class LoadPreset : public QDialog

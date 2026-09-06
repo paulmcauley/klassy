@@ -9,7 +9,7 @@
 #include <QKeyEvent>
 #include <QWidget>
 
-namespace Breeze
+namespace Klassy
 {
 Mnemonics::Mnemonics()
     : QObject()

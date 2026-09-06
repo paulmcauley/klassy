@@ -43,7 +43,7 @@
 #include <cmath>
 #include <mutex>
 
-K_PLUGIN_FACTORY_WITH_JSON(BreezeDecoFactory, "breeze.json", registerPlugin<Breeze::Decoration>(); registerPlugin<Breeze::Button>();)
+K_PLUGIN_FACTORY_WITH_JSON(KlassyDecoFactory, "breeze.json", registerPlugin<Klassy::Decoration>(); registerPlugin<Klassy::Button>();)
 
 namespace
 {
@@ -103,15 +103,15 @@ const CompositeShadowParams s_shadowParams[] = {
 inline CompositeShadowParams lookupShadowParams(int size)
 {
     switch (size) {
-    case Breeze::InternalSettings::EnumShadowSize::ShadowNone:
+    case Klassy::InternalSettings::EnumShadowSize::ShadowNone:
         return s_shadowParams[0];
-    case Breeze::InternalSettings::EnumShadowSize::ShadowSmall:
+    case Klassy::InternalSettings::EnumShadowSize::ShadowSmall:
         return s_shadowParams[1];
-    case Breeze::InternalSettings::EnumShadowSize::ShadowMedium:
+    case Klassy::InternalSettings::EnumShadowSize::ShadowMedium:
         return s_shadowParams[2];
-    case Breeze::InternalSettings::EnumShadowSize::ShadowLarge:
+    case Klassy::InternalSettings::EnumShadowSize::ShadowLarge:
         return s_shadowParams[3];
-    case Breeze::InternalSettings::EnumShadowSize::ShadowVeryLarge:
+    case Klassy::InternalSettings::EnumShadowSize::ShadowVeryLarge:
         return s_shadowParams[4];
     default:
         // Fallback to the Large size.
@@ -120,7 +120,7 @@ inline CompositeShadowParams lookupShadowParams(int size)
 }
 }
 
-namespace Breeze
+namespace Klassy
 {
 
 KSharedConfig::Ptr Decoration::s_kdeGlobalConfig = KSharedConfig::Ptr();

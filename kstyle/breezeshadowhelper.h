@@ -18,7 +18,7 @@
 #include <QPointer>
 #include <QSet>
 
-namespace Breeze
+namespace Klassy
 {
 
 struct ShadowParams {

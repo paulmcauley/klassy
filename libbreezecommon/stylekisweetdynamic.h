@@ -12,7 +12,7 @@
 #include <QPainter>
 #include <memory>
 
-namespace Breeze
+namespace Klassy
 {
 
 class RenderStyleKisweetDynamic18By18 : public RenderDecorationButtonIcon18By18

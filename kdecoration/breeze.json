@@ -1,6 +1,6 @@
 {
     "KPlugin": {
-        "Description": "Customizable window decorations using the Klassy, Kite, Breeze or Redmond visual styles for the Plasma Desktop",
+        "Description": "Customizable window decorations for the Plasma Desktop",
         "EnabledByDefault": true,
         "Name": "Klassy"
     },

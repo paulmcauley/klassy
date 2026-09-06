@@ -8,7 +8,7 @@
 
 #include "breezeenabledata.h"
 
-namespace Breeze
+namespace Klassy
 {
 
 //____________________________________________________________

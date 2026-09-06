@@ -10,7 +10,7 @@
 
 #include <QTabBar>
 
-namespace Breeze
+namespace Klassy
 {
 
 //* tabbars

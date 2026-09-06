@@ -33,12 +33,12 @@
 
 class QDialogButtonBox;
 
-namespace BreezePrivate
+namespace KlassyPrivate
 {
 class TabBarData;
 }
 
-namespace Breeze
+namespace Klassy
 {
 
 class Animations;
@@ -520,7 +520,7 @@ private:
     std::unique_ptr<SplitterFactory> _splitterFactory;
     std::unique_ptr<ToolsAreaManager> _toolsAreaManager;
     std::unique_ptr<WidgetExplorer> _widgetExplorer;
-    std::unique_ptr<BreezePrivate::TabBarData> _tabBarData;
+    std::unique_ptr<KlassyPrivate::TabBarData> _tabBarData;
 
     //* icon hash
     using IconCache = QHash<StandardPixmap, QIcon>;

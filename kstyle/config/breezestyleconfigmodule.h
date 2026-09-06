@@ -10,7 +10,7 @@
 
 #include <KCModule>
 
-namespace Breeze
+namespace Klassy
 {
 
 //* configuration module

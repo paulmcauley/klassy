@@ -16,7 +16,7 @@
 #include <QCheckBox>
 #include <QMap>
 
-namespace Breeze
+namespace Klassy
 {
 
 class DetectDialog;
@@ -76,7 +76,7 @@ private Q_SLOTS:
     void onOpaqueTitleBarToggled(bool);
 
 private:
-    Ui::BreezeExceptionDialog m_ui;
+    Ui::KlassyExceptionDialog m_ui;
 
     //* internal exception
     InternalSettingsPtr m_exception;

@@ -23,7 +23,7 @@
 #include <KLocalizedString>
 #include <KPluginMetaData>
 
-using namespace Breeze;
+using namespace Klassy;
 struct CommandLineProcessResult {
     enum class Status {
         CommandsProcessedOk,
@@ -40,7 +40,7 @@ int main(int argc, char *argv[])
     KLocalizedString::setApplicationDomain("klassy_style_config");
     QApplication app(argc, argv);
     app.setApplicationName(QStringLiteral("klassy-settings"));
-    app.setApplicationVersion(Breeze::klassyLongVersion());
+    app.setApplicationVersion(Klassy::klassyLongVersion());
 
     QCommandLineParser parser;
     CommandLineProcessResult commandLineResult = processComandLine(app, parser);

@@ -9,7 +9,7 @@
 
 #include <QApplication>
 
-namespace Breeze
+namespace Klassy
 {
 
 //_________________________________________________

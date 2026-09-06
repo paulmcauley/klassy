@@ -11,18 +11,18 @@
 
 #pragma once
 
-#include "breezecommon_export.h"
+#include "klassycommon_export.h"
 
 #include "breeze.h"
 #include "breezesettings.h"
 
 #include <KSharedConfig>
 
-namespace Breeze
+namespace Klassy
 {
 
 //! breeze exceptions list
-class BREEZECOMMON_EXPORT DecorationExceptionList
+class KLASSYCOMMON_EXPORT DecorationExceptionList
 {
 public:
     //! constructor from list

@@ -24,7 +24,7 @@
 #include <QPainterPath>
 #include <QVariantAnimation>
 
-namespace Breeze
+namespace Klassy
 {
 
 using KDecoration3::ColorGroup;
@@ -105,27 +105,27 @@ Button *Button::create(KDecoration3::DecorationButtonType type, KDecoration3::De
         switch (type) {
         case KDecoration3::DecorationButtonType::Close:
             b->setVisible(c->isCloseable());
-            QObject::connect(c, &KDecoration3::DecoratedWindow::closeableChanged, b, &Breeze::Button::setVisible);
+            QObject::connect(c, &KDecoration3::DecoratedWindow::closeableChanged, b, &Klassy::Button::setVisible);
             break;
 
         case KDecoration3::DecorationButtonType::Maximize:
             b->setVisible(c->isMaximizeable());
-            QObject::connect(c, &KDecoration3::DecoratedWindow::maximizeableChanged, b, &Breeze::Button::setVisible);
+            QObject::connect(c, &KDecoration3::DecoratedWindow::maximizeableChanged, b, &Klassy::Button::setVisible);
             break;
 
         case KDecoration3::DecorationButtonType::Minimize:
             b->setVisible(c->isMinimizeable());
-            QObject::connect(c, &KDecoration3::DecoratedWindow::minimizeableChanged, b, &Breeze::Button::setVisible);
+            QObject::connect(c, &KDecoration3::DecoratedWindow::minimizeableChanged, b, &Klassy::Button::setVisible);
             break;
 
         case KDecoration3::DecorationButtonType::ContextHelp:
             b->setVisible(c->providesContextHelp());
-            QObject::connect(c, &KDecoration3::DecoratedWindow::providesContextHelpChanged, b, &Breeze::Button::setVisible);
+            QObject::connect(c, &KDecoration3::DecoratedWindow::providesContextHelpChanged, b, &Klassy::Button::setVisible);
             break;
 
         case KDecoration3::DecorationButtonType::Shade:
             b->setVisible(c->isShadeable());
-            QObject::connect(c, &KDecoration3::DecoratedWindow::shadeableChanged, b, &Breeze::Button::setVisible);
+            QObject::connect(c, &KDecoration3::DecoratedWindow::shadeableChanged, b, &Klassy::Button::setVisible);
             break;
 
         case KDecoration3::DecorationButtonType::Menu:

@@ -8,7 +8,7 @@
 
 #include <QPainter>
 
-namespace Breeze
+namespace Klassy
 {
 
 //___________________________________________________________

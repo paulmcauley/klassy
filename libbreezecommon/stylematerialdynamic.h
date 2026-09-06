@@ -10,7 +10,7 @@
 
 #include <QPainter>
 
-namespace Breeze
+namespace Klassy
 {
 
 class RenderStyleMaterialDynamic18By18 : public RenderDecorationButtonIcon18By18
