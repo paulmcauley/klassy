@@ -2155,8 +2155,11 @@ void ButtonColors::setHorizontalHeaderSectionIcon(DecorationButtonType type, QTa
                                                m_internalSettings->forceColorizeSystemIcons() ? QPalette() : QApplication::palette());
             systemIconRenderer.renderIcon();
         } else {
-            auto [iconRenderer, localRenderingWidth](RenderDecorationButtonIcon::factory(m_internalSettings, painter.get(), true, true, dpr));
+            auto [iconRenderer, localRenderingWidth](RenderDecorationButtonIcon::factory(m_internalSettings, painter.get()));
+            iconRenderer->setFromKstyle(true);
+            iconRenderer->setBoldButtonIcons(true);
             iconRenderer->setForceEvenSquares(true);
+            iconRenderer->setSystemScale(dpr);
             iconRenderer->setTaskManagerType(static_cast<ConfigWidget *>(m_parent)->taskManagerType());
             iconRenderer->setTaskManagerSide(static_cast<ConfigWidget *>(m_parent)->taskManagerSide());
             painter->setViewport(0, 0, 16, 16);

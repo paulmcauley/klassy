@@ -12,13 +12,8 @@
 namespace Breeze
 {
 
-RenderDecorationButtonIcon18By18::RenderDecorationButtonIcon18By18(QPainter *painter,
-                                                                   const bool fromKstyle,
-                                                                   const bool boldButtonIcons,
-                                                                   const qreal systemScale,
-                                                                   const QPointF &deviceOffsetFromZeroReference,
-                                                                   const bool forceEvenSquares)
-    : RenderDecorationButtonIcon(painter, fromKstyle, boldButtonIcons, systemScale, deviceOffsetFromZeroReference, forceEvenSquares)
+RenderDecorationButtonIcon18By18::RenderDecorationButtonIcon18By18(QPainter *painter)
+    : RenderDecorationButtonIcon(painter)
 {
 }
 

@@ -16,13 +16,8 @@ namespace Breeze
 class RenderStyleKite18By18 : public RenderStyleKiteDynamic18By18
 {
 public:
-    RenderStyleKite18By18(QPainter *painter,
-                          const bool fromKstyle,
-                          const bool boldButtonIcons,
-                          const qreal systemScale,
-                          const QPointF &deviceOffsetTitleBarTopLeftToIconTopLeft,
-                          const bool forceEvenSquares)
-        : RenderStyleKiteDynamic18By18(painter, fromKstyle, boldButtonIcons, systemScale, deviceOffsetTitleBarTopLeftToIconTopLeft, forceEvenSquares) { };
+    RenderStyleKite18By18(QPainter *painter)
+        : RenderStyleKiteDynamic18By18(painter) { };
 
     void renderMinimizeIcon() override
     {

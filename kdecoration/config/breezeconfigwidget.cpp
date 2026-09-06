@@ -690,16 +690,18 @@ void ConfigWidget::generateWindowControlPreviewIcon(QSize size, InternalSettings
     int floatingButtonTop = (size.height() * 3 / 4) - (iconSize.height() * 3 / 4);
     int iconSpacing = 14;
 
+    auto internalSettings = InternalSettingsPtr(new InternalSettings());
+    internalSettings->setButtonIconStyle(iconStyle);
+
+    auto [iconRenderer, localRenderingWidth](RenderDecorationButtonIcon::factory(internalSettings, painter.get()));
+    iconRenderer->setTaskManagerType(m_taskManagerType);
+    iconRenderer->setTaskManagerSide(m_taskManagerSide);
+
     bool boldIcons = (m_ui.boldButtonIcons->currentIndex() == InternalSettings::EnumBoldButtonIcons::BoldIconsBold
                       || (m_ui.boldButtonIcons->currentIndex() == InternalSettings::EnumBoldButtonIcons::BoldIconsHiDpiOnly && dpr >= 1.2)
                       || m_ui.boldButtonIcons->currentIndex() == InternalSettings::EnumBoldButtonIcons::BoldIconsActive)
         || (m_ui.boldButtonIcons->currentIndex() == InternalSettings::EnumBoldButtonIcons::BoldIconsActiveHiDpi && dpr >= 1.2);
-    auto internalSettings = InternalSettingsPtr(new InternalSettings());
-    internalSettings->setButtonIconStyle(iconStyle);
-
-    auto [iconRenderer, localRenderingWidth](RenderDecorationButtonIcon::factory(internalSettings, painter.get(), false, boldIcons));
-    iconRenderer->setTaskManagerType(m_taskManagerType);
-    iconRenderer->setTaskManagerSide(m_taskManagerSide);
+    iconRenderer->setBoldButtonIcons(boldIcons);
 
     QPen pen("#bcc1c5");
     pen.setWidthF(PenWidth::Symbol * dpr);

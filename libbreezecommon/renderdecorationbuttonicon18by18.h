@@ -16,12 +16,7 @@ namespace Breeze
 class BREEZECOMMON_EXPORT RenderDecorationButtonIcon18By18 : public RenderDecorationButtonIcon
 {
 protected:
-    RenderDecorationButtonIcon18By18(QPainter *painter,
-                                     const bool fromKstyle,
-                                     const bool boldButtonIcons,
-                                     const qreal systemScale,
-                                     const QPointF &deviceOffsetFromZeroReference,
-                                     const bool forceEvenSquares);
+    RenderDecorationButtonIcon18By18(QPainter *painter);
 
     virtual ~RenderDecorationButtonIcon18By18() = default;
 

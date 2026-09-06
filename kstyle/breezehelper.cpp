@@ -1681,10 +1681,14 @@ void Helper::renderDecorationButton(QPainter *painter,
                                          decorationConfig()->forceColorizeSystemIcons() ? QPalette() : palette);
             iconRenderer.renderIcon();
         } else {
-            auto [iconRenderer, localRenderingWidth] = RenderDecorationButtonIcon::factory(decorationConfig(), painter, true, false, 1, QPointF(0, 0), true);
+            auto [iconRenderer, localRenderingWidth] = RenderDecorationButtonIcon::factory(decorationConfig(), painter);
             pen = painter->pen();
             pen.setWidthF(PenWidth::Symbol * qMax(1.0, qreal(localRenderingWidth) / rect.width()));
             painter->setPen(pen);
+
+            iconRenderer->setFromKstyle(true);
+            iconRenderer->setBoldButtonIcons(false);
+            iconRenderer->setForceEvenSquares(true);
             iconRenderer->renderIcon(buttonType, buttonChecked);
         }
     }
