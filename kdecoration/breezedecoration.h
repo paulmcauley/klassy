@@ -67,7 +67,7 @@ public:
     }
 
     //* caption height
-    qreal captionHeight(const bool nextState, qreal scaledTitleBarTopMargin, qreal scaledTitleBarBottomMargin) const;
+    qreal captionHeight(qreal scaledTitleBarTopMargin, qreal scaledTitleBarBottomMargin, qreal titleBarSeparatorHeight) const;
 
     //*@name active state change animation
     //@{
@@ -214,6 +214,7 @@ private Q_SLOTS:
     {
         updateShadow(false, true);
     }
+    void updateScale();
     void updateNextScale();
 
 protected:
@@ -222,7 +223,7 @@ protected:
 
 private:
     //* return the rect in which caption will be drawn
-    QPair<QRectF, Qt::Alignment> captionRect(bool nextState) const;
+    QPair<QRectF, Qt::Alignment> captionRect() const;
 
     void reconfigureMain(const bool noUpdateShadow = false);
     void updateDecorationColors(const QPalette &clientPalette, QByteArray uuid = "");
