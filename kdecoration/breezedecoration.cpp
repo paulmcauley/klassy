@@ -331,7 +331,6 @@ bool Decoration::init()
     updateTitleBar();
     auto s = settings();
     connect(s.get(), &KDecoration3::DecorationSettings::borderSizeChanged, this, &Decoration::recalculateBorders);
-    connect(s.get(), &KDecoration3::DecorationSettings::borderSizeChanged, this, &Decoration::updateBlur); // for the case when a border with transparency
 
     // a change in font might cause the borders to change
     connect(s.get(), &KDecoration3::DecorationSettings::fontChanged, this, &Decoration::recalculateBorders);
@@ -387,6 +386,7 @@ bool Decoration::init()
     connect(c, &KDecoration3::DecoratedWindow::activeChanged, this, &Decoration::updateBlur);
     connect(this, &KDecoration3::Decoration::bordersChanged, this, &Decoration::updateTitleBar);
     connect(this, &KDecoration3::Decoration::bordersChanged, this, &Decoration::updateButtonsGeometry);
+    connect(this, &KDecoration3::Decoration::bordersChanged, this, &Decoration::updateBlur);
     connect(c, &KDecoration3::DecoratedWindow::adjacentScreenEdgesChanged, this, &Decoration::updateTitleBar);
     connect(c, &KDecoration3::DecoratedWindow::widthChanged, this, &Decoration::updateTitleBar);
     connect(c, &KDecoration3::DecoratedWindow::sizeChanged, this, &Decoration::updateBlur);
