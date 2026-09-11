@@ -274,9 +274,6 @@ private:
     TaskManagerType m_taskManagerType = TaskManagerType::IconsAndTextTaskManager;
     Side m_taskManagerSide = SideBottom;
 
-    //* Whether the paint() method is active
-    bool m_painting = false;
-
     //* Object to return decoration palette colours
     std::unique_ptr<DecorationColors> m_decorationColors;
 
