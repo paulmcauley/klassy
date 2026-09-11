@@ -1298,8 +1298,6 @@ void Decoration::updateButtonsGeometry()
 //________________________________________________________________
 void Decoration::paint(QPainter *painter, const QRectF &repaintRegion)
 {
-    m_painting = true;
-
     // TODO: optimize based on repaintRegion
     auto c = window();
     auto s = settings();
@@ -1339,8 +1337,6 @@ void Decoration::paint(QPainter *painter, const QRectF &repaintRegion)
         painter->drawRect(rect().adjusted(0, 0, -1, -1));
         painter->restore();
     }
-
-    m_painting = false;
 }
 
 void Decoration::calculateWindowShape()
@@ -1678,19 +1674,10 @@ void Decoration::updateShadow(const bool forceUpdateCache, bool noCache)
 {
     auto c = window();
 
-    // if the decoration is painting, abandon setting the shadow.
-    // Setting the shadow at the same time as paint() being executed causes a EGL_BAD_SURFACE error and a SEGFAULT from Plasma 5.26 onwards.
-    if (m_painting) {
-        qWarning("Klassy: paint() occurring at same time as shadow creation for \"%s\" - abandoning setting shadow to prevent EGL_BAD_SURFACE.",
-                 c->caption().toLatin1().data());
-        return;
-    }
-
     // The preset exception may modify the shadow, so in this case there is a "noCache" property set - we don't want to cache the exception shadow as it may
-    // corrupt the shadow cache for normal non-exception decoration windows For shaded windows the shadow/outline has a potentially different shape so do not
+    // corrupt the shadow cache for normal non-exception decoration windows. For shaded windows the shadow has a potentially different shape so do not
     // use the shadow cache when shaded
-    // also don't want to cache the shadow with a partial outline for when it is at a screen edge
-    if (m_internalSettings->property("noCacheException").toBool() || c->isShaded() || isTopEdge() || isRightEdge() || isBottomEdge() || isLeftEdge()) {
+    if (m_internalSettings->property("noCacheException").toBool() || c->isShaded()) {
         noCache = true;
     }
     setWindowOutlineColor();
