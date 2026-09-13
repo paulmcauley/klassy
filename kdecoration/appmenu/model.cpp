@@ -44,7 +44,7 @@
 // std
 #include <utility>
 
-namespace Breeze
+namespace Klassy
 {
 
 class KDBusMenuImporter : public DBusMenuImporter
@@ -357,4 +357,4 @@ void AppMenuModel::processNext()
     }
 }
 
-} // namespace Breeze
+} // namespace Klassy

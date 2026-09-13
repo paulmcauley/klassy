@@ -53,7 +53,7 @@
 
 #include <utility>
 
-namespace Breeze
+namespace Klassy
 {
 
 AppMenuButtonGroup::AppMenuButtonGroup(Decoration *decoration)
@@ -1187,4 +1187,4 @@ void AppMenuButtonGroup::handleHoverMove(const QPointF &pos)
     }
 }
 
-} // namespace Breeze
+} // namespace Klassy

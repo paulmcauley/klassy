@@ -35,7 +35,7 @@
 #include <QTimer>
 #include <QtTypes>
 
-namespace Breeze
+namespace Klassy
 {
 
 class KDBusMenuImporter;
@@ -99,4 +99,4 @@ private:
     Decoration *m_decoration;
 };
 
-} // namespace Breeze
+} // namespace Klassy

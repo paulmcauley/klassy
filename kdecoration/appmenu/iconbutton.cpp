@@ -26,7 +26,7 @@
 #include <QPainter>
 #include <QtMath>
 
-namespace Breeze
+namespace Klassy
 {
 
 AppMenuIconButton::AppMenuIconButton(const DecorationButtonType type, Decoration *decoration, const int buttonIndex, AppMenuButtonGroup *parent)
@@ -157,4 +157,4 @@ bool AppMenuIconButton::isSystemIconAvailable() const
     }
 }
 
-} // namespace Breeze
+} // namespace Klassy
