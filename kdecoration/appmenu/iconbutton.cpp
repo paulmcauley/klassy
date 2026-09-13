@@ -66,7 +66,7 @@ void AppMenuIconButton::drawContent(QPainter *painter, QPointF offsetDecorationT
 
     // Center icon in button
     painter->translate(this->geometry().topLeft() - offsetDecorationTopLeftToContentTopLeft + iconOffset());
-    QPointF deviceOffsetDecorationTopLeftToIconTopLeft = offsetDecorationTopLeftToContentTopLeft * m_devicePixelRatio;
+    QPointF deviceOffsetDecorationTopLeftToIconTopLeft = offsetDecorationTopLeftToContentTopLeft * painter->device()->devicePixelRatioF();
 
     // Setup pen for icon drawing
     QPen pen(foregroundColor());
@@ -89,18 +89,18 @@ void AppMenuIconButton::drawContent(QPainter *painter, QPointF offsetDecorationT
                                      m_d->internalSettings()->forceColorizeSystemIcons() ? QPalette() : c->palette());
         iconRenderer.renderIcon();
     } else {
-        bool boldIcons = this->shouldDrawBoldButtonIcons();
+        auto [iconRenderer, localRenderingWidth] = RenderDecorationButtonIcon::factory(m_d->internalSettings(), painter);
+
+        iconRenderer->setBoldButtonIcons(this->shouldDrawBoldButtonIcons());
+        iconRenderer->setSystemScale(m_systemScale);
+        iconRenderer->setDeviceOffsetFromZeroReference(deviceOffsetDecorationTopLeftToIconTopLeft);
+
         // at loDPI backgrounds are even, therefore need an even icon in such circumstances for correct centring
-        bool forceEvenSquares = (m_devicePixelRatio <= 1.001
+        bool forceEvenSquares = (m_systemScale <= 1.001
                                  && (m_d->buttonBackgroundType() == ButtonBackgroundType::Small
                                      || m_d->internalSettings()->iconSize() < InternalSettings::EnumIconSize::IconLargeMedium));
-        auto [iconRenderer, localRenderingWidth] = RenderDecorationButtonIcon::factory(m_d->internalSettings(),
-                                                                                       painter,
-                                                                                       false,
-                                                                                       boldIcons,
-                                                                                       m_devicePixelRatio,
-                                                                                       deviceOffsetDecorationTopLeftToIconTopLeft,
-                                                                                       forceEvenSquares);
+
+        iconRenderer->setForceEvenSquares(forceEvenSquares);
 
         qreal scaleFactor = iconWidth() / localRenderingWidth;
         /*
@@ -128,12 +128,12 @@ bool AppMenuIconButton::shouldDrawBoldButtonIcons() const
 
     switch (m_d->internalSettings()->boldButtonIcons()) {
     case InternalSettings::EnumBoldButtonIcons::BoldIconsActiveHiDpi:
-        return m_d->window()->isActive() && m_devicePixelRatio > 1.2;
+        return m_d->window()->isActive() && m_systemScale > 1.2;
     case InternalSettings::EnumBoldButtonIcons::BoldIconsActive:
         return m_d->window()->isActive();
     case InternalSettings::EnumBoldButtonIcons::BoldIconsHiDpiOnly:
         // If HiDPI system scaling use bold icons
-        return m_devicePixelRatio > 1.2;
+        return m_systemScale > 1.2;
     case InternalSettings::EnumBoldButtonIcons::BoldIconsBold:
         return true;
     case InternalSettings::EnumBoldButtonIcons::BoldIconsFine:
