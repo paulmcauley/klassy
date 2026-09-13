@@ -10,7 +10,7 @@
 #include <QApplication>
 #include <QKeyEvent>
 
-namespace Breeze
+namespace Klassy
 {
 static constexpr int MAX_SEARCH_RESULTS = 100;
 
