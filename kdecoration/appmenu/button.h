@@ -25,7 +25,7 @@
 
 #include <QVariantAnimation>
 
-namespace Breeze
+namespace Klassy
 {
 
 class AppMenuButtonGroup;
@@ -208,4 +208,4 @@ private:
     bool m_rightmostVisible = false;
 };
 
-} // namespace Breeze
+} // namespace Klassy
