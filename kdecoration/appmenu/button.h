@@ -188,11 +188,11 @@ protected:
     Decoration *m_d;
     const int m_buttonIndex;
     const DecorationButtonType m_type;
-    qreal m_devicePixelRatio = 1;
+    qreal m_systemScale = 1;
     DecorationButtonPalette *m_buttonPalette = nullptr;
 
 private:
-    void setDevicePixelRatio(QPainter *painter);
+    void setSystemScale(QPainter *painter);
     void updateAnimationState(bool hovered);
 
     qreal m_cornerRadius = 0;
