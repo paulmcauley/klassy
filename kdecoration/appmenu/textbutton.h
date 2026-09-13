@@ -22,7 +22,7 @@
 #include <QAction>
 #include <QPointer>
 
-namespace Breeze
+namespace Klassy
 {
 class AppMenuButtonGroup;
 class Decoration;
@@ -106,4 +106,4 @@ private:
     QFont m_font;
 };
 
-} // namespace Breeze
+} // namespace Klassy
