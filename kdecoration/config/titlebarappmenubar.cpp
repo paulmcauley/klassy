@@ -13,7 +13,7 @@
 #include <qnamespace.h>
 #include <qobjectdefs.h>
 
-namespace Breeze
+namespace Klassy
 {
 
 TitleBarAppMenuBar::TitleBarAppMenuBar(KSharedConfig::Ptr config, KSharedConfig::Ptr presetsConfig, QObject *parent)

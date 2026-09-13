@@ -23,7 +23,7 @@
 #include <QApplication>
 #include <QPainter>
 
-namespace Breeze
+namespace Klassy
 {
 
 AppMenuTextButton::AppMenuTextButton(Decoration *decoration, const int buttonIndex, AppMenuButtonGroup *parent)
@@ -96,4 +96,4 @@ void AppMenuTextButton::updateGeometry()
     setTextSize(QSizeF(size.width(), textSize.height()));
 }
 
-} // namespace Breeze
+} // namespace Klassy
