@@ -28,7 +28,7 @@
 #include <QPainterPath>
 #include <QStyle>
 
-namespace Breeze
+namespace Klassy
 {
 
 NavigableMenu::NavigableMenu(QWidget *parent, Decoration *decoration)
@@ -97,4 +97,4 @@ void NavigableMenu::showEvent(QShowEvent *event)
     }
 }
 
-} // namespace Breeze
+} // namespace Klassy

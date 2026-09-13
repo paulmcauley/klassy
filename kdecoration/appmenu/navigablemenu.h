@@ -25,7 +25,7 @@
 #include "breezedecoration.h"
 #include <QMenu>
 
-namespace Breeze
+namespace Klassy
 {
 
 class NavigableMenu : public QMenu
@@ -48,4 +48,4 @@ private:
     Decoration *m_decoration;
 };
 
-} // namespace Breeze
+} // namespace Klassy
