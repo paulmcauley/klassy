@@ -32,7 +32,7 @@
 #include <QApplication>
 #include <QPainter>
 
-namespace Breeze
+namespace Klassy
 {
 
 AppMenuButton::AppMenuButton(DecorationButtonType type, Decoration *decoration, const int buttonIndex, AppMenuButtonGroup *parent)
@@ -316,4 +316,4 @@ void AppMenuButton::forceUnpress()
     setEnabled(wasEnabled);
 }
 
-} // namespace Breeze
+} // namespace Klassy

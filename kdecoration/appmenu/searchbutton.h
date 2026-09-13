@@ -8,7 +8,7 @@
 #include <QTimer>
 #include <QWidgetAction>
 
-namespace Breeze
+namespace Klassy
 {
 class AppMenuButtonGroup;
 
