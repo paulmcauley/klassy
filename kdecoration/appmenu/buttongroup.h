@@ -37,7 +37,7 @@ class QTimer;
 class QStringMatcher;
 class QVariantAnimation;
 
-namespace Breeze
+namespace Klassy
 {
 
 class Decoration;
@@ -379,4 +379,4 @@ private:
     friend class AppMenuButton;
 };
 
-} // namespace Breeze
+} // namespace Klassy

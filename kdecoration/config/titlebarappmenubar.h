@@ -10,7 +10,7 @@
 #include "ui_titlebarappmenubar.h"
 #include <QDialog>
 
-namespace Breeze
+namespace Klassy
 {
 
 class TitleBarAppMenuBar : public QDialog

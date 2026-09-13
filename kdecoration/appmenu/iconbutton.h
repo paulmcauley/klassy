@@ -20,7 +20,7 @@
 #include "appmenu/button.h"
 #include "breeze.h"
 
-namespace Breeze
+namespace Klassy
 {
 
 class AppMenuButtonGroup;
@@ -77,4 +77,4 @@ private:
     QString m_systemIconName;
 };
 
-} // namespace Breeze
+} // namespace Klassy
