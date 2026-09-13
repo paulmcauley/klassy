@@ -124,11 +124,11 @@ void AppMenuButton::paint(QPainter *painter, const QRectF &repaintRegion)
         return;
     }
 
-    setDevicePixelRatio(painter);
+    setSystemScale(painter);
 
     painter->save();
     QRectF backgroundBoundingRect = (QRectF(geometry().topLeft() + QPointF(0, m_verticalBackgroundOffset), m_backgroundVisibleSize));
-    backgroundBoundingRect = KDecoration3::snapToPixelGrid(backgroundBoundingRect, m_devicePixelRatio);
+    backgroundBoundingRect = KDecoration3::snapToPixelGrid(backgroundBoundingRect, painter->device()->devicePixelRatioF());
     painter->setClipRect(backgroundBoundingRect);
     painter->setRenderHints(QPainter::Antialiasing);
     painter->setOpacity(m_opacity * m_expansionOpacity);
@@ -145,7 +145,7 @@ void AppMenuButton::paint(QPainter *painter, const QRectF &repaintRegion)
 
         if (outline.isValid()) {
             QPen pen(outline);
-            pen.setWidthF(PenWidth::Symbol * m_devicePixelRatio);
+            pen.setWidthF(PenWidth::Symbol * m_systemScale);
             pen.setCosmetic(true);
             painter->setPen(pen);
         } else
@@ -157,14 +157,14 @@ void AppMenuButton::paint(QPainter *painter, const QRectF &repaintRegion)
 
         qreal geometryShrinkOffset = PenWidth::Symbol * 1.5;
         if (KWindowSystem::isPlatformX11())
-            geometryShrinkOffset *= m_devicePixelRatio;
+            geometryShrinkOffset *= m_systemScale;
 
         const auto buttonShape = m_d->internalSettings()->appMenuBarButtonShape();
         QRectF backgroundRect = contentRect;
         if (isShapeFullHeight(buttonShape)) {
             backgroundRect.adjust(0, -m_verticalContentOffset, 0, 0);
         }
-        backgroundRect = KDecoration3::snapToPixelGrid(backgroundRect, m_devicePixelRatio);
+        backgroundRect = KDecoration3::snapToPixelGrid(backgroundRect, painter->device()->devicePixelRatioF());
         if (buttonShape == InternalSettings::EnumAppMenuBarButtonShape::IntegratedRoundedRectangle
             || buttonShape == InternalSettings::EnumAppMenuBarButtonShape::IntegratedRoundedRectangleGrouped) {
             backgroundRect.adjust(geometryShrinkOffset, -geometryShrinkOffset, -geometryShrinkOffset, -geometryShrinkOffset);
@@ -288,13 +288,13 @@ QColor AppMenuButton::foregroundColor() const
     }
 }
 
-void AppMenuButton::setDevicePixelRatio(QPainter *painter)
+void AppMenuButton::setSystemScale(QPainter *painter)
 {
     // on X11 Kwin just returns 1.0 for the DPR instead of the correct value, so use the scaling setting directly
     if (KWindowSystem::isPlatformX11())
-        m_devicePixelRatio = m_d->systemScaleFactorX11();
+        m_systemScale = m_d->systemScaleFactorX11();
     else
-        m_devicePixelRatio = painter->device()->devicePixelRatioF();
+        m_systemScale = painter->device()->devicePixelRatioF();
 }
 
 void AppMenuButton::trigger()
