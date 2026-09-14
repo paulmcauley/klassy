@@ -82,7 +82,7 @@ qreal AppMenuTextButton::getTextWidth(bool showMnemonic) const
     const QFontMetricsF fontMetrics(m_font);
     const int flags = showMnemonic ? Qt::TextShowMnemonic : Qt::TextHideMnemonic;
     const QRectF boundingRect = fontMetrics.boundingRect(QRectF(), flags, m_text);
-    const qreal scale = m_d->window()->nextScale();
+    const qreal scale = m_d->window()->scale();
     return qCeil(boundingRect.width() * scale) / scale;
 }
 
