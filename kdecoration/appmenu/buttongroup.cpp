@@ -689,14 +689,14 @@ void AppMenuButtonGroup::updateGeometry()
     if (buttons().isEmpty())
         return;
     const auto internalSettings = m_decoration->internalSettings();
-    const qreal scale = m_decoration->window()->nextScale();
+    const qreal scale = m_decoration->window()->scale();
     const qreal leftOffset = m_decoration->leftButtons()->geometry().right() + internalSettings->buttonSpacingLeft() * scale;
     const qreal rightOffset = (m_decoration->size().width() - m_decoration->rightButtons()->geometry().left()) + internalSettings->buttonSpacingRight() * scale;
 
     const qreal titleBarSeparatorHeight = m_decoration->titleBarSeparatorHeight(scale);
     qreal scaledTitleBarTopMargin, scaledTitleBarBottomMargin, scaledIntegratedRoundedRectangleBottomPadding;
     m_decoration->scaledTitleBarTopBottomMargins(scale, scaledTitleBarTopMargin, scaledTitleBarBottomMargin, scaledIntegratedRoundedRectangleBottomPadding);
-    const qreal captionHeight = m_decoration->captionHeight(true, scaledTitleBarTopMargin, scaledTitleBarBottomMargin);
+    const qreal captionHeight = m_decoration->captionHeight(scaledTitleBarTopMargin, scaledTitleBarBottomMargin, titleBarSeparatorHeight);
 
     const int buttonShape = internalSettings->appMenuBarButtonShape();
     const bool isFullHeight = AppMenuButton::isShapeFullHeight(buttonShape);
@@ -709,7 +709,7 @@ void AppMenuButtonGroup::updateGeometry()
 
     qreal baseButtonHeight;
     if (isFullHeight) {
-        baseButtonHeight = qMax(m_decoration->nextState()->borders().top() - titleBarSeparatorHeight, 0.0);
+        baseButtonHeight = qMax(m_decoration->borderTop() - titleBarSeparatorHeight, 0.0);
         if (buttonShape == InternalSettings::EnumAppMenuBarButtonShape::IntegratedRoundedRectangle
             || buttonShape == InternalSettings::EnumAppMenuBarButtonShape::IntegratedRoundedRectangleGrouped) {
             baseButtonHeight = qMax(baseButtonHeight - scaledIntegratedRoundedRectangleBottomPadding, 0.0);
