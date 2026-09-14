@@ -974,15 +974,6 @@ void Decoration::updateAppMenuBar()
 }
 
 //________________________________________________________________
-qreal Decoration::titleBarHeight() const
-{
-    qreal scale = window()->scale();
-    qreal scaledTitleBarTopMargin, scaledTitleBarBottomMargin, scaledIntegratedRoundedRectangleBottomPadding;
-    scaledTitleBarTopBottomMargins(scale, scaledTitleBarTopMargin, scaledTitleBarBottomMargin, scaledIntegratedRoundedRectangleBottomPadding);
-    return captionHeight(scaledTitleBarTopMargin, scaledTitleBarBottomMargin, titleBarSeparatorHeight(scale));
-}
-
-//________________________________________________________________
 QPoint Decoration::windowPos() const
 {
     if (KWindowSystem::isPlatformX11()) {
@@ -1720,6 +1711,15 @@ void Decoration::calculateIconSizes()
 qreal Decoration::captionHeight(qreal scaledTitleBarTopMargin, qreal scaledTitleBarBottomMargin, qreal titleBarSeparatorHeight) const
 {
     return hideTitleBar() ? borderTop() : borderTop() - scaledTitleBarTopMargin - scaledTitleBarBottomMargin - titleBarSeparatorHeight;
+}
+
+//________________________________________________________________
+qreal Decoration::captionHeight() const
+{
+    qreal scale = window()->scale();
+    qreal scaledTitleBarTopMargin, scaledTitleBarBottomMargin, scaledIntegratedRoundedRectangleBottomPadding;
+    scaledTitleBarTopBottomMargins(scale, scaledTitleBarTopMargin, scaledTitleBarBottomMargin, scaledIntegratedRoundedRectangleBottomPadding);
+    return captionHeight(scaledTitleBarTopMargin, scaledTitleBarBottomMargin, titleBarSeparatorHeight(scale));
 }
 
 //________________________________________________________________
