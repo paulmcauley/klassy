@@ -955,10 +955,10 @@ void Decoration::updateAppMenuBar()
 //________________________________________________________________
 qreal Decoration::titleBarHeight() const
 {
-    qreal scale = window()->nextScale();
+    qreal scale = window()->scale();
     qreal scaledTitleBarTopMargin, scaledTitleBarBottomMargin, scaledIntegratedRoundedRectangleBottomPadding;
     scaledTitleBarTopBottomMargins(scale, scaledTitleBarTopMargin, scaledTitleBarBottomMargin, scaledIntegratedRoundedRectangleBottomPadding);
-    return captionHeight(true, scaledTitleBarTopMargin, scaledTitleBarBottomMargin);
+    return captionHeight(scaledTitleBarTopMargin, scaledTitleBarBottomMargin, titleBarSeparatorHeight(scale));
 }
 
 //________________________________________________________________
