@@ -73,8 +73,8 @@ QSizeF AppMenuTextButton::getTextSize() const
     }
 
     const qreal textWidth = getTextWidth(false);
-    const qreal titleBarHeight = m_d->titleBarHeight();
-    return QSizeF(textWidth, titleBarHeight);
+    const qreal captionHeight = m_d->captionHeight();
+    return QSizeF(textWidth, captionHeight);
 }
 
 qreal AppMenuTextButton::getTextWidth(bool showMnemonic) const
