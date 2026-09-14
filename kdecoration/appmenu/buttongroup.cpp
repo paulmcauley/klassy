@@ -721,10 +721,7 @@ void AppMenuButtonGroup::updateGeometry()
     const qreal realButtonHeight = qMax(captionHeight, baseButtonHeight) + topOffset * 2;
     const qreal iconTranslation = (m_decoration->smallButtonPaddedSize() - m_decoration->iconSize()) / 2;
     const QPointF iconOffset = {iconTranslation, iconTranslation + (realButtonHeight - contentOffset - m_decoration->smallButtonPaddedSize()) / 2};
-    QRectF availableRect(leftOffset,
-                         0,
-                         m_decoration->size().width() - leftOffset - rightOffset,
-                         m_decoration->titleBarHeight() + contentOffset + topOffset * 2);
+    QRectF availableRect(leftOffset, 0, m_decoration->size().width() - leftOffset - rightOffset, captionHeight + contentOffset + topOffset * 2);
 
     for (auto *button : buttons()) {
         AppMenuButton *appMenuButton;
@@ -955,7 +952,7 @@ bool AppMenuButtonGroup::eventFilter(QObject *watched, QEvent *event)
                 // This is a workaround for X11 where the decoration does not receive
                 // hover events while a menu is open.
                 QPointF localPos = e->globalPosition() - deco->windowPos();
-                localPos.setY(localPos.y() + deco->titleBarHeight());
+                localPos.setY(localPos.y() + deco->borderTop());
 
                 QHoverEvent hoverEvent(QEvent::HoverMove,
                                        localPos,

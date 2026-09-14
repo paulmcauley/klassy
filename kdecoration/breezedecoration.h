@@ -68,6 +68,7 @@ public:
 
     //* caption height
     qreal captionHeight(qreal scaledTitleBarTopMargin, qreal scaledTitleBarBottomMargin, qreal titleBarSeparatorHeight) const;
+    qreal captionHeight() const;
     void setCaptionOpacity(qreal);
     qreal captionOpacity() const
     {
@@ -104,7 +105,6 @@ public:
     //*@name TitleBarAppMenuBar
     //@{
     void updateAppMenuBar();
-    qreal titleBarHeight() const;
     QPoint windowPos() const;
     //@}
 
