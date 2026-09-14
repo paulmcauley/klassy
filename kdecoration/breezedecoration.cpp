@@ -1740,7 +1740,9 @@ QPair<QRectF, Qt::Alignment> Decoration::captionRect(bool minimumAppMenuBar) con
         qreal leftOffset = m_leftButtons->buttons().isEmpty() ? padding : m_leftButtons->geometry().x() + m_leftButtons->geometry().width() + padding;
         qreal rightOffset = m_rightButtons->buttons().isEmpty() ? padding : size().width() - m_rightButtons->geometry().x() + padding;
 
+        bool appMenuBarVisible = false;
         if (m_appMenuBarButtons && !m_appMenuBarButtons->buttons().isEmpty() && m_appMenuBarButtons->takesSpace()) {
+            appMenuBarVisible = true;
             const qreal menuWidth = padding + (minimumAppMenuBar ? m_appMenuBarButtons->minimumWidth() : m_appMenuBarButtons->visibleWidth());
             if (m_appMenuBarButtons->position() == AppMenuPosition::Right) {
                 rightOffset += menuWidth + m_internalSettings->buttonSpacingRight() * scale;
@@ -1764,6 +1766,10 @@ QPair<QRectF, Qt::Alignment> Decoration::captionRect(bool minimumAppMenuBar) con
 
         default:
         case InternalSettings::EnumTitleAlignment::AlignCenterFullWidth: {
+            if (appMenuBarVisible) {
+                return qMakePair(maxRect, Qt::AlignCenter);
+            }
+
             // full caption rect
             const QRectF fullRect = QRectF(0, yOffset, size().width(), captionHeight);
             QRectF boundingRect = getMaxCaptionSize();
