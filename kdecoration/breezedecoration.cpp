@@ -277,7 +277,7 @@ QColor Decoration::fontColor(bool returnNonAnimatedColor) const
     auto c = window();
 
     if (m_animation->state() == QAbstractAnimation::Running && !returnNonAnimatedColor) {
-        return KColorUtils::mix(m_decorationColors->inactive()->titleBarText, m_decorationColors->active()->titleBarText);
+        return KColorUtils::mix(m_decorationColors->inactive()->titleBarText, m_decorationColors->active()->titleBarText, m_animation->currentValue().toReal());
     } else {
         return c->isActive() ? m_decorationColors->active()->titleBarText : m_decorationColors->inactive()->titleBarText;
     }
@@ -304,8 +304,10 @@ bool Decoration::init()
     m_shadowAnimation->setEasingCurve(QEasingCurve::OutCubic);
     connect(m_shadowAnimation, &QVariantAnimation::valueChanged, this, [this](const QVariant &value) {
         m_shadowOpacity = value.toReal();
-        if (m_shadowAnimation->state() == QAbstractAnimation::Running)
+        if (m_shadowAnimation->state() == QAbstractAnimation::Running) {
+            updateWindowOutline();
             updateShadow();
+        }
     });
 
     m_overrideWindowOutlineFromButtonAnimation->setStartValue(0.0);
@@ -454,6 +456,7 @@ void Decoration::updateAnimationState()
         }
 
     } else {
+        updateWindowOutline();
         updateShadow();
     }
 
@@ -1679,7 +1682,6 @@ void Decoration::updateShadow(const bool forceUpdateCache, bool noCache)
     if (m_internalSettings->property("noCacheException").toBool() || c->isShaded()) {
         noCache = true;
     }
-    setWindowOutlineColor();
     // Animated case, no cached shadow object
     if ((m_shadowAnimation->state() == QAbstractAnimation::Running) && (m_shadowOpacity != 0.0) && (m_shadowOpacity != 1.0)) {
         QColor shadowColor = KColorUtils::mix(m_decorationColors->inactive()->shadow, m_decorationColors->active()->shadow, m_shadowOpacity);
@@ -1895,16 +1897,16 @@ void Decoration::setWindowOutlineColor()
                     m_windowOutline = keepAboveBackgroundPress;
                 }
             }
-        } else if (m_animation->state() == QAbstractAnimation::Running) { // get blended colour if animated
+        } else if (m_shadowAnimation->state() == QAbstractAnimation::Running) { // get blended colour if animated
             // deal with animation cases where there is an invalid colour (WindowOutlineNone)
             if (!(windowOutlineActiveFinal.isValid() && windowOutlineInactiveFinal.isValid())) {
                 if (!windowOutlineInactiveFinal.isValid() && windowOutlineActiveFinal.isValid()) {
-                    m_windowOutline = ColorTools::alphaMix(windowOutlineActiveFinal, m_opacity);
+                    m_windowOutline = ColorTools::alphaMix(windowOutlineActiveFinal, m_shadowOpacity);
                 } else if (windowOutlineInactiveFinal.isValid() && !windowOutlineActiveFinal.isValid()) {
-                    m_windowOutline = ColorTools::alphaMix(windowOutlineInactiveFinal, (1.0 - m_opacity));
+                    m_windowOutline = ColorTools::alphaMix(windowOutlineInactiveFinal, (1.0 - m_shadowOpacity));
                 }
             } else { // standard animated case with both valid colours
-                m_windowOutline = KColorUtils::mix(windowOutlineInactiveFinal, windowOutlineActiveFinal, m_opacity);
+                m_windowOutline = KColorUtils::mix(windowOutlineInactiveFinal, windowOutlineActiveFinal, m_shadowOpacity);
             }
         } else { // normal non-animated final colour
             m_windowOutline = c->isActive() ? windowOutlineActiveFinal : windowOutlineInactiveFinal;
