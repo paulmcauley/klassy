@@ -35,7 +35,7 @@ public:
     virtual ~RenderDecorationButtonIcon();
 
     /**
-     * @brief Indicates that button is not to be drawn in the title bar, but somewhere else in the UI -- usually means will be smaller
+     * @brief Sets that button is not to be drawn in the title bar, but somewhere else in the UI -- usually means will be smaller
      */
     void setFromKstyle(bool v)
     {
@@ -84,7 +84,7 @@ public:
     }
 
     /**
-     * @brief indicates the side of the screen on which a panel has a task manager (primary display)
+     * @brief sets the side of the screen on which a panel has a task manager (primary display)
      */
     void setTaskManagerSide(Side taskManagerSide)
     {
@@ -92,11 +92,19 @@ public:
     }
 
     /**
-     * @brief indicates the type of task manager used on a panel on the primary display
+     * @brief sets the type of task manager used on a panel on the primary display
      */
     void setTaskManagerType(TaskManagerType taskManagerType)
     {
         m_taskManagerType = taskManagerType;
+    }
+
+    /**
+     * @brief Sets whether the button is on the left or right buttonGroup. true is left, false is right
+     */
+    void setLeftButtonGroup(bool v)
+    {
+        m_leftButtonGroup = v;
     }
 
     /**
@@ -252,6 +260,7 @@ protected:
         false; // When outputting icons for GTK and the system, closed pens get filled -- this flag is to convert pen strokes to filled paths to fix this
     Side m_taskManagerSide = SideBottom;
     TaskManagerType m_taskManagerType = TaskManagerType::IconsAndTextTaskManager;
+    bool m_leftButtonGroup = false;
 
     //* how much to factor the pen width for a bold restore button
     static constexpr qreal m_overlappingWindowsBoldPenWidthFactor = 1.5;

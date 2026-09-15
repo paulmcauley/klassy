@@ -68,6 +68,11 @@ public:
     void save() override;
     void saveMain(QString saveAsPresetName = QString());
 
+    bool isRightToLeft()
+    {
+        return m_isRightToLeft;
+    }
+
     QIcon lockIcon(LockIconState state)
     {
         switch (state) {
@@ -159,6 +164,8 @@ private:
 
     bool m_processingDefaults = false;
     bool m_loading = false;
+
+    bool m_isRightToLeft = false;
 
     //* dialogs behind button
     SystemIconGeneration *m_systemIconGenerationDialog;

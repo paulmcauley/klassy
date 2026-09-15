@@ -46,30 +46,57 @@ void RenderStyleMaterialDynamic18By18::renderFloatIcon()
 
     QRectF square;
     QPolygonF arrow;
+    if (m_leftButtonGroup) {
+        QPointF squareBottomRight;
+        QPointF arrowTopRight;
+        if (isOddPenWidth) {
+            squareBottomRight =
+                snapToNearestPixel(QPointF(maximizeRect.left() + squareWidth, maximizeRect.top() + squareWidth), SnapPixel::ToHalf, SnapPixel::ToHalf);
+            arrowTopRight = snapToNearestPixel(QPointF(maximizeRect.right(), maximizeRect.bottom() - arrowLength), SnapPixel::ToHalf, SnapPixel::ToHalf);
+        } else {
+            squareBottomRight =
+                snapToNearestPixel(QPointF(maximizeRect.left() + squareWidth, maximizeRect.top() + squareWidth), SnapPixel::ToWhole, SnapPixel::ToWhole);
+            arrowTopRight = snapToNearestPixel(QPointF(maximizeRect.right(), maximizeRect.bottom() - arrowLength), SnapPixel::ToWhole, SnapPixel::ToWhole);
+        }
 
-    QPointF squareTopLeft;
-    QPointF arrowTopLeft;
-    if (isOddPenWidth) {
-        squareTopLeft = snapToNearestPixel(QPointF(maximizeRect.right() - squareWidth, maximizeRect.top()), SnapPixel::ToHalf, SnapPixel::ToHalf);
-        arrowTopLeft = snapToNearestPixel(QPointF(maximizeRect.left(), maximizeRect.bottom() - arrowLength), SnapPixel::ToHalf, SnapPixel::ToHalf);
-    } else {
-        squareTopLeft = snapToNearestPixel(QPointF(maximizeRect.right() - squareWidth, maximizeRect.top()), SnapPixel::ToWhole, SnapPixel::ToWhole);
-        arrowTopLeft = snapToNearestPixel(QPointF(maximizeRect.left(), maximizeRect.bottom() - arrowLength), SnapPixel::ToWhole, SnapPixel::ToWhole);
-    }
+        // qreal squareWidthSnapped =squareBottomRight.x() - maximizeRect.left();
+        square = {maximizeRect.topLeft(), squareBottomRight};
 
-    qreal squareWidthSnapped = maximizeRect.right() - squareTopLeft.x();
-    QPointF squareBottomRight(maximizeRect.right(), maximizeRect.top() + squareWidthSnapped);
-    square = {squareTopLeft, squareBottomRight};
+        qreal arrowWidthSnapped = maximizeRect.bottom() - arrowTopRight.y();
+        QPointF arrowBottomLeft(maximizeRect.right() - arrowWidthSnapped, maximizeRect.bottom());
+        arrow << arrowTopRight << maximizeRect.bottomRight() << arrowBottomLeft;
 
-    qreal arrowWidthSnapped = maximizeRect.bottom() - arrowTopLeft.y();
-    QPointF arrowBottomRight(maximizeRect.left() + arrowWidthSnapped, maximizeRect.bottom());
-    arrow << arrowTopLeft << maximizeRect.bottomLeft() << arrowBottomRight;
+        // shrink square if gap between square and arrow is too small
+        qreal localPenWidth = penWidthToLocal(pen);
+        qreal onePixelLocal = convertDevicePixelsToLocal(1);
+        if ((arrow[0].x() - square.right() - localPenWidth) < onePixelLocal) {
+            square.setBottomRight(QPointF(square.right() - onePixelLocal, square.bottom() - onePixelLocal));
+        }
+    } else { // normal right button group
+        QPointF squareTopLeft;
+        QPointF arrowTopLeft;
+        if (isOddPenWidth) {
+            squareTopLeft = snapToNearestPixel(QPointF(maximizeRect.right() - squareWidth, maximizeRect.top()), SnapPixel::ToHalf, SnapPixel::ToHalf);
+            arrowTopLeft = snapToNearestPixel(QPointF(maximizeRect.left(), maximizeRect.bottom() - arrowLength), SnapPixel::ToHalf, SnapPixel::ToHalf);
+        } else {
+            squareTopLeft = snapToNearestPixel(QPointF(maximizeRect.right() - squareWidth, maximizeRect.top()), SnapPixel::ToWhole, SnapPixel::ToWhole);
+            arrowTopLeft = snapToNearestPixel(QPointF(maximizeRect.left(), maximizeRect.bottom() - arrowLength), SnapPixel::ToWhole, SnapPixel::ToWhole);
+        }
 
-    // shrink square if gap between square and arrow is too small
-    qreal localPenWidth = penWidthToLocal(pen);
-    qreal onePixelLocal = convertDevicePixelsToLocal(1);
-    if ((square.left() - arrow[0].x() - localPenWidth) < onePixelLocal) {
-        square.setBottomLeft(QPointF(square.left() + onePixelLocal, square.bottom() - onePixelLocal));
+        qreal squareWidthSnapped = maximizeRect.right() - squareTopLeft.x();
+        QPointF squareBottomRight(maximizeRect.right(), maximizeRect.top() + squareWidthSnapped);
+        square = {squareTopLeft, squareBottomRight};
+
+        qreal arrowWidthSnapped = maximizeRect.bottom() - arrowTopLeft.y();
+        QPointF arrowBottomRight(maximizeRect.left() + arrowWidthSnapped, maximizeRect.bottom());
+        arrow << arrowTopLeft << maximizeRect.bottomLeft() << arrowBottomRight;
+
+        // shrink square if gap between square and arrow is too small
+        qreal localPenWidth = penWidthToLocal(pen);
+        qreal onePixelLocal = convertDevicePixelsToLocal(1);
+        if ((square.left() - arrow[0].x() - localPenWidth) < onePixelLocal) {
+            square.setBottomLeft(QPointF(square.left() + onePixelLocal, square.bottom() - onePixelLocal));
+        }
     }
 
     squarePath.addRect(square);

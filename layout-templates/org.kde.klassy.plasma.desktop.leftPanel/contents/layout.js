@@ -62,7 +62,3 @@ digitalclock.currentConfigGroup = ["Appearance"];
 digitalclock.writeConfig("customDateFormat", "ddd-d");
 digitalclock.writeConfig("dateFormat", "custom");
 panel.addWidget("org.kde.plasma.showdesktop");
-
-const kwinConfig = ConfigFile('kwinrc');
-kwinConfig.group = 'Effect-windowview';
-kwinConfig.writeEntry('BorderActivateAll', '5'); //present windows all desktops bottom-left

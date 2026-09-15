@@ -287,6 +287,9 @@ QColor Decoration::fontColor(bool returnNonAnimatedColor) const
 bool Decoration::init()
 {
     auto c = window();
+
+    m_isRightToLeft = (QGuiApplication::layoutDirection() == Qt::LayoutDirection::RightToLeft);
+
     reconfigureMain(true);
     
     // active state change animation
@@ -993,11 +996,19 @@ void Decoration::updateButtonsGeometry()
             verticalIconOffsetNormal = buttonTopMargin + qreal(captionHeight - m_smallButtonPaddedSize) / 2;
         }
 
-        buttonSpacingLeft = KDecoration3::snapToPixelGrid(m_x11Scale * m_internalSettings->fullHeightButtonSpacingLeft(), scale);
-        buttonSpacingRight = KDecoration3::snapToPixelGrid(m_x11Scale * m_internalSettings->fullHeightButtonSpacingRight(), scale);
+        buttonSpacingLeft = KDecoration3::snapToPixelGrid(
+            m_x11Scale * (m_isRightToLeft ? m_internalSettings->fullHeightButtonSpacingRight() : m_internalSettings->fullHeightButtonSpacingLeft()),
+            scale);
+        buttonSpacingRight = KDecoration3::snapToPixelGrid(
+            m_x11Scale * (m_isRightToLeft ? m_internalSettings->fullHeightButtonSpacingLeft() : m_internalSettings->fullHeightButtonSpacingRight()),
+            scale);
 
-        bWidthMarginLeft = KDecoration3::snapToPixelGrid(m_x11Scale * m_internalSettings->fullHeightButtonWidthMarginLeft(), scale);
-        bWidthMarginRight = KDecoration3::snapToPixelGrid(m_x11Scale * m_internalSettings->fullHeightButtonWidthMarginRight(), scale);
+        bWidthMarginLeft = KDecoration3::snapToPixelGrid(
+            m_x11Scale * (m_isRightToLeft ? m_internalSettings->fullHeightButtonWidthMarginRight() : m_internalSettings->fullHeightButtonWidthMarginLeft()),
+            scale);
+        bWidthMarginRight = KDecoration3::snapToPixelGrid(
+            m_x11Scale * (m_isRightToLeft ? m_internalSettings->fullHeightButtonWidthMarginLeft() : m_internalSettings->fullHeightButtonWidthMarginRight()),
+            scale);
         bWidthLeft = m_smallButtonPaddedSize + bWidthMarginLeft;
         bWidthRight = m_smallButtonPaddedSize + bWidthMarginRight;
 
@@ -1009,15 +1020,20 @@ void Decoration::updateButtonsGeometry()
         // do not pixel grid snap icon offsets -- the icon gets snapped at the end anyway, and this keeps icons centred
         verticalIconOffsetNormal = (isTopEdge() ? buttonTopMargin : 0) + qreal(captionHeight - m_smallButtonPaddedSize);
 
-        buttonSpacingLeft = KDecoration3::snapToPixelGrid(m_x11Scale * m_internalSettings->buttonSpacingLeft(), scale);
-        buttonSpacingRight = KDecoration3::snapToPixelGrid(m_x11Scale * m_internalSettings->buttonSpacingRight(), scale);
+        buttonSpacingLeft =
+            KDecoration3::snapToPixelGrid(m_x11Scale * (isRightToLeft() ? m_internalSettings->buttonSpacingRight() : m_internalSettings->buttonSpacingLeft()),
+                                          scale);
+        buttonSpacingRight =
+            KDecoration3::snapToPixelGrid(m_x11Scale * (isRightToLeft() ? m_internalSettings->buttonSpacingLeft() : m_internalSettings->buttonSpacingRight()),
+                                          scale);
 
         bWidthLeft = m_smallButtonPaddedSize;
         bWidthRight = m_smallButtonPaddedSize;
     }
 
-    int leftmostLeftVisibleIndex = -1;
-    int rightmostLeftVisibleIndex = -1;
+    int firstLeftVisibleIndex = -1;
+    int lastLeftVisibleIndex = -1;
+
     int numLeftButtons = m_leftButtons->buttons().count();
     bool menuPresentBefore = false;
     bool spacerPresentBefore = false;
@@ -1064,28 +1080,28 @@ void Decoration::updateButtonsGeometry()
 
         button->setLeftButtonVisible(false);
         button->setRightButtonVisible(false);
-        button->setLeftmostLeftVisible(false);
+        m_isRightToLeft ? button->setRightmostLeftVisible(false) : button->setLeftmostLeftVisible(false);
         button->setVisibleAfterMenu(false);
         button->setVisibleBeforeMenu(false);
-        button->setRightmostLeftVisible(false);
+        m_isRightToLeft ? button->setLeftmostLeftVisible(false) : button->setRightmostLeftVisible(false);
         button->setVisibleAfterSpacer(false);
         button->setVisibleBeforeSpacer(false);
         // determine leftmost left visible and rightmostLeftVisible
         if (button->isVisible() && (button->isEnabled() || button->type() == KDecoration3::DecorationButtonType::Spacer)) {
             button->setLeftButtonVisible(true);
 
-            if (leftmostLeftVisibleIndex == -1) {
-                leftmostLeftVisibleIndex = i;
-                button->setLeftmostLeftVisible();
+            if (firstLeftVisibleIndex == -1) {
+                firstLeftVisibleIndex = i;
+                m_isRightToLeft ? button->setRightmostLeftVisible() : button->setLeftmostLeftVisible();
             }
 
             if (menuPresentBefore) {
-                button->setVisibleAfterMenu(true);
+                m_isRightToLeft ? button->setVisibleBeforeMenu() : button->setVisibleAfterMenu();
                 menuPresentBefore = false;
             }
 
             if (spacerPresentBefore) {
-                button->setVisibleAfterSpacer(true);
+                m_isRightToLeft ? button->setVisibleBeforeSpacer() : button->setVisibleAfterSpacer();
                 spacerPresentBefore = false;
             }
 
@@ -1095,25 +1111,27 @@ void Decoration::updateButtonsGeometry()
                 spacerPresentBefore = true;
             }
 
-            rightmostLeftVisibleIndex = i;
+            lastLeftVisibleIndex = i;
         }
     }
 
-    if (rightmostLeftVisibleIndex != -1) {
+    if (lastLeftVisibleIndex != -1) {
         bool menuPresentAfter = false;
         bool spacerPresentAfter = false;
-        static_cast<Button *>(m_leftButtons->buttons()[rightmostLeftVisibleIndex])->setRightmostLeftVisible();
+
+        m_isRightToLeft ? static_cast<Button *>(m_leftButtons->buttons()[lastLeftVisibleIndex])->setLeftmostLeftVisible()
+                        : static_cast<Button *>(m_leftButtons->buttons()[lastLeftVisibleIndex])->setRightmostLeftVisible();
 
         for (int i = numLeftButtons - 2; i >= 0; i--) {
             Button *button = static_cast<Button *>(m_leftButtons->buttons()[i]);
             if (button->isVisible() && (button->isEnabled() || button->type() == KDecoration3::DecorationButtonType::Spacer)) {
                 if (menuPresentAfter) {
-                    button->setVisibleBeforeMenu(true);
+                    m_isRightToLeft ? button->setVisibleAfterMenu() : button->setVisibleBeforeMenu();
                     menuPresentAfter = false;
                 }
 
                 if (spacerPresentAfter) {
-                    button->setVisibleBeforeSpacer(true);
+                    m_isRightToLeft ? button->setVisibleAfterSpacer() : button->setVisibleBeforeSpacer();
                     spacerPresentAfter = false;
                 }
 
@@ -1126,8 +1144,8 @@ void Decoration::updateButtonsGeometry()
         }
     }
 
-    int leftmostRightVisibleIndex = -1;
-    int rightmostRightVisibleIndex = -1;
+    int firstRightVisibleIndex = -1;
+    int lastRightVisibleIndex = -1;
     int numRightButtons = m_rightButtons->buttons().count();
     menuPresentBefore = false;
     spacerPresentBefore = false;
@@ -1175,28 +1193,28 @@ void Decoration::updateButtonsGeometry()
 
         button->setRightButtonVisible(false);
         button->setLeftButtonVisible(false);
-        button->setLeftmostRightVisible(false);
+        m_isRightToLeft ? button->setRightmostRightVisible(false) : button->setLeftmostRightVisible(false);
         button->setVisibleAfterMenu(false);
         button->setVisibleBeforeMenu(false);
-        button->setRightmostRightVisible(false);
+        m_isRightToLeft ? button->setLeftmostRightVisible(false) : button->setRightmostRightVisible(false);
         button->setVisibleAfterSpacer(false);
         button->setVisibleBeforeSpacer(false);
         // determine leftmost right visible and rightmostRightVisible
         if (button->isVisible() && (button->isEnabled() || button->type() == KDecoration3::DecorationButtonType::Spacer)) {
             button->setRightButtonVisible(true);
 
-            if (leftmostRightVisibleIndex == -1) {
-                leftmostRightVisibleIndex = i;
-                button->setLeftmostRightVisible();
+            if (firstRightVisibleIndex == -1) {
+                firstRightVisibleIndex = i;
+                m_isRightToLeft ? button->setRightmostRightVisible() : button->setLeftmostRightVisible();
             }
 
             if (menuPresentBefore) {
-                button->setVisibleAfterMenu(true);
+                m_isRightToLeft ? button->setVisibleBeforeMenu() : button->setVisibleAfterMenu();
                 menuPresentBefore = false;
             }
 
             if (spacerPresentBefore) {
-                button->setVisibleAfterSpacer(true);
+                m_isRightToLeft ? button->setVisibleBeforeSpacer() : button->setVisibleAfterSpacer();
                 spacerPresentBefore = false;
             }
 
@@ -1206,25 +1224,26 @@ void Decoration::updateButtonsGeometry()
                 spacerPresentBefore = true;
             }
 
-            rightmostRightVisibleIndex = i;
+            lastRightVisibleIndex = i;
         }
     }
 
-    if (rightmostRightVisibleIndex != -1) {
+    if (lastRightVisibleIndex != -1) {
         bool menuPresentAfter = false;
         bool spacerPresentAfter = false;
-        static_cast<Button *>(m_rightButtons->buttons()[rightmostRightVisibleIndex])->setRightmostRightVisible();
+        m_isRightToLeft ? static_cast<Button *>(m_rightButtons->buttons()[lastRightVisibleIndex])->setLeftmostRightVisible()
+                        : static_cast<Button *>(m_rightButtons->buttons()[lastRightVisibleIndex])->setRightmostRightVisible();
 
         for (int i = numRightButtons - 2; i >= 0; i--) {
             Button *button = static_cast<Button *>(m_rightButtons->buttons()[i]);
             if (button->isVisible() && (button->isEnabled() || button->type() == KDecoration3::DecorationButtonType::Spacer)) {
                 if (menuPresentAfter) {
-                    button->setVisibleBeforeMenu(true);
+                    m_isRightToLeft ? button->setVisibleAfterMenu() : button->setVisibleBeforeMenu();
                     menuPresentAfter = false;
                 }
 
                 if (spacerPresentAfter) {
-                    button->setVisibleBeforeSpacer(true);
+                    m_isRightToLeft ? button->setVisibleAfterSpacer() : button->setVisibleBeforeSpacer();
                     spacerPresentAfter = false;
                 }
 
@@ -1238,7 +1257,8 @@ void Decoration::updateButtonsGeometry()
     }
 
     // left buttons
-    if (!m_leftButtons->buttons().isEmpty() && leftmostLeftVisibleIndex != -1) {
+    int &leftEdgeButtonIndex = m_isRightToLeft ? lastLeftVisibleIndex : firstLeftVisibleIndex;
+    if (!m_leftButtons->buttons().isEmpty() && leftEdgeButtonIndex != -1) {
         // spacing
         m_leftButtons->setSpacing(buttonSpacingLeft);
 
@@ -1250,28 +1270,29 @@ void Decoration::updateButtonsGeometry()
             vPadding = isTopEdge() ? 0 : buttonTopMargin;
         const qreal hPadding = scaledTitleBarLeftMargin;
 
-        auto firstButton = static_cast<Button *>(m_leftButtons->buttons()[leftmostLeftVisibleIndex]);
+        auto leftEdgeButton = static_cast<Button *>(m_leftButtons->buttons()[leftEdgeButtonIndex]);
         if (isLeftEdge()) {
             // add offsets on the side buttons, to preserve padding, but satisfy Fitts law
-            firstButton->setGeometry(QRectF(QPoint(0, 0), QSizeF(firstButton->geometry().width() + hPadding, firstButton->geometry().height())));
+            leftEdgeButton->setGeometry(QRectF(QPoint(0, 0), QSizeF(leftEdgeButton->geometry().width() + hPadding, leftEdgeButton->geometry().height())));
 
-            if (m_buttonBackgroundType == ButtonBackgroundType::FullHeight && firstButton->type() == KDecoration3::DecorationButtonType::Close) {
-                firstButton->setHorizontalIconOffset(horizontalIconOffsetLeftFullHeightClose + hPadding);
+            if (m_buttonBackgroundType == ButtonBackgroundType::FullHeight && leftEdgeButton->type() == KDecoration3::DecorationButtonType::Close) {
+                leftEdgeButton->setHorizontalIconOffset(horizontalIconOffsetLeftFullHeightClose + hPadding);
             } else {
-                firstButton->setHorizontalIconOffset(horizontalIconOffsetLeftButtons + hPadding);
+                leftEdgeButton->setHorizontalIconOffset(horizontalIconOffsetLeftButtons + hPadding);
             }
-            firstButton->setFullHeightVisibleBackgroundOffset(QPointF(hPadding, 0));
+            leftEdgeButton->setFullHeightVisibleBackgroundOffset(QPointF(hPadding, 0));
 
             m_leftButtons->setPos(QPointF(0, vPadding));
 
         } else {
             m_leftButtons->setPos(QPointF(hPadding + borderLeft(), vPadding));
-            firstButton->setFullHeightVisibleBackgroundOffset(QPointF(0, 0));
+            leftEdgeButton->setFullHeightVisibleBackgroundOffset(QPointF(0, 0));
         }
     }
 
     // right buttons
-    if (!m_rightButtons->buttons().isEmpty() && rightmostRightVisibleIndex != -1) {
+    int &rightEdgeButtonIndex = m_isRightToLeft ? firstRightVisibleIndex : lastRightVisibleIndex;
+    if (!m_rightButtons->buttons().isEmpty() && lastRightVisibleIndex != -1) {
         // spacing
         m_rightButtons->setSpacing(buttonSpacingRight);
 
@@ -1283,9 +1304,9 @@ void Decoration::updateButtonsGeometry()
             vPadding = isTopEdge() ? 0 : buttonTopMargin;
         const qreal hPadding = scaledTitleBarRightMargin;
 
-        auto lastButton = static_cast<Button *>(m_rightButtons->buttons()[rightmostRightVisibleIndex]);
+        auto rightEdgeButton = static_cast<Button *>(m_rightButtons->buttons()[rightEdgeButtonIndex]);
         if (isRightEdge()) {
-            lastButton->setGeometry(QRectF(QPoint(0, 0), QSizeF(lastButton->geometry().width() + hPadding, lastButton->geometry().height())));
+            rightEdgeButton->setGeometry(QRectF(QPoint(0, 0), QSizeF(rightEdgeButton->geometry().width() + hPadding, rightEdgeButton->geometry().height())));
 
             m_rightButtons->setPos(QPointF(size().width() - m_rightButtons->geometry().width(), vPadding));
 

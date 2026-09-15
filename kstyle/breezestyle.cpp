@@ -8993,6 +8993,9 @@ QIcon Style::titleBarButtonIcon(StandardPixmap standardPixmap, const QStyleOptio
     // output icon
     QIcon icon;
 
+    const auto direction = option ? option->direction : (widget ? widget->layoutDirection() : QGuiApplication::layoutDirection());
+    bool rightToLeft = direction == Qt::LayoutDirection::RightToLeft;
+
     for (const IconData &iconData : iconTypes) {
         for (const int &iconSize : iconSizes) {
             // create pixmap
@@ -9009,7 +9012,8 @@ QIcon Style::titleBarButtonIcon(StandardPixmap standardPixmap, const QStyleOptio
                                             iconData._cutOutForeground,
                                             iconData._backgroundColor,
                                             iconData._outlineColor,
-                                            palette);
+                                            palette,
+                                            rightToLeft);
 
             painter.end();
 
