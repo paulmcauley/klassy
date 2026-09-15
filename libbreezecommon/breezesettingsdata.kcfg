@@ -969,7 +969,7 @@
   </group>
 
   <group name="TitleBarAppMenuBar">
-    <!-- ______________________________MENU______________________________ -->
+    <!-- ______________________________APP MENUBAR______________________________ -->
 
     <entry name="AppMenuBarBehaviour" type="Enum">
         <choices>
@@ -1002,6 +1002,10 @@
     </entry>
 
     <entry name="AppMenuBarReplacesMenuButton" type="Bool">
+        <default>true</default>
+    </entry>
+
+    <entry name="AppMenuBarDrawBackgroundWindowColored" type="Bool">
         <default>true</default>
     </entry>
 
