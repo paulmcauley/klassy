@@ -95,6 +95,11 @@ public:
         return m_decorationColors.get();
     }
 
+    DecorationColors *appMenuBarWindowColoredColors()
+    {
+        return m_appMenuBarWindowColoredColors.get();
+    }
+
     QColor titleBarColor(bool returnNonAnimatedColor = false) const;
     QColor titleBarSeparatorColor() const;
     QColor fontColor(bool returnNonAnimatedColor = false) const;
@@ -106,6 +111,10 @@ public:
     //@{
     void updateAppMenuBar();
     QPoint windowPos() const;
+    qreal appMenuBarButtonCornerRadius()
+    {
+        return m_appMenuBarButtonCornerRadius;
+    }
     //@}
 
     //
@@ -231,6 +240,9 @@ public:
                                         qreal &scaledIntegratedRoundedRectangleBottomPadding) const;
     qreal titleBarSeparatorHeight(qreal scale) const;
 
+    bool appMenuBarBackgroundWindowColoredEnabled();
+    bool shouldPaintAppMenuBarBackgroundWindowColored();
+
 Q_SIGNALS:
     void reconfigured();
     void buttonUnisonHoveredChanged(bool); // for unison hovering
@@ -316,6 +328,8 @@ private:
 
     void setGlobalLookAndFeelOptions(QString lookAndFeelPackageName);
 
+    void setAppMenuBarButtonCornerRadius();
+
     static KSharedConfig::Ptr s_kdeGlobalConfig;
     InternalSettingsPtr m_internalSettings;
     bool m_isRightToLeft = false;
@@ -328,6 +342,7 @@ private:
 
     //* Object to return decoration palette colours
     std::unique_ptr<DecorationColors> m_decorationColors;
+    std::unique_ptr<DecorationColors> m_appMenuBarWindowColoredColors;
 
     //* active state change animation
     QVariantAnimation *m_animation;
@@ -346,7 +361,9 @@ private:
     qreal m_captionOpacity = 1;
 
     //* frame corner radius, scaled for x11
-    qreal m_scaledCornerRadius = 3.0;
+    qreal m_scaledCornerRadius = 4.0;
+
+    qreal m_appMenuBarButtonCornerRadius = 4.0;
 
     //* border sizes, scaled for x11, snapped
     qreal m_scaledBorderLeftRight = 0;

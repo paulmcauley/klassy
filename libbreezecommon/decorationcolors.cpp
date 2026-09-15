@@ -18,21 +18,39 @@ std::map<DecorationButtonType, DecorationButtonPalette> DecorationColors::s_cach
 QByteArray DecorationColors::s_settingsUpdateUuid = "";
 bool DecorationColors::s_cachedColorsGenerated = false;
 
-DecorationColors::DecorationColors(const bool useCachedPalette, const bool forAppStyle)
-    : m_forAppStyle(forAppStyle)
+QPalette DecorationColors::s_cachedKdeGlobalPaletteAppMenuBarWindowColored;
+std::unique_ptr<DecorationPaletteGroup> DecorationColors::s_cachedDecorationPaletteGroupActiveAppMenuBarWindowColored;
+std::unique_ptr<DecorationPaletteGroup> DecorationColors::s_cachedDecorationPaletteGroupInactiveAppMenuBarWindowColored;
+std::map<DecorationButtonType, DecorationButtonPalette> DecorationColors::s_cachedButtonPalettesAppMenuBarWindowColored;
+QByteArray DecorationColors::s_settingsUpdateUuidAppMenuBarWindowColored = "";
+bool DecorationColors::s_cachedColorsGeneratedAppMenuBarWindowColored = false;
+
+DecorationColors::DecorationColors(const bool useCachedPalette, const DecorationColorsMode mode)
+    : m_mode(mode)
 {
-    if (m_forAppStyle) {
+    if (m_mode == DecorationColorsMode::AppStyle) {
         m_useCachedPalette = false; // different apps can't access the same memory TODO:implement an appStyle cache using shared memory
     } else {
         m_useCachedPalette = useCachedPalette;
     }
 
-    m_basePalette = m_useCachedPalette ? &s_cachedKdeGlobalPalette : &m_nonCachedClientPalette;
-    m_decorationPaletteGroupActive = m_useCachedPalette ? &s_cachedDecorationPaletteGroupActive : &m_nonCachedDecorationPaletteGroupActive;
-    m_decorationPaletteGroupInactive = m_useCachedPalette ? &s_cachedDecorationPaletteGroupInactive : &m_nonCachedDecorationPaletteGroupInactive;
-    m_settingsUpdateUuid = m_useCachedPalette ? &s_settingsUpdateUuid : nullptr;
-    m_colorsGenerated = m_useCachedPalette ? &s_cachedColorsGenerated : &m_nonCachedColorsGenerated;
-    m_buttonPalettes = m_useCachedPalette ? &s_cachedButtonPalettes : &m_nonCachedButtonPalettes;
+    if (mode == DecorationColorsMode::AppMenuBarWindowColored) {
+        m_basePalette = m_useCachedPalette ? &s_cachedKdeGlobalPaletteAppMenuBarWindowColored : &m_nonCachedClientPalette;
+        m_decorationPaletteGroupActive =
+            m_useCachedPalette ? &s_cachedDecorationPaletteGroupActiveAppMenuBarWindowColored : &m_nonCachedDecorationPaletteGroupActive;
+        m_decorationPaletteGroupInactive =
+            m_useCachedPalette ? &s_cachedDecorationPaletteGroupInactiveAppMenuBarWindowColored : &m_nonCachedDecorationPaletteGroupInactive;
+        m_settingsUpdateUuid = m_useCachedPalette ? &s_settingsUpdateUuidAppMenuBarWindowColored : nullptr;
+        m_colorsGenerated = m_useCachedPalette ? &s_cachedColorsGeneratedAppMenuBarWindowColored : &m_nonCachedColorsGenerated;
+        m_buttonPalettes = m_useCachedPalette ? &s_cachedButtonPalettesAppMenuBarWindowColored : &m_nonCachedButtonPalettes;
+    } else {
+        m_basePalette = m_useCachedPalette ? &s_cachedKdeGlobalPalette : &m_nonCachedClientPalette;
+        m_decorationPaletteGroupActive = m_useCachedPalette ? &s_cachedDecorationPaletteGroupActive : &m_nonCachedDecorationPaletteGroupActive;
+        m_decorationPaletteGroupInactive = m_useCachedPalette ? &s_cachedDecorationPaletteGroupInactive : &m_nonCachedDecorationPaletteGroupInactive;
+        m_settingsUpdateUuid = m_useCachedPalette ? &s_settingsUpdateUuid : nullptr;
+        m_colorsGenerated = m_useCachedPalette ? &s_cachedColorsGenerated : &m_nonCachedColorsGenerated;
+        m_buttonPalettes = m_useCachedPalette ? &s_cachedButtonPalettes : &m_nonCachedButtonPalettes;
+    }
 
     if (!*m_decorationPaletteGroupActive) {
         *m_decorationPaletteGroupActive = std::make_unique<DecorationPaletteGroup>();
@@ -41,13 +59,26 @@ DecorationColors::DecorationColors(const bool useCachedPalette, const bool forAp
         *m_decorationPaletteGroupInactive = std::make_unique<DecorationPaletteGroup>();
     }
 
-    if (!m_buttonPalettes->size() && !m_forAppStyle) { // appStyle should generate buttons separately
-        const QList<DecorationButtonType> &coloredButtonTypes = m_forAppStyle ? coloredAppStyleDecorationButtonTypes : coloredWindowDecorationButtonTypes;
+    if (!m_buttonPalettes->size() && m_mode != DecorationColorsMode::AppStyle) { // appStyle should generate buttons separately
+
+        const QList<DecorationButtonType> *coloredButtonTypes;
+        switch (m_mode) {
+        case DecorationColorsMode::AppStyle:
+            coloredButtonTypes = &coloredAppStyleDecorationButtonTypes;
+            break;
+        case DecorationColorsMode::AppMenuBarWindowColored:
+            coloredButtonTypes = &coloredAppMenuBarWindowColoredDecorationButtonTypes;
+            break;
+        default:
+            coloredButtonTypes = &coloredWindowDecorationButtonTypes;
+            break;
+        }
 
         // initialise m_buttonPalettes map so that only generate() needs called later -- ensures the values in the map are at the same memory location
-        for (int i = 0; i < coloredButtonTypes.count(); i++) {
-            DecorationButtonPalette buttonPalette(coloredButtonTypes[i]);
-            m_buttonPalettes->insert({coloredButtonTypes[i], buttonPalette});
+        int numColoredButtonTypes = coloredButtonTypes->count();
+        for (int i = 0; i < numColoredButtonTypes; i++) {
+            DecorationButtonPalette buttonPalette((*coloredButtonTypes)[i]);
+            m_buttonPalettes->insert({(*coloredButtonTypes)[i], buttonPalette});
         }
     }
 }
