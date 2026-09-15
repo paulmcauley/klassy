@@ -344,7 +344,8 @@ public:
                                 const bool cutOutForeground,
                                 const QColor &backgroundColor,
                                 const QColor &outlineColor,
-                                const QPalette &palette) const;
+                                const QPalette &palette,
+                                const bool rightToLeftDirection) const;
 
     //* generic shadow for rounded rectangles
     void renderRoundedRectShadow(QPainter *, const QRectF &, const QColor &, qreal radius) const;

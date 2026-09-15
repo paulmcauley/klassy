@@ -1599,7 +1599,8 @@ void Helper::renderDecorationButton(QPainter *painter,
                                     const bool cutOutForeground,
                                     const QColor &backgroundColor,
                                     const QColor &outlineColor,
-                                    const QPalette &palette) const
+                                    const QPalette &palette,
+                                    const bool rightToLeftDirection) const
 {
     painter->save();
     painter->setViewport(rect.toRect());
@@ -1689,6 +1690,7 @@ void Helper::renderDecorationButton(QPainter *painter,
             iconRenderer->setFromKstyle(true);
             iconRenderer->setBoldButtonIcons(false);
             iconRenderer->setForceEvenSquares(true);
+            iconRenderer->setLeftButtonGroup(rightToLeftDirection);
             iconRenderer->renderIcon(buttonType, buttonChecked);
         }
     }

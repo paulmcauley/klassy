@@ -312,6 +312,7 @@ void Button::drawIcon(QPainter *painter) const
                                      && (m_d->buttonBackgroundType() == ButtonBackgroundType::Small
                                          || m_d->internalSettings()->iconSize() < InternalSettings::EnumIconSize::IconLargeMedium)));
         iconRenderer->setForceEvenSquares(forceEvenSquares);
+        iconRenderer->setLeftButtonGroup(m_d->isRightToLeft() ? !(!m_leftButtonVisible && m_rightButtonVisible) : m_leftButtonVisible && !m_rightButtonVisible);
 
         iconRenderer->renderIcon(static_cast<DecorationButtonType>(type()), isChecked());
     }

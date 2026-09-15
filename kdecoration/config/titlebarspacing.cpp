@@ -21,6 +21,8 @@ TitleBarSpacing::TitleBarSpacing(KSharedConfig::Ptr config, KSharedConfig::Ptr p
     , m_parent(parent)
 {
     m_ui->setupUi(this);
+    m_ui->titleBar_groupbox->setAlignment(Qt::AlignAbsolute);
+    m_ui->titleBar_groupbox->setLayoutDirection(Qt::LayoutDirection::LeftToRight);
 
     // track ui changes
     // direct connections are used in several places so the slot can detect the immediate m_loading status (not available in a queued connection)

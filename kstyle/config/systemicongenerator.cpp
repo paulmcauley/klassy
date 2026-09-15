@@ -225,6 +225,7 @@ void SystemIconGenerator::generateIconThemeDir(const QString themeDirPath,
                 iconRenderer->setStrokeToFilledPath(true);
                 iconRenderer->setTaskManagerType(m_taskManagerType);
                 iconRenderer->setTaskManagerSide(m_taskManagerSide);
+                iconRenderer->setLeftButtonGroup(QGuiApplication::layoutDirection() == Qt::LayoutDirection::RightToLeft);
 
                 iconRenderer->renderIcon(iconType.type, iconType.checked);
 

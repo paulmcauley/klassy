@@ -2162,6 +2162,7 @@ void ButtonColors::setHorizontalHeaderSectionIcon(DecorationButtonType type, QTa
             iconRenderer->setSystemScale(dpr);
             iconRenderer->setTaskManagerType(static_cast<ConfigWidget *>(m_parent)->taskManagerType());
             iconRenderer->setTaskManagerSide(static_cast<ConfigWidget *>(m_parent)->taskManagerSide());
+            iconRenderer->setLeftButtonGroup(static_cast<ConfigWidget *>(m_parent)->isRightToLeft());
             painter->setViewport(0, 0, 16, 16);
             painter->setWindow(0, 0, localRenderingWidth, localRenderingWidth);
 

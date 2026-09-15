@@ -56,6 +56,8 @@ ConfigWidget::ConfigWidget(QObject *parent, const KPluginMetaData &data, const Q
             widget()->window()->close();
         }
     }
+    m_isRightToLeft = (QGuiApplication::layoutDirection() == Qt::LayoutDirection::RightToLeft);
+
     setButtons(KCModule::Default | KCModule::Apply);
 
     initKlassydecorationConfigQrc();
@@ -702,6 +704,7 @@ void ConfigWidget::generateWindowControlPreviewIcon(QSize size, InternalSettings
                       || m_ui.boldButtonIcons->currentIndex() == InternalSettings::EnumBoldButtonIcons::BoldIconsActive)
         || (m_ui.boldButtonIcons->currentIndex() == InternalSettings::EnumBoldButtonIcons::BoldIconsActiveHiDpi && dpr >= 1.2);
     iconRenderer->setBoldButtonIcons(boldIcons);
+    iconRenderer->setLeftButtonGroup(m_isRightToLeft);
 
     QPen pen("#bcc1c5");
     pen.setWidthF(PenWidth::Symbol * dpr);

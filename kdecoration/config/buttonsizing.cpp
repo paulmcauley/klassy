@@ -132,11 +132,17 @@ void ButtonSizing::setVisibleUiElements()
         m_ui.scaleBackgroundPercent->setVisible(false);
 
         m_ui.fullHeightButtonWidthMarginLeftLabel->setVisible(true);
+        if (static_cast<ConfigWidget *>(m_parent)->isRightToLeft()) {
+            m_ui.fullHeightButtonWidthMarginLeftLabel->setText(i18n("Right-hand buttons'\n:Width margins"));
+        }
         m_ui.fullHeightButtonWidthMarginLeft->setVisible(true);
         m_ui.fullHeightButtonWidthMarginLeftLine->setVisible(true);
         m_ui.lockFullHeightButtonWidthMargins->setVisible(true);
         m_ui.fullHeightButtonWidthMarginRightLine->setVisible(true);
         m_ui.fullHeightButtonWidthMarginRightLabel->setVisible(true);
+        if (static_cast<ConfigWidget *>(m_parent)->isRightToLeft()) {
+            m_ui.fullHeightButtonWidthMarginRightLabel->setText(i18n("Left-hand buttons'\n:Width margins"));
+        }
         m_ui.fullHeightButtonWidthMarginRight->setVisible(true);
 
         m_ui.closeFullHeightButtonWidthMarginRelative->setVisible(true);
@@ -145,10 +151,16 @@ void ButtonSizing::setVisibleUiElements()
         m_ui.closeFullHeightButtonWidthMarginRelativeLayout->invalidate();
 
         m_ui.fullHeightButtonSpacingLeftLabel->setVisible(true);
+        if (static_cast<ConfigWidget *>(m_parent)->isRightToLeft()) {
+            m_ui.fullHeightButtonSpacingLeftLabel->setText(i18n("Spacing between\n:Right-hand buttons"));
+        }
         m_ui.fullHeightButtonSpacingLeft->setVisible(true);
         m_ui.fullHeightButtonSpacingLeftLine->setVisible(true);
         m_ui.lockFullHeightButtonSpacingLeftRight->setVisible(true);
         m_ui.fullHeightButtonSpacingRightLabel->setVisible(true);
+        if (static_cast<ConfigWidget *>(m_parent)->isRightToLeft()) {
+            m_ui.fullHeightButtonSpacingRightLabel->setText(i18n("Spacing between\n:Left-hand buttons"));
+        }
         m_ui.fullHeightButtonSpacingRight->setVisible(true);
         m_ui.fullHeightButtonSpacingRightLine->setVisible(true);
 
@@ -168,6 +180,8 @@ void ButtonSizing::setVisibleUiElements()
 
         m_ui.verticalSpacer_2->changeSize(20, 40, QSizePolicy::Fixed, QSizePolicy::Expanding);
         m_ui.verticalSpacer_3->changeSize(20, 40, QSizePolicy::Fixed, QSizePolicy::Expanding);
+        setMinimumWidth(650);
+        setMinimumHeight(625);
         break;
 
     case InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangle:
@@ -179,11 +193,17 @@ void ButtonSizing::setVisibleUiElements()
         m_ui.scaleBackgroundPercent->setVisible(false);
 
         m_ui.fullHeightButtonWidthMarginLeftLabel->setVisible(true);
+        if (static_cast<ConfigWidget *>(m_parent)->isRightToLeft()) {
+            m_ui.fullHeightButtonWidthMarginLeftLabel->setText(i18n("Right-hand buttons'\n:Width margins"));
+        }
         m_ui.fullHeightButtonWidthMarginLeft->setVisible(true);
         m_ui.fullHeightButtonWidthMarginLeftLine->setVisible(true);
         m_ui.lockFullHeightButtonWidthMargins->setVisible(true);
         m_ui.fullHeightButtonWidthMarginRightLine->setVisible(true);
         m_ui.fullHeightButtonWidthMarginRightLabel->setVisible(true);
+        if (static_cast<ConfigWidget *>(m_parent)->isRightToLeft()) {
+            m_ui.fullHeightButtonWidthMarginRightLabel->setText(i18n("Left-hand buttons'\n:Width margins"));
+        }
         m_ui.fullHeightButtonWidthMarginRight->setVisible(true);
 
         m_ui.closeFullHeightButtonWidthMarginRelative->setVisible(true);
@@ -192,10 +212,16 @@ void ButtonSizing::setVisibleUiElements()
         m_ui.closeFullHeightButtonWidthMarginRelativeLayout->invalidate();
 
         m_ui.fullHeightButtonSpacingLeftLabel->setVisible(true);
+        if (static_cast<ConfigWidget *>(m_parent)->isRightToLeft()) {
+            m_ui.fullHeightButtonSpacingLeftLabel->setText(i18n("Spacing between\n:Right-hand buttons"));
+        }
         m_ui.fullHeightButtonSpacingLeft->setVisible(true);
         m_ui.fullHeightButtonSpacingLeftLine->setVisible(true);
         m_ui.lockFullHeightButtonSpacingLeftRight->setVisible(true);
         m_ui.fullHeightButtonSpacingRightLabel->setVisible(true);
+        if (static_cast<ConfigWidget *>(m_parent)->isRightToLeft()) {
+            m_ui.fullHeightButtonSpacingRightLabel->setText(i18n("Spacing between\n:Left-hand buttons"));
+        }
         m_ui.fullHeightButtonSpacingRight->setVisible(true);
         m_ui.fullHeightButtonSpacingRightLine->setVisible(true);
 
@@ -215,6 +241,8 @@ void ButtonSizing::setVisibleUiElements()
 
         m_ui.verticalSpacer_2->changeSize(20, 40, QSizePolicy::Fixed, QSizePolicy::Expanding);
         m_ui.verticalSpacer_3->changeSize(20, 40, QSizePolicy::Fixed, QSizePolicy::Expanding);
+        setMinimumWidth(650);
+        setMinimumHeight(700);
         break;
 
     default:
@@ -246,10 +274,16 @@ void ButtonSizing::setVisibleUiElements()
         m_ui.fullHeightButtonSpacingRightLine->setVisible(false);
 
         m_ui.buttonSpacingLeftLabel->setVisible(true);
+        if (static_cast<ConfigWidget *>(m_parent)->isRightToLeft()) {
+            m_ui.buttonSpacingLeftLabel->setText(i18n("Spacing between\n:Right-hand buttons"));
+        }
         m_ui.buttonSpacingLeft->setVisible(true);
         m_ui.buttonSpacingLeftLine->setVisible(true);
         m_ui.lockButtonSpacingLeftRight->setVisible(true);
         m_ui.buttonSpacingRightLabel->setVisible(true);
+        if (static_cast<ConfigWidget *>(m_parent)->isRightToLeft()) {
+            m_ui.buttonSpacingRightLabel->setText(i18n("Spacing between\n:Left-hand buttons"));
+        }
         m_ui.buttonSpacingRight->setVisible(true);
         m_ui.buttonSpacingRightLine->setVisible(true);
 
@@ -261,6 +295,10 @@ void ButtonSizing::setVisibleUiElements()
 
         m_ui.verticalSpacer_2->changeSize(0, 0, QSizePolicy::Fixed, QSizePolicy::Fixed);
         m_ui.verticalSpacer_3->changeSize(0, 0, QSizePolicy::Fixed, QSizePolicy::Fixed);
+
+        setMinimumWidth(650);
+        setMinimumHeight(300);
+        break;
     }
 
     // set corner radius options

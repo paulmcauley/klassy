@@ -153,6 +153,11 @@ public:
         return m_x11Scale;
     }
 
+    bool isRightToLeft()
+    {
+        return m_isRightToLeft;
+    }
+
     KDecoration3::DecorationButtonGroup *leftButtons()
     {
         return m_leftButtons;
@@ -268,6 +273,7 @@ private:
 
     static KSharedConfig::Ptr s_kdeGlobalConfig;
     InternalSettingsPtr m_internalSettings;
+    bool m_isRightToLeft = false;
     KDecoration3::DecorationButtonGroup *m_leftButtons = nullptr;
     KDecoration3::DecorationButtonGroup *m_rightButtons = nullptr;
 
