@@ -91,24 +91,6 @@ void AppMenuButton::updateAnimationState(bool hovered)
 void AppMenuButton::reconfigure()
 {
     m_animation->setDuration(m_d->animationsDuration());
-
-    const auto internalSettings = m_d->internalSettings();
-    switch (internalSettings->appMenuBarButtonCornerRadius()) {
-    case InternalSettings::EnumAppMenuBarButtonCornerRadius::AMBCR_DerivedFromApplicationStyle:
-        m_cornerRadius =
-            internalSettings->frameCornerRadius() ? internalSettings->frameCustomCornerRadius() : qMin(5.0, internalSettings->windowCornerRadius());
-        break;
-    case InternalSettings::EnumAppMenuBarButtonCornerRadius::AMBCR_DerivedFromWindowButton:
-        m_cornerRadius = internalSettings->buttonCornerRadius() ? internalSettings->buttonCustomCornerRadius() : internalSettings->windowCornerRadius();
-        break;
-    default:
-        m_cornerRadius = internalSettings->appMenuBarButtonCustomCornerRadius();
-        break;
-    }
-    m_cornerRadius *= m_d->x11Scale();
-    if (m_cornerRadius < 0.1) {
-        m_cornerRadius = 0;
-    }
 }
 
 void AppMenuButton::paint(QPainter *painter, const QRectF &repaintRegion)
@@ -134,7 +116,8 @@ void AppMenuButton::paint(QPainter *painter, const QRectF &repaintRegion)
     painter->setOpacity(m_opacity * m_expansionOpacity);
     painter->translate(geometry().topLeft() + QPointF(0, m_verticalBackgroundOffset));
 
-    m_buttonPalette = m_d->decorationColors()->buttonPalette(m_type);
+    m_buttonPalette = m_d->shouldPaintAppMenuBarBackgroundWindowColored() ? m_d->appMenuBarWindowColoredColors()->buttonPalette(m_type)
+                                                                          : m_d->decorationColors()->buttonPalette(m_type);
 
     QColor background = backgroundColor();
     QColor outline = outlineColor();
@@ -207,7 +190,7 @@ void AppMenuButton::paint(QPainter *painter, const QRectF &repaintRegion)
             if (!corners) {
                 background.addRect(backgroundRect);
             } else {
-                background = GeometryTools::roundedPath(backgroundRect, corners, m_cornerRadius);
+                background = GeometryTools::roundedPath(backgroundRect, corners, m_d->appMenuBarButtonCornerRadius());
             }
             painter->drawPath(background);
         }

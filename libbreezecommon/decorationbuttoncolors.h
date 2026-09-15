@@ -44,6 +44,12 @@ const QList<DecorationButtonType> coloredAppStyleDecorationButtonTypes{
     DecorationButtonType::Close,
 };
 
+const QList<DecorationButtonType> coloredAppMenuBarWindowColoredDecorationButtonTypes{
+    DecorationButtonType::CustomAppMenuBarMenu,
+    DecorationButtonType::CustomAppMenuBarOverflow,
+    DecorationButtonType::CustomAppMenuBarSearch,
+};
+
 enum struct KLASSYCOMMON_EXPORT OverridableButtonColorState {
     IconNormal,
     IconHover,
