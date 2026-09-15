@@ -34,6 +34,11 @@ TitleBarAppMenuBar::TitleBarAppMenuBar(KSharedConfig::Ptr config, KSharedConfig:
     connect(m_ui->menuPosition, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
     connect(m_ui->menuUnisonHovering, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
     connect(m_ui->menuReplacesApplicationMenuButton, SIGNAL(checkStateChanged(Qt::CheckState)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
+    connect(m_ui->menuBarDrawBackgroundWindowColored,
+            &QAbstractButton::toggled,
+            this,
+            &TitleBarAppMenuBar::updateChanged,
+            Qt::ConnectionType::DirectConnection);
     connect(m_ui->menuEnableBlurEffect, SIGNAL(checkStateChanged(Qt::CheckState)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
     connect(m_ui->menuBlurCornerRadius, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
     connect(m_ui->menuBlurCustomCornerRadius, SIGNAL(valueChanged(qreal)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
@@ -101,6 +106,7 @@ void TitleBarAppMenuBar::loadMain(const bool assignUiValuesOnly)
     m_ui->menuPosition->setCurrentIndex(m_internalSettings->appMenuBarPosition());
     m_ui->menuUnisonHovering->setCurrentIndex(m_internalSettings->appMenuBarUnisonHovering());
     m_ui->menuReplacesApplicationMenuButton->setChecked(m_internalSettings->appMenuBarReplacesMenuButton());
+    m_ui->menuBarDrawBackgroundWindowColored->setChecked(m_internalSettings->appMenuBarDrawBackgroundWindowColored());
     m_ui->menuEnableBlurEffect->setChecked(m_internalSettings->appMenuBarEnableBlur());
     m_ui->menuBlurCornerRadius->setCurrentIndex(m_internalSettings->appMenuBarBlurCornerRadius());
     m_ui->menuBlurCustomCornerRadius->setValue(m_internalSettings->appMenuBarBlurCustomCornerRadius());
@@ -146,6 +152,7 @@ void TitleBarAppMenuBar::save(const bool reloadKwinConfig)
     m_internalSettings->setAppMenuBarPosition(m_ui->menuPosition->currentIndex());
     m_internalSettings->setAppMenuBarUnisonHovering(m_ui->menuUnisonHovering->currentIndex());
     m_internalSettings->setAppMenuBarReplacesMenuButton(m_ui->menuReplacesApplicationMenuButton->isChecked());
+    m_internalSettings->setAppMenuBarDrawBackgroundWindowColored(m_ui->menuBarDrawBackgroundWindowColored->isChecked());
     m_internalSettings->setAppMenuBarEnableBlur(m_ui->menuEnableBlurEffect->isChecked());
     m_internalSettings->setAppMenuBarBlurCornerRadius(m_ui->menuBlurCornerRadius->currentIndex());
     m_internalSettings->setAppMenuBarBlurCustomCornerRadius(m_ui->menuBlurCustomCornerRadius->value());
@@ -239,6 +246,8 @@ void TitleBarAppMenuBar::updateChanged()
     else if (m_ui->menuUnisonHovering->currentIndex() != m_internalSettings->appMenuBarUnisonHovering())
         modified = true;
     else if (m_ui->menuReplacesApplicationMenuButton->isChecked() != m_internalSettings->appMenuBarReplacesMenuButton())
+        modified = true;
+    else if (m_ui->menuBarDrawBackgroundWindowColored->isChecked() != m_internalSettings->appMenuBarDrawBackgroundWindowColored())
         modified = true;
     else if (m_ui->menuEnableBlurEffect->isChecked() != m_internalSettings->appMenuBarEnableBlur())
         modified = true;

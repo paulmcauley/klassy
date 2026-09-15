@@ -8895,7 +8895,7 @@ QIcon Style::titleBarButtonIcon(StandardPixmap standardPixmap, const QStyleOptio
 
     // generate a different DecorationColors for buttons on a toolbar. These set the titlebar background to the toolbar background, and use the inactive button
     // states
-    DecorationColors decorationColorsToolbar(false, true);
+    DecorationColors decorationColorsToolbar(false, DecorationColorsMode::AppStyle);
     palette.setCurrentColorGroup(QPalette::Active);
     const QColor toolbarBase(palette.color(QPalette::Window));
     const QColor toolbarText(KColorUtils::mix(toolbarBase, palette.color(QPalette::WindowText), 0.7));

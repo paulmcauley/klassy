@@ -115,11 +115,11 @@ void Helper::loadConfig()
 
     if (noCache) {
         if (!_decorationColors || _decorationColors->isCachedPalette()) {
-            _decorationColors = std::make_unique<DecorationColors>(false, true);
+            _decorationColors = std::make_unique<DecorationColors>(false, DecorationColorsMode::AppStyle);
         }
     } else {
         if (!_decorationColors || !_decorationColors->isCachedPalette()) {
-            _decorationColors = std::make_unique<DecorationColors>(true, true);
+            _decorationColors = std::make_unique<DecorationColors>(true, DecorationColorsMode::AppStyle);
         }
     }
 

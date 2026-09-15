@@ -590,8 +590,7 @@ void Decoration::reconfigureMain(const bool noUpdateShadow)
     SettingsProvider::self()->reconfigure();
     m_internalSettings = SettingsProvider::self()->internalSettings(this);
 
-    QPalette clientPalette = c->palette();
-    updateDecorationColors(clientPalette);
+    updateDecorationColors(c->palette());
     updateTaskManagerTypeAndSide();
 
     s_kdeGlobalConfig->reparseConfiguration();
@@ -610,6 +609,9 @@ void Decoration::reconfigureMain(const bool noUpdateShadow)
     }
 
     setScaledCornerRadius();
+    if (m_internalSettings->appMenuBarEnabled()) {
+        setAppMenuBarButtonCornerRadius();
+    }
 
     if (m_internalSettings->buttonShape() == InternalSettings::EnumButtonShape::FullHeightRectangle
         || m_internalSettings->buttonShape() == InternalSettings::EnumButtonShape::FullHeightRoundedRectangle
@@ -682,6 +684,8 @@ void Decoration::updateDecorationColors(const QPalette &clientPalette, QByteArra
         }
     }
 
+    bool appMenuBarBackgroundWindowColoredEnabled = this->appMenuBarBackgroundWindowColoredEnabled();
+
     // The preset exception may modify the decoration colours by having a different translucentButtonBackgroundsOpacity, so in this case we don't want to
     // cache the decoration colours as it may corrupt the colours for normal non-exception decoration windows
     bool noCache = m_internalSettings->property("noCacheException").toBool() || clientSpecificPalette;
@@ -690,9 +694,17 @@ void Decoration::updateDecorationColors(const QPalette &clientPalette, QByteArra
         if (!m_decorationColors || m_decorationColors->isCachedPalette()) {
             m_decorationColors = std::make_unique<DecorationColors>(false);
         }
+
+        if (appMenuBarBackgroundWindowColoredEnabled && (!m_appMenuBarWindowColoredColors || m_appMenuBarWindowColoredColors->isCachedPalette())) {
+            m_appMenuBarWindowColoredColors = std::make_unique<DecorationColors>(false, DecorationColorsMode::AppMenuBarWindowColored);
+        }
     } else {
         if (!m_decorationColors || !m_decorationColors->isCachedPalette()) {
             m_decorationColors = std::make_unique<DecorationColors>(true);
+        }
+
+        if (appMenuBarBackgroundWindowColoredEnabled && (!m_appMenuBarWindowColoredColors || !m_appMenuBarWindowColoredColors->isCachedPalette())) {
+            m_appMenuBarWindowColoredColors = std::make_unique<DecorationColors>(true, DecorationColorsMode::AppMenuBarWindowColored);
         }
     }
 
@@ -750,6 +762,41 @@ void Decoration::updateDecorationColors(const QPalette &clientPalette, QByteArra
                                                               inactiveTitleBarText,
                                                               inactiveTitleBarBase,
                                                               uuid); // update the decoration colors
+    }
+
+    if (appMenuBarBackgroundWindowColoredEnabled) {
+        bool generateColors = false;
+        if (!m_appMenuBarWindowColoredColors->areColorsGenerated()) {
+            generateColors = true;
+        } else {
+            if (!uuid.isEmpty()
+                && (noCache
+                    || (!noCache
+                        && uuid != m_appMenuBarWindowColoredColors->settingsUpdateUuid()))) { // case from
+                                                                                              // generateDecorationColorsOnDecorationSettingsPaletteUpdate()
+                generateColors = true;
+            }
+
+            // TODO: palette may not be a reliable indicator of the entire colour scheme - get an update to KDecoration3::DecoratedWindow to read QString
+            // m_colorScheme instead
+            if (!generateColors && palette != *m_appMenuBarWindowColoredColors->basePalette()) {
+                generateColors = true;
+            }
+        }
+        if (generateColors) {
+            QColor activeTitleBarBase = palette.color(QPalette::ColorGroup::Active, QPalette::ColorRole::Window);
+            QColor inactiveTitleBarBase = palette.color(QPalette::ColorGroup::Inactive, QPalette::ColorRole::Window);
+            QColor activeTitleBarText = palette.color(QPalette::ColorGroup::Active, QPalette::ColorRole::WindowText);
+            QColor inactiveTitleBarText = palette.color(QPalette::ColorGroup::Inactive, QPalette::ColorRole::WindowText);
+
+            m_appMenuBarWindowColoredColors->generateDecorationAndButtonColors(palette,
+                                                                               m_internalSettings,
+                                                                               activeTitleBarText,
+                                                                               activeTitleBarBase,
+                                                                               inactiveTitleBarText,
+                                                                               inactiveTitleBarBase,
+                                                                               uuid); // update the decoration colors
+        }
     }
 }
 
@@ -953,35 +1000,6 @@ void Decoration::createButtons()
     m_leftButtons = new KDecoration3::DecorationButtonGroup(KDecoration3::DecorationButtonGroup::Position::Left, this, &Button::create);
     m_rightButtons = new KDecoration3::DecorationButtonGroup(KDecoration3::DecorationButtonGroup::Position::Right, this, &Button::create);
     updateButtonsGeometry();
-}
-
-//________________________________________________________________
-void Decoration::updateAppMenuBar()
-{
-    // Add/remove AppMenuBar buttons based on whether the application menu exists for the application
-    if (window()->hasApplicationMenu() && !m_appMenuBarButtons) {
-        m_appMenuBarButtons = new AppMenuButtonGroup(this);
-        connect(m_appMenuBarButtons, &AppMenuButtonGroup::menuUpdated, this, &Decoration::updateButtonsGeometry);
-        connect(m_appMenuBarButtons, &AppMenuButtonGroup::expansionPercentChanged, this, &Decoration::updateButtonsGeometryDelayed);
-        m_appMenuBarButtons->updateAppMenuModel();
-    } else if (!window()->hasApplicationMenu() && m_appMenuBarButtons) {
-        m_appMenuBarButtons->deleteLater();
-        m_appMenuBarButtons = nullptr;
-        setCaptionOpacity(1);
-    }
-    if (m_appMenuBarButtons)
-        m_appMenuBarButtons->reconfigure();
-}
-
-//________________________________________________________________
-QPoint Decoration::windowPos() const
-{
-    if (KWindowSystem::isPlatformX11()) {
-        if (const auto *p = parent()) {
-            return p->property("clientGeometry").toRect().topLeft();
-        }
-    }
-    return QPoint(0, 0);
 }
 
 //________________________________________________________________
@@ -1545,8 +1563,8 @@ void Decoration::paintTitleBar(QPainter *painter, const QRectF &repaintRegion)
 
     painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
     // draw titlebar separator
-    qreal separatorHeight;
-    if ((separatorHeight = titleBarSeparatorHeight(scale))) {
+    qreal separatorHeight = titleBarSeparatorHeight(scale);
+    if (separatorHeight) {
         const QColor titleBarSeparatorColor(this->titleBarSeparatorColor());
 
         if (titleBarSeparatorColor.isValid()) {
@@ -1608,7 +1626,36 @@ void Decoration::paintTitleBar(QPainter *painter, const QRectF &repaintRegion)
     painter->setPen(fontColor);
     m_leftButtons->paint(painter, repaintRegion);
     m_rightButtons->paint(painter, repaintRegion);
-    if (m_appMenuBarButtons) {
+
+    if (m_appMenuBarButtons) { // paint background of AppMenuBar
+        if (shouldPaintAppMenuBarBackgroundWindowColored()) {
+            QColor base = c->isActive() ? m_appMenuBarWindowColoredColors->active()->titleBarBase : m_appMenuBarWindowColoredColors->inactive()->titleBarBase;
+
+            painter->setBrush(base);
+            painter->setPen(Qt::PenStyle::NoPen);
+
+            QRectF visibleAppMenuBarRect(m_appMenuBarButtons->geometry().topLeft() + QPointF(0, KDecoration3::snapToPixelGrid(1 * m_x11Scale, scale)),
+                                         QSizeF(m_appMenuBarButtons->visibleWidth(), m_appMenuBarButtons->geometry().height() + separatorHeight));
+            QPainterPath visibleAppMenuBarPathBackground = GeometryTools::roundedPath(visibleAppMenuBarRect, CornersTop, m_appMenuBarButtonCornerRadius);
+            painter->drawPath(visibleAppMenuBarPathBackground);
+
+            QColor separatorColor = this->titleBarSeparatorColor();
+            if (bool(separatorHeight) && separatorColor.isValid()) {
+                QPen p(separatorColor);
+                p.setWidthF(separatorHeight);
+                p.setCapStyle(Qt::FlatCap);
+                painter->setPen(p);
+            } else {
+                painter->setPen(Qt::PenStyle::NoPen);
+            }
+            painter->setBrush(Qt::BrushStyle::NoBrush);
+            QPainterPath visibleAppMenuBarPathOutline =
+                GeometryTools::roundedPath(visibleAppMenuBarRect, CornersTop, m_appMenuBarButtonCornerRadius, SideTop | SideLeft | SideRight);
+            painter->drawPath(visibleAppMenuBarPathOutline);
+        }
+
+        painter->setBrush(Qt::BrushStyle::NoBrush);
+        painter->setPen(fontColor);
         m_appMenuBarButtons->paint(painter, repaintRegion);
     }
 }
@@ -2232,6 +2279,65 @@ void Decoration::hoverMoveEvent(QHoverEvent *event)
     }
 
     KDecoration3::Decoration::hoverMoveEvent(event);
+}
+
+void Decoration::updateAppMenuBar()
+{
+    // Add/remove AppMenuBar buttons based on whether the application menu exists for the application
+    if (window()->hasApplicationMenu() && !m_appMenuBarButtons) {
+        m_appMenuBarButtons = new AppMenuButtonGroup(this);
+        connect(m_appMenuBarButtons, &AppMenuButtonGroup::menuUpdated, this, &Decoration::updateButtonsGeometry);
+        connect(m_appMenuBarButtons, &AppMenuButtonGroup::expansionPercentChanged, this, &Decoration::updateButtonsGeometryDelayed);
+        m_appMenuBarButtons->updateAppMenuModel();
+    } else if (!window()->hasApplicationMenu() && m_appMenuBarButtons) {
+        m_appMenuBarButtons->deleteLater();
+        m_appMenuBarButtons = nullptr;
+        setCaptionOpacity(1);
+    }
+    if (m_appMenuBarButtons)
+        m_appMenuBarButtons->reconfigure();
+}
+
+// used for AppMenuBar
+QPoint Decoration::windowPos() const
+{
+    if (KWindowSystem::isPlatformX11()) {
+        if (const auto *p = parent()) {
+            return p->property("clientGeometry").toRect().topLeft();
+        }
+    }
+    return QPoint(0, 0);
+}
+
+bool Decoration::appMenuBarBackgroundWindowColoredEnabled()
+{
+    return m_internalSettings->appMenuBarEnabled() && m_internalSettings->appMenuBarDrawBackgroundWindowColored();
+}
+
+bool Decoration::shouldPaintAppMenuBarBackgroundWindowColored()
+{
+    return appMenuBarBackgroundWindowColoredEnabled() && !m_toolsAreaWillBeDrawn && m_appMenuBarButtons->visibleWidth() > 0;
+}
+
+void Decoration::setAppMenuBarButtonCornerRadius()
+{
+    switch (m_internalSettings->appMenuBarButtonCornerRadius()) {
+    case InternalSettings::EnumAppMenuBarButtonCornerRadius::AMBCR_DerivedFromApplicationStyle:
+        m_appMenuBarButtonCornerRadius =
+            m_internalSettings->frameCornerRadius() ? m_internalSettings->frameCustomCornerRadius() : qMin(5.0, m_internalSettings->windowCornerRadius());
+        break;
+    case InternalSettings::EnumAppMenuBarButtonCornerRadius::AMBCR_DerivedFromWindowButton:
+        m_appMenuBarButtonCornerRadius =
+            m_internalSettings->buttonCornerRadius() ? m_internalSettings->buttonCustomCornerRadius() : m_internalSettings->windowCornerRadius();
+        break;
+    default:
+        m_appMenuBarButtonCornerRadius = m_internalSettings->appMenuBarButtonCustomCornerRadius();
+        break;
+    }
+    m_appMenuBarButtonCornerRadius *= x11Scale();
+    if (m_appMenuBarButtonCornerRadius < 0.1) {
+        m_appMenuBarButtonCornerRadius = 0;
+    }
 }
 
 } // namespace
