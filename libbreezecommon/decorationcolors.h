@@ -45,6 +45,12 @@ struct KLASSYCOMMON_EXPORT DecorationPaletteGroup {
 extern qreal KLASSYCOMMON_EXPORT g_translucentButtonBackgroundsOpacityActive;
 extern qreal KLASSYCOMMON_EXPORT g_translucentButtonBackgroundsOpacityInactive;
 
+enum class DecorationColorsMode {
+    Normal,
+    AppStyle,
+    AppMenuBarWindowColored
+};
+
 class KLASSYCOMMON_EXPORT DecorationColors
 {
 public:
@@ -57,7 +63,7 @@ public:
      * copy of the decoration palette used if available
      * @param forAppStyle If true, only generates separately cached colours for the application style
      */
-    DecorationColors(const bool useCachedPalette, const bool forAppStyle = false);
+    DecorationColors(const bool useCachedPalette, const DecorationColorsMode mode = DecorationColorsMode::Normal);
 
     //* color return methods return either the static or local colour, depending on whether useCachedPalette was set in the constructor
     DecorationPaletteGroup *active() const
@@ -77,9 +83,9 @@ public:
         return m_useCachedPalette;
     }
 
-    bool forAppStyle()
+    DecorationColorsMode mode()
     {
-        return m_forAppStyle;
+        return m_mode;
     }
 
     bool areColorsGenerated()
@@ -171,7 +177,7 @@ private:
                                              QColor customColor = QColor()) const;
 
     bool m_useCachedPalette;
-    bool m_forAppStyle;
+    DecorationColorsMode m_mode;
 
     //* pointers to whether to return the static cached palette data or non-cached class member data
     QPalette *m_basePalette;
@@ -195,5 +201,13 @@ private:
     static std::map<DecorationButtonType, DecorationButtonPalette> s_cachedButtonPalettes;
     static QByteArray s_settingsUpdateUuid;
     static bool s_cachedColorsGenerated;
+
+    //* cached data used for window decoration AppMenuBarWindowColored
+    static QPalette s_cachedKdeGlobalPaletteAppMenuBarWindowColored;
+    static std::unique_ptr<DecorationPaletteGroup> s_cachedDecorationPaletteGroupActiveAppMenuBarWindowColored;
+    static std::unique_ptr<DecorationPaletteGroup> s_cachedDecorationPaletteGroupInactiveAppMenuBarWindowColored;
+    static std::map<DecorationButtonType, DecorationButtonPalette> s_cachedButtonPalettesAppMenuBarWindowColored;
+    static QByteArray s_settingsUpdateUuidAppMenuBarWindowColored;
+    static bool s_cachedColorsGeneratedAppMenuBarWindowColored;
 };
 }
