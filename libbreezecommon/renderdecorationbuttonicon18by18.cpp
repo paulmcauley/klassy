@@ -364,7 +364,7 @@ void RenderDecorationButtonIcon18By18::renderKeepBehindIcon()
     pen.setWidthF(maximizePenWidth);
 
     QColor color = pen.color();
-    color.setAlphaF(color.alphaF() * 0.8);
+    color.setAlphaF(color.alphaF() * straightLineOpacity());
     m_painter->setPen(pen);
     m_painter->setBrush(Qt::NoBrush);
 
@@ -411,7 +411,7 @@ void RenderDecorationButtonIcon18By18::renderKeepInFrontIcon()
     pen.setWidthF(maximizePenWidth);
 
     QColor color = pen.color();
-    color.setAlphaF(color.alphaF() * 0.8);
+    color.setAlphaF(color.alphaF() * straightLineOpacity());
     m_painter->setPen(pen);
     m_painter->setBrush(Qt::NoBrush);
 
