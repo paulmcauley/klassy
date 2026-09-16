@@ -781,15 +781,30 @@ void Decoration::setGlobalLookAndFeelOptions(QString lookAndFeelPackageName)
                                           QStringLiteral("org.kde.klassydarkbottompanel.desktop"),
                                           QStringLiteral("org.kde.klassylightbottompanel.desktop")};
 
+        bool regenerateIconsOnly = false;
         // load Klassy preset if it is first time applying Klassy Global Theme
         if (klassyLookAndFeels.contains(lookAndFeelPackageName)) {
             if (!klassyLookAndFeels.contains(lookAndFeelSet)) {
                 presetToLoad = QStringLiteral("Klassy");
+            } else if (lookAndFeelPackageName.contains(QStringLiteral("bottom"))) {
+                if (lookAndFeelSet.contains(QStringLiteral("left"))) {
+                    regenerateIconsOnly = true;
+                }
+            } else if (lookAndFeelPackageName.contains(QStringLiteral("left"))) {
+                if (lookAndFeelSet.contains(QStringLiteral("bottom"))) {
+                    regenerateIconsOnly = true;
+                }
             }
         }
 
-        if (!presetToLoad.isEmpty()) { // if matching look-and-feel-package, load the associated Klassy window decoration preset
-            system("klassy-settings -w \"" + presetToLoad.toUtf8() + "\" &");
+        if (!presetToLoad.isEmpty()) { // if switching from a non-Klassy theme, load the associated Klassy window decoration preset
+            QTimer::singleShot(3000, [presetToLoad]() {
+                system("klassy-settings -w \"" + presetToLoad.toUtf8() + "\" &");
+            });
+        } else if (regenerateIconsOnly) {
+            QTimer::singleShot(3000, []() {
+                system("klassy-settings -g &");
+            }); // otherwise if Klassy already, and not just switching light/dark, then regenerate the icons only
         }
     }
 }
