@@ -13,6 +13,7 @@
 #include <QDir>
 #include <QDomDocument>
 #include <QFile>
+#include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QPainter>
@@ -437,36 +438,52 @@ void SystemIconGenerator::generateIconThemeDir(const QString themeDirPath,
 
 void SystemIconGenerator::addSystemScales()
 {
-    QString outputsPath = QStandardPaths::locate(QStandardPaths::GenericDataLocation, QStringLiteral("kscreen/outputs"), QStandardPaths::LocateDirectory);
-    QDir outputsDir(outputsPath);
-    if (!outputsDir.exists())
+    // kwin/src/outputconfigurationstore.cpp OutputConfigurationStore::load() for reference
+    const QString jsonPath = QStandardPaths::locate(QStandardPaths::ConfigLocation, QStringLiteral("kwinoutputconfig.json"));
+    if (jsonPath.isEmpty()) {
         return;
+    }
 
-    QStringList outputsFiles = outputsDir.entryList(QDir::Files);
+    QFile f(jsonPath);
+    if (!f.open(QIODevice::ReadOnly)) {
+        return;
+    }
+    QJsonParseError error;
+    const auto doc = QJsonDocument::fromJson(f.readAll(), &error);
+    if (error.error != QJsonParseError::NoError) {
+        return;
+    }
+    const auto array = doc.array();
+    std::vector<QJsonObject> objects;
+    std::transform(array.begin(), array.end(), std::back_inserter(objects), [](const auto &json) {
+        return json.toObject();
+    });
+    const auto outputsIt = std::find_if(objects.begin(), objects.end(), [](const auto &obj) {
+        return obj["name"].toString() == "outputs" && obj["data"].isArray();
+    });
+    if (outputsIt == objects.end()) {
+        return;
+    }
+    const auto outputs = (*outputsIt)["data"].toArray();
 
-    for (QString &outputFile : outputsFiles) {
-        QFile file(outputsPath % QStringLiteral("/") % outputFile);
-        if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
-            continue;
+    for (const auto &output : outputs) {
+        const auto data = output.toObject();
 
-        QJsonDocument document = QJsonDocument::fromJson(file.readAll());
-        file.close();
-        QJsonObject jsonObj = document.object();
-        QVariantMap jsonMap = jsonObj.toVariantMap();
-        qreal scale = jsonMap.value(QStringLiteral("scale"), 1.0).toDouble();
-        if (scale < (0.5 - 0.0001) || scale > (3.0 + 0.0001))
-            continue;
+        if (const auto it = data.find("scale"); it != data.end()) {
+            const double scale = it->toDouble(0);
+            if (scale > 0 && scale <= 5) {
+                bool scaleInList = false;
+                for (auto i = m_scales.begin(); i != m_scales.end(); i++) {
+                    if (qAbs(*i - scale) < 0.0001) {
+                        scaleInList = true;
+                        break;
+                    }
+                }
 
-        bool scaleInList = false;
-        for (auto i = m_scales.begin(); i != m_scales.end(); i++) {
-            if (qAbs(*i - scale) < 0.0001) {
-                scaleInList = true;
-                break;
+                if (!scaleInList) {
+                    m_scales.append(scale);
+                }
             }
-        }
-
-        if (!scaleInList) {
-            m_scales.append(scale);
         }
     }
 }
