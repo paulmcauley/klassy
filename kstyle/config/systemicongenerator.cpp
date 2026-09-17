@@ -360,14 +360,14 @@ void SystemIconGenerator::generateIconThemeDir(const QString themeDirPath,
     QFile::copy(basePanelDir + "/96/user-desktop.svg", desktopPath + "/96/user-desktop.svg");
 
     // write index file entries for desktop icons
-    QString desktopDirNames = "places/16,places/22,places/32,places/48,places/64,places/96";
+    QString desktopDirNames = "apps/22,places/16,places/22,places/32,places/48,places/64,places/96";
     if (!iconThemeGroup.readEntry("Directories", "").isEmpty()) {
         iconThemeGroup.writeEntry("Directories", iconThemeGroup.readEntry("Directories") + "," + desktopDirNames);
     } else {
         iconThemeGroup.writeEntry("Directories", desktopDirNames);
     }
 
-    QString desktopScaledDirNames = "places/16@2x,places/16@3x,places/22@2x,places/22@3x";
+    QString desktopScaledDirNames = "apps/22@2x,apps/22@3x,places/16@2x,places/16@3x,places/22@2x,places/22@3x";
     if (!iconThemeGroup.readEntry("ScaledDirectories", "").isEmpty()) {
         iconThemeGroup.writeEntry("ScaledDirectories", iconThemeGroup.readEntry("ScaledDirectories") + "," + desktopScaledDirNames);
     } else {
@@ -432,6 +432,36 @@ void SystemIconGenerator::generateIconThemeDir(const QString themeDirPath,
     svgDirGroup.writeEntry("Type", "Scalable");
     svgDirGroup.writeEntry("MinSize", "96");
     svgDirGroup.writeEntry("MaxSize", "256");
+
+    // add apps icons
+    desktopPath = themeDirPath + "/apps";
+    desktopDir.setPath(desktopPath);
+    desktopDir.mkpath(desktopPath);
+    desktopDir.mkdir("22");
+    QFile::copy(":/icons/plasma-symbolic-reduced-margins.svg", desktopPath + "/22/plasma-symbolic-reduced-margins.svg");
+
+    QDir::setCurrent(desktopPath); // need to use relative paths to share icons
+    scaledSymlinkDir.setFileName("22");
+    ;
+    scaledSymlinkDir.link("22@2x");
+    scaledSymlinkDir.link("22@3x");
+
+    svgDirGroup = themeIndex.group("apps/22");
+    svgDirGroup.writeEntry("Size", "22");
+    svgDirGroup.writeEntry("Context", "Applications");
+    svgDirGroup.writeEntry("Type", "Fixed");
+
+    svgDirGroup = themeIndex.group("apps/22@2x");
+    svgDirGroup.writeEntry("Size", "22");
+    svgDirGroup.writeEntry("Scale", "2");
+    svgDirGroup.writeEntry("Context", "Applications");
+    svgDirGroup.writeEntry("Type", "Fixed");
+
+    svgDirGroup = themeIndex.group("apps/22@3x");
+    svgDirGroup.writeEntry("Size", "22");
+    svgDirGroup.writeEntry("Scale", "3");
+    svgDirGroup.writeEntry("Context", "Applications");
+    svgDirGroup.writeEntry("Type", "Fixed");
 
     themeIndex.sync();
 }
