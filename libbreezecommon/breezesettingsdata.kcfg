@@ -202,7 +202,7 @@
 
     <!-- Full-height button width margin left -->
     <entry name="FullHeightButtonWidthMarginLeft" type = "Int">
-       <default>6</default>
+       <default>12</default>
        <min>0</min>
        <max>100</max>
     </entry>
@@ -233,7 +233,7 @@
 
     <!-- right button spacing for full-height buttons-->
     <entry name="FullHeightButtonSpacingRight" type = "Int">
-       <default>4</default>
+       <default>3</default>
        <min>0</min>
        <max>100</max>
     </entry>
