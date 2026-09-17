@@ -394,7 +394,7 @@ DesktopDefault=48
 DesktopSizes=16,22,32,48,64,128,256
 DialogDefault=32
 DialogSizes=16,22,32,48,64,128,256
-Directories=16,18,20,22,24,32,48,places/16,places/22,places/32,places/48,places/64,places/96
+Directories=16,18,20,22,24,32,48,apps/22,places/16,places/22,places/32,places/48,places/64,places/96
 DisplayDepth=32
 Example=folder
 FollowsColorScheme=true
@@ -406,11 +406,28 @@ Name=Klassy Dark
 Name[fr]=Klassy sombre
 PanelDefault=48
 PanelSizes=16,22,32,48,64,128,256
-ScaledDirectories=16@1.25x,18@1.25x,20@1.25x,22@1.25x,24@1.25x,32@1.25x,48@1.25x,16@1.5x,18@1.5x,20@1.5x,22@1.5x,24@1.5x,32@1.5x,48@1.5x,16@1.75x,18@1.75x,20@1.75x,22@1.75x,24@1.75x,32@1.75x,48@1.75x,16@2x,18@2x,20@2x,22@2x,24@2x,32@2x,48@2x,16@2.25x,18@2.25x,20@2.25x,22@2.25x,24@2.25x,32@2.25x,48@2.25x,16@2.5x,18@2.5x,20@2.5x,22@2.5x,24@2.5x,32@2.5x,48@2.5x,16@2.75x,18@2.75x,20@2.75x,22@2.75x,24@2.75x,32@2.75x,48@2.75x,16@3x,18@3x,20@3x,22@3x,24@3x,32@3x,48@3x,places/16@2x,places/16@3x,places/22@2x,places/22@3x
+ScaledDirectories=16@1.25x,18@1.25x,20@1.25x,22@1.25x,24@1.25x,32@1.25x,48@1.25x,16@1.5x,18@1.5x,20@1.5x,22@1.5x,24@1.5x,32@1.5x,48@1.5x,16@1.75x,18@1.75x,20@1.75x,22@1.75x,24@1.75x,32@1.75x,48@1.75x,16@2x,18@2x,20@2x,22@2x,24@2x,32@2x,48@2x,16@2.25x,18@2.25x,20@2.25x,22@2.25x,24@2.25x,32@2.25x,48@2.25x,16@2.5x,18@2.5x,20@2.5x,22@2.5x,24@2.5x,32@2.5x,48@2.5x,16@2.75x,18@2.75x,20@2.75x,22@2.75x,24@2.75x,32@2.75x,48@2.75x,16@3x,18@3x,20@3x,22@3x,24@3x,32@3x,48@3x,apps/22@2x,apps/22@3x,places/16@2x,places/16@3x,places/22@2x,places/22@3x
 SmallDefault=16
 SmallSizes=16,22,32,48
 ToolbarDefault=22
 ToolbarSizes=16,22,32,48
+
+[apps/22]
+Context=Applications
+Size=22
+Type=Fixed
+
+[apps/22@2x]
+Context=Applications
+Scale=2
+Size=22
+Type=Fixed
+
+[apps/22@3x]
+Context=Applications
+Scale=3
+Size=22
+Type=Fixed
 
 [places/16]
 Context=Places
