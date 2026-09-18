@@ -1,5 +1,13 @@
 # Klassy
-<img align="right" src="screenshots/highlight_gifs/klassy_demo.gif" alt="Klassy window decoration" />
+With bottom panel:
+
+<img src="screenshots/highlight_gifs/klassy_demo_bottompanel.gif" alt="Klassy window decoration" />
+
+<br />
+With left panel:
+
+<img src="screenshots/highlight_gifs/klassy_demo.gif" alt="Klassy window decoration" />
+<br />
 
 ##### Table of Contents
 [Overview](#overview)  
