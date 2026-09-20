@@ -105,8 +105,8 @@ Button *Button::create(KDecoration3::DecorationButtonType type, KDecoration3::De
         const auto internalSettings = d->internalSettings();
         if (type == KDecoration3::DecorationButtonType::ApplicationMenu && internalSettings->appMenuBarReplacesMenuButton()
             && internalSettings->appMenuBarEnabled()) {
-            const auto menuStyle = d->internalSettings()->appMenuBarBehaviour();
-            if (menuStyle != InternalSettings::EnumAppMenuBarBehaviour::SearchOnly) {
+            const auto menuBehaviour = d->internalSettings()->appMenuBarBehaviour();
+            if (menuBehaviour != InternalSettings::EnumAppMenuBarBehaviour::SearchOnly) {
                 return nullptr;
             }
         }
