@@ -95,9 +95,9 @@ AppMenuButtonGroup::AppMenuButtonGroup(Decoration *decoration)
     // so that new windows do not animate.
     auto internalSettings = m_decoration->internalSettings();
     if (internalSettings->exceptionAppMenuBarBehaviour()) {
-        setStyle(static_cast<AppMenuStyle>(internalSettings->exceptionAppMenuBarBehaviour() - 1));
+        setBehaviour(static_cast<AppMenuBehaviour>(internalSettings->exceptionAppMenuBarBehaviour() - 1));
     } else {
-        setStyle(static_cast<AppMenuStyle>(internalSettings->appMenuBarBehaviour()));
+        setBehaviour(static_cast<AppMenuBehaviour>(internalSettings->appMenuBarBehaviour()));
     }
     updateShowing();
 
@@ -154,9 +154,9 @@ void AppMenuButtonGroup::reconfigure()
 {
     auto internalSettings = m_decoration->internalSettings();
     if (internalSettings->exceptionAppMenuBarBehaviour()) {
-        setStyle(static_cast<AppMenuStyle>(internalSettings->exceptionAppMenuBarBehaviour() - 1));
+        setBehaviour(static_cast<AppMenuBehaviour>(internalSettings->exceptionAppMenuBarBehaviour() - 1));
     } else {
-        setStyle(static_cast<AppMenuStyle>(internalSettings->appMenuBarBehaviour()));
+        setBehaviour(static_cast<AppMenuBehaviour>(internalSettings->appMenuBarBehaviour()));
     }
     setPosition(static_cast<AppMenuPosition>(internalSettings->appMenuBarPosition()));
     setUnisonHoveringType(static_cast<AppMenuUnisonHovering>(internalSettings->appMenuBarUnisonHovering()));
@@ -177,18 +177,19 @@ void AppMenuButtonGroup::reconfigure()
     }
 
     updateShowing();
-    if (m_style == AppMenuStyle::ReplaceTitleOnHover || m_style == AppMenuStyle::RevealOnHover)
+    if (m_behaviour == AppMenuBehaviour::ReplaceTitleOnHover || m_behaviour == AppMenuBehaviour::RevealOnHover)
         setOpacity(m_animationEnabled && m_animation->duration() > 0 ? m_animation->currentValue().toReal() : (m_hovered || m_showing ? 1 : 0));
-    if (m_style == AppMenuStyle::AlwaysExpandOnHover)
+    if (m_behaviour == AppMenuBehaviour::AlwaysExpandOnHover)
         setOpacity(1);
-    if (m_style != AppMenuStyle::ReplaceTitleOnHover)
+    if (m_behaviour != AppMenuBehaviour::ReplaceTitleOnHover)
         m_decoration->setCaptionOpacity(1);
 }
 
 bool AppMenuButtonGroup::alwaysShow() const
 {
     // NOTE: AlwaysExpandOnHover is excluded because it's not 'fully' shown until hovered.
-    return m_style != AppMenuStyle::AlwaysExpandOnHover && m_style != AppMenuStyle::ReplaceTitleOnHover && m_style != AppMenuStyle::RevealOnHover;
+    return m_behaviour != AppMenuBehaviour::AlwaysExpandOnHover && m_behaviour != AppMenuBehaviour::ReplaceTitleOnHover
+        && m_behaviour != AppMenuBehaviour::RevealOnHover;
 }
 
 KDecoration3::DecorationButton *AppMenuButtonGroup::buttonAt(QPoint pos) const
@@ -504,7 +505,7 @@ void AppMenuButtonGroup::updateOverflow(QRectF availableRect)
     qreal minVisibleWidth = 0;
     qreal maxVisibleWidth = searchBtnWidth;
 
-    if (m_style == AppMenuStyle::SearchOnly) {
+    if (m_behaviour == AppMenuBehaviour::SearchOnly) {
         for (auto &tb : std::as_const(m_textButtons)) {
             if (tb)
                 tb->setVisible(false);
@@ -651,7 +652,7 @@ void AppMenuButtonGroup::updateOverflow(QRectF availableRect)
             maxVisibleWidth = minVisibleWidth;
         }
     }
-    if (m_style == AppMenuStyle::RevealOnHover)
+    if (m_behaviour == AppMenuBehaviour::RevealOnHover)
         minVisibleWidth = 0;
 
     setOverflowing(m_overflowButton && m_overflowButton->isVisible());
@@ -743,7 +744,7 @@ void AppMenuButtonGroup::updateGeometry()
     setSpacing(internalSettings->appMenuBarButtonHorizontalMargin());
     updateOverflow(availableRect);
 
-    const bool isReplaceStyle = m_style == AppMenuStyle::ReplaceTitleOnHover;
+    const bool isReplaceStyle = m_behaviour == AppMenuBehaviour::ReplaceTitleOnHover;
     if (isReplaceStyle && m_position == AppMenuPosition::Center) {
         const qreal x = (availableRect.width() - visibleWidth()) / 2 + leftOffset;
         setPos(QPointF(x, availableRect.y()));
@@ -1033,7 +1034,7 @@ void AppMenuButtonGroup::onHoverAnimationValueChanged(const QVariant &value)
 {
     if (expandsOnHover()) {
         setExpansionPercent(value.toReal());
-        if (m_style == AppMenuStyle::RevealOnHover)
+        if (m_behaviour == AppMenuBehaviour::RevealOnHover)
             setOpacity(value.toReal());
     } else {
         setOpacity(value.toReal());
