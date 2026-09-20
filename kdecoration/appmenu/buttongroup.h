@@ -45,7 +45,7 @@ class AppMenuTextButton;
 class AppMenuOverflowButton;
 class AppMenuSearchButton;
 
-enum class AppMenuStyle {
+enum class AppMenuBehaviour {
     AlwaysExpandOnHover,
     AlwaysTakeSpace,
     RevealOnHover,
@@ -80,11 +80,11 @@ public:
 
     inline bool takesSpace() const
     {
-        return m_style != AppMenuStyle::ReplaceTitleOnHover;
+        return m_behaviour != AppMenuBehaviour::ReplaceTitleOnHover;
     };
     inline bool expandsOnHover() const
     {
-        return m_style == AppMenuStyle::AlwaysExpandOnHover || m_style == AppMenuStyle::RevealOnHover;
+        return m_behaviour == AppMenuBehaviour::AlwaysExpandOnHover || m_behaviour == AppMenuBehaviour::RevealOnHover;
     }
 
     qreal visibleWidth() const;
@@ -108,7 +108,7 @@ public:
     Q_PROPERTY(int overflowing READ overflowing WRITE setOverflowing NOTIFY overflowingChanged)
     Q_PROPERTY(AppMenuPosition position READ position WRITE setPosition NOTIFY positionChanged)
     Q_PROPERTY(bool showing READ showing WRITE setShowing NOTIFY showingChanged)
-    Q_PROPERTY(AppMenuStyle style READ style WRITE setStyle NOTIFY styleChanged)
+    Q_PROPERTY(AppMenuBehaviour behaviour READ behaviour WRITE setBehaviour NOTIFY behaviourChanged)
     Q_PROPERTY(bool unisonHovered READ unisonHovered WRITE setUnisonHovered NOTIFY unisonHoveredChanged)
     Q_PROPERTY(AppMenuUnisonHovering unisonHoveringType READ unisonHoveringType WRITE setUnisonHoveringType NOTIFY unisonHoveringTypeChanged)
 
@@ -173,7 +173,7 @@ public:
             if (auto button = qobject_cast<AppMenuButton *>(rawButton))
                 button->setOpacity(m_opacity);
         }
-        if (m_style == AppMenuStyle::ReplaceTitleOnHover) {
+        if (m_behaviour == AppMenuBehaviour::ReplaceTitleOnHover) {
             m_decoration->setCaptionOpacity(1 - value);
         }
         Q_EMIT opacityChanged(value);
@@ -203,16 +203,16 @@ public:
         return m_position;
     };
 
-    AppMenuStyle style() const
+    AppMenuBehaviour behaviour() const
     {
-        return m_style;
+        return m_behaviour;
     }
-    void setStyle(AppMenuStyle value)
+    void setBehaviour(AppMenuBehaviour value)
     {
-        if (m_style == value)
+        if (m_behaviour == value)
             return;
-        m_style = value;
-        Q_EMIT styleChanged(value);
+        m_behaviour = value;
+        Q_EMIT behaviourChanged(value);
     }
 
     bool unisonHovered() const
@@ -285,7 +285,7 @@ signals:
     void opacityChanged(qreal);
     void positionChanged(AppMenuPosition);
     void showingChanged(bool);
-    void styleChanged(AppMenuStyle);
+    void behaviourChanged(AppMenuBehaviour);
     void overflowingChanged();
     void unisonHoveringTypeChanged(AppMenuUnisonHovering);
     void unisonHoveredChanged(bool);
@@ -347,7 +347,7 @@ private:
     bool m_animationEnabled = true;
     bool m_unisonHovered = false;
     qreal m_expansionPercent = 0;
-    AppMenuStyle m_style = AppMenuStyle::AlwaysExpandOnHover;
+    AppMenuBehaviour m_behaviour = AppMenuBehaviour::AlwaysExpandOnHover;
     AppMenuPosition m_position = AppMenuPosition::Left;
     AppMenuUnisonHovering m_unisonHoveringType = AppMenuUnisonHovering::Disabled;
     QVariantAnimation *m_animation;
