@@ -1,10 +1,10 @@
 # Klassy
-With bottom panel:
+Default appearance with bottom-aligned panel:
 
 <img src="screenshots/highlight_gifs/klassy_demo_bottompanel.gif" alt="Klassy window decoration" />
 
 <br />
-With left panel:
+Default appearance with left-aligned panel:
 
 <img src="screenshots/highlight_gifs/klassy_demo.gif" alt="Klassy window decoration" />
 <br />
