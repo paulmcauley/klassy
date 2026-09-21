@@ -132,7 +132,9 @@ void DecorationColors::generateDecorationPaletteGroup(const QPalette &palette,
     }
 
     bool setTitleBarBaseOpacity = false;
-    if (!decorationSettings->opaqueTitleBar()) {
+    if (decorationSettings->opaqueTitleBar()) {
+        (*decorationPaletteGroup)->titleBarBase.setAlpha(255);
+    } else {
         if ((*decorationPaletteGroup)->titleBarBase.alpha() == 255) {
             setTitleBarBaseOpacity = true;
         } else {
