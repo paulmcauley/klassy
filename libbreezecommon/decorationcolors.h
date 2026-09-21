@@ -107,6 +107,11 @@ public:
         }
     }
 
+    void setNoAddedTitleBarOpacity(const bool v = true)
+    {
+        m_noAddedTitleBarOpacity = v;
+    }
+
     /**
      * @brief Regenerates the decorationColors, including button colours
      * @param decorationSettings an InternalSettings pointer
@@ -178,6 +183,7 @@ private:
 
     bool m_useCachedPalette;
     DecorationColorsMode m_mode;
+    bool m_noAddedTitleBarOpacity = false;
 
     //* pointers to whether to return the static cached palette data or non-cached class member data
     QPalette *m_basePalette;
