@@ -2352,7 +2352,7 @@ bool Decoration::appMenuBarBackgroundWindowColoredEnabled()
 
 bool Decoration::shouldPaintAppMenuBarBackgroundWindowColored()
 {
-    return appMenuBarBackgroundWindowColoredEnabled() && !m_toolsAreaWillBeDrawn && m_appMenuBarButtons->visibleWidth() > 0;
+    return appMenuBarBackgroundWindowColoredEnabled() && !m_toolsAreaWillBeDrawn && m_appMenuBarButtons && m_appMenuBarButtons->visibleWidth() > 0;
 }
 
 void Decoration::setAppMenuBarButtonCornerRadius()
