@@ -175,7 +175,7 @@ void DecorationColors::generateDecorationPaletteGroup(const QPalette &palette,
             }
         }
     }
-    if (setTitleBarBaseOpacity) {
+    if (setTitleBarBaseOpacity && !m_noAddedTitleBarOpacity) {
         (*decorationPaletteGroup)
             ->titleBarBase.setAlphaF(qreal(active ? decorationSettings->titleBarOpacityActive() : decorationSettings->titleBarOpacityInactive()) / 100);
     }
