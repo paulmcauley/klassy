@@ -725,6 +725,7 @@ void Decoration::updateDecorationColors(const QPalette &clientPalette, QByteArra
 
         if (appMenuBarBackgroundWindowColoredEnabled && (!m_appMenuBarWindowColoredColors || m_appMenuBarWindowColoredColors->isCachedPalette())) {
             m_appMenuBarWindowColoredColors = std::make_unique<DecorationColors>(false, DecorationColorsMode::AppMenuBarWindowColored);
+            m_appMenuBarWindowColoredColors->setNoAddedTitleBarOpacity();
         }
     } else {
         if (!m_decorationColors || !m_decorationColors->isCachedPalette()) {
@@ -733,6 +734,7 @@ void Decoration::updateDecorationColors(const QPalette &clientPalette, QByteArra
 
         if (appMenuBarBackgroundWindowColoredEnabled && (!m_appMenuBarWindowColoredColors || !m_appMenuBarWindowColoredColors->isCachedPalette())) {
             m_appMenuBarWindowColoredColors = std::make_unique<DecorationColors>(true, DecorationColorsMode::AppMenuBarWindowColored);
+            m_appMenuBarWindowColoredColors->setNoAddedTitleBarOpacity();
         }
     }
 
