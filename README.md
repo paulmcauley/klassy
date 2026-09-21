@@ -1,4 +1,5 @@
 # Klassy
+<img src="screenshots/scrollbar_mouseover.gif" align="right" alt="Scrollbar animation" />
 Default appearance with bottom-aligned panel:
 
 <img src="screenshots/highlight_gifs/klassy_demo_bottompanel.gif" alt="Klassy window decoration" />
@@ -105,7 +106,7 @@ It is recommended to first try the bundled Presets in Klassy Settings before any
 
 * Configurable scrollbars; innovative gapless auto-hiding-arrow scrollbar design by default:
  
-<img src="screenshots/configurable_scrollbars.png" width="80%">![Default scrollbar animation](screenshots/scrollbar_mouseover.gif "Default scrollbar animation")
+<img src="screenshots/configurable_scrollbars.png" width="80%" /><img src="screenshots/scrollbar_mouseover.gif" alt="Scrollbar animation" />
 
 * Configurable animations
 
