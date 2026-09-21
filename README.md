@@ -1,5 +1,5 @@
 # Klassy
-<img src="screenshots/scrollbar_mouseover.gif" align="right" alt="Scrollbar animation" />
+<img src="screenshots/scrollbar_mouseover.gif" width="110" align="right" alt="Scrollbar animation" />
 Default appearance with bottom-aligned panel:
 
 <img src="screenshots/highlight_gifs/klassy_demo_bottompanel.gif" alt="Klassy window decoration" />
