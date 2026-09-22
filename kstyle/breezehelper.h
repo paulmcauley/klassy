@@ -340,6 +340,7 @@ public:
                                 const QRectF &rect,
                                 DecorationButtonType buttonType,
                                 const bool buttonChecked,
+                                const bool bold,
                                 const QColor &foregroundColor,
                                 const bool cutOutForeground,
                                 const QColor &backgroundColor,

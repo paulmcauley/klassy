@@ -1136,11 +1136,11 @@ void Button::setShouldDrawBoldButtonIcons()
         default:
             break;
         case InternalSettings::EnumBoldButtonIcons::BoldIconsActiveHiDpi:
-            if ((c->isActive() || m_isGtkCsdButton) && m_systemScale > 1.2)
+            if (m_systemScale > 1.2 && (c->isActive() || m_isGtkCsdButton || isHovered() || isPressed()))
                 m_boldButtonIcons = true;
             break;
         case InternalSettings::EnumBoldButtonIcons::BoldIconsActive:
-            if (c->isActive() || m_isGtkCsdButton)
+            if (c->isActive() || m_isGtkCsdButton || isHovered() || isPressed())
                 m_boldButtonIcons = true;
             break;
         case InternalSettings::EnumBoldButtonIcons::BoldIconsHiDpiOnly:

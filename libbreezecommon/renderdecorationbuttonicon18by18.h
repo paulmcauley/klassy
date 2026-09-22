@@ -57,8 +57,8 @@ protected:
     void renderCenteredLineMinimizeIcon(bool smaller = false);
     void renderDynamicMinimizeIcon(bool dynamicMinimize = true);
     void renderOnAllDesktopsIcon();
-    void renderKeepBehindIconAsFromKlassyIcons();
-    void renderKeepInFrontIconAsFromKlassyIcons();
+    void renderKeepBehindIconAsFromBreezeIcons();
+    void renderKeepInFrontIconAsFromBreezeIcons();
     void renderKlassyOriginalContextHelpIcon();
 };
 

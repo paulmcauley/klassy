@@ -1595,6 +1595,7 @@ void Helper::renderDecorationButton(QPainter *painter,
                                     const QRectF &rect,
                                     DecorationButtonType buttonType,
                                     const bool buttonChecked,
+                                    const bool bold,
                                     const QColor &foregroundColor,
                                     const bool cutOutForeground,
                                     const QColor &backgroundColor,
@@ -1688,7 +1689,7 @@ void Helper::renderDecorationButton(QPainter *painter,
             painter->setPen(pen);
 
             iconRenderer->setFromKstyle(true);
-            iconRenderer->setBoldButtonIcons(false);
+            iconRenderer->setBoldButtonIcons(bold);
             iconRenderer->setForceEvenSquares(true);
             iconRenderer->setLeftButtonGroup(rightToLeftDirection);
             iconRenderer->renderIcon(buttonType, buttonChecked);

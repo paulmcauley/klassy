@@ -263,17 +263,15 @@ void RenderDecorationButtonIcon18By18::renderShadeIcon()
         pen.setCapStyle(Qt::FlatCap); // prevents lobsided arrow at loDPI
 
     bool isOddPenWidth = true;
-    if (!m_fromKstyle) {
-        qreal roundedBoldPenWidth = 1;
-        if (m_boldButtonIcons) {
-            // thicker pen in titlebar
-            isOddPenWidth = roundedPenWidthIsOdd(pen, roundedBoldPenWidth, 1.3);
-        } else {
-            isOddPenWidth = roundedPenWidthIsOdd(pen, roundedBoldPenWidth, 1);
-        }
-        pen.setWidthF(roundedBoldPenWidth);
-        m_painter->setPen(pen);
+    qreal roundedBoldPenWidth = 1;
+    if (m_boldButtonIcons) {
+        // thicker pen in titlebar
+        isOddPenWidth = roundedPenWidthIsOdd(pen, roundedBoldPenWidth, 1.3);
+    } else {
+        isOddPenWidth = roundedPenWidthIsOdd(pen, roundedBoldPenWidth, 1);
     }
+    pen.setWidthF(roundedBoldPenWidth);
+    m_painter->setPen(pen);
 
     QVector<QPointF> line1, line2;
 
@@ -312,17 +310,15 @@ void RenderDecorationButtonIcon18By18::renderUnShadeIcon()
         pen.setCapStyle(Qt::FlatCap); // prevents lobsided arrow at loDPI
 
     bool isOddPenWidth = true;
-    if (!m_fromKstyle) {
-        qreal roundedBoldPenWidth = 1;
-        if (m_boldButtonIcons) {
-            // thicker pen in titlebar
-            isOddPenWidth = roundedPenWidthIsOdd(pen, roundedBoldPenWidth, 1.3);
-        } else {
-            isOddPenWidth = roundedPenWidthIsOdd(pen, roundedBoldPenWidth, 1);
-        }
-        pen.setWidthF(roundedBoldPenWidth);
-        m_painter->setPen(pen);
+    qreal roundedBoldPenWidth = 1;
+    if (m_boldButtonIcons) {
+        // thicker pen in titlebar
+        isOddPenWidth = roundedPenWidthIsOdd(pen, roundedBoldPenWidth, 1.3);
+    } else {
+        isOddPenWidth = roundedPenWidthIsOdd(pen, roundedBoldPenWidth, 1);
     }
+    pen.setWidthF(roundedBoldPenWidth);
+    m_painter->setPen(pen);
 
     QVector<QPointF> line1, line2;
 
@@ -596,15 +592,13 @@ std::pair<QRectF, qreal> RenderDecorationButtonIcon18By18::renderSquareMaximizeI
     qreal origOpacity = pen.color().alphaF();
 
     bool isOddPenWidth = true;
-    if (!m_fromKstyle) {
-        qreal roundedBoldPenWidth = 1;
-        if (m_boldButtonIcons) {
-            isOddPenWidth = roundedPenWidthIsOdd(pen, roundedBoldPenWidth, m_squareMaximizeBoldPenWidthFactor);
-        } else {
-            isOddPenWidth = roundedPenWidthIsOdd(pen, roundedBoldPenWidth, 1);
-        }
-        pen.setWidthF(roundedBoldPenWidth);
+    qreal roundedBoldPenWidth = 1;
+    if (m_boldButtonIcons) {
+        isOddPenWidth = roundedPenWidthIsOdd(pen, roundedBoldPenWidth, m_squareMaximizeBoldPenWidthFactor);
+    } else {
+        isOddPenWidth = roundedPenWidthIsOdd(pen, roundedBoldPenWidth, 1);
     }
+    pen.setWidthF(roundedBoldPenWidth);
 
     QRectF rect(QPointF(4.5, 4.5), QPointF(13.5, 13.5));
     qreal adjustmentOffset = 0;
@@ -1166,7 +1160,7 @@ void RenderDecorationButtonIcon18By18::renderTinySquareMinimizeIcon(bool showArr
 }
 
 // For consistency with breeze icon set
-void RenderDecorationButtonIcon18By18::renderKeepBehindIconAsFromKlassyIcons()
+void RenderDecorationButtonIcon18By18::renderKeepBehindIconAsFromBreezeIcons()
 {
     QPen pen = m_painter->pen();
 
@@ -1177,17 +1171,15 @@ void RenderDecorationButtonIcon18By18::renderKeepBehindIconAsFromKlassyIcons()
     }
 
     bool isOddPenWidth = true;
-    if (!m_fromKstyle) {
-        qreal roundedBoldPenWidth = 1;
-        if (m_boldButtonIcons) {
-            isOddPenWidth = roundedPenWidthIsOdd(pen, roundedBoldPenWidth, 1.2);
-        } else {
-            isOddPenWidth = roundedPenWidthIsOdd(pen, roundedBoldPenWidth, 1);
-        }
-
-        // thicker pen in titlebar
-        pen.setWidthF(roundedBoldPenWidth);
+    qreal roundedBoldPenWidth = 1;
+    if (m_boldButtonIcons) {
+        isOddPenWidth = roundedPenWidthIsOdd(pen, roundedBoldPenWidth, 1.2);
+    } else {
+        isOddPenWidth = roundedPenWidthIsOdd(pen, roundedBoldPenWidth, 1);
     }
+
+    // thicker pen in titlebar
+    pen.setWidthF(roundedBoldPenWidth);
     m_painter->setPen(pen);
 
     QVector<QPointF> top, middle, bottom, arrowBody, arrowHead;
@@ -1300,7 +1292,7 @@ void RenderDecorationButtonIcon18By18::renderKeepBehindIconAsFromKlassyIcons()
     }
 }
 
-void RenderDecorationButtonIcon18By18::renderKeepInFrontIconAsFromKlassyIcons()
+void RenderDecorationButtonIcon18By18::renderKeepInFrontIconAsFromBreezeIcons()
 {
     QPen pen = m_painter->pen();
 
@@ -1311,17 +1303,15 @@ void RenderDecorationButtonIcon18By18::renderKeepInFrontIconAsFromKlassyIcons()
     }
 
     bool isOddPenWidth = true;
-    if (!m_fromKstyle) {
-        qreal roundedBoldPenWidth = 1;
-        if (m_boldButtonIcons) {
-            isOddPenWidth = roundedPenWidthIsOdd(pen, roundedBoldPenWidth, 1.2);
-        } else {
-            isOddPenWidth = roundedPenWidthIsOdd(pen, roundedBoldPenWidth, 1);
-        }
-
-        // thicker pen in titlebar
-        pen.setWidthF(roundedBoldPenWidth);
+    qreal roundedBoldPenWidth = 1;
+    if (m_boldButtonIcons) {
+        isOddPenWidth = roundedPenWidthIsOdd(pen, roundedBoldPenWidth, 1.2);
+    } else {
+        isOddPenWidth = roundedPenWidthIsOdd(pen, roundedBoldPenWidth, 1);
     }
+
+    // thicker pen in titlebar
+    pen.setWidthF(roundedBoldPenWidth);
     m_painter->setPen(pen);
 
     QVector<QPointF> top, middle, bottom, arrowBody, arrowHead;
@@ -1435,7 +1425,7 @@ void RenderDecorationButtonIcon18By18::renderContextHelpIcon()
 {
     QPen pen = m_painter->pen();
 
-    if ((!m_fromKstyle) && m_boldButtonIcons) {
+    if (m_boldButtonIcons) {
         // thicker pen in titlebar
         pen.setWidthF(pen.widthF() * 1.6);
     }
@@ -1460,7 +1450,7 @@ void RenderDecorationButtonIcon18By18::renderContextHelpIcon()
     // dot of question mark
     m_painter->setPen(Qt::NoPen);
     m_painter->setBrush(pen.color());
-    if ((!m_fromKstyle) && m_boldButtonIcons)
+    if (m_boldButtonIcons)
         m_painter->drawEllipse(QRectF(8, 14, 2, 2));
     else
         m_painter->drawEllipse(QRectF(8.25, 14.25, 1.5, 1.5));
@@ -1469,7 +1459,7 @@ void RenderDecorationButtonIcon18By18::renderContextHelpIcon()
 void RenderDecorationButtonIcon18By18::renderExcludeFromCaptureIcon()
 {
     QPen pen = m_painter->pen();
-    if ((!m_fromKstyle) && m_boldButtonIcons) {
+    if (m_boldButtonIcons) {
         // thicker pen in titlebar
         pen.setWidthF(pen.widthF() * 1.6);
     }
