@@ -42,6 +42,7 @@ private Q_SLOTS:
         save(true);
     }
     void setApplyButtonState(const bool on);
+    void onSearchEnabled(const bool enabled);
 
 Q_SIGNALS:
     void changed(bool);
