@@ -119,16 +119,6 @@
 
     <!-- ______________________________TITLEBAR______________________________ -->
 
-    <entry name="TitleAlignment" type="Enum">
-        <choices>
-            <choice name="AlignLeft" />
-            <choice name="AlignCenter" />
-            <choice name="AlignCenterFullWidth" />
-            <choice name="AlignRight" />
-        </choices>
-        <default>AlignCenterFullWidth</default>
-    </entry>
-
     <entry name="MatchTitleBarToApplicationColor" type = "Bool">
         <default>false</default>
     </entry>
@@ -880,6 +870,17 @@
   </group>
 
   <group name="TitleBarSpacing">
+
+    <entry name="TitleAlignment" type="Enum">
+        <choices>
+            <choice name="AlignLeft" />
+            <choice name="AlignCenter" />
+            <choice name="AlignCenterFullWidth" />
+            <choice name="AlignRight" />
+        </choices>
+        <default>AlignCenterFullWidth</default>
+    </entry>
+
     <entry name="TitleBarTopMargin" type = "Double">
        <default>3.6</default>
        <min>0</min>
