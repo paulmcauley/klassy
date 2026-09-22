@@ -17,7 +17,7 @@
 #include <QVariant>
 #include <QWidget>
 
-namespace Breeze
+namespace Klassy
 {
 
 //_______________________________________________

@@ -6,7 +6,7 @@
 
 #include "stylekisweet.h"
 
-namespace Breeze
+namespace Klassy
 {
 
 void RenderStyleKisweet18By18::renderCloseIcon()

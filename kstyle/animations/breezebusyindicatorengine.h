@@ -11,7 +11,7 @@
 #include "breezebusyindicatordata.h"
 #include "breezedatamap.h"
 
-namespace Breeze
+namespace Klassy
 {
 
 //* handles progress bar animations

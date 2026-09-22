@@ -17,7 +17,7 @@
 
 class QVariantAnimation;
 
-namespace Breeze
+namespace Klassy
 {
 
 class Button : public KDecoration3::DecorationButton

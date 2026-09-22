@@ -9,16 +9,11 @@
 #include <QPainterPathStroker>
 #include <cmath>
 
-namespace Breeze
+namespace Klassy
 {
 
-RenderDecorationButtonIcon18By18::RenderDecorationButtonIcon18By18(QPainter *painter,
-                                                                   const bool fromKstyle,
-                                                                   const bool boldButtonIcons,
-                                                                   const qreal systemScale,
-                                                                   const QPointF &deviceOffsetFromZeroReference,
-                                                                   const bool forceEvenSquares)
-    : RenderDecorationButtonIcon(painter, fromKstyle, boldButtonIcons, systemScale, deviceOffsetFromZeroReference, forceEvenSquares)
+RenderDecorationButtonIcon18By18::RenderDecorationButtonIcon18By18(QPainter *painter)
+    : RenderDecorationButtonIcon(painter)
 {
 }
 
@@ -369,7 +364,7 @@ void RenderDecorationButtonIcon18By18::renderKeepBehindIcon()
     pen.setWidthF(maximizePenWidth);
 
     QColor color = pen.color();
-    color.setAlphaF(color.alphaF() * 0.8);
+    color.setAlphaF(color.alphaF() * straightLineOpacity());
     m_painter->setPen(pen);
     m_painter->setBrush(Qt::NoBrush);
 
@@ -416,7 +411,7 @@ void RenderDecorationButtonIcon18By18::renderKeepInFrontIcon()
     pen.setWidthF(maximizePenWidth);
 
     QColor color = pen.color();
-    color.setAlphaF(color.alphaF() * 0.8);
+    color.setAlphaF(color.alphaF() * straightLineOpacity());
     m_painter->setPen(pen);
     m_painter->setBrush(Qt::NoBrush);
 
@@ -543,7 +538,7 @@ void RenderDecorationButtonIcon18By18::renderApplicationMenuIcon()
     appMenu->render(m_painter, QRectF(0, 0, 18, 18), QRectF(0, 0, 18, 18));
 }
 
-void RenderDecorationButtonIcon18By18::renderBreezeOriginalContextHelpIcon()
+void RenderDecorationButtonIcon18By18::renderKlassyOriginalContextHelpIcon()
 {
     QPainterPath path;
     path.moveTo(5, 6);
@@ -1167,7 +1162,7 @@ void RenderDecorationButtonIcon18By18::renderTinySquareMinimizeIcon(bool showArr
 }
 
 // For consistency with breeze icon set
-void RenderDecorationButtonIcon18By18::renderKeepBehindIconAsFromBreezeIcons()
+void RenderDecorationButtonIcon18By18::renderKeepBehindIconAsFromKlassyIcons()
 {
     QPen pen = m_painter->pen();
 
@@ -1301,7 +1296,7 @@ void RenderDecorationButtonIcon18By18::renderKeepBehindIconAsFromBreezeIcons()
     }
 }
 
-void RenderDecorationButtonIcon18By18::renderKeepInFrontIconAsFromBreezeIcons()
+void RenderDecorationButtonIcon18By18::renderKeepInFrontIconAsFromKlassyIcons()
 {
     QPen pen = m_painter->pen();
 

@@ -16,7 +16,7 @@
 #include <QObject>
 #include <QVariantMap>
 
-namespace Breeze
+namespace Klassy
 {
 
 class DetectDialog : public QObject

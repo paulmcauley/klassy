@@ -10,18 +10,13 @@
 #include <QGraphicsScene>
 #include <memory>
 
-namespace Breeze
+namespace Klassy
 {
 
-class BREEZECOMMON_EXPORT RenderDecorationButtonIcon18By18 : public RenderDecorationButtonIcon
+class KLASSYCOMMON_EXPORT RenderDecorationButtonIcon18By18 : public RenderDecorationButtonIcon
 {
 protected:
-    RenderDecorationButtonIcon18By18(QPainter *painter,
-                                     const bool fromKstyle,
-                                     const bool boldButtonIcons,
-                                     const qreal systemScale,
-                                     const QPointF &deviceOffsetFromZeroReference,
-                                     const bool forceEvenSquares);
+    RenderDecorationButtonIcon18By18(QPainter *painter);
 
     virtual ~RenderDecorationButtonIcon18By18() = default;
 
@@ -62,9 +57,9 @@ protected:
     void renderCenteredLineMinimizeIcon(bool smaller = false);
     void renderDynamicMinimizeIcon(bool dynamicMinimize = true);
     void renderOnAllDesktopsIcon();
-    void renderKeepBehindIconAsFromBreezeIcons();
-    void renderKeepInFrontIconAsFromBreezeIcons();
-    void renderBreezeOriginalContextHelpIcon();
+    void renderKeepBehindIconAsFromKlassyIcons();
+    void renderKeepInFrontIconAsFromKlassyIcons();
+    void renderKlassyOriginalContextHelpIcon();
 };
 
 }

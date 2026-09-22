@@ -18,7 +18,7 @@
 #include <QPaintEvent>
 #include <QWidget>
 
-namespace Breeze
+namespace Klassy
 {
 
 //* shadow manager

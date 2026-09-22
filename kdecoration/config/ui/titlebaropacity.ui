@@ -67,7 +67,7 @@
              <string>Inactive window:</string>
             </property>
             <property name="buddy">
-             <cstring>inactiveTitleBarOpacity_2</cstring>
+             <cstring>titleBarOpacityInactive_2</cstring>
             </property>
            </widget>
           </item>
@@ -94,7 +94,7 @@
              </spacer>
             </item>
             <item>
-             <widget class="QSpinBox" name="activeTitleBarOpacity_2">
+             <widget class="QSpinBox" name="titleBarOpacityActive_2">
               <property name="suffix">
                <string> %</string>
               </property>
@@ -151,7 +151,7 @@
              </spacer>
             </item>
             <item>
-             <widget class="QSpinBox" name="inactiveTitleBarOpacity_2">
+             <widget class="QSpinBox" name="titleBarOpacityInactive_2">
               <property name="suffix">
                <string> %</string>
               </property>
@@ -186,7 +186,7 @@
            </layout>
           </item>
           <item row="4" column="1">
-           <widget class="QSlider" name="inactiveTitleBarOpacity">
+           <widget class="QSlider" name="titleBarOpacityInactive">
             <property name="minimum">
              <number>0</number>
             </property>
@@ -225,7 +225,7 @@
              <string>Active window:</string>
             </property>
             <property name="buddy">
-             <cstring>activeTitleBarOpacity_2</cstring>
+             <cstring>titleBarOpacityActive_2</cstring>
             </property>
            </widget>
           </item>
@@ -246,35 +246,35 @@
            </spacer>
           </item>
           <item row="0" column="2" alignment="Qt::AlignRight">
-           <widget class="QLabel" name="activeTitleBarOpacityFromColorSchemeLabel">
+           <widget class="QLabel" name="titleBarOpacityActiveFromColorSchemeLabel">
             <property name="text">
              <string>        Active opacity set by colour scheme</string>
             </property>
            </widget>
           </item>
           <item row="1" column="2" alignment="Qt::AlignRight">
-           <widget class="QCheckBox" name="overrideActiveTitleBarOpacity">
+           <widget class="QCheckBox" name="overrideTitleBarOpacityActive">
             <property name="text">
              <string>Override colour scheme</string>
             </property>
            </widget>
           </item>
           <item row="3" column="2" alignment="Qt::AlignRight">
-           <widget class="QLabel" name="inactiveTitleBarOpacityFromColorSchemeLabel">
+           <widget class="QLabel" name="titleBarOpacityInactiveFromColorSchemeLabel">
             <property name="text">
              <string>        Inactive opacity set by colour scheme</string>
             </property>
            </widget>
           </item>
           <item row="4" column="2" alignment="Qt::AlignRight">
-           <widget class="QCheckBox" name="overrideInactiveTitleBarOpacity">
+           <widget class="QCheckBox" name="overrideTitleBarOpacityInactive">
             <property name="text">
              <string>Override colour scheme</string>
             </property>
            </widget>
           </item>
           <item row="1" column="1">
-           <widget class="QSlider" name="activeTitleBarOpacity">
+           <widget class="QSlider" name="titleBarOpacityActive">
             <property name="minimum">
              <number>0</number>
             </property>
@@ -381,10 +381,10 @@
   </layout>
  </widget>
  <tabstops>
-  <tabstop>activeTitleBarOpacity_2</tabstop>
-  <tabstop>activeTitleBarOpacity</tabstop>
-  <tabstop>inactiveTitleBarOpacity_2</tabstop>
-  <tabstop>inactiveTitleBarOpacity</tabstop>
+  <tabstop>titleBarOpacityActive_2</tabstop>
+  <tabstop>titleBarOpacityActive</tabstop>
+  <tabstop>titleBarOpacityInactive_2</tabstop>
+  <tabstop>titleBarOpacityInactive</tabstop>
   <tabstop>opaqueMaximizedTitleBars</tabstop>
   <tabstop>blurTransparentTitleBars</tabstop>
   <tabstop>applyOpacityToHeader</tabstop>

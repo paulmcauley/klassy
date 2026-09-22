@@ -37,7 +37,7 @@
 void initKlassydecorationConfigQrc();
 void cleanupKlassydecorationConfigQrc();
 
-namespace Breeze
+namespace Klassy
 {
 
 enum struct LockIconState {
@@ -67,6 +67,11 @@ public:
     //* save configuration
     void save() override;
     void saveMain(QString saveAsPresetName = QString());
+
+    bool isRightToLeft()
+    {
+        return m_isRightToLeft;
+    }
 
     QIcon lockIcon(LockIconState state)
     {
@@ -138,7 +143,7 @@ protected:
 
 private:
     //* ui
-    Ui_BreezeConfigurationUI m_ui;
+    Ui_KlassyConfigurationUI m_ui;
 
     QPushButton *m_presetsButton;
 
@@ -159,6 +164,8 @@ private:
 
     bool m_processingDefaults = false;
     bool m_loading = false;
+
+    bool m_isRightToLeft = false;
 
     //* dialogs behind button
     SystemIconGeneration *m_systemIconGenerationDialog;

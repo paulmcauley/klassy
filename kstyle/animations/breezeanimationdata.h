@@ -19,7 +19,7 @@
 
 #include <cmath>
 
-namespace Breeze
+namespace Klassy
 {
 
 //* base class
@@ -88,7 +88,7 @@ protected:
 #if BREEZE_HAVE_QTQUICK
         else if (auto item = qobject_cast<QQuickItem *>(_target)) {
             // Note: Calling polish() instead of update() because that's where
-            // Breeze would repaint its image for texture.
+            // Klassy would repaint its image for texture.
             item->polish();
         }
 #endif

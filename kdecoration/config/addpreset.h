@@ -9,7 +9,7 @@
 #include "ui_addpreset.h"
 #include <QDialog>
 
-namespace Breeze
+namespace Klassy
 {
 
 class AddPreset : public QDialog

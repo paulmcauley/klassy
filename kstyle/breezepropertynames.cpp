@@ -6,7 +6,7 @@
 
 #include "breezepropertynames.h"
 
-namespace Breeze
+namespace Klassy
 {
 
 const char PropertyNames::noAnimations[] = "_kde_no_animations";

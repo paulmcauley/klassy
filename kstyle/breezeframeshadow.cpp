@@ -18,7 +18,7 @@
 
 #include <KColorUtils>
 
-namespace Breeze
+namespace Klassy
 {
 FrameShadowFactory::FrameShadowFactory()
     : QObject()

@@ -18,7 +18,7 @@
 #include <QDBusPendingCallWatcher>
 #include <QDBusPendingReply>
 
-namespace Breeze
+namespace Klassy
 {
 
 //_________________________________________________________

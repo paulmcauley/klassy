@@ -23,7 +23,7 @@
 #include <QToolBox>
 #include <QToolButton>
 
-namespace Breeze
+namespace Klassy
 {
 
 //____________________________________________________________

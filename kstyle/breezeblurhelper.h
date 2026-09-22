@@ -20,7 +20,7 @@
 #include <QHash>
 #include <QObject>
 
-namespace Breeze
+namespace Klassy
 {
 class BlurHelper : public QObject
 {

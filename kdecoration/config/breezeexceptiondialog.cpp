@@ -12,7 +12,7 @@
 #include "breezedetectwidget.h"
 #include "presetsmodel.h"
 
-namespace Breeze
+namespace Klassy
 {
 
 //___________________________________________

@@ -10,7 +10,7 @@
 #include <QPushButton>
 #include <kicontheme.h>
 
-namespace Breeze
+namespace Klassy
 {
 
 class ConfigWidget;

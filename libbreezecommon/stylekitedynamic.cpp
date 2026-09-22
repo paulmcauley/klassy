@@ -7,7 +7,7 @@
 #include "stylekitedynamic.h"
 #include <QPainterPathStroker>
 
-namespace Breeze
+namespace Klassy
 {
 void RenderStyleKiteDynamic18By18::renderCloseIcon()
 {

@@ -19,8 +19,13 @@ if (panel.formFactor === "horizontal") {
     }
 }
 
-panel.addWidget("org.kde.plasma.kickoff");
+var kickoff = panel.addWidget("org.kde.plasma.kickoff");
+kickoff.currentConfigGroup = ["General"];
+kickoff.writeConfig('icon', 'plasma-symbolic-reduced-margins');
+kickoff.reloadConfig();
+
 panel.addWidget("org.kde.plasma.pager");
+
 var taskmanager = panel.addWidget("org.kde.plasma.taskmanager");
 taskmanager.currentConfigGroup = ["General"];
 taskmanager.writeConfig('launchers', 'preferred://filemanager,preferred://browser');

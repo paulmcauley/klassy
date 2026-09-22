@@ -5,7 +5,7 @@
 #include <KSharedConfig>
 #include <QObject>
 
-namespace Breeze
+namespace Klassy
 {
 class ToolsAreaManager;
 

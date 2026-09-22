@@ -72,5 +72,6 @@
     <file>icons/toppanel/64/user-desktop.svg</file>
     <file>icons/toppanel/96/desktop.svg</file>
     <file>icons/toppanel/96/user-desktop.svg</file>
+    <file>icons/plasma-symbolic-reduced-margins.svg</file>
 </qresource>
 </RCC>

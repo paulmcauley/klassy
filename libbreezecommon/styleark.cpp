@@ -8,7 +8,7 @@
 #include <QPainterPath>
 #include <QPainterPathStroker>
 
-namespace Breeze
+namespace Klassy
 {
 
 void RenderStyleArk18By18::renderMinimizeIcon()

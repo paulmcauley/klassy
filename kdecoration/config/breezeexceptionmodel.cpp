@@ -11,7 +11,7 @@
 
 #include <KLocalizedString>
 
-namespace Breeze
+namespace Klassy
 {
 
 //_______________________________________________

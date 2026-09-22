@@ -10,7 +10,7 @@
 #include "breezedatamap.h"
 #include "breezewidgetstatedata.h"
 
-namespace Breeze
+namespace Klassy
 {
 
 //* QToolBox animation engine

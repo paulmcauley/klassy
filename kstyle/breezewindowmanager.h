@@ -23,7 +23,7 @@
 #include <QQuickItem>
 #endif
 
-namespace Breeze
+namespace Klassy
 {
 class AppEventFilter;
 

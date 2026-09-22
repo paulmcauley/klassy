@@ -6,20 +6,20 @@
 
 #pragma once
 
-#include "breezecommon_export.h"
+#include "klassycommon_export.h"
 
 #include <QColor>
 #include <QIcon>
 #include <QImage>
 
-namespace Breeze
+namespace Klassy
 {
 
 /**
  * @brief Functions to manipulate colours within Klassy
  *        To be used as common code base across both kdecoration and kstyle.
  */
-class BREEZECOMMON_EXPORT ColorTools
+class KLASSYCOMMON_EXPORT ColorTools
 {
 public:
     static QColor getDifferentiatedSaturatedColor(const QColor &inputColor, bool noMandatoryDifferentiate = false);

@@ -10,7 +10,7 @@
 #include "presetsmodel.h"
 #include <QPushButton>
 
-namespace Breeze
+namespace Klassy
 {
 
 ShadowStyle::ShadowStyle(KSharedConfig::Ptr config, KSharedConfig::Ptr presetsConfig, QObject *parent)

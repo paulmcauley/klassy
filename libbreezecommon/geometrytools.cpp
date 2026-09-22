@@ -5,7 +5,7 @@
  */
 #include "geometrytools.h"
 
-namespace Breeze
+namespace Klassy
 {
 
 // from breezehelper.cpp

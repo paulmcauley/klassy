@@ -16,7 +16,7 @@
 
 #include "breezetileset.h"
 
-namespace Breeze
+namespace Klassy
 {
 
 class ShadowHelper;

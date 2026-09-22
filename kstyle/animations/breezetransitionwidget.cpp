@@ -15,7 +15,7 @@
 #include <QStyleOption>
 #include <QTextStream>
 
-namespace Breeze
+namespace Klassy
 {
 
 //________________________________________________

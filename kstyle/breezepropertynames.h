@@ -6,7 +6,7 @@
 
 #pragma once
 
-namespace Breeze
+namespace Klassy
 {
 
 struct PropertyNames {

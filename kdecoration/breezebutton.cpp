@@ -24,7 +24,7 @@
 #include <QPainterPath>
 #include <QVariantAnimation>
 
-namespace Breeze
+namespace Klassy
 {
 
 using KDecoration3::ColorGroup;
@@ -105,27 +105,27 @@ Button *Button::create(KDecoration3::DecorationButtonType type, KDecoration3::De
         switch (type) {
         case KDecoration3::DecorationButtonType::Close:
             b->setVisible(c->isCloseable());
-            QObject::connect(c, &KDecoration3::DecoratedWindow::closeableChanged, b, &Breeze::Button::setVisible);
+            QObject::connect(c, &KDecoration3::DecoratedWindow::closeableChanged, b, &Klassy::Button::setVisible);
             break;
 
         case KDecoration3::DecorationButtonType::Maximize:
             b->setVisible(c->isMaximizeable());
-            QObject::connect(c, &KDecoration3::DecoratedWindow::maximizeableChanged, b, &Breeze::Button::setVisible);
+            QObject::connect(c, &KDecoration3::DecoratedWindow::maximizeableChanged, b, &Klassy::Button::setVisible);
             break;
 
         case KDecoration3::DecorationButtonType::Minimize:
             b->setVisible(c->isMinimizeable());
-            QObject::connect(c, &KDecoration3::DecoratedWindow::minimizeableChanged, b, &Breeze::Button::setVisible);
+            QObject::connect(c, &KDecoration3::DecoratedWindow::minimizeableChanged, b, &Klassy::Button::setVisible);
             break;
 
         case KDecoration3::DecorationButtonType::ContextHelp:
             b->setVisible(c->providesContextHelp());
-            QObject::connect(c, &KDecoration3::DecoratedWindow::providesContextHelpChanged, b, &Breeze::Button::setVisible);
+            QObject::connect(c, &KDecoration3::DecoratedWindow::providesContextHelpChanged, b, &Klassy::Button::setVisible);
             break;
 
         case KDecoration3::DecorationButtonType::Shade:
             b->setVisible(c->isShadeable());
-            QObject::connect(c, &KDecoration3::DecoratedWindow::shadeableChanged, b, &Breeze::Button::setVisible);
+            QObject::connect(c, &KDecoration3::DecoratedWindow::shadeableChanged, b, &Klassy::Button::setVisible);
             break;
 
         case KDecoration3::DecorationButtonType::Menu:
@@ -292,18 +292,7 @@ void Button::drawIcon(QPainter *painter) const
                                      m_d->internalSettings()->forceColorizeSystemIcons() ? QPalette() : c->palette());
         iconRenderer.renderIcon();
     } else {
-        // at loDPI backgrounds are even, therefore need an even icon in such circumstances for correct centring
-        bool forceEvenSquares = (m_isGtkCsdButton || isStandAlone()
-                                 || (m_systemScale <= 1.001
-                                     && (m_d->buttonBackgroundType() == ButtonBackgroundType::Small
-                                         || m_d->internalSettings()->iconSize() < InternalSettings::EnumIconSize::IconLargeMedium)));
-        auto [iconRenderer, localRenderingWidth] = RenderDecorationButtonIcon::factory(m_d->internalSettings(),
-                                                                                       painter,
-                                                                                       false,
-                                                                                       m_boldButtonIcons,
-                                                                                       m_systemScale,
-                                                                                       deviceOffsetDecorationTopLeftToIconTopLeft,
-                                                                                       forceEvenSquares);
+        auto [iconRenderer, localRenderingWidth] = RenderDecorationButtonIcon::factory(m_d->internalSettings(), painter);
 
         qreal scaleFactor = iconWidth / localRenderingWidth;
         /*
@@ -312,6 +301,18 @@ void Button::drawIcon(QPainter *painter) const
         painter->scale(scaleFactor, scaleFactor);
         iconRenderer->setTaskManagerType(g_taskManagerType);
         iconRenderer->setTaskManagerSide(g_taskManagerSide);
+
+        iconRenderer->setBoldButtonIcons(m_boldButtonIcons);
+        iconRenderer->setSystemScale(m_systemScale);
+        iconRenderer->setDeviceOffsetFromZeroReference(deviceOffsetDecorationTopLeftToIconTopLeft);
+
+        // at loDPI backgrounds are even, therefore need an even icon in such circumstances for correct centring
+        bool forceEvenSquares = (m_isGtkCsdButton || isStandAlone()
+                                 || (m_systemScale <= 1.001
+                                     && (m_d->buttonBackgroundType() == ButtonBackgroundType::Small
+                                         || m_d->internalSettings()->iconSize() < InternalSettings::EnumIconSize::IconLargeMedium)));
+        iconRenderer->setForceEvenSquares(forceEvenSquares);
+        iconRenderer->setLeftButtonGroup(m_d->isRightToLeft() ? !(!m_leftButtonVisible && m_rightButtonVisible) : m_leftButtonVisible && !m_rightButtonVisible);
 
         iconRenderer->renderIcon(static_cast<DecorationButtonType>(type()), isChecked());
     }

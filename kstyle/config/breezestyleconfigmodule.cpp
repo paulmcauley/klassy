@@ -8,11 +8,11 @@
 
 #include <KPluginFactory>
 
-K_PLUGIN_CLASS_WITH_JSON(Breeze::ConfigurationModule, "klassystyleconfig.json")
+K_PLUGIN_CLASS_WITH_JSON(Klassy::ConfigurationModule, "klassystyleconfig.json")
 
 #include "breezestyleconfigmodule.moc"
 
-namespace Breeze
+namespace Klassy
 {
 
 //_______________________________________________________________________

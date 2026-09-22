@@ -6,7 +6,7 @@
 
 #include "stylemetro.h"
 
-namespace Breeze
+namespace Klassy
 {
 void RenderStyleMetro18By18::renderCloseIcon()
 {

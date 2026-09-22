@@ -6,7 +6,7 @@
 
 #include "styleoxygen.h"
 
-namespace Breeze
+namespace Klassy
 {
 void RenderStyleOxygen18By18::renderCloseIcon()
 {

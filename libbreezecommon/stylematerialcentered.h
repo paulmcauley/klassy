@@ -10,7 +10,7 @@
 
 #include <QPainter>
 
-namespace Breeze
+namespace Klassy
 {
 
 class RenderStyleMaterialCentered18By18 : public RenderStyleMaterialDynamic18By18
@@ -23,17 +23,12 @@ public:
      * @param fromKstyle Indicates that button is not to be drawn in the title bar, but somewhere else in the UI -- ususally means will be smaller
      * @param boldButtonIcons When in titlebar this will draw bolder button icons if true
      */
-    RenderStyleMaterialCentered18By18(QPainter *painter,
-                                      const bool fromKstyle,
-                                      const bool boldButtonIcons,
-                                      const qreal systemScale,
-                                      const QPointF &deviceOffsetTitleBarTopLeftToIconTopLeft,
-                                      const bool forceEvenSquares)
-        : RenderStyleMaterialDynamic18By18(painter, fromKstyle, boldButtonIcons, systemScale, deviceOffsetTitleBarTopLeftToIconTopLeft, forceEvenSquares) { };
+    RenderStyleMaterialCentered18By18(QPainter *painter)
+        : RenderStyleMaterialDynamic18By18(painter) { };
 
     void renderMinimizeIcon() override
     {
-        renderCenteredLineMinimizeIcon(true);
+        renderCenteredLineMinimizeIcon();
     }
 };
 

@@ -1,58 +1,57 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR This file is copyright:
-# This file is distributed under the same license as the Klassy package.
+# This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Klassy KWin Decoration Config\n"
+"Project-Id-Version: PACKAGE\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2026-02-21 17:14+0100\n"
-"PO-Revision-Date: 2026-08-18 14:18+0800\n"
+"POT-Creation-Date: 2026-09-02 17:27+0100\n"
+"PO-Revision-Date: 2026-09-03 00:00+0800\n"
 "Last-Translator: KairikiFedora <13278297951@sina.cn>\n"
 "Language-Team: KairikiFedora <13278297951@sina.cn>\n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.9\n"
 
-#: config/breezeconfigwidget.cpp:70
+#: config/breezeconfigwidget.cpp:71
 #, kde-format
 msgid "&Presets..."
 msgstr "プリセット(&P)..."
 
-#: config/breezeconfigwidget.cpp:568
+#: config/breezeconfigwidget.cpp:560
 #, kde-format
 msgid "Button Colours - Klassy Settings"
-msgstr "ボタンカラー - Klassy設定"
+msgstr "ボタンの色 - Klassy設定"
 
-#: config/breezeconfigwidget.cpp:575
+#: config/breezeconfigwidget.cpp:567
 #, kde-format
 msgid "Button Behaviour - Klassy Settings"
-msgstr "ボタンの動作 - Klassy設定"
+msgstr "ボタンの挙動 - Klassy設定"
 
-#: config/breezeconfigwidget.cpp:581
+#: config/breezeconfigwidget.cpp:573
 #, kde-format
 msgid "Titlebar Spacing - Klassy Settings"
 msgstr "タイトルバーの間隔 - Klassy設定"
 
-#: config/breezeconfigwidget.cpp:587
+#: config/breezeconfigwidget.cpp:579
 #, kde-format
 msgid "Titlebar Opacity - Klassy Settings"
 msgstr "タイトルバーの不透明度 - Klassy設定"
 
-#: config/breezeconfigwidget.cpp:593
+#: config/breezeconfigwidget.cpp:585
 #, kde-format
 msgid "Shadow Style - Klassy Settings"
 msgstr "シャドウスタイル - Klassy設定"
 
-#: config/breezeconfigwidget.cpp:599
+#: config/breezeconfigwidget.cpp:591
 #, kde-format
 msgid "Window Outline Style - Klassy Settings"
-msgstr "ウィンドウアウトラインスタイル - Klassy設定"
+msgstr "ウィンドウ輪郭線スタイル - Klassy設定"
 
-#: config/breezeconfigwidget.cpp:605
+#: config/breezeconfigwidget.cpp:597
 #, kde-format
 msgid "Presets - Klassy Settings"
 msgstr "プリセット - Klassy設定"
@@ -67,27 +66,29 @@ msgstr "新規例外 - Klassy設定"
 msgid "Edit Exception - Klassy Settings"
 msgstr "例外の編集 - Klassy設定"
 
-#: config/breezeexceptionlistwidget.cpp:169 config/loadpreset.cpp:82
-#: config/loadpreset.cpp:131 config/loadpreset.cpp:156
+#: config/breezeexceptionlistwidget.cpp:169
+#: config/loadpreset.cpp:82 config/loadpreset.cpp:131 config/loadpreset.cpp:156
 #: config/loadpreset.cpp:179
 #, kde-format
 msgid "Question - Klassy Settings"
-msgstr "質問 - Klassy設定"
+msgstr "確認 - Klassy設定"
 
 #: config/breezeexceptionlistwidget.cpp:170
 #, kde-format
 msgid "Remove selected exception?"
-msgstr "選択した例外を削除しますか？"
+msgstr "選択した例外を削除しますか?"
 
 #. i18n: ectx: property (text), widget (QPushButton, removeButton)
-#: config/breezeexceptionlistwidget.cpp:172 config/loadpreset.cpp:134
-#: config/ui/breezeexceptionlistwidget.ui:91 config/ui/loadpreset.ui:62
+#: config/breezeexceptionlistwidget.cpp:172
+#: config/loadpreset.cpp:134 config/ui/breezeexceptionlistwidget.ui:91
+#: config/ui/loadpreset.ui:62
 #, kde-format
 msgid "Remove"
 msgstr "削除"
 
 #: config/breezeexceptionlistwidget.cpp:306
-#: config/breezeexceptionlistwidget.cpp:308 config/loadpreset.cpp:70
+#: config/breezeexceptionlistwidget.cpp:308
+#: config/loadpreset.cpp:70
 #, kde-format
 msgid "Warning - Klassy Settings"
 msgstr "警告 - Klassy設定"
@@ -95,7 +96,7 @@ msgstr "警告 - Klassy設定"
 #: config/breezeexceptionlistwidget.cpp:306
 #, kde-format
 msgid "Please provide an application name to match"
-msgstr "マッチさせるアプリケーション名を指定してください"
+msgstr "一致させるアプリケーション名を入力してください"
 
 #: config/breezeexceptionlistwidget.cpp:308
 #, kde-format
@@ -140,7 +141,7 @@ msgstr "背景"
 #: config/buttonbehaviour.cpp:43
 #, kde-format
 msgid "Outlines"
-msgstr "アウトライン"
+msgstr "輪郭線"
 
 #: config/buttonbehaviour.cpp:44
 #, kde-format
@@ -167,12 +168,12 @@ msgid ""
 "Outline"
 msgstr ""
 "閉じる\n"
-"アウトライン"
+"輪郭線"
 
 #: config/buttonbehaviour.cpp:45
 #, kde-format
 msgid "Show normally"
-msgstr "通常表示"
+msgstr "通常時に表示"
 
 #: config/buttonbehaviour.cpp:45
 #, kde-format
@@ -192,7 +193,7 @@ msgstr "状態変化で色を変える"
 #: config/buttonbehaviour.cpp:102
 #, kde-format
 msgid "No"
-msgstr "なし"
+msgstr "いいえ"
 
 #: config/buttonbehaviour.cpp:103
 #, kde-format
@@ -237,7 +238,7 @@ msgstr "ホバー時に最も暗い"
 #: config/buttonbehaviour.cpp:111
 #, kde-format
 msgid "Progressively more titlebar"
-msgstr "徐々にタイトルバー色に近づける"
+msgstr "徐々にタイトルバー色に"
 
 #: config/buttonbehaviour.cpp:112
 #, kde-format
@@ -247,12 +248,12 @@ msgstr "ホバー時に最もタイトルバー色に"
 #: config/buttonbehaviour.cpp:113
 #, kde-format
 msgid "Progressively less titlebar"
-msgstr "徐々にタイトルバー色から遠ざける"
+msgstr "徐々にタイトルバー色から離れる"
 
 #: config/buttonbehaviour.cpp:114
 #, kde-format
 msgid "Least titlebar on hover"
-msgstr "ホバー時に最もタイトルバー色から遠い"
+msgstr "ホバー時に最もタイトルバー色から離れる"
 
 #: config/buttoncolors.cpp:427
 #, kde-format
@@ -286,13 +287,13 @@ msgstr "%"
 #. i18n: ectx: property (text), widget (QLabel, label_16)
 #: config/buttoncolors.cpp:477 config/ui/buttoncolors.ui:228
 #: config/ui/buttoncolors.ui:514 config/ui/buttoncolors.ui:1006
-#: config/ui/buttoncolors.ui:1292 config/ui/windowoutlinestyle.ui:184
-#: config/ui/windowoutlinestyle.ui:381 config/ui/windowoutlinestyle.ui:547
-#: config/ui/windowoutlinestyle.ui:707 config/ui/windowoutlinestyle.ui:913
-#: config/ui/windowoutlinestyle.ui:1090 config/ui/windowoutlinestyle.ui:1558
-#: config/ui/windowoutlinestyle.ui:1607 config/ui/windowoutlinestyle.ui:1767
-#: config/ui/windowoutlinestyle.ui:1927 config/ui/windowoutlinestyle.ui:2257
-#: config/ui/windowoutlinestyle.ui:2395
+#: config/ui/buttoncolors.ui:1292 config/ui/windowoutlinestyle.ui:119
+#: config/ui/windowoutlinestyle.ui:325 config/ui/windowoutlinestyle.ui:493
+#: config/ui/windowoutlinestyle.ui:653 config/ui/windowoutlinestyle.ui:859
+#: config/ui/windowoutlinestyle.ui:1036 config/ui/windowoutlinestyle.ui:1543
+#: config/ui/windowoutlinestyle.ui:1601 config/ui/windowoutlinestyle.ui:1763
+#: config/ui/windowoutlinestyle.ui:1923 config/ui/windowoutlinestyle.ui:2253
+#: config/ui/windowoutlinestyle.ui:2391
 #, kde-format
 msgid "Opacity:"
 msgstr "不透明度:"
@@ -300,78 +301,77 @@ msgstr "不透明度:"
 #: config/buttoncolors.cpp:492
 #, kde-format
 msgid ", "
-msgstr "、"
+msgstr ", "
 
-#: config/buttoncolors.cpp:932
+#: config/buttoncolors.cpp:930
 #, kde-format
 msgid "Traffic lights icon colours:"
 msgstr "信号機アイコンの色:"
 
-#: config/buttoncolors.cpp:934
+#: config/buttoncolors.cpp:932
 #, kde-format
 msgid "Close icon colour:"
 msgstr "閉じるアイコンの色:"
 
-#: config/buttoncolors.cpp:942
+#: config/buttoncolors.cpp:940
 #, kde-format
 msgid "White close"
-msgstr "白い閉じる"
+msgstr "白い閉じるボタン"
 
-#: config/buttoncolors.cpp:943
+#: config/buttoncolors.cpp:941
 #, kde-format
 msgid "White close when hovered/pressed"
-msgstr "ホバー/押下時に白い閉じる"
+msgstr "ホバー/押下時に白い閉じるボタン"
 
-#: config/buttoncolors.cpp:945 config/buttoncolors.h:220
-#: config/buttoncolors.h:221
+#: config/buttoncolors.cpp:943 config/buttoncolors.h:221
 #, kde-format
 msgid "White"
 msgstr "白"
 
-#: config/buttoncolors.cpp:946
+#: config/buttoncolors.cpp:944
 #, kde-format
 msgid "White when hovered/pressed"
 msgstr "ホバー/押下時に白"
 
-#: config/buttoncolors.cpp:957
+#: config/buttoncolors.cpp:955
 #, kde-format
 msgid "Traffic lights when hovered/pressed"
 msgstr "ホバー/押下時に信号機"
 
-#: config/buttoncolors.cpp:959
+#: config/buttoncolors.cpp:957
 #, kde-format
 msgid "Negative when hovered/pressed"
 msgstr "ホバー/押下時にネガティブ"
 
-#: config/buttoncolors.cpp:966
+#: config/buttoncolors.cpp:964
 #, kde-format
 msgid "Titlebar text"
 msgstr "タイトルバーのテキスト"
 
-#: config/buttoncolors.cpp:969 config/buttoncolors.cpp:975
+#: config/buttoncolors.cpp:967 config/buttoncolors.cpp:973
 #, kde-format
 msgid "Negative"
 msgstr "ネガティブ"
 
-#: config/buttoncolors.cpp:972
+#: config/buttoncolors.cpp:970
 #, kde-format
 msgid "Accent"
 msgstr "アクセント"
 
-#: config/buttoncolors.cpp:978
+#: config/buttoncolors.cpp:976
 #, kde-format
 msgid "Traffic lights"
 msgstr "信号機"
 
 #. i18n: ectx: property (text), widget (QCheckBox, negativeCloseBackgroundHoverPressActive)
 #. i18n: ectx: property (text), widget (QCheckBox, negativeCloseBackgroundHoverPressInactive)
-#: config/buttoncolors.cpp:1092 config/ui/buttoncolors.ui:605
+#: config/buttoncolors.cpp:1090 config/ui/buttoncolors.ui:605
 #: config/ui/buttoncolors.ui:1383
 #, kde-format
 msgid "Negative close on hover/press only"
-msgstr "ホバー/押下時のみネガティブ閉じる"
+msgstr "ホバー/押下時のみネガティブな閉じるボタン"
 
-#: config/buttoncolors.cpp:1096
+#: config/buttoncolors.cpp:1094
 #, kde-format
 msgid "Traffic lights on hover/press only"
 msgstr "ホバー/押下時のみ信号機"
@@ -405,234 +405,239 @@ msgstr "シェード"
 #: config/buttoncolors.h:179
 #, kde-format
 msgid "All desktops"
-msgstr "全デスクトップ"
+msgstr "すべてのデスクトップ"
 
 #: config/buttoncolors.h:180
 #, kde-format
 msgid "Keep behind"
-msgstr "背面に維持"
+msgstr "奥に配置"
 
 #: config/buttoncolors.h:181
 #, kde-format
 msgid "Keep in front"
-msgstr "前面に維持"
+msgstr "手前に配置"
 
 #: config/buttoncolors.h:182
+#, kde-format
+msgid "Exclude from capture"
+msgstr "キャプチャから除外"
+
+#: config/buttoncolors.h:183
 #, kde-format
 msgid "Application menu"
 msgstr "アプリケーションメニュー"
 
-#: config/buttoncolors.h:183
+#: config/buttoncolors.h:184
 #, kde-format
 msgid "Window menu"
 msgstr "ウィンドウメニュー"
 
-#: config/buttoncolors.h:188
-#, kde-format
-msgid "Icon normal"
-msgstr "アイコン 通常"
-
 #: config/buttoncolors.h:189
 #, kde-format
-msgid "Icon hover"
-msgstr "アイコン ホバー"
+msgid "Icon normal"
+msgstr "アイコン通常"
 
 #: config/buttoncolors.h:190
 #, kde-format
-msgid "Icon pressed"
-msgstr "アイコン 押下"
+msgid "Icon hover"
+msgstr "アイコンホバー"
 
 #: config/buttoncolors.h:191
 #, kde-format
-msgid "Background normal"
-msgstr "背景 通常"
+msgid "Icon pressed"
+msgstr "アイコン押下"
 
 #: config/buttoncolors.h:192
 #, kde-format
-msgid "Background hover"
-msgstr "背景 ホバー"
+msgid "Background normal"
+msgstr "背景通常"
 
 #: config/buttoncolors.h:193
 #, kde-format
-msgid "Background pressed"
-msgstr "背景 押下"
+msgid "Background hover"
+msgstr "背景ホバー"
 
 #: config/buttoncolors.h:194
 #, kde-format
-msgid "Outline normal"
-msgstr "アウトライン 通常"
+msgid "Background pressed"
+msgstr "背景押下"
 
 #: config/buttoncolors.h:195
 #, kde-format
-msgid "Outline hover"
-msgstr "アウトライン ホバー"
+msgid "Outline normal"
+msgstr "輪郭線通常"
 
 #: config/buttoncolors.h:196
 #, kde-format
+msgid "Outline hover"
+msgstr "輪郭線ホバー"
+
+#: config/buttoncolors.h:197
+#, kde-format
 msgid "Outline pressed"
-msgstr "アウトライン 押下"
+msgstr "輪郭線押下"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, buttonCornerRadius)
-#: config/buttoncolors.h:199 config/ui/buttonsizing.ui:918
+#: config/buttoncolors.h:200 config/ui/buttonsizing.ui:870
 #, kde-format
 msgid "Custom"
 msgstr "カスタム"
 
-#: config/buttoncolors.h:200
-#, kde-format
-msgid "Titlebar text, auto"
-msgstr "タイトルバーテキスト（自動）"
-
 #: config/buttoncolors.h:201
 #, kde-format
-msgid "Titlebar text, active"
-msgstr "タイトルバーテキスト（アクティブ）"
+msgid "Titlebar text, auto"
+msgstr "タイトルバーテキスト、自動"
 
 #: config/buttoncolors.h:202
 #, kde-format
-msgid "Titlebar text, inactive"
-msgstr "タイトルバーテキスト（非アクティブ）"
+msgid "Titlebar text, active"
+msgstr "タイトルバーテキスト、アクティブ"
 
 #: config/buttoncolors.h:203
 #, kde-format
-msgid "Titlebar background, auto"
-msgstr "タイトルバー背景（自動）"
+msgid "Titlebar text, inactive"
+msgstr "タイトルバーテキスト、非アクティブ"
 
 #: config/buttoncolors.h:204
 #, kde-format
-msgid "Titlebar background, active"
-msgstr "タイトルバー背景（アクティブ）"
+msgid "Titlebar background, auto"
+msgstr "タイトルバー背景、自動"
 
 #: config/buttoncolors.h:205
 #, kde-format
-msgid "Titlebar background, inactive"
-msgstr "タイトルバー背景（非アクティブ）"
+msgid "Titlebar background, active"
+msgstr "タイトルバー背景、アクティブ"
 
 #: config/buttoncolors.h:206
+#, kde-format
+msgid "Titlebar background, inactive"
+msgstr "タイトルバー背景、非アクティブ"
+
+#: config/buttoncolors.h:207
 #, kde-format
 msgid "Accent (button focus)"
 msgstr "アクセント（ボタンフォーカス）"
 
-#: config/buttoncolors.h:207
+#: config/buttoncolors.h:208
 #, kde-format
 msgid "Accent (button hover)"
 msgstr "アクセント（ボタンホバー）"
 
-#: config/buttoncolors.h:208
+#: config/buttoncolors.h:209
 #, kde-format
 msgid "Accent (highlight)"
 msgstr "アクセント（ハイライト）"
 
-#: config/buttoncolors.h:209
+#: config/buttoncolors.h:210
 #, kde-format
 msgid "Accent (highlight, less saturated)"
-msgstr "アクセント（ハイライト、彩度低）"
+msgstr "アクセント（ハイライト、低彩度）"
 
-#: config/buttoncolors.h:210
+#: config/buttoncolors.h:211
 #, kde-format
 msgid "Negative text"
 msgstr "ネガティブテキスト"
 
-#: config/buttoncolors.h:211
-#, kde-format
-msgid "Negative, less saturated"
-msgstr "ネガティブ（彩度低）"
-
 #: config/buttoncolors.h:212
 #, kde-format
-msgid "Negative, saturated"
-msgstr "ネガティブ（彩度高）"
+msgid "Negative, less saturated"
+msgstr "ネガティブ、低彩度"
 
 #: config/buttoncolors.h:213
 #, kde-format
-msgid "Negative, fully saturated"
-msgstr "ネガティブ（最大彩度）"
+msgid "Negative, saturated"
+msgstr "ネガティブ、高彩度"
 
 #: config/buttoncolors.h:214
+#, kde-format
+msgid "Negative, fully saturated"
+msgstr "ネガティブ、最高彩度"
+
+#: config/buttoncolors.h:215
 #, kde-format
 msgid "Neutral text"
 msgstr "ニュートラルテキスト"
 
-#: config/buttoncolors.h:215
-#, kde-format
-msgid "Neutral, less saturated"
-msgstr "ニュートラル（彩度低）"
-
 #: config/buttoncolors.h:216
 #, kde-format
-msgid "Neutral, saturated"
-msgstr "ニュートラル（彩度高）"
+msgid "Neutral, less saturated"
+msgstr "ニュートラル、低彩度"
 
 #: config/buttoncolors.h:217
+#, kde-format
+msgid "Neutral, saturated"
+msgstr "ニュートラル、高彩度"
+
+#: config/buttoncolors.h:218
 #, kde-format
 msgid "Positive text"
 msgstr "ポジティブテキスト"
 
-#: config/buttoncolors.h:218
-#, kde-format
-msgid "Positive, less saturated"
-msgstr "ポジティブ（彩度低）"
-
 #: config/buttoncolors.h:219
 #, kde-format
+msgid "Positive, less saturated"
+msgstr "ポジティブ、低彩度"
+
+#: config/buttoncolors.h:220
+#, kde-format
 msgid "Positive, saturated"
-msgstr "ポジティブ（彩度高）"
+msgstr "ポジティブ、高彩度"
 
 #: config/buttoncolors.h:222
 #, kde-format
 msgid "Window outline, auto"
-msgstr "ウィンドウアウトライン（自動）"
+msgstr "ウィンドウ輪郭線、自動"
 
 #: config/buttoncolors.h:223
 #, kde-format
 msgid "Window outline, active"
-msgstr "ウィンドウアウトライン（アクティブ）"
+msgstr "ウィンドウ輪郭線、アクティブ"
 
 #: config/buttoncolors.h:224
 #, kde-format
 msgid "Window outline, inactive"
-msgstr "ウィンドウアウトライン（非アクティブ）"
+msgstr "ウィンドウ輪郭線、非アクティブ"
 
 #: config/buttoncolors.h:225
 #, kde-format
 msgid "Window shadow, auto"
-msgstr "ウィンドウシャドウ（自動）"
+msgstr "ウィンドウシャドウ、自動"
 
 #: config/buttoncolors.h:226
 #, kde-format
 msgid "Window shadow, active"
-msgstr "ウィンドウシャドウ（アクティブ）"
+msgstr "ウィンドウシャドウ、アクティブ"
 
 #: config/buttoncolors.h:227
 #, kde-format
 msgid "Window shadow, inactive"
-msgstr "ウィンドウシャドウ（非アクティブ）"
+msgstr "ウィンドウシャドウ、非アクティブ"
 
-#: config/buttonsizing.cpp:130 config/buttonsizing.cpp:177
+#: config/buttonsizing.cpp:128 config/buttonsizing.cpp:175
 #, kde-format
 msgid "Button Sizing & Spacing - Klassy Settings"
 msgstr "ボタンのサイズと間隔 - Klassy設定"
 
-#: config/buttonsizing.cpp:131
+#: config/buttonsizing.cpp:129
 #, kde-format
 msgid "Full-height Rectangle Sizing && Spacing"
-msgstr "全高矩形のサイズと間隔"
+msgstr "全高長方形のサイズと間隔"
 
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox)
-#: config/buttonsizing.cpp:178 config/ui/buttonsizing.ui:20
+#: config/buttonsizing.cpp:176 config/ui/buttonsizing.ui:20
 #, kde-format
 msgid "Integrated Rounded Rectangle Sizing && Spacing"
-msgstr "統合型丸みを帯びた矩形のサイズと間隔"
+msgstr "統合角丸長方形のサイズと間隔"
 
-#: config/buttonsizing.cpp:223
+#: config/buttonsizing.cpp:221
 #, kde-format
 msgid "Button Size & Spacing - Klassy Settings"
-msgstr "ボタンサイズと間隔 - Klassy設定"
+msgstr "ボタンのサイズと間隔 - Klassy設定"
 
-#: config/buttonsizing.cpp:224
+#: config/buttonsizing.cpp:222
 #, kde-format
 msgid "Button Size && Spacing"
-msgstr "ボタンサイズと間隔"
+msgstr "ボタンのサイズと間隔"
 
 #: config/loadpreset.cpp:60 config/loadpreset.cpp:71
 #, kde-format
@@ -642,17 +647,17 @@ msgstr "プリセットの追加 - Klassy設定"
 #: config/loadpreset.cpp:70
 #, kde-format
 msgid "Please provide a name for the Preset"
-msgstr "プリセットの名前を指定してください"
+msgstr "プリセットの名前を入力してください"
 
 #: config/loadpreset.cpp:83 config/loadpreset.cpp:157
 #, kde-format
 msgid "A preset with the name \""
-msgstr "プリセット名 \""
+msgstr "名前\" "
 
 #: config/loadpreset.cpp:83 config/loadpreset.cpp:157
 #, kde-format
 msgid "\" already exists. Overwrite?"
-msgstr "\" は既に存在します。上書きしますか？"
+msgstr "\" のプリセットが既に存在します。上書きしますか?"
 
 #: config/loadpreset.cpp:85 config/loadpreset.cpp:159
 #, kde-format
@@ -662,12 +667,12 @@ msgstr "上書き"
 #: config/loadpreset.cpp:132
 #, kde-format
 msgid "Remove \""
-msgstr "\" を削除"
+msgstr "削除: \""
 
 #: config/loadpreset.cpp:132
 #, kde-format
 msgid "\" preset?"
-msgstr " プリセットを削除しますか？"
+msgstr "\" プリセット?"
 
 #: config/loadpreset.cpp:147
 #, kde-format
@@ -682,18 +687,18 @@ msgstr "Klassyプリセット (*.klpw)"
 #: config/loadpreset.cpp:171
 #, kde-format
 msgid "Invalid Klassy Preset file at \""
-msgstr "無効なKlassyプリセットファイル \""
+msgstr "不正なKlassyプリセットファイル: \""
 
 #: config/loadpreset.cpp:171 config/loadpreset.cpp:197
 #: config/loadpreset.cpp:204
 #, kde-format
 msgid "\"."
-msgstr "\"。"
+msgstr "\"."
 
 #: config/loadpreset.cpp:180
 #, kde-format
 msgid "The file to import at \""
-msgstr "インポートするファイル \""
+msgstr "インポートするファイル: \""
 
 #: config/loadpreset.cpp:181
 #, kde-format
@@ -701,8 +706,8 @@ msgid ""
 "\" was created for a different version of Klassy.\n"
 " Try to import anyway?"
 msgstr ""
-"\" は異なるバージョンのKlassy用に作成されました。\n"
-" それでもインポートしますか？"
+"\" は異なるバージョンのKlassy用に作成されています。\n"
+"そのままインポートを試みますか?"
 
 #: config/loadpreset.cpp:183
 #, kde-format
@@ -712,17 +717,17 @@ msgstr "インポートを続行"
 #: config/loadpreset.cpp:197
 #, kde-format
 msgid "No preset group found in Klassy Preset file at \""
-msgstr "Klassyプリセットファイルにプリセットグループが見つかりません \""
+msgstr "Klassyプリセットファイルにプリセットグループが見つかりません: \""
 
 #: config/loadpreset.cpp:204
 #, kde-format
 msgid "Invalid key \""
-msgstr "無効なキー \""
+msgstr "不正なキー: \""
 
 #: config/loadpreset.cpp:204
 #, kde-format
 msgid "\" in Klassy Preset file at \""
-msgstr "\" がKlassyプリセットファイル内にあります \""
+msgstr "\" (Klassyプリセットファイル: \""
 
 #: config/loadpreset.cpp:223
 #, kde-format
@@ -734,15 +739,15 @@ msgstr "Klassyプリセットをファイルにエクスポート"
 msgid "System Icon Generation - Klassy Settings"
 msgstr "システムアイコン生成 - Klassy設定"
 
-#. i18n: ectx: property (windowTitle), widget (QDialog, LoadPreset)
-#. i18n: ectx: property (windowTitle), widget (QDialog, ButtonColors)
-#. i18n: ectx: property (windowTitle), widget (QDialog, BreezeExceptionDialog)
-#. i18n: ectx: property (windowTitle), widget (QDialog, SystemIconGeneration)
-#. i18n: ectx: property (windowTitle), widget (QDialog, TitleBarOpacity)
 #. i18n: ectx: property (windowTitle), widget (QDialog, AddPreset)
-#. i18n: ectx: property (windowTitle), widget (QDialog, ShadowStyle)
+#. i18n: ectx: property (windowTitle), widget (QDialog, LoadPreset)
+#. i18n: ectx: property (windowTitle), widget (QDialog, TitleBarOpacity)
+#. i18n: ectx: property (windowTitle), widget (QDialog, SystemIconGeneration)
 #. i18n: ectx: property (windowTitle), widget (QDialog, ButtonBehaviour)
+#. i18n: ectx: property (windowTitle), widget (QDialog, ButtonColors)
 #. i18n: ectx: property (windowTitle), widget (QDialog, ButtonSizing)
+#. i18n: ectx: property (windowTitle), widget (QDialog, ShadowStyle)
+#. i18n: ectx: property (windowTitle), widget (QDialog, BreezeExceptionDialog)
 #. i18n: ectx: property (windowTitle), widget (QDialog, TitleBarSpacing)
 #. i18n: ectx: property (windowTitle), widget (QDialog, WindowOutlineStyle)
 #: config/ui/addpreset.ui:14 config/ui/breezeexceptiondialog.ui:14
@@ -768,11 +773,7 @@ msgid ""
 "<html><head/><body><p><a href=\"https://github.com/paulmcauley/klassy/"
 "discussions/102\"><span style=\" text-decoration: underline; "
 "color:#2980b9;\">Download Klassy Preset files</span></a></p></body></html>"
-msgstr ""
-"<html><head/><body><p><a href=\"https://github.com/paulmcauley/klassy/"
-"discussions/102\"><span style=\" text-decoration: underline; "
-"color:#2980b9;\">Klassyプリセットファイルをダウンロード</span></a></p></"
-"body></html>"
+msgstr "<html><head/><body><p><a href=\"https://github.com/paulmcauley/klassy/discussions/102\"><span style=\" text-decoration: underline; color:#2980b9;\">Klassyプリセットファイルをダウンロード</span></a></p></body></html>"
 
 #. i18n: ectx: property (text), widget (QPushButton, importButton)
 #: config/ui/addpreset.ui:45
@@ -810,7 +811,7 @@ msgstr "ボタン(&B)"
 #: config/ui/breezeconfigurationui.ui:243
 #, kde-format
 msgid "Icon si&ze:   "
-msgstr "アイコンサイズ(&z):   "
+msgstr "アイコンサイズ(&Z):   "
 
 #. i18n: ectx: property (text), item, widget (QComboBox, iconSize)
 #. i18n: ectx: property (text), item, widget (QComboBox, systemIconSize)
@@ -818,7 +819,7 @@ msgstr "アイコンサイズ(&z):   "
 #: config/ui/breezeconfigurationui.ui:269
 #, kde-format
 msgid "8  - Tiny"
-msgstr "8  - 極小"
+msgstr "8 - 極小"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, iconSize)
 #. i18n: ectx: property (text), item, widget (QComboBox, systemIconSize)
@@ -826,7 +827,7 @@ msgstr "8  - 極小"
 #: config/ui/breezeconfigurationui.ui:274
 #, kde-format
 msgid "12 - Very Small"
-msgstr "12 - 非常に小"
+msgstr "12 - より小さい"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, iconSize)
 #. i18n: ectx: property (text), item, widget (QComboBox, systemIconSize)
@@ -842,7 +843,7 @@ msgstr "14 - 小"
 #: config/ui/breezeconfigurationui.ui:284
 #, kde-format
 msgid "16 - Small-Medium"
-msgstr "16 - 小～中"
+msgstr "16 - 小-中"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, iconSize)
 #. i18n: ectx: property (text), item, widget (QComboBox, systemIconSize)
@@ -858,7 +859,7 @@ msgstr "18 - 中"
 #: config/ui/breezeconfigurationui.ui:294
 #, kde-format
 msgid "20 - Large-Medium"
-msgstr "20 - 大～中"
+msgstr "20 - 中-大"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, iconSize)
 #. i18n: ectx: property (text), item, widget (QComboBox, systemIconSize)
@@ -874,7 +875,7 @@ msgstr "22 - 大"
 #: config/ui/breezeconfigurationui.ui:304
 #, kde-format
 msgid "24 - Very Large"
-msgstr "24 - 非常に大"
+msgstr "24 - より大きい"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, iconSize)
 #. i18n: ectx: property (text), item, widget (QComboBox, systemIconSize)
@@ -896,25 +897,25 @@ msgstr "48 - 超巨大"
 #: config/ui/breezeconfigurationui.ui:357
 #, kde-format
 msgid "Full-height Rectangle"
-msgstr "全高矩形"
+msgstr "全高長方形"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, buttonShape)
 #: config/ui/breezeconfigurationui.ui:362
 #, kde-format
 msgid "Full-height Rounded Rectangle"
-msgstr "全高丸み矩形"
+msgstr "全高角丸長方形"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, buttonShape)
 #: config/ui/breezeconfigurationui.ui:367
 #, kde-format
 msgid "Integrated Rounded Rectangle"
-msgstr "統合型丸み矩形"
+msgstr "統合角丸長方形"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, buttonShape)
 #: config/ui/breezeconfigurationui.ui:372
 #, kde-format
 msgid "Integrated Rounded Rectangle, grouped"
-msgstr "統合型丸み矩形（グループ化）"
+msgstr "統合角丸長方形、グループ化"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, buttonShape)
 #: config/ui/breezeconfigurationui.ui:377
@@ -926,13 +927,13 @@ msgstr "円"
 #: config/ui/breezeconfigurationui.ui:382
 #, kde-format
 msgid "Square"
-msgstr "正方形"
+msgstr "四角"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, buttonShape)
 #: config/ui/breezeconfigurationui.ui:387
 #, kde-format
 msgid "Rounded Square"
-msgstr "丸み正方形"
+msgstr "角丸四角"
 
 #. i18n: ectx: property (text), widget (QLabel, label_9)
 #: config/ui/breezeconfigurationui.ui:411
@@ -944,13 +945,13 @@ msgstr "形状(&S):"
 #: config/ui/breezeconfigurationui.ui:447
 #, kde-format
 msgid "Button Behaviour..."
-msgstr "ボタンの動作..."
+msgstr "ボタンの挙動..."
 
 #. i18n: ectx: property (text), widget (QLabel, label_16)
 #: config/ui/breezeconfigurationui.ui:477
 #, kde-format
 msgid "Bold i&cons: "
-msgstr "太字アイコン(&c): "
+msgstr "太字アイコン(&C): "
 
 #. i18n: ectx: property (text), item, widget (QComboBox, boldButtonIcons)
 #: config/ui/breezeconfigurationui.ui:497
@@ -974,13 +975,13 @@ msgstr "HiDPIのみ太字"
 #: config/ui/breezeconfigurationui.ui:512
 #, kde-format
 msgid "Bold active window"
-msgstr "アクティブウィンドウは太字"
+msgstr "アクティブウィンドウを太字"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, boldButtonIcons)
 #: config/ui/breezeconfigurationui.ui:517
 #, kde-format
 msgid "Bold active, HiDPI"
-msgstr "アクティブかつHiDPIで太字"
+msgstr "アクティブ太字、HiDPI"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, buttonIconStyle)
 #: config/ui/breezeconfigurationui.ui:559
@@ -991,71 +992,83 @@ msgstr "システムアイコンテーマを使用"
 #. i18n: ectx: property (text), item, widget (QComboBox, buttonIconStyle)
 #: config/ui/breezeconfigurationui.ui:564
 #, kde-format
-msgid "  Kite"
-msgstr "  Kite"
+msgid "  Material (dynamic minimize)"
+msgstr "  Material（動的最小化）"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, buttonIconStyle)
-#: config/ui/breezeconfigurationui.ui:573
+#: config/ui/breezeconfigurationui.ui:569
 #, kde-format
-msgid "  SuessigKite"
-msgstr "  SuessigKite"
+msgid "  Material (centred minimize)"
+msgstr "  Material（中央寄せ最小化）"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, buttonIconStyle)
-#: config/ui/breezeconfigurationui.ui:578
+#: config/ui/breezeconfigurationui.ui:574
+#, kde-format
+msgid "  Material"
+msgstr "  Material"
+
+#. i18n: ectx: property (text), item, widget (QComboBox, buttonIconStyle)
+#: config/ui/breezeconfigurationui.ui:579
 #, kde-format
 msgid "  Oxygen/Breeze"
 msgstr "  Oxygen/Breeze"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, buttonIconStyle)
-#: config/ui/breezeconfigurationui.ui:587
+#: config/ui/breezeconfigurationui.ui:588
 #, kde-format
-msgid "  Klasse"
-msgstr "  Klasse"
+msgid "  Kite (dynamic minimize)"
+msgstr "  Kite（動的最小化）"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, buttonIconStyle)
-#: config/ui/breezeconfigurationui.ui:596
+#: config/ui/breezeconfigurationui.ui:597
+#, kde-format
+msgid "  Kite"
+msgstr "  Kite"
+
+#. i18n: ectx: property (text), item, widget (QComboBox, buttonIconStyle)
+#: config/ui/breezeconfigurationui.ui:602
+#, kde-format
+msgid "  Traditional (dynamic minimize)"
+msgstr "  トラディショナル（動的最小化）"
+
+#. i18n: ectx: property (text), item, widget (QComboBox, buttonIconStyle)
+#: config/ui/breezeconfigurationui.ui:611
 #, kde-format
 msgid "  Traditional"
 msgstr "  トラディショナル"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, buttonIconStyle)
-#: config/ui/breezeconfigurationui.ui:605
+#: config/ui/breezeconfigurationui.ui:620
 #, kde-format
 msgid "  Metro"
 msgstr "  Metro"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, buttonIconStyle)
-#: config/ui/breezeconfigurationui.ui:614
+#: config/ui/breezeconfigurationui.ui:629
 #, kde-format
 msgid "  Fluent"
 msgstr "  Fluent"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, buttonIconStyle)
-#: config/ui/breezeconfigurationui.ui:619
+#: config/ui/breezeconfigurationui.ui:634
 #, kde-format
 msgid "  Ark"
 msgstr "  Ark"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, buttonIconStyle)
-#: config/ui/breezeconfigurationui.ui:624
+#: config/ui/breezeconfigurationui.ui:639
 #, kde-format
-msgid "  Arkopal"
-msgstr "  Arkopal"
+msgid "  Kisweet (dynamic minimize)"
+msgstr "  Kisweet（動的最小化）"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, buttonIconStyle)
-#: config/ui/breezeconfigurationui.ui:629
-#, kde-format
-msgid "  Arkopal (Left Panel)"
-msgstr "  Arkopal (左パネル)"
-
-#. i18n: ectx: property (text), item, widget (QComboBox, buttonIconStyle)
-#: config/ui/breezeconfigurationui.ui:634
+#: config/ui/breezeconfigurationui.ui:644
 #, kde-format
 msgid "  Kisweet"
 msgstr "  Kisweet"
 
 #. i18n: ectx: property (text), widget (QLabel, label_6)
-#: config/ui/breezeconfigurationui.ui:665
+#: config/ui/breezeconfigurationui.ui:675
 #, kde-format
 msgid ""
 "&Icons: \n"
@@ -1065,237 +1078,232 @@ msgstr ""
 " "
 
 #. i18n: ectx: property (text), widget (QPushButton, buttonColorsButton)
-#: config/ui/breezeconfigurationui.ui:696
+#: config/ui/breezeconfigurationui.ui:706
 #, kde-format
 msgid "Button &Colours..."
-msgstr "ボタンカラー(&C)..."
+msgstr "ボタンの色(&C)..."
 
 #. i18n: ectx: property (text), widget (QLabel, version)
-#: config/ui/breezeconfigurationui.ui:748
+#: config/ui/breezeconfigurationui.ui:758
 #, kde-format
 msgid "<version>"
 msgstr "<バージョン>"
 
 #. i18n: ectx: property (text), widget (QLabel, label_24)
-#: config/ui/breezeconfigurationui.ui:764
+#: config/ui/breezeconfigurationui.ui:774
 #, kde-format
 msgid ""
 "<html><head/><body><p><a href=\"https://github.com/paulmcauley/"
 "klassy\"><span style=\" text-decoration: underline; color:#2980b9;\">Source "
 "code</span></a></p></body></html>"
-msgstr ""
-"<html><head/><body><p><a href=\"https://github.com/paulmcauley/"
-"klassy\"><span style=\" text-decoration: underline; color:#2980b9;\">ソース"
-"コード</span></a></p></body></html>"
+msgstr "<html><head/><body><p><a href=\"https://github.com/paulmcauley/klassy\"><span style=\" text-decoration: underline; color:#2980b9;\">ソースコード</span></a></p></body></html>"
 
 #. i18n: ectx: property (text), widget (QPushButton, buttonSizingButton)
-#: config/ui/breezeconfigurationui.ui:804
+#: config/ui/breezeconfigurationui.ui:814
 #, kde-format
 msgid "Button Size && Spacing..."
-msgstr "ボタンサイズと間隔..."
+msgstr "ボタンのサイズと間隔..."
 
 #. i18n: ectx: property (text), widget (QPushButton, systemIconGenerationButton)
-#: config/ui/breezeconfigurationui.ui:851
+#: config/ui/breezeconfigurationui.ui:861
 #, kde-format
 msgid "System Icon Generation..."
 msgstr "システムアイコン生成..."
 
 #. i18n: ectx: property (text), widget (QCheckBox, forceColorizeSystemIcons)
-#: config/ui/breezeconfigurationui.ui:877
+#: config/ui/breezeconfigurationui.ui:887
 #, kde-format
 msgid "Force-colourize icons"
-msgstr "アイコンを強制カラー化"
+msgstr "アイコンに強制的に着色"
 
 #. i18n: ectx: attribute (title), widget (QWidget, tab_titlebar)
-#: config/ui/breezeconfigurationui.ui:957
+#: config/ui/breezeconfigurationui.ui:967
 #, kde-format
 msgid "&Titlebar"
 msgstr "タイトルバー(&T)"
 
 #. i18n: ectx: property (text), widget (QPushButton, titleBarSpacingButton)
-#: config/ui/breezeconfigurationui.ui:991
+#: config/ui/breezeconfigurationui.ui:1001
 #, kde-format
 msgid "Titlebar &Spacing..."
 msgstr "タイトルバーの間隔(&S)..."
 
 #. i18n: ectx: property (text), widget (QPushButton, titleBarOpacityButton)
-#: config/ui/breezeconfigurationui.ui:1014
+#: config/ui/breezeconfigurationui.ui:1024
 #, kde-format
 msgid "Titlebar &Opacity..."
 msgstr "タイトルバーの不透明度(&O)..."
 
-#. i18n: ectx: property (text), widget (QCheckBox, exceptionMatchTitleBarToApplicationColor)
 #. i18n: ectx: property (text), widget (QCheckBox, matchTitleBarToApplicationColor)
-#: config/ui/breezeconfigurationui.ui:1040
+#. i18n: ectx: property (text), widget (QCheckBox, exceptionMatchTitleBarToApplicationColor)
+#: config/ui/breezeconfigurationui.ui:1050
 #: config/ui/breezeexceptiondialog.ui:178
 #, kde-format
 msgid "Match titlebar to application colour"
 msgstr "タイトルバーをアプリケーションの色に合わせる"
 
 #. i18n: ectx: property (text), widget (QLabel, label)
-#: config/ui/breezeconfigurationui.ui:1063
+#: config/ui/breezeconfigurationui.ui:1073
 #, kde-format
 msgid "On active window:"
-msgstr "アクティブウィンドウの場合:"
+msgstr "アクティブウィンドウ時:"
 
 #. i18n: ectx: property (text), widget (QCheckBox, drawBackgroundGradient)
-#: config/ui/breezeconfigurationui.ui:1070
+#: config/ui/breezeconfigurationui.ui:1080
 #, kde-format
 msgid "Draw titlebar background &gradient"
-msgstr "タイトルバー背景のグラデーションを描画(&g)"
+msgstr "タイトルバー背景のグラデーションを描画(&G)"
 
 #. i18n: ectx: property (text), widget (QCheckBox, drawTitleBarSeparator)
-#: config/ui/breezeconfigurationui.ui:1077
+#: config/ui/breezeconfigurationui.ui:1087
 #, kde-format
 msgid "Draw separator under titlebar"
-msgstr "タイトルバーの下に区切りを描画"
+msgstr "タイトルバーの下にセパレータを描画"
 
 #. i18n: ectx: property (text), widget (QCheckBox, boldTitle)
-#: config/ui/breezeconfigurationui.ui:1084
+#: config/ui/breezeconfigurationui.ui:1094
 #, kde-format
 msgid "Make title bold"
 msgstr "タイトルを太字にする"
 
 #. i18n: ectx: property (text), widget (QCheckBox, underlineTitle)
-#: config/ui/breezeconfigurationui.ui:1091
+#: config/ui/breezeconfigurationui.ui:1101
 #, kde-format
 msgid "Underline title"
 msgstr "タイトルに下線を引く"
 
 #. i18n: ectx: attribute (title), widget (QWidget, tab_window)
-#: config/ui/breezeconfigurationui.ui:1112
+#: config/ui/breezeconfigurationui.ui:1122
 #, kde-format
 msgid "&Window"
 msgstr "ウィンドウ(&W)"
 
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox_5)
-#: config/ui/breezeconfigurationui.ui:1146 config/ui/shadowstyle.ui:20
+#: config/ui/breezeconfigurationui.ui:1156
 #, kde-format
 msgid "Shadows"
 msgstr "シャドウ"
 
 #. i18n: ectx: property (text), widget (QPushButton, shadowStyleButton)
-#: config/ui/breezeconfigurationui.ui:1179
+#: config/ui/breezeconfigurationui.ui:1189
 #, kde-format
 msgid "Shadow Style..."
 msgstr "シャドウスタイル..."
 
 #. i18n: ectx: property (title), widget (QGroupBox, borders_groupBox)
-#: config/ui/breezeconfigurationui.ui:1192
+#: config/ui/breezeconfigurationui.ui:1202
 #, kde-format
 msgid "Borders"
-msgstr "ボーダー"
+msgstr "境界線"
 
 #. i18n: ectx: property (text), widget (QCheckBox, useTitleBarColorForAllBorders)
-#: config/ui/breezeconfigurationui.ui:1213
+#: config/ui/breezeconfigurationui.ui:1223
 #, kde-format
 msgid "Use titlebar colour for all window borders"
-msgstr "すべてのウィンドウボーダーにタイトルバーの色を使用"
+msgstr "すべてのウィンドウ境界線にタイトルバーの色を使用"
 
 #. i18n: ectx: property (text), widget (QCheckBox, drawBorderOnMaximizedWindows)
-#: config/ui/breezeconfigurationui.ui:1227
+#: config/ui/breezeconfigurationui.ui:1237
 #, kde-format
 msgid ""
 "Draw border on maximized windows\n"
 "(borders must be enabled for maximized resizing to work)"
 msgstr ""
-"最大化ウィンドウにボーダーを描画\n"
-"（最大化時のリサイズを機能させるにはボーダーを有効にする必要があります）"
+"最大化ウィンドウに境界線を描画\n"
+"(最大化時のリサイズを機能させるには境界線を有効にする必要があります)"
 
 #. i18n: ectx: property (title), widget (QGroupBox, Corners)
-#: config/ui/breezeconfigurationui.ui:1314
+#: config/ui/breezeconfigurationui.ui:1324
 #, kde-format
 msgid "Corners"
-msgstr "コーナー"
+msgstr "角"
 
 #. i18n: ectx: property (text), widget (QLabel, cornerRadiusIcon)
-#: config/ui/breezeconfigurationui.ui:1339
+#: config/ui/breezeconfigurationui.ui:1349
 #, kde-format
 msgid "Icon"
 msgstr "アイコン"
 
 #. i18n: ectx: property (text), widget (QLabel, cornerRadiusLabel)
-#: config/ui/breezeconfigurationui.ui:1346
+#: config/ui/breezeconfigurationui.ui:1356
 #, kde-format
 msgid "&Corner Radius:"
-msgstr "コーナー半径(&C):"
+msgstr "角の半径(&C):"
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, roundAllCornersWhenNoBorders)
-#: config/ui/breezeconfigurationui.ui:1373
+#: config/ui/breezeconfigurationui.ui:1383
 #, kde-format
 msgid "<html><head/><body><p><br/></p></body></html>"
 msgstr "<html><head/><body><p><br/></p></body></html>"
 
 #. i18n: ectx: property (text), widget (QCheckBox, roundAllCornersWhenNoBorders)
-#: config/ui/breezeconfigurationui.ui:1376
+#: config/ui/breezeconfigurationui.ui:1386
 #, kde-format
 msgid "Round all corners when no borders (clips window content)"
-msgstr ""
-"ボーダーがないときはすべてのコーナーを丸める（ウィンドウコンテンツがクリップ"
-"されます）"
+msgstr "境界線がない場合すべての角を丸める（ウィンドウコンテンツがクリップされます）"
 
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox)
-#: config/ui/breezeconfigurationui.ui:1392
+#: config/ui/breezeconfigurationui.ui:1402
 #, kde-format
 msgid "Thin window outline"
-msgstr "細いウィンドウアウトライン"
+msgstr "細いウィンドウ輪郭線"
 
 #. i18n: ectx: property (text), widget (QPushButton, windowOutlineStyleButton)
-#: config/ui/breezeconfigurationui.ui:1425
-#, kde-format
-msgid "Window Outline Style..."
-msgstr "ウィンドウアウトラインスタイル..."
-
-#. i18n: ectx: property (text), widget (QCheckBox, colorizeWindowOutlineWithButton)
 #: config/ui/breezeconfigurationui.ui:1435
 #, kde-format
+msgid "Window Outline Style..."
+msgstr "ウィンドウ輪郭線スタイル..."
+
+#. i18n: ectx: property (text), widget (QCheckBox, colorizeWindowOutlineWithButton)
+#: config/ui/breezeconfigurationui.ui:1445
+#, kde-format
 msgid "Colourize with highlighted button's colour"
-msgstr "ハイライトされたボタンの色で色付け"
+msgstr "ハイライトされたボタンの色で着色"
 
 #. i18n: ectx: attribute (title), widget (QWidget, tab_animations)
-#: config/ui/breezeconfigurationui.ui:1446
+#: config/ui/breezeconfigurationui.ui:1456
 #, kde-format
 msgid "Ani&mations"
-msgstr "アニメーション(&m)"
+msgstr "アニメーション(&M):"
 
 #. i18n: ectx: property (text), widget (QLabel, animationsSpeedLabel1)
-#: config/ui/breezeconfigurationui.ui:1484
-#, kde-format
-msgid "Animations spee&d:"
-msgstr "アニメーション速度(&d):"
-
-#. i18n: ectx: property (text), widget (QCheckBox, animationsEnabled)
 #: config/ui/breezeconfigurationui.ui:1494
 #, kde-format
+msgid "Animations spee&d:"
+msgstr "アニメーション速度(&D):"
+
+#. i18n: ectx: property (text), widget (QCheckBox, animationsEnabled)
+#: config/ui/breezeconfigurationui.ui:1504
+#, kde-format
 msgid "Enable animations"
-msgstr "アニメーションを有効にする"
+msgstr "アニメーションを有効化"
 
 #. i18n: ectx: property (text), widget (QLabel, animationsSpeedLabel2)
-#: config/ui/breezeconfigurationui.ui:1547
-#, kde-format
-msgid "Slower"
-msgstr "遅い"
-
-#. i18n: ectx: property (text), widget (QLabel, animationsSpeedLabel4)
 #: config/ui/breezeconfigurationui.ui:1557
 #, kde-format
+msgid "Slower"
+msgstr "遅く"
+
+#. i18n: ectx: property (text), widget (QLabel, animationsSpeedLabel4)
+#: config/ui/breezeconfigurationui.ui:1567
+#, kde-format
 msgid "Faster"
-msgstr "速い"
+msgstr "速く"
 
 #. i18n: ectx: attribute (title), widget (QWidget, tab_overrides)
-#: config/ui/breezeconfigurationui.ui:1586
+#: config/ui/breezeconfigurationui.ui:1596
 #, kde-format
 msgid "Window-Specific Overrides"
 msgstr "ウィンドウ固有のオーバーライド"
 
 #. i18n: ectx: property (text), widget (QLabel, defaultExceptionsLabel)
-#: config/ui/breezeconfigurationui.ui:1614
+#: config/ui/breezeconfigurationui.ui:1624
 #, kde-format
 msgid "Default overrides (can be enabled/disabled only):"
 msgstr "デフォルトのオーバーライド（有効/無効のみ可能）:"
 
 #. i18n: ectx: property (text), widget (QLabel, userExceptionsLabel)
-#: config/ui/breezeconfigurationui.ui:1671
+#: config/ui/breezeconfigurationui.ui:1681
 #, kde-format
 msgid "User-specified overrides:"
 msgstr "ユーザー指定のオーバーライド:"
@@ -1304,7 +1312,7 @@ msgstr "ユーザー指定のオーバーライド:"
 #: config/ui/breezeexceptiondialog.ui:20
 #, kde-format
 msgid "Window Identification"
-msgstr "ウィンドウ識別"
+msgstr "ウィンドウの識別"
 
 #. i18n: ectx: property (text), widget (QPushButton, detectDialogButton)
 #: config/ui/breezeexceptiondialog.ui:26
@@ -1316,7 +1324,7 @@ msgstr "ウィンドウプロパティを検出..."
 #: config/ui/breezeexceptiondialog.ui:33
 #, kde-format
 msgid "Regular expression &to match: "
-msgstr "マッチさせる正規表現(&t): "
+msgstr "一致させる正規表現(&T): "
 
 #. i18n: ectx: property (text), widget (QLabel, label)
 #: config/ui/breezeexceptiondialog.ui:46
@@ -1347,14 +1355,14 @@ msgstr "ウィンドウ装飾オプション"
 #, kde-format
 msgctxt "@item:inlistbox Border size:"
 msgid "No Border"
-msgstr "ボーダーなし"
+msgstr "境界線なし"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, borderSizeComboBox)
 #: config/ui/breezeexceptiondialog.ui:121
 #, kde-format
 msgctxt "@item:inlistbox Border size:"
 msgid "No Side Borders"
-msgstr "サイドボーダーなし"
+msgstr "側面境界線なし"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, borderSizeComboBox)
 #: config/ui/breezeexceptiondialog.ui:126
@@ -1368,7 +1376,7 @@ msgstr "極小"
 #, kde-format
 msgctxt "@item:inlistbox Border size:"
 msgid "Normal"
-msgstr "標準"
+msgstr "通常"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, borderSizeComboBox)
 #: config/ui/breezeexceptiondialog.ui:136
@@ -1382,7 +1390,7 @@ msgstr "大"
 #, kde-format
 msgctxt "@item:inlistbox Border size:"
 msgid "Very Large"
-msgstr "非常に大"
+msgstr "より大きい"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, borderSizeComboBox)
 #: config/ui/breezeexceptiondialog.ui:146
@@ -1396,14 +1404,14 @@ msgstr "巨大"
 #, kde-format
 msgctxt "@item:inlistbox Border size:"
 msgid "Very Huge"
-msgstr "非常に巨大"
+msgstr "超大"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, borderSizeComboBox)
 #: config/ui/breezeexceptiondialog.ui:156
 #, kde-format
 msgctxt "@item:inlistbox Border size:"
 msgid "Oversized"
-msgstr "特大"
+msgstr "オーバーサイズ"
 
 #. i18n: ectx: property (text), widget (QCheckBox, exceptionPresetCheckBox)
 #: config/ui/breezeexceptiondialog.ui:164
@@ -1415,13 +1423,13 @@ msgstr "プリセット:"
 #: config/ui/breezeexceptiondialog.ui:171
 #, kde-format
 msgid "Border size:"
-msgstr "ボーダーサイズ:"
+msgstr "境界線のサイズ:"
 
 #. i18n: ectx: property (text), widget (QCheckBox, opaqueTitleBar)
 #: config/ui/breezeexceptiondialog.ui:185
 #, kde-format
 msgid "&Opaque titlebar"
-msgstr "不透明なタイトルバー(&O)"
+msgstr "不透明なタイトルバー(&O):"
 
 #. i18n: ectx: property (text), widget (QLabel, label_4)
 #: config/ui/breezeexceptiondialog.ui:192
@@ -1433,7 +1441,7 @@ msgstr "       ウィンドウタイトルバーを隠す:"
 #: config/ui/breezeexceptiondialog.ui:203
 #, kde-format
 msgid "Never"
-msgstr "しない"
+msgstr "なし"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, hideTitleBar)
 #: config/ui/breezeexceptiondialog.ui:208
@@ -1445,25 +1453,25 @@ msgstr "常に"
 #: config/ui/breezeexceptiondialog.ui:213
 #, kde-format
 msgid "On maximized windows"
-msgstr "最大化ウィンドウで"
+msgstr "最大化ウィンドウ時"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, hideTitleBar)
 #: config/ui/breezeexceptiondialog.ui:218
 #, kde-format
 msgid "On any maximization"
-msgstr "任意の最大化で"
+msgstr "いずれかの最大化時"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, hideTitleBar)
 #: config/ui/breezeexceptiondialog.ui:223
 #, kde-format
 msgid "On windows kept behind"
-msgstr "背面に維持されたウィンドウで"
+msgstr "奥に配置されたウィンドウ時"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, hideTitleBar)
 #: config/ui/breezeexceptiondialog.ui:228
 #, kde-format
 msgid "On any maximization or windows kept behind"
-msgstr "任意の最大化または背面に維持されたウィンドウで"
+msgstr "いずれかの最大化または奥に配置されたウィンドウ時"
 
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox_3)
 #: config/ui/breezeexceptiondialog.ui:252
@@ -1477,15 +1485,13 @@ msgstr "アプリケーションスタイルオプション"
 msgid ""
 "<html><head/><body><p><span style=\"font-style:italic;\">Application name</"
 "span> regular expression to match:</p></body></html>"
-msgstr ""
-"<html><head/><body><p><span style=\"font-style:italic;\">アプリケーション名</"
-"span> の正規表現でマッチ:</p></body></html>"
+msgstr "<html><head/><body><p><span style=\"font-style:italic;\">アプリケーション名</span> の一致する正規表現:</p></body></html>"
 
 #. i18n: ectx: property (text), widget (QCheckBox, preventApplyOpacityToHeader)
 #: config/ui/breezeexceptiondialog.ui:274
 #, kde-format
 msgid "Opaque &header"
-msgstr "不透明なヘッダー(&h)"
+msgstr "不透明なヘッダー(&H):"
 
 #. i18n: ectx: property (text), widget (QPushButton, moveUpButton)
 #: config/ui/breezeexceptionlistwidget.ui:70
@@ -1511,8 +1517,8 @@ msgstr "追加"
 msgid "Edit"
 msgstr "編集"
 
-#. i18n: ectx: attribute (title), widget (QWidget, activeWindowButtonColors)
 #. i18n: ectx: attribute (title), widget (QWidget, activeWindowButtonBehaviour)
+#. i18n: ectx: attribute (title), widget (QWidget, activeWindowButtonColors)
 #: config/ui/buttonbehaviour.ui:30 config/ui/buttoncolors.ui:30
 #, kde-format
 msgid "Active window"
@@ -1529,7 +1535,7 @@ msgstr "非アクティブをロック:"
 #: config/ui/buttonbehaviour.ui:64 config/ui/buttonbehaviour.ui:400
 #, kde-format
 msgid "Lock to make the same changes to Active and Inactive button behaviours"
-msgstr "アクティブと非アクティブのボタン動作に同じ変更を加えるためにロック"
+msgstr "アクティブと非アクティブのボタン挙動に同じ変更を適用するためにロック"
 
 #. i18n: ectx: property (toolTip), widget (QPushButton, lockCloseButtonBehaviourActive)
 #. i18n: ectx: property (toolTip), widget (QPushButton, lockCloseButtonBehaviourInactive)
@@ -1537,7 +1543,7 @@ msgstr "アクティブと非アクティブのボタン動作に同じ変更を
 #, kde-format
 msgid ""
 "Lock to make the same changes to Normal button and Close button behaviours"
-msgstr "通常ボタンと閉じるボタンの動作に同じ変更を加えるためにロック"
+msgstr "通常ボタンと閉じるボタンの挙動に同じ変更を適用するためにロック"
 
 #. i18n: ectx: property (text), widget (QLabel, label_3)
 #. i18n: ectx: property (text), widget (QLabel, label_4)
@@ -1565,17 +1571,17 @@ msgstr "押下"
 #: config/ui/buttonbehaviour.ui:274 config/ui/buttonbehaviour.ui:610
 #, kde-format
 msgid "Close Button Behaviour"
-msgstr "閉じるボタンの動作"
+msgstr "閉じるボタンの挙動"
 
-#. i18n: ectx: attribute (title), widget (QWidget, inactiveWindowButtonColors)
 #. i18n: ectx: attribute (title), widget (QWidget, tab_2)
+#. i18n: ectx: attribute (title), widget (QWidget, inactiveWindowButtonColors)
 #: config/ui/buttonbehaviour.ui:366 config/ui/buttoncolors.ui:816
 #, kde-format
 msgid "Inactive window"
 msgstr "非アクティブウィンドウ"
 
-#. i18n: ectx: property (text), widget (QLabel, label_3)
 #. i18n: ectx: property (text), widget (QLabel, label_2)
+#. i18n: ectx: property (text), widget (QLabel, label_3)
 #: config/ui/buttonbehaviour.ui:387 config/ui/buttoncolors.ui:844
 #, kde-format
 msgid "Lock active:"
@@ -1592,7 +1598,7 @@ msgstr "ユニゾンホバー"
 #: config/ui/buttoncolors.ui:64 config/ui/buttoncolors.ui:857
 #, kde-format
 msgid "Lock to make the same changes to Active and Inactive button colours"
-msgstr "アクティブと非アクティブのボタン色に同じ変更を加えるためにロック"
+msgstr "アクティブと非アクティブのボタンの色に同じ変更を適用するためにロック"
 
 #. i18n: ectx: property (text), widget (QLabel, label_2)
 #. i18n: ectx: property (text), widget (QLabel, label_4)
@@ -1601,9 +1607,7 @@ msgstr "アクティブと非アクティブのボタン色に同じ変更を加
 msgid ""
 "<html><head/><body><p><span style=\" font-size:11pt; font-weight:600;\">Icon "
 "colours:</span></p></body></html>"
-msgstr ""
-"<html><head/><body><p><span style=\" font-size:11pt; font-weight:600;\">アイ"
-"コン色:</span></p></body></html>"
+msgstr "<html><head/><body><p><span style=\" font-size:11pt; font-weight:600;\">アイコンの色:</span></p></body></html>"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, buttonIconColorsActive)
 #. i18n: ectx: property (text), item, widget (QComboBox, buttonBackgroundColorsActive)
@@ -1613,14 +1617,14 @@ msgstr ""
 #: config/ui/buttoncolors.ui:962 config/ui/buttoncolors.ui:1248
 #, kde-format
 msgid "Titlebar text colour"
-msgstr "タイトルバーテキスト色"
+msgstr "タイトルバーテキストの色"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, buttonIconColorsActive)
 #. i18n: ectx: property (text), item, widget (QComboBox, buttonIconColorsInactive)
 #: config/ui/buttoncolors.ui:189 config/ui/buttoncolors.ui:967
 #, kde-format
 msgid "Titlebar text colour with negative close icon"
-msgstr "ネガティブ閉じるアイコン付きタイトルバーテキスト色"
+msgstr "ネガティブな閉じるアイコン付きタイトルバーテキストの色"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, buttonIconColorsActive)
 #. i18n: ectx: property (text), item, widget (QComboBox, buttonBackgroundColorsActive)
@@ -1630,17 +1634,17 @@ msgstr "ネガティブ閉じるアイコン付きタイトルバーテキスト
 #. i18n: ectx: property (text), item, widget (QComboBox, windowOutlineStyleInactive)
 #: config/ui/buttoncolors.ui:194 config/ui/buttoncolors.ui:480
 #: config/ui/buttoncolors.ui:972 config/ui/buttoncolors.ui:1258
-#: config/ui/windowoutlinestyle.ui:153 config/ui/windowoutlinestyle.ui:1360
+#: config/ui/windowoutlinestyle.ui:1255 config/ui/windowoutlinestyle.ui:1345
 #, kde-format
 msgid "Accent colour"
-msgstr "アクセント色"
+msgstr "アクセントカラー"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, buttonIconColorsActive)
 #. i18n: ectx: property (text), item, widget (QComboBox, buttonIconColorsInactive)
 #: config/ui/buttoncolors.ui:199 config/ui/buttoncolors.ui:977
 #, kde-format
 msgid "Accent colour with negative close icon"
-msgstr "ネガティブ閉じるアイコン付きアクセント色"
+msgstr "ネガティブな閉じるアイコン付きアクセントカラー"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, buttonIconColorsActive)
 #. i18n: ectx: property (text), item, widget (QComboBox, buttonBackgroundColorsActive)
@@ -1650,14 +1654,14 @@ msgstr "ネガティブ閉じるアイコン付きアクセント色"
 #: config/ui/buttoncolors.ui:982 config/ui/buttoncolors.ui:1268
 #, kde-format
 msgid "Accent colour with traffic lights"
-msgstr "信号機付きアクセント色"
+msgstr "信号機付きアクセントカラー"
 
+#. i18n: ectx: property (text), widget (QLabel, _menuOpacityTransparentLabel)
+#. i18n: ectx: property (text), widget (QLabel, _menuOpacityTransparentLabel_4)
 #. i18n: ectx: property (text), widget (QLabel, opacitySliderLabel_1_Active_2)
 #. i18n: ectx: property (text), widget (QLabel, opacitySliderLabel_1_Active)
 #. i18n: ectx: property (text), widget (QLabel, opacitySliderLabel_1_Inactive_2)
 #. i18n: ectx: property (text), widget (QLabel, opacitySliderLabel_1_Inactive)
-#. i18n: ectx: property (text), widget (QLabel, _menuOpacityTransparentLabel)
-#. i18n: ectx: property (text), widget (QLabel, _menuOpacityTransparentLabel_4)
 #. i18n: ectx: property (text), widget (QLabel, _menuOpacityTransparentLabel_3)
 #. i18n: ectx: property (text), widget (QLabel, _menuOpacityTransparentLabel_27)
 #. i18n: ectx: property (text), widget (QLabel, _menuOpacityTransparentLabel_29)
@@ -1673,22 +1677,22 @@ msgstr "信号機付きアクセント色"
 #: config/ui/buttoncolors.ui:240 config/ui/buttoncolors.ui:533
 #: config/ui/buttoncolors.ui:1025 config/ui/buttoncolors.ui:1326
 #: config/ui/titlebaropacity.ui:79 config/ui/titlebaropacity.ui:136
-#: config/ui/windowoutlinestyle.ui:217 config/ui/windowoutlinestyle.ui:420
-#: config/ui/windowoutlinestyle.ui:580 config/ui/windowoutlinestyle.ui:740
-#: config/ui/windowoutlinestyle.ui:944 config/ui/windowoutlinestyle.ui:1190
-#: config/ui/windowoutlinestyle.ui:1467 config/ui/windowoutlinestyle.ui:1640
-#: config/ui/windowoutlinestyle.ui:1800 config/ui/windowoutlinestyle.ui:1960
-#: config/ui/windowoutlinestyle.ui:2125 config/ui/windowoutlinestyle.ui:2420
+#: config/ui/windowoutlinestyle.ui:152 config/ui/windowoutlinestyle.ui:364
+#: config/ui/windowoutlinestyle.ui:526 config/ui/windowoutlinestyle.ui:686
+#: config/ui/windowoutlinestyle.ui:890 config/ui/windowoutlinestyle.ui:1136
+#: config/ui/windowoutlinestyle.ui:1452 config/ui/windowoutlinestyle.ui:1634
+#: config/ui/windowoutlinestyle.ui:1796 config/ui/windowoutlinestyle.ui:1956
+#: config/ui/windowoutlinestyle.ui:2121 config/ui/windowoutlinestyle.ui:2416
 #, kde-format
 msgid "Transparent"
 msgstr "透明"
 
+#. i18n: ectx: property (text), widget (QLabel, _menuOpacityTransparentLabel_2)
+#. i18n: ectx: property (text), widget (QLabel, _menuOpacityTransparentLabel_3)
 #. i18n: ectx: property (text), widget (QLabel, opacitySliderLabel_2_Active_2)
 #. i18n: ectx: property (text), widget (QLabel, opacitySliderLabel_2_Active)
 #. i18n: ectx: property (text), widget (QLabel, opacitySliderLabel_2_Inactive_2)
 #. i18n: ectx: property (text), widget (QLabel, opacitySliderLabel_2_Inactive)
-#. i18n: ectx: property (text), widget (QLabel, _menuOpacityTransparentLabel_2)
-#. i18n: ectx: property (text), widget (QLabel, _menuOpacityTransparentLabel_3)
 #. i18n: ectx: property (text), widget (QLabel, _menuOpacityTransparentLabel_4)
 #. i18n: ectx: property (text), widget (QLabel, _menuOpacityTransparentLabel_28)
 #. i18n: ectx: property (text), widget (QLabel, _menuOpacityTransparentLabel_30)
@@ -1704,12 +1708,12 @@ msgstr "透明"
 #: config/ui/buttoncolors.ui:285 config/ui/buttoncolors.ui:526
 #: config/ui/buttoncolors.ui:1018 config/ui/buttoncolors.ui:1333
 #: config/ui/titlebaropacity.ui:125 config/ui/titlebaropacity.ui:182
-#: config/ui/windowoutlinestyle.ui:263 config/ui/windowoutlinestyle.ui:466
-#: config/ui/windowoutlinestyle.ui:626 config/ui/windowoutlinestyle.ui:786
-#: config/ui/windowoutlinestyle.ui:990 config/ui/windowoutlinestyle.ui:1236
-#: config/ui/windowoutlinestyle.ui:1513 config/ui/windowoutlinestyle.ui:1686
-#: config/ui/windowoutlinestyle.ui:1846 config/ui/windowoutlinestyle.ui:2006
-#: config/ui/windowoutlinestyle.ui:2171 config/ui/windowoutlinestyle.ui:2466
+#: config/ui/windowoutlinestyle.ui:198 config/ui/windowoutlinestyle.ui:410
+#: config/ui/windowoutlinestyle.ui:572 config/ui/windowoutlinestyle.ui:732
+#: config/ui/windowoutlinestyle.ui:936 config/ui/windowoutlinestyle.ui:1182
+#: config/ui/windowoutlinestyle.ui:1498 config/ui/windowoutlinestyle.ui:1680
+#: config/ui/windowoutlinestyle.ui:1842 config/ui/windowoutlinestyle.ui:2002
+#: config/ui/windowoutlinestyle.ui:2167 config/ui/windowoutlinestyle.ui:2462
 #, kde-format
 msgid "Opaque"
 msgstr "不透明"
@@ -1718,14 +1722,14 @@ msgstr "不透明"
 #: config/ui/buttoncolors.ui:327
 #, kde-format
 msgid "C&lose icon colour :"
-msgstr "閉じるアイコン色(&l):"
+msgstr "閉じるアイコンの色(&L):"
 
 #. i18n: ectx: property (text), widget (QLabel, label_9)
 #. i18n: ectx: property (text), widget (QLabel, label_10)
 #: config/ui/buttoncolors.ui:357 config/ui/buttoncolors.ui:1135
 #, kde-format
 msgid "When poor contrast detected:"
-msgstr "コントラストが低いと検出された場合:"
+msgstr "コントラストが不十分な場合:"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, onPoorIconContrastActive)
 #. i18n: ectx: property (text), item, widget (QComboBox, onPoorIconContrastInactive)
@@ -1739,14 +1743,14 @@ msgstr "何もしない"
 #: config/ui/buttoncolors.ui:376 config/ui/buttoncolors.ui:1154
 #, kde-format
 msgid "Replace with black or white"
-msgstr "黒または白に置き換える"
+msgstr "黒または白で置き換え"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, onPoorIconContrastActive)
 #. i18n: ectx: property (text), item, widget (QComboBox, onPoorIconContrastInactive)
 #: config/ui/buttoncolors.ui:381 config/ui/buttoncolors.ui:1159
 #, kde-format
 msgid "Replace with titlebar background"
-msgstr "タイトルバー背景に置き換える"
+msgstr "タイトルバー背景で置き換え"
 
 #. i18n: ectx: property (text), widget (QLabel, poorIconContrastThresholdActive_label)
 #: config/ui/buttoncolors.ui:389
@@ -1762,23 +1766,21 @@ msgid ""
 "<html><head/><body><p><span style=\" font-size:11pt; font-"
 "weight:600;\">Background &amp;&amp; outline<br/>colours:</span></p></body></"
 "html>"
-msgstr ""
-"<html><head/><body><p><span style=\" font-size:11pt; font-weight:600;\">背景"
-"とアウトライン<br/>色:</span></p></body></html>"
+msgstr "<html><head/><body><p><span style=\" font-size:11pt; font-weight:600;\">背景 &amp;&amp; 輪郭線<br/>の色:</span></p></body></html>"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, buttonBackgroundColorsActive)
 #. i18n: ectx: property (text), item, widget (QComboBox, buttonBackgroundColorsInactive)
 #: config/ui/buttoncolors.ui:475 config/ui/buttoncolors.ui:1253
 #, kde-format
 msgid "Titlebar text colour with negative close button"
-msgstr "ネガティブ閉じるボタン付きタイトルバーテキスト色"
+msgstr "ネガティブな閉じるボタン付きタイトルバーテキストの色"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, buttonBackgroundColorsActive)
 #. i18n: ectx: property (text), item, widget (QComboBox, buttonBackgroundColorsInactive)
 #: config/ui/buttoncolors.ui:485 config/ui/buttoncolors.ui:1263
 #, kde-format
 msgid "Accent colour with negative close button"
-msgstr "ネガティブ閉じるボタン付きアクセント色"
+msgstr "ネガティブな閉じるボタン付きアクセントカラー"
 
 #. i18n: ectx: property (text), widget (QCheckBox, useHoverAccentActive)
 #. i18n: ectx: property (text), widget (QCheckBox, useHoverAccentInactive)
@@ -1792,7 +1794,7 @@ msgstr "カラースキームからホバー色を使用"
 #: config/ui/buttoncolors.ui:621 config/ui/buttoncolors.ui:1399
 #, kde-format
 msgid "Adjust colour when poor contrast detected"
-msgstr "コントラストが低い場合に色を調整"
+msgstr "コントラストが不十分な場合に色を調整"
 
 #. i18n: ectx: property (text), widget (QLabel, poorBackgroundContrastThresholdActive_label)
 #. i18n: ectx: property (text), widget (QLabel, poorIconContrastThresholdInactive_label)
@@ -1808,46 +1810,46 @@ msgstr "  しきい値:"
 #: config/ui/buttoncolors.ui:689 config/ui/buttoncolors.ui:1467
 #, kde-format
 msgid "Override individual colours"
-msgstr "個別の色をオーバーライド"
+msgstr "個別の色を上書き"
 
 #. i18n: ectx: property (title), widget (QGroupBox, activeOverrideGroupBox)
 #. i18n: ectx: property (title), widget (QGroupBox, inactiveOverrideGroupBox)
 #: config/ui/buttoncolors.ui:704 config/ui/buttoncolors.ui:1482
 #, kde-format
 msgid "Override button colours"
-msgstr "ボタン色をオーバーライド"
+msgstr "ボタンの色を上書き"
 
 #. i18n: ectx: property (text), widget (QCheckBox, buttonColorsInactiveSameHoverPress)
 #: config/ui/buttoncolors.ui:824
 #, kde-format
 msgid "Use same hover and press colours as active window"
-msgstr "アクティブウィンドウと同じホバー色と押下色を使用"
+msgstr "アクティブウィンドウと同じホバーおよび押下色を使用"
 
 #. i18n: ectx: property (text), widget (QLabel, closeButtonIconColorLabelInactive)
 #: config/ui/buttoncolors.ui:1105
 #, kde-format
 msgid "Close icon colour :"
-msgstr "閉じるアイコン色 :"
+msgstr "閉じるアイコンの色:"
 
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox_2)
 #: config/ui/buttonsizing.ui:41
 #, kde-format
 msgid "Button sizing"
-msgstr "ボタンサイズ"
+msgstr "ボタンのサイズ"
 
 #. i18n: ectx: property (text), widget (QLabel, scaleBackgroundPercentLabel)
 #: config/ui/buttonsizing.ui:70
 #, kde-format
 msgid "Scale b&utton background: "
-msgstr "ボタン背景のスケール(&u): "
+msgstr "ボタン背景をスケール(&U): "
 
 #. i18n: ectx: property (suffix), widget (QSpinBox, activeTitleBarOpacity_2)
 #. i18n: ectx: property (suffix), widget (QSpinBox, inactiveTitleBarOpacity_2)
-#. i18n: ectx: property (suffix), widget (QSpinBox, shadowStrength)
 #. i18n: ectx: property (suffix), widget (QSpinBox, scaleBackgroundPercent)
-#. i18n: ectx: property (suffix), widget (QSpinBox, scaleTouchMode)
 #. i18n: ectx: property (suffix), widget (QSpinBox, spacerButtonWidthRelative)
 #. i18n: ectx: property (suffix), widget (QSpinBox, closeFullHeightButtonWidthMarginRelative)
+#. i18n: ectx: property (suffix), widget (QSpinBox, shadowStrengthActive)
+#. i18n: ectx: property (suffix), widget (QSpinBox, shadowStrengthInactive)
 #. i18n: ectx: property (suffix), widget (QSpinBox, percentMaximizedTopBottomMargins)
 #. i18n: ectx: property (suffix), widget (QSpinBox, windowOutlineShadowColorOpacity)
 #. i18n: ectx: property (suffix), widget (QSpinBox, windowOutlineContrastOpacityActive)
@@ -1861,136 +1863,121 @@ msgstr "ボタン背景のスケール(&u): "
 #. i18n: ectx: property (suffix), widget (QSpinBox, windowOutlineAccentWithContrastOpacityInactive)
 #. i18n: ectx: property (suffix), widget (QSpinBox, windowOutlineCustomColorOpacityInactive)
 #. i18n: ectx: property (suffix), widget (QSpinBox, windowOutlineCustomWithContrastOpacityInactive)
-#: config/ui/buttonsizing.ui:83 config/ui/buttonsizing.ui:284
-#: config/ui/buttonsizing.ui:373 config/ui/buttonsizing.ui:447
-#: config/ui/shadowstyle.ui:93 config/ui/titlebaropacity.ui:99
+#: config/ui/buttonsizing.ui:83 config/ui/buttonsizing.ui:216
+#: config/ui/buttonsizing.ui:399 config/ui/shadowstyle.ui:93
+#: config/ui/shadowstyle.ui:198 config/ui/titlebaropacity.ui:99
 #: config/ui/titlebaropacity.ui:156 config/ui/titlebarspacing.ui:574
-#: config/ui/windowoutlinestyle.ui:237 config/ui/windowoutlinestyle.ui:440
-#: config/ui/windowoutlinestyle.ui:600 config/ui/windowoutlinestyle.ui:760
-#: config/ui/windowoutlinestyle.ui:964 config/ui/windowoutlinestyle.ui:1210
-#: config/ui/windowoutlinestyle.ui:1487 config/ui/windowoutlinestyle.ui:1660
-#: config/ui/windowoutlinestyle.ui:1820 config/ui/windowoutlinestyle.ui:1980
-#: config/ui/windowoutlinestyle.ui:2145 config/ui/windowoutlinestyle.ui:2440
+#: config/ui/windowoutlinestyle.ui:172 config/ui/windowoutlinestyle.ui:384
+#: config/ui/windowoutlinestyle.ui:546 config/ui/windowoutlinestyle.ui:706
+#: config/ui/windowoutlinestyle.ui:910 config/ui/windowoutlinestyle.ui:1156
+#: config/ui/windowoutlinestyle.ui:1472 config/ui/windowoutlinestyle.ui:1654
+#: config/ui/windowoutlinestyle.ui:1816 config/ui/windowoutlinestyle.ui:1976
+#: config/ui/windowoutlinestyle.ui:2141 config/ui/windowoutlinestyle.ui:2436
 #, no-c-format, kde-format
 msgid " %"
 msgstr " %"
 
-#. i18n: ectx: property (text), widget (QLabel, scaleTouchModeLabel)
-#: config/ui/buttonsizing.ui:271
-#, kde-format
-msgid "Scale &Touch Mode buttons:"
-msgstr "タッチモードボタンのスケール(&T):"
-
-#. i18n: ectx: property (text), widget (QLabel, fullHeightButtonWidthMarginRightLabel)
-#: config/ui/buttonsizing.ui:303
-#, kde-format
-msgid ""
-"&Right-hand buttons'\n"
-" Width-margins:"
-msgstr ""
-"右側ボタンの\n"
-" 幅マージン:"
-
-#. i18n: ectx: property (toolTip), widget (QPushButton, lockFullHeightButtonWidthMargins)
-#: config/ui/buttonsizing.ui:322
-#, kde-format
-msgid ""
-"Lock to make Left-hand button width margin and Right-hand button width "
-"margin have the same value"
-msgstr ""
-"左側ボタンの幅マージンと右側ボタンの幅マージンを同じ値にするためにロック"
-
 #. i18n: ectx: property (text), widget (QLabel, fullHeightButtonWidthMarginLeftLabel)
-#: config/ui/buttonsizing.ui:336
+#: config/ui/buttonsizing.ui:172
 #, kde-format
 msgid ""
 "&Left-hand buttons'\n"
 " Width-margins:"
 msgstr ""
-"左側ボタンの\n"
+"左側ボタン(&L)\n"
 " 幅マージン:"
 
 #. i18n: ectx: property (text), widget (QLabel, spacerButtonWidthRelativeLabel)
-#: config/ui/buttonsizing.ui:360
+#: config/ui/buttonsizing.ui:203
 #, kde-format
 msgid "Spacer button width:"
 msgstr "スペーサーボタンの幅:"
 
+#. i18n: ectx: property (text), widget (QLabel, fullHeightButtonWidthMarginRightLabel)
+#: config/ui/buttonsizing.ui:284
+#, kde-format
+msgid ""
+"&Right-hand buttons'\n"
+" Width-margins:"
+msgstr ""
+"右側ボタン(&R)\n"
+" 幅マージン:"
+
+#. i18n: ectx: property (toolTip), widget (QPushButton, lockFullHeightButtonWidthMargins)
+#: config/ui/buttonsizing.ui:319
+#, kde-format
+msgid ""
+"Lock to make Left-hand button width margin and Right-hand button width "
+"margin have the same value"
+msgstr "左側ボタンの幅マージンと右側ボタンの幅マージンを同じ値にするためにロック"
+
 #. i18n: ectx: property (text), widget (QLabel, closeFullHeightButtonWidthMarginRelativeLabel)
-#: config/ui/buttonsizing.ui:434
+#: config/ui/buttonsizing.ui:386
 #, kde-format
 msgid "&Close button width-margins:"
 msgstr "閉じるボタンの幅マージン(&C):"
 
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox_3)
-#: config/ui/buttonsizing.ui:489
+#: config/ui/buttonsizing.ui:441
 #, kde-format
 msgid "Button spacing"
-msgstr "ボタン間隔"
+msgstr "ボタンの間隔"
 
 #. i18n: ectx: property (text), widget (QLabel, fullHeightButtonSpacingRightLabel)
-#: config/ui/buttonsizing.ui:548
+#: config/ui/buttonsizing.ui:500
 #, kde-format
 msgid ""
 "Spacin&g between\n"
 "Right-hand buttons:"
-msgstr ""
-"右側ボタン間の\n"
-" 間隔(&g):"
+msgstr "右側ボタン間の間隔(&G):"
 
 #. i18n: ectx: property (text), widget (QLabel, buttonSpacingLeftLabel)
-#: config/ui/buttonsizing.ui:575
+#: config/ui/buttonsizing.ui:527
 #, kde-format
 msgid ""
 "Spacing between\n"
 "&Left-hand buttons:"
-msgstr ""
-"左側ボタン間の\n"
-" 間隔(&L):"
+msgstr "左側ボタン間の間隔(&L):"
 
 #. i18n: ectx: property (text), widget (QLabel, buttonSpacingRightLabel)
-#: config/ui/buttonsizing.ui:586
+#: config/ui/buttonsizing.ui:538
 #, kde-format
 msgid ""
 "S&pacing between\n"
 "Right-hand buttons:"
-msgstr ""
-"右側ボタン間の\n"
-" 間隔(&p):"
+msgstr "右側ボタン間の間隔(&P):"
 
 #. i18n: ectx: property (text), widget (QLabel, fullHeightButtonSpacingLeftLabel)
-#: config/ui/buttonsizing.ui:627
+#: config/ui/buttonsizing.ui:579
 #, kde-format
 msgid ""
 "&Spacing between\n"
 "&Left-hand buttons:"
-msgstr ""
-"左側ボタン間の\n"
-" 間隔(&S):"
+msgstr "左側ボタン間の間隔(&S):"
 
 #. i18n: ectx: property (toolTip), widget (QPushButton, lockFullHeightButtonSpacingLeftRight)
 #. i18n: ectx: property (toolTip), widget (QPushButton, lockButtonSpacingLeftRight)
-#: config/ui/buttonsizing.ui:686 config/ui/buttonsizing.ui:735
+#: config/ui/buttonsizing.ui:638 config/ui/buttonsizing.ui:687
 #, kde-format
 msgid ""
 "Lock to make Left-hand button spacing and Right-hand button spacing have the "
 "same value"
-msgstr "左側ボタン間隔と右側ボタン間隔を同じ値にするためにロック"
+msgstr "左側ボタンの間隔と右側ボタンの間隔を同じ値にするためにロック"
 
 #. i18n: ectx: property (text), widget (QLabel, integratedRoundedRectangleBottomPaddingLabel)
-#: config/ui/buttonsizing.ui:819
+#: config/ui/buttonsizing.ui:771
 #, kde-format
 msgid "Botto&m padding:"
-msgstr "下部パディング(&m):"
+msgstr "下部のパディング(&M):"
 
 #. i18n: ectx: property (text), widget (QLabel, cornerRadiusLabel)
-#: config/ui/buttonsizing.ui:893
+#: config/ui/buttonsizing.ui:845
 #, kde-format
 msgid "Button corner rad&ius:"
-msgstr "ボタンコーナー半径(&i):"
+msgstr "ボタン角の半径(&I):"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, buttonCornerRadius)
-#: config/ui/buttonsizing.ui:913
+#: config/ui/buttonsizing.ui:865
 #, kde-format
 msgid "Same as window"
 msgstr "ウィンドウと同じ"
@@ -2013,57 +2000,82 @@ msgstr "追加..."
 msgid "Export To File..."
 msgstr "ファイルにエクスポート..."
 
+#. i18n: ectx: property (title), widget (QGroupBox, groupBox_5)
+#: config/ui/shadowstyle.ui:20
+#, kde-format
+msgid "Active Window Shadow"
+msgstr "アクティブウィンドウのシャドウ"
+
 #. i18n: ectx: property (text), widget (QLabel, label)
-#: config/ui/shadowstyle.ui:38
+#. i18n: ectx: property (text), widget (QLabel, label_3)
+#: config/ui/shadowstyle.ui:38 config/ui/shadowstyle.ui:143
 #, kde-format
 msgid "Si&ze:"
-msgstr "サイズ(&z):"
+msgstr "サイズ(&Z):"
 
-#. i18n: ectx: property (text), item, widget (QComboBox, shadowSize)
+#. i18n: ectx: property (text), item, widget (QComboBox, shadowSizeActive)
+#. i18n: ectx: property (text), item, widget (QComboBox, shadowSizeInactive)
 #. i18n: ectx: property (text), item, widget (QComboBox, windowOutlineStyleActive)
 #. i18n: ectx: property (text), item, widget (QComboBox, windowOutlineStyleInactive)
-#: config/ui/shadowstyle.ui:52 config/ui/windowoutlinestyle.ui:138
-#: config/ui/windowoutlinestyle.ui:1345
+#: config/ui/shadowstyle.ui:52 config/ui/shadowstyle.ui:157
+#: config/ui/windowoutlinestyle.ui:1240 config/ui/windowoutlinestyle.ui:1330
 #, kde-format
 msgid "None"
 msgstr "なし"
 
-#. i18n: ectx: property (text), item, widget (QComboBox, shadowSize)
-#: config/ui/shadowstyle.ui:57
+#. i18n: ectx: property (text), item, widget (QComboBox, shadowSizeActive)
+#. i18n: ectx: property (text), item, widget (QComboBox, shadowSizeInactive)
+#: config/ui/shadowstyle.ui:57 config/ui/shadowstyle.ui:162
 #, kde-format
 msgid "Small"
 msgstr "小"
 
-#. i18n: ectx: property (text), item, widget (QComboBox, shadowSize)
-#: config/ui/shadowstyle.ui:62
+#. i18n: ectx: property (text), item, widget (QComboBox, shadowSizeActive)
+#. i18n: ectx: property (text), item, widget (QComboBox, shadowSizeInactive)
+#: config/ui/shadowstyle.ui:62 config/ui/shadowstyle.ui:167
 #, kde-format
 msgid "Medium"
 msgstr "中"
 
-#. i18n: ectx: property (text), item, widget (QComboBox, shadowSize)
-#: config/ui/shadowstyle.ui:67
+#. i18n: ectx: property (text), item, widget (QComboBox, shadowSizeActive)
+#. i18n: ectx: property (text), item, widget (QComboBox, shadowSizeInactive)
+#: config/ui/shadowstyle.ui:67 config/ui/shadowstyle.ui:172
 #, kde-format
 msgid "Large"
 msgstr "大"
 
-#. i18n: ectx: property (text), item, widget (QComboBox, shadowSize)
-#: config/ui/shadowstyle.ui:72
+#. i18n: ectx: property (text), item, widget (QComboBox, shadowSizeActive)
+#. i18n: ectx: property (text), item, widget (QComboBox, shadowSizeInactive)
+#: config/ui/shadowstyle.ui:72 config/ui/shadowstyle.ui:177
 #, kde-format
 msgid "Very Large"
-msgstr "非常に大"
+msgstr "より大きい"
 
 #. i18n: ectx: property (text), widget (QLabel, label_2)
-#: config/ui/shadowstyle.ui:80
+#. i18n: ectx: property (text), widget (QLabel, label_4)
+#: config/ui/shadowstyle.ui:80 config/ui/shadowstyle.ui:185
 #, kde-format
 msgctxt "strength of the shadow (from transparent to opaque)"
 msgid "S&trength:"
-msgstr "強度(&t):"
+msgstr "強さ(&T):"
 
 #. i18n: ectx: property (text), widget (QLabel, label_5)
 #: config/ui/shadowstyle.ui:106
 #, kde-format
 msgid "&Colour:"
 msgstr "色(&C):"
+
+#. i18n: ectx: property (title), widget (QGroupBox, groupBox_6)
+#: config/ui/shadowstyle.ui:125
+#, kde-format
+msgid "Inactive Window Shadow"
+msgstr "非アクティブウィンドウのシャドウ"
+
+#. i18n: ectx: property (text), widget (QLabel, label_6)
+#: config/ui/shadowstyle.ui:211
+#, kde-format
+msgid "Colour:"
+msgstr "色:"
 
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox_5)
 #: config/ui/systemicongeneration.ui:20
@@ -2081,12 +2093,9 @@ msgid ""
 "Icons unrelated to window control are inherited from another icon theme, as "
 "set below:"
 msgstr ""
-"「Klassy」および「Klassy Dark」システムアイコンテーマは自動生成されます。これ"
-"らはPlasmaのいくつかの場所でウィンドウ制御アイコンを提供するために使用されま"
-"す。\n"
+"\"Klassy\"および\"Klassy Dark\"システムアイコンテーマは自動生成されます。これらはPlasmaの複数の場所でウィンドウコントロールアイコンを提供するために使用されます。\n"
 "\n"
-"ウィンドウ制御に関係ないアイコンは、以下に設定された別のアイコンテーマから継"
-"承されます:"
+"ウィンドウコントロールに関連しないアイコンは、以下で設定された別のアイコンテーマから継承されます:"
 
 #. i18n: ectx: property (text), widget (QLabel, label_2)
 #: config/ui/systemicongeneration.ui:40
@@ -2098,7 +2107,7 @@ msgstr "Klassyアイコンテーマの継承元(&K):"
 #: config/ui/systemicongeneration.ui:50
 #, kde-format
 msgid "Klassy Dark &icon theme inherits:"
-msgstr "Klassy Darkアイコンテーマの継承元(&i):"
+msgstr "Klassy Darkアイコンテーマの継承元(&I):"
 
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox_4)
 #: config/ui/titlebaropacity.ui:20
@@ -2129,7 +2138,7 @@ msgstr "        アクティブの不透明度はカラースキームで設定"
 #: config/ui/titlebaropacity.ui:258 config/ui/titlebaropacity.ui:272
 #, kde-format
 msgid "Override colour scheme"
-msgstr "カラースキームをオーバーライド"
+msgstr "カラースキームを上書き"
 
 #. i18n: ectx: property (text), widget (QLabel, inactiveTitleBarOpacityFromColorSchemeLabel)
 #: config/ui/titlebaropacity.ui:265
@@ -2145,19 +2154,19 @@ msgid ""
 "(experimental, Klassy application style required)"
 msgstr ""
 "これらの不透明度設定をヘッダー領域全体に適用\n"
-"（実験的、Klassyアプリケーションスタイルが必要）"
+"(実験的、Klassyアプリケーションスタイルが必要)"
 
 #. i18n: ectx: property (text), widget (QCheckBox, blurTransparentTitleBars)
 #: config/ui/titlebaropacity.ui:341
 #, kde-format
 msgid "Blur titlebars that have transparency"
-msgstr "透明度のあるタイトルバーをぼかす"
+msgstr "透明なタイトルバーをぼかす"
 
 #. i18n: ectx: property (text), widget (QCheckBox, opaqueMaximizedTitleBars)
 #: config/ui/titlebaropacity.ui:364
 #, kde-format
 msgid "Always make maximized titlebars opaque"
-msgstr "最大化タイトルバーを常に不透明にする"
+msgstr "最大化されたタイトルバーを常に不透明にする"
 
 #. i18n: ectx: property (toolTip), widget (QPushButton, lockTitleBarTopBottomMargins)
 #. i18n: ectx: property (toolTip), widget (QPushButton, lockTitleBarTopBottomMargins_2)
@@ -2166,13 +2175,13 @@ msgstr "最大化タイトルバーを常に不透明にする"
 msgid ""
 "Lock to make Titlebar top margin and Titlebar bottom margin have the same "
 "value"
-msgstr "タイトルバー上マージンと下マージンを同じ値にするためにロック"
+msgstr "タイトルバー上部のマージンと下部のマージンを同じ値にするためにロック"
 
 #. i18n: ectx: property (text), widget (QLabel, label_13)
 #: config/ui/titlebarspacing.ui:131
 #, kde-format
 msgid "Titlebar top margin:"
-msgstr "タイトルバー上マージン:"
+msgstr "タイトルバー上部のマージン:"
 
 #. i18n: ectx: property (toolTip), widget (QPushButton, lockTitleBarLeftRightMargins)
 #. i18n: ectx: property (toolTip), widget (QPushButton, lockTitleBarLeftRightMargins_2)
@@ -2181,7 +2190,7 @@ msgstr "タイトルバー上マージン:"
 msgid ""
 "Lock to make Titlebar left margin and Titlebar right margin have the same "
 "value"
-msgstr "タイトルバー左マージンと右マージンを同じ値にするためにロック"
+msgstr "タイトルバー左側のマージンと右側のマージンを同じ値にするためにロック"
 
 #. i18n: ectx: property (text), widget (QLabel, label_11)
 #: config/ui/titlebarspacing.ui:241
@@ -2252,7 +2261,7 @@ msgstr ""
 #: config/ui/titlebarspacing.ui:513
 #, kde-format
 msgid "Titlebar bottom margin:"
-msgstr "タイトルバー下マージン:"
+msgstr "タイトルバー下部のマージン:"
 
 #. i18n: ectx: property (text), widget (QLabel, label_15)
 #: config/ui/titlebarspacing.ui:564
@@ -2264,119 +2273,110 @@ msgstr "最大化ウィンドウのタイトルバー上下マージン:"
 #: config/ui/windowoutlinestyle.ui:30
 #, kde-format
 msgid "Window Outline Thickness:"
-msgstr "ウィンドウアウトラインの太さ:"
-
-#. i18n: ectx: property (text), widget (QCheckBox, windowOutlineSnapToWholePixel)
-#: config/ui/windowoutlinestyle.ui:64
-#, kde-format
-msgid "Snap to whole pixel"
-msgstr "整数ピクセルにスナップ"
-
-#. i18n: ectx: property (text), widget (QCheckBox, windowOutlineOverlap)
-#: config/ui/windowoutlinestyle.ui:77
-#, kde-format
-msgid "Overlap"
-msgstr "オーバーラップ"
+msgstr "ウィンドウ輪郭線の太さ:"
 
 #. i18n: ectx: property (title), widget (QGroupBox, activeWindowGroupBox)
-#: config/ui/windowoutlinestyle.ui:86
+#: config/ui/windowoutlinestyle.ui:60
 #, kde-format
 msgid "Active Window"
 msgstr "アクティブウィンドウ"
 
-#. i18n: ectx: property (text), widget (QLabel, label)
-#. i18n: ectx: property (text), widget (QLabel, label_2)
-#: config/ui/windowoutlinestyle.ui:105 config/ui/windowoutlinestyle.ui:1318
-#, kde-format
-msgid "Window Outline Style:"
-msgstr "ウィンドウアウトラインスタイル:"
-
 #. i18n: ectx: property (toolTip), widget (QPushButton, lockWindowOutlineStyleActive)
-#: config/ui/windowoutlinestyle.ui:124
+#: config/ui/windowoutlinestyle.ui:85
 #, kde-format
 msgid ""
 "Lock to make Active and Inactive Thin Window Outlines have the same style"
-msgstr ""
-"アクティブと非アクティブの細いウィンドウアウトラインを同じスタイルにするため"
-"にロック"
+msgstr "アクティブと非アクティブの細いウィンドウ輪郭線を同じスタイルにするためにロック"
+
+#. i18n: ectx: property (text), widget (QLabel, label)
+#. i18n: ectx: property (text), widget (QLabel, label_2)
+#: config/ui/windowoutlinestyle.ui:98 config/ui/windowoutlinestyle.ui:1303
+#, kde-format
+msgid "Window Outline Style:"
+msgstr "ウィンドウ輪郭線のスタイル:"
+
+#. i18n: ectx: property (text), widget (QLabel, label_5)
+#. i18n: ectx: property (text), widget (QLabel, label_6)
+#: config/ui/windowoutlinestyle.ui:258 config/ui/windowoutlinestyle.ui:1410
+#, kde-format
+msgid "(relative to shadow opacity)"
+msgstr "(シャドウの不透明度に対する相対)"
+
+#. i18n: ectx: property (text), widget (QCheckBox, windowOutlineContrastFromColorSchemeActive)
+#. i18n: ectx: property (text), widget (QCheckBox, windowOutlineContrastFromColorSchemeInactive)
+#: config/ui/windowoutlinestyle.ui:300 config/ui/windowoutlinestyle.ui:1576
+#, kde-format
+msgid "Set contrast intensity from colour scheme "
+msgstr "コントラストの強さをカラースキームから設定 "
+
+#. i18n: ectx: property (text), widget (QLabel, label_17)
+#. i18n: ectx: property (text), widget (QLabel, label_19)
+#. i18n: ectx: property (text), widget (QLabel, label_18)
+#. i18n: ectx: property (text), widget (QLabel, label_20)
+#: config/ui/windowoutlinestyle.ui:815 config/ui/windowoutlinestyle.ui:1191
+#: config/ui/windowoutlinestyle.ui:2176 config/ui/windowoutlinestyle.ui:2404
+#, kde-format
+msgid "Custom Colour:"
+msgstr "カスタムカラー:"
+
+#. i18n: ectx: property (toolTip), widget (QPushButton, lockWindowOutlineCustomColorActive)
+#. i18n: ectx: property (toolTip), widget (QPushButton, lockWindowOutlineCustomColorActive_2)
+#: config/ui/windowoutlinestyle.ui:963 config/ui/windowoutlinestyle.ui:1101
+#, kde-format
+msgid "Lock to make Active and Inactive Custom Colours the same"
+msgstr "アクティブと非アクティブのカスタムカラーを同じにするためにロック"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, windowOutlineStyleActive)
 #. i18n: ectx: property (text), item, widget (QComboBox, windowOutlineStyleInactive)
-#: config/ui/windowoutlinestyle.ui:143 config/ui/windowoutlinestyle.ui:1350
+#: config/ui/windowoutlinestyle.ui:1245 config/ui/windowoutlinestyle.ui:1335
 #, kde-format
 msgid "Shadow colour"
-msgstr "シャドウ色"
+msgstr "シャドウの色"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, windowOutlineStyleActive)
 #. i18n: ectx: property (text), item, widget (QComboBox, windowOutlineStyleInactive)
-#: config/ui/windowoutlinestyle.ui:148 config/ui/windowoutlinestyle.ui:1355
+#: config/ui/windowoutlinestyle.ui:1250 config/ui/windowoutlinestyle.ui:1340
 #, kde-format
 msgid "Contrast"
 msgstr "コントラスト"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, windowOutlineStyleActive)
 #. i18n: ectx: property (text), item, widget (QComboBox, windowOutlineStyleInactive)
-#: config/ui/windowoutlinestyle.ui:158 config/ui/windowoutlinestyle.ui:1365
+#: config/ui/windowoutlinestyle.ui:1260 config/ui/windowoutlinestyle.ui:1350
 #, kde-format
 msgid "Contrast blended with accent colour"
-msgstr "アクセント色とブレンドしたコントラスト"
+msgstr "コントラストをアクセントカラーでブレンド"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, windowOutlineStyleActive)
 #. i18n: ectx: property (text), item, widget (QComboBox, windowOutlineStyleInactive)
-#: config/ui/windowoutlinestyle.ui:163 config/ui/windowoutlinestyle.ui:1370
+#: config/ui/windowoutlinestyle.ui:1265 config/ui/windowoutlinestyle.ui:1355
 #, kde-format
 msgid "Custom colour"
-msgstr "カスタム色"
+msgstr "カスタムカラー"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, windowOutlineStyleActive)
 #. i18n: ectx: property (text), item, widget (QComboBox, windowOutlineStyleInactive)
-#: config/ui/windowoutlinestyle.ui:168 config/ui/windowoutlinestyle.ui:1375
+#: config/ui/windowoutlinestyle.ui:1270 config/ui/windowoutlinestyle.ui:1360
 #, kde-format
 msgid "Contrast blended with custom colour"
-msgstr "カスタム色とブレンドしたコントラスト"
-
-#. i18n: ectx: property (text), widget (QLabel, label_5)
-#. i18n: ectx: property (text), widget (QLabel, label_6)
-#: config/ui/windowoutlinestyle.ui:323 config/ui/windowoutlinestyle.ui:1425
-#, kde-format
-msgid "(relative to shadow opacity)"
-msgstr "（シャドウ不透明度に対する相対）"
-
-#. i18n: ectx: property (text), widget (QLabel, label_17)
-#. i18n: ectx: property (text), widget (QLabel, label_19)
-#. i18n: ectx: property (text), widget (QLabel, label_18)
-#. i18n: ectx: property (text), widget (QLabel, label_20)
-#: config/ui/windowoutlinestyle.ui:869 config/ui/windowoutlinestyle.ui:1245
-#: config/ui/windowoutlinestyle.ui:2180 config/ui/windowoutlinestyle.ui:2408
-#, kde-format
-msgid "Custom Colour:"
-msgstr "カスタム色:"
-
-#. i18n: ectx: property (toolTip), widget (QPushButton, lockWindowOutlineCustomColorActive)
-#. i18n: ectx: property (toolTip), widget (QPushButton, lockWindowOutlineCustomColorActive_2)
-#: config/ui/windowoutlinestyle.ui:1017 config/ui/windowoutlinestyle.ui:1155
-#, kde-format
-msgid "Lock to make Active and Inactive Custom Colours the same"
-msgstr "アクティブと非アクティブのカスタム色を同じにするためにロック"
+msgstr "コントラストをカスタムカラーでブレンド"
 
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox_7)
-#: config/ui/windowoutlinestyle.ui:1312
+#: config/ui/windowoutlinestyle.ui:1297
 #, kde-format
 msgid "Inactive Window"
 msgstr "非アクティブウィンドウ"
 
 #. i18n: ectx: property (toolTip), widget (QPushButton, lockWindowOutlineStyleInactive)
-#: config/ui/windowoutlinestyle.ui:1389
+#: config/ui/windowoutlinestyle.ui:1374
 #, kde-format
 msgid ""
 "Lock to make Inactive and Active Thin Window Outlines have the same style"
-msgstr ""
-"非アクティブとアクティブの細いウィンドウアウトラインを同じスタイルにするため"
-"にロック"
+msgstr "非アクティブとアクティブの細いウィンドウ輪郭線を同じスタイルにするためにロック"
 
 #. i18n: ectx: property (toolTip), widget (QPushButton, lockWindowOutlineCustomColorInactive)
 #. i18n: ectx: property (toolTip), widget (QPushButton, lockWindowOutlineCustomColorInactive_2)
-#: config/ui/windowoutlinestyle.ui:2208 config/ui/windowoutlinestyle.ui:2362
+#: config/ui/windowoutlinestyle.ui:2204 config/ui/windowoutlinestyle.ui:2358
 #, kde-format
 msgid "Lock to make Inactive and Active Custom Colours the same"
-msgstr "非アクティブとアクティブのカスタム色を同じにするためにロック"
+msgstr "非アクティブとアクティブのカスタムカラーを同じにするためにロック"

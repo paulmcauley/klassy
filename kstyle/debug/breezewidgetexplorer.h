@@ -12,7 +12,7 @@
 #include <QSet>
 #include <QWidget>
 
-namespace Breeze
+namespace Klassy
 {
 
 //* print widget's and parent's information on mouse click

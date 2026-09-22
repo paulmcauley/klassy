@@ -8,7 +8,7 @@
 #include <KColorUtils>
 #include <KStatefulBrush>
 
-namespace Breeze
+namespace Klassy
 {
 
 QPalette DecorationColors::s_cachedKdeGlobalPalette;
@@ -132,11 +132,13 @@ void DecorationColors::generateDecorationPaletteGroup(const QPalette &palette,
     }
 
     bool setTitleBarBaseOpacity = false;
-    if (!decorationSettings->opaqueTitleBar()) {
+    if (decorationSettings->opaqueTitleBar()) {
+        (*decorationPaletteGroup)->titleBarBase.setAlpha(255);
+    } else {
         if ((*decorationPaletteGroup)->titleBarBase.alpha() == 255) {
             setTitleBarBaseOpacity = true;
         } else {
-            bool override = active ? decorationSettings->overrideActiveTitleBarOpacity() : decorationSettings->overrideInactiveTitleBarOpacity();
+            bool override = active ? decorationSettings->overrideTitleBarOpacityActive() : decorationSettings->overrideTitleBarOpacityInactive();
             if (override) {
                 setTitleBarBaseOpacity = true;
             }
@@ -144,7 +146,7 @@ void DecorationColors::generateDecorationPaletteGroup(const QPalette &palette,
     }
     if (setTitleBarBaseOpacity) {
         (*decorationPaletteGroup)
-            ->titleBarBase.setAlphaF(qreal(active ? decorationSettings->activeTitleBarOpacity() : decorationSettings->inactiveTitleBarOpacity()) / 100);
+            ->titleBarBase.setAlphaF(qreal(active ? decorationSettings->titleBarOpacityActive() : decorationSettings->titleBarOpacityInactive()) / 100);
     }
 
     KStatefulBrush buttonFocusStatefulBrush;

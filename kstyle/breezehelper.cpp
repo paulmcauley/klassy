@@ -41,7 +41,7 @@
 #include <QTreeView>
 #include <QWindow>
 
-namespace Breeze
+namespace Klassy
 {
 
 //* contrast for arrow and treeline rendering
@@ -1599,7 +1599,8 @@ void Helper::renderDecorationButton(QPainter *painter,
                                     const bool cutOutForeground,
                                     const QColor &backgroundColor,
                                     const QColor &outlineColor,
-                                    const QPalette &palette) const
+                                    const QPalette &palette,
+                                    const bool rightToLeftDirection) const
 {
     painter->save();
     painter->setViewport(rect.toRect());
@@ -1681,10 +1682,15 @@ void Helper::renderDecorationButton(QPainter *painter,
                                          decorationConfig()->forceColorizeSystemIcons() ? QPalette() : palette);
             iconRenderer.renderIcon();
         } else {
-            auto [iconRenderer, localRenderingWidth] = RenderDecorationButtonIcon::factory(decorationConfig(), painter, true, false, 1, QPointF(0, 0), true);
+            auto [iconRenderer, localRenderingWidth] = RenderDecorationButtonIcon::factory(decorationConfig(), painter);
             pen = painter->pen();
             pen.setWidthF(PenWidth::Symbol * qMax(1.0, qreal(localRenderingWidth) / rect.width()));
             painter->setPen(pen);
+
+            iconRenderer->setFromKstyle(true);
+            iconRenderer->setBoldButtonIcons(false);
+            iconRenderer->setForceEvenSquares(true);
+            iconRenderer->setLeftButtonGroup(rightToLeftDirection);
             iconRenderer->renderIcon(buttonType, buttonChecked);
         }
     }
@@ -1748,7 +1754,7 @@ void Helper::renderViewItemPosition(QPainter *painter,
 {
     painter->save();
     painter->setRenderHint(QPainter::Antialiasing);
-    QFlags<Breeze::Side> sides;
+    QFlags<Klassy::Side> sides;
     const bool reverse = direction == Qt::RightToLeft;
 
     switch (pos) {
@@ -1824,7 +1830,7 @@ QMargins Helper::itemViewItemMargins(const QStyleOptionViewItem *option) const
         margins.setTop(Metrics::ItemView_FirstItemTopMarginHeight);
     }
 
-    // Breeze frame has one extra white pixel
+    // Klassy frame has one extra white pixel
     if (hasFrame) {
         margins -= {1, isFirst ? 1 : 0, 1, 0};
     }

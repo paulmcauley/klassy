@@ -6,7 +6,7 @@
 
 #include "breezetoolboxengine.h"
 
-namespace Breeze
+namespace Klassy
 {
 
 //____________________________________________________________

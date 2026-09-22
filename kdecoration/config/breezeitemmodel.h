@@ -11,7 +11,7 @@
 
 #include <QAbstractItemModel>
 
-namespace Breeze
+namespace Klassy
 {
 
 //* Job model. Stores job information for display in lists

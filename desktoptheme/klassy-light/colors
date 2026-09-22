@@ -106,8 +106,8 @@ ForegroundPositive=39,174,96
 ForegroundVisited=155,89,182
 
 [General]
-ColorScheme=KiteLight
-Name=Kite Light (Klassy)
+ColorScheme=KlassyLight
+Name=Klassy Light
 shadeSortColumn=true
 
 [KDE]

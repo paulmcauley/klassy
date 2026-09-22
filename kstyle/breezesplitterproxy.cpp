@@ -34,7 +34,7 @@
 #endif
 #endif
 
-namespace Breeze
+namespace Klassy
 {
 SplitterFactory::SplitterFactory()
     : QObject()

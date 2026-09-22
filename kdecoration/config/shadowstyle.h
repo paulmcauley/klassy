@@ -11,7 +11,7 @@
 #include "ui_shadowstyle.h"
 #include <QDialog>
 
-namespace Breeze
+namespace Klassy
 {
 
 class ShadowStyle : public QDialog

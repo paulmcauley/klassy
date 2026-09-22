@@ -14,7 +14,7 @@
 
 #include <QStackedWidget>
 
-namespace Breeze
+namespace Klassy
 {
 
 //* generic data

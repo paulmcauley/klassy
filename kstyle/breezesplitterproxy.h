@@ -17,7 +17,7 @@
 #include <QSplitterHandle>
 #include <QWidget>
 
-namespace Breeze
+namespace Klassy
 {
 
 class SplitterProxy;

@@ -18,7 +18,7 @@
 #include <QList>
 #include <QObject>
 
-namespace Breeze
+namespace Klassy
 {
 
 //* stores engines

@@ -10,7 +10,7 @@
 
 #include "breezestackedwidgetengine.h"
 
-namespace Breeze
+namespace Klassy
 {
 
 //____________________________________________________________

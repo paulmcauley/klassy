@@ -6,7 +6,7 @@
 
 #include "styletraditional.h"
 
-namespace Breeze
+namespace Klassy
 {
 
 void RenderStyleTraditional18By18::renderCloseIcon()

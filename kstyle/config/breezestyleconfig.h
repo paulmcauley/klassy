@@ -12,10 +12,10 @@
 
 #include <KPageWidget>
 
-namespace Breeze
+namespace Klassy
 {
 
-class StyleConfig : public QWidget, Ui::BreezeStyleConfig
+class StyleConfig : public QWidget, Ui::KlassyStyleConfig
 {
     Q_OBJECT
 

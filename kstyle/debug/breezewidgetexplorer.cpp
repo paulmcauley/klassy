@@ -13,7 +13,7 @@
 #include <QPainter>
 #include <QTextStream>
 
-namespace Breeze
+namespace Klassy
 {
 
 //________________________________________________
@@ -59,7 +59,7 @@ bool WidgetExplorer::eventFilter(QObject *object, QEvent *event)
     //             QString type( _eventTypes[event->type()] );
     //             if( !type.isEmpty() )
     //             {
-    //                 QTextStream( stdout ) << "Breeze::WidgetExplorer::eventFilter - widget: " << object << " (" << object->metaObject()->className() << ")";
+    //                 QTextStream( stdout ) << "Klassy::WidgetExplorer::eventFilter - widget: " << object << " (" << object->metaObject()->className() << ")";
     //                 QTextStream( stdout ) << " type: " << type  << Qt::endl;
     //             }
     //         }
@@ -94,7 +94,7 @@ bool WidgetExplorer::eventFilter(QObject *object, QEvent *event)
             return false;
         }
 
-        QTextStream(stdout) << "Breeze::WidgetExplorer::eventFilter -"
+        QTextStream(stdout) << "Klassy::WidgetExplorer::eventFilter -"
                             << " event: " << event << " type: " << eventType(event->type()) << " widget: " << widgetInformation(widget) << Qt::endl;
 
         // print parent information

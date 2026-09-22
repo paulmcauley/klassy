@@ -43,7 +43,7 @@
 #include <cmath>
 #include <mutex>
 
-K_PLUGIN_FACTORY_WITH_JSON(BreezeDecoFactory, "breeze.json", registerPlugin<Breeze::Decoration>(); registerPlugin<Breeze::Button>();)
+K_PLUGIN_FACTORY_WITH_JSON(KlassyDecoFactory, "breeze.json", registerPlugin<Klassy::Decoration>(); registerPlugin<Klassy::Button>();)
 
 namespace
 {
@@ -103,15 +103,15 @@ const CompositeShadowParams s_shadowParams[] = {
 inline CompositeShadowParams lookupShadowParams(int size)
 {
     switch (size) {
-    case Breeze::InternalSettings::EnumShadowSize::ShadowNone:
+    case Klassy::InternalSettings::EnumShadowSize::ShadowNone:
         return s_shadowParams[0];
-    case Breeze::InternalSettings::EnumShadowSize::ShadowSmall:
+    case Klassy::InternalSettings::EnumShadowSize::ShadowSmall:
         return s_shadowParams[1];
-    case Breeze::InternalSettings::EnumShadowSize::ShadowMedium:
+    case Klassy::InternalSettings::EnumShadowSize::ShadowMedium:
         return s_shadowParams[2];
-    case Breeze::InternalSettings::EnumShadowSize::ShadowLarge:
+    case Klassy::InternalSettings::EnumShadowSize::ShadowLarge:
         return s_shadowParams[3];
-    case Breeze::InternalSettings::EnumShadowSize::ShadowVeryLarge:
+    case Klassy::InternalSettings::EnumShadowSize::ShadowVeryLarge:
         return s_shadowParams[4];
     default:
         // Fallback to the Large size.
@@ -120,7 +120,7 @@ inline CompositeShadowParams lookupShadowParams(int size)
 }
 }
 
-namespace Breeze
+namespace Klassy
 {
 
 KSharedConfig::Ptr Decoration::s_kdeGlobalConfig = KSharedConfig::Ptr();
@@ -277,7 +277,7 @@ QColor Decoration::fontColor(bool returnNonAnimatedColor) const
     auto c = window();
 
     if (m_animation->state() == QAbstractAnimation::Running && !returnNonAnimatedColor) {
-        return KColorUtils::mix(m_decorationColors->inactive()->titleBarText, m_decorationColors->active()->titleBarText);
+        return KColorUtils::mix(m_decorationColors->inactive()->titleBarText, m_decorationColors->active()->titleBarText, m_animation->currentValue().toReal());
     } else {
         return c->isActive() ? m_decorationColors->active()->titleBarText : m_decorationColors->inactive()->titleBarText;
     }
@@ -287,6 +287,9 @@ QColor Decoration::fontColor(bool returnNonAnimatedColor) const
 bool Decoration::init()
 {
     auto c = window();
+
+    m_isRightToLeft = (QGuiApplication::layoutDirection() == Qt::LayoutDirection::RightToLeft);
+
     reconfigureMain(true);
     
     // active state change animation
@@ -304,8 +307,10 @@ bool Decoration::init()
     m_shadowAnimation->setEasingCurve(QEasingCurve::OutCubic);
     connect(m_shadowAnimation, &QVariantAnimation::valueChanged, this, [this](const QVariant &value) {
         m_shadowOpacity = value.toReal();
-        if (m_shadowAnimation->state() == QAbstractAnimation::Running)
+        if (m_shadowAnimation->state() == QAbstractAnimation::Running) {
+            updateWindowOutline();
             updateShadow();
+        }
     });
 
     m_overrideWindowOutlineFromButtonAnimation->setStartValue(0.0);
@@ -331,7 +336,6 @@ bool Decoration::init()
     updateTitleBar();
     auto s = settings();
     connect(s.get(), &KDecoration3::DecorationSettings::borderSizeChanged, this, &Decoration::recalculateBorders);
-    connect(s.get(), &KDecoration3::DecorationSettings::borderSizeChanged, this, &Decoration::updateBlur); // for the case when a border with transparency
 
     // a change in font might cause the borders to change
     connect(s.get(), &KDecoration3::DecorationSettings::fontChanged, this, &Decoration::recalculateBorders);
@@ -397,10 +401,10 @@ bool Decoration::init()
 
     connect(c, &KDecoration3::DecoratedWindow::widthChanged, this, &Decoration::updateButtonsGeometry);
     connect(c, &KDecoration3::DecoratedWindow::maximizedChanged, this, &Decoration::updateButtonsGeometry);
-    connect(c, &KDecoration3::DecoratedWindow::maximizedChanged, this, &Decoration::updateShadowOnChange);
     connect(c, &KDecoration3::DecoratedWindow::adjacentScreenEdgesChanged, this, &Decoration::updateButtonsGeometry);
     connect(c, &KDecoration3::DecoratedWindow::shadedChanged, this, &Decoration::updateButtonsGeometry);
 
+    connect(c, &KDecoration3::DecoratedWindow::scaleChanged, this, &Decoration::updateScale);
     connect(c, &KDecoration3::DecoratedWindow::nextScaleChanged, this, &Decoration::updateNextScale);
 
     createButtons();
@@ -415,14 +419,14 @@ void Decoration::updateTitleBar()
 
     const bool maximized = isMaximized();
     qreal width, height, x, y;
-    qreal scale = c->nextScale();
+    qreal scale = c->scale();
     qreal scaledTitleBarTopMargin, scaledTitleBarBottomMargin, scaledIntegratedRoundedRectangleBottomPadding;
     scaledTitleBarTopBottomMargins(scale, scaledTitleBarTopMargin, scaledTitleBarBottomMargin, scaledIntegratedRoundedRectangleBottomPadding);
 
     qreal scaledTitleBarLeftMargin, scaledTitleBarRightMargin;
     scaledTitleBarSideMargins(scale, scaledTitleBarLeftMargin, scaledTitleBarRightMargin);
 
-    qreal borderTop = nextState()->borders().top();
+    qreal borderTop = this->borderTop();
 
     // prevents resize handles appearing in button at top window edge for large full-height buttons
     if (m_buttonBackgroundType == ButtonBackgroundType::FullHeight
@@ -455,6 +459,7 @@ void Decoration::updateAnimationState()
         }
 
     } else {
+        updateWindowOutline();
         updateShadow();
     }
 
@@ -776,15 +781,30 @@ void Decoration::setGlobalLookAndFeelOptions(QString lookAndFeelPackageName)
                                           QStringLiteral("org.kde.klassydarkbottompanel.desktop"),
                                           QStringLiteral("org.kde.klassylightbottompanel.desktop")};
 
+        bool regenerateIconsOnly = false;
         // load Klassy preset if it is first time applying Klassy Global Theme
         if (klassyLookAndFeels.contains(lookAndFeelPackageName)) {
             if (!klassyLookAndFeels.contains(lookAndFeelSet)) {
                 presetToLoad = QStringLiteral("Klassy");
+            } else if (lookAndFeelPackageName.contains(QStringLiteral("bottom"))) {
+                if (lookAndFeelSet.contains(QStringLiteral("left"))) {
+                    regenerateIconsOnly = true;
+                }
+            } else if (lookAndFeelPackageName.contains(QStringLiteral("left"))) {
+                if (lookAndFeelSet.contains(QStringLiteral("bottom"))) {
+                    regenerateIconsOnly = true;
+                }
             }
         }
 
-        if (!presetToLoad.isEmpty()) { // if matching look-and-feel-package, load the associated Klassy window decoration preset
-            system("klassy-settings -w \"" + presetToLoad.toUtf8() + "\" &");
+        if (!presetToLoad.isEmpty()) { // if switching from a non-Klassy theme, load the associated Klassy window decoration preset
+            QTimer::singleShot(3000, [presetToLoad]() {
+                system("klassy-settings -w \"" + presetToLoad.toUtf8() + "\" &");
+            });
+        } else if (regenerateIconsOnly) {
+            QTimer::singleShot(3000, []() {
+                system("klassy-settings -g &");
+            }); // otherwise if Klassy already, and not just switching light/dark, then regenerate the icons only
         }
     }
 }
@@ -926,7 +946,7 @@ void Decoration::updateButtonsGeometry()
 {
     const auto s = settings();
 
-    qreal scale = window()->nextScale();
+    qreal scale = window()->scale();
     qreal scaledTitleBarTopMargin, scaledTitleBarBottomMargin, scaledIntegratedRoundedRectangleBottomPadding;
     scaledTitleBarTopBottomMargins(scale, scaledTitleBarTopMargin, scaledTitleBarBottomMargin, scaledIntegratedRoundedRectangleBottomPadding);
 
@@ -950,10 +970,10 @@ void Decoration::updateButtonsGeometry()
     qreal buttonSpacingLeft = 0;
     qreal buttonSpacingRight = 0;
     qreal titleBarSeparatorHeight = this->titleBarSeparatorHeight(scale);
-    qreal captionHeight = this->captionHeight(true, scaledTitleBarTopMargin, scaledTitleBarBottomMargin);
+    qreal captionHeight = this->captionHeight(scaledTitleBarTopMargin, scaledTitleBarBottomMargin, titleBarSeparatorHeight);
 
     if (m_buttonBackgroundType == ButtonBackgroundType::FullHeight) {
-        bHeightNormal = nextState()->borders().top();
+        bHeightNormal = borderTop();
         bHeightNormal = qMax(bHeightNormal - titleBarSeparatorHeight, 0.0);
         if (internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangle
             || internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangleGrouped) {
@@ -991,11 +1011,19 @@ void Decoration::updateButtonsGeometry()
             verticalIconOffsetNormal = buttonTopMargin + qreal(captionHeight - m_smallButtonPaddedSize) / 2;
         }
 
-        buttonSpacingLeft = KDecoration3::snapToPixelGrid(m_x11Scale * m_internalSettings->fullHeightButtonSpacingLeft(), scale);
-        buttonSpacingRight = KDecoration3::snapToPixelGrid(m_x11Scale * m_internalSettings->fullHeightButtonSpacingRight(), scale);
+        buttonSpacingLeft = KDecoration3::snapToPixelGrid(
+            m_x11Scale * (m_isRightToLeft ? m_internalSettings->fullHeightButtonSpacingRight() : m_internalSettings->fullHeightButtonSpacingLeft()),
+            scale);
+        buttonSpacingRight = KDecoration3::snapToPixelGrid(
+            m_x11Scale * (m_isRightToLeft ? m_internalSettings->fullHeightButtonSpacingLeft() : m_internalSettings->fullHeightButtonSpacingRight()),
+            scale);
 
-        bWidthMarginLeft = KDecoration3::snapToPixelGrid(m_x11Scale * m_internalSettings->fullHeightButtonWidthMarginLeft(), scale);
-        bWidthMarginRight = KDecoration3::snapToPixelGrid(m_x11Scale * m_internalSettings->fullHeightButtonWidthMarginRight(), scale);
+        bWidthMarginLeft = KDecoration3::snapToPixelGrid(
+            m_x11Scale * (m_isRightToLeft ? m_internalSettings->fullHeightButtonWidthMarginRight() : m_internalSettings->fullHeightButtonWidthMarginLeft()),
+            scale);
+        bWidthMarginRight = KDecoration3::snapToPixelGrid(
+            m_x11Scale * (m_isRightToLeft ? m_internalSettings->fullHeightButtonWidthMarginLeft() : m_internalSettings->fullHeightButtonWidthMarginRight()),
+            scale);
         bWidthLeft = m_smallButtonPaddedSize + bWidthMarginLeft;
         bWidthRight = m_smallButtonPaddedSize + bWidthMarginRight;
 
@@ -1007,15 +1035,20 @@ void Decoration::updateButtonsGeometry()
         // do not pixel grid snap icon offsets -- the icon gets snapped at the end anyway, and this keeps icons centred
         verticalIconOffsetNormal = (isTopEdge() ? buttonTopMargin : 0) + qreal(captionHeight - m_smallButtonPaddedSize);
 
-        buttonSpacingLeft = KDecoration3::snapToPixelGrid(m_x11Scale * m_internalSettings->buttonSpacingLeft(), scale);
-        buttonSpacingRight = KDecoration3::snapToPixelGrid(m_x11Scale * m_internalSettings->buttonSpacingRight(), scale);
+        buttonSpacingLeft =
+            KDecoration3::snapToPixelGrid(m_x11Scale * (isRightToLeft() ? m_internalSettings->buttonSpacingRight() : m_internalSettings->buttonSpacingLeft()),
+                                          scale);
+        buttonSpacingRight =
+            KDecoration3::snapToPixelGrid(m_x11Scale * (isRightToLeft() ? m_internalSettings->buttonSpacingLeft() : m_internalSettings->buttonSpacingRight()),
+                                          scale);
 
         bWidthLeft = m_smallButtonPaddedSize;
         bWidthRight = m_smallButtonPaddedSize;
     }
 
-    int leftmostLeftVisibleIndex = -1;
-    int rightmostLeftVisibleIndex = -1;
+    int firstLeftVisibleIndex = -1;
+    int lastLeftVisibleIndex = -1;
+
     int numLeftButtons = m_leftButtons->buttons().count();
     bool menuPresentBefore = false;
     bool spacerPresentBefore = false;
@@ -1062,28 +1095,28 @@ void Decoration::updateButtonsGeometry()
 
         button->setLeftButtonVisible(false);
         button->setRightButtonVisible(false);
-        button->setLeftmostLeftVisible(false);
+        m_isRightToLeft ? button->setRightmostLeftVisible(false) : button->setLeftmostLeftVisible(false);
         button->setVisibleAfterMenu(false);
         button->setVisibleBeforeMenu(false);
-        button->setRightmostLeftVisible(false);
+        m_isRightToLeft ? button->setLeftmostLeftVisible(false) : button->setRightmostLeftVisible(false);
         button->setVisibleAfterSpacer(false);
         button->setVisibleBeforeSpacer(false);
         // determine leftmost left visible and rightmostLeftVisible
         if (button->isVisible() && (button->isEnabled() || button->type() == KDecoration3::DecorationButtonType::Spacer)) {
             button->setLeftButtonVisible(true);
 
-            if (leftmostLeftVisibleIndex == -1) {
-                leftmostLeftVisibleIndex = i;
-                button->setLeftmostLeftVisible();
+            if (firstLeftVisibleIndex == -1) {
+                firstLeftVisibleIndex = i;
+                m_isRightToLeft ? button->setRightmostLeftVisible() : button->setLeftmostLeftVisible();
             }
 
             if (menuPresentBefore) {
-                button->setVisibleAfterMenu(true);
+                m_isRightToLeft ? button->setVisibleBeforeMenu() : button->setVisibleAfterMenu();
                 menuPresentBefore = false;
             }
 
             if (spacerPresentBefore) {
-                button->setVisibleAfterSpacer(true);
+                m_isRightToLeft ? button->setVisibleBeforeSpacer() : button->setVisibleAfterSpacer();
                 spacerPresentBefore = false;
             }
 
@@ -1093,25 +1126,27 @@ void Decoration::updateButtonsGeometry()
                 spacerPresentBefore = true;
             }
 
-            rightmostLeftVisibleIndex = i;
+            lastLeftVisibleIndex = i;
         }
     }
 
-    if (rightmostLeftVisibleIndex != -1) {
+    if (lastLeftVisibleIndex != -1) {
         bool menuPresentAfter = false;
         bool spacerPresentAfter = false;
-        static_cast<Button *>(m_leftButtons->buttons()[rightmostLeftVisibleIndex])->setRightmostLeftVisible();
+
+        m_isRightToLeft ? static_cast<Button *>(m_leftButtons->buttons()[lastLeftVisibleIndex])->setLeftmostLeftVisible()
+                        : static_cast<Button *>(m_leftButtons->buttons()[lastLeftVisibleIndex])->setRightmostLeftVisible();
 
         for (int i = numLeftButtons - 2; i >= 0; i--) {
             Button *button = static_cast<Button *>(m_leftButtons->buttons()[i]);
             if (button->isVisible() && (button->isEnabled() || button->type() == KDecoration3::DecorationButtonType::Spacer)) {
                 if (menuPresentAfter) {
-                    button->setVisibleBeforeMenu(true);
+                    m_isRightToLeft ? button->setVisibleAfterMenu() : button->setVisibleBeforeMenu();
                     menuPresentAfter = false;
                 }
 
                 if (spacerPresentAfter) {
-                    button->setVisibleBeforeSpacer(true);
+                    m_isRightToLeft ? button->setVisibleAfterSpacer() : button->setVisibleBeforeSpacer();
                     spacerPresentAfter = false;
                 }
 
@@ -1124,8 +1159,8 @@ void Decoration::updateButtonsGeometry()
         }
     }
 
-    int leftmostRightVisibleIndex = -1;
-    int rightmostRightVisibleIndex = -1;
+    int firstRightVisibleIndex = -1;
+    int lastRightVisibleIndex = -1;
     int numRightButtons = m_rightButtons->buttons().count();
     menuPresentBefore = false;
     spacerPresentBefore = false;
@@ -1173,28 +1208,28 @@ void Decoration::updateButtonsGeometry()
 
         button->setRightButtonVisible(false);
         button->setLeftButtonVisible(false);
-        button->setLeftmostRightVisible(false);
+        m_isRightToLeft ? button->setRightmostRightVisible(false) : button->setLeftmostRightVisible(false);
         button->setVisibleAfterMenu(false);
         button->setVisibleBeforeMenu(false);
-        button->setRightmostRightVisible(false);
+        m_isRightToLeft ? button->setLeftmostRightVisible(false) : button->setRightmostRightVisible(false);
         button->setVisibleAfterSpacer(false);
         button->setVisibleBeforeSpacer(false);
         // determine leftmost right visible and rightmostRightVisible
         if (button->isVisible() && (button->isEnabled() || button->type() == KDecoration3::DecorationButtonType::Spacer)) {
             button->setRightButtonVisible(true);
 
-            if (leftmostRightVisibleIndex == -1) {
-                leftmostRightVisibleIndex = i;
-                button->setLeftmostRightVisible();
+            if (firstRightVisibleIndex == -1) {
+                firstRightVisibleIndex = i;
+                m_isRightToLeft ? button->setRightmostRightVisible() : button->setLeftmostRightVisible();
             }
 
             if (menuPresentBefore) {
-                button->setVisibleAfterMenu(true);
+                m_isRightToLeft ? button->setVisibleBeforeMenu() : button->setVisibleAfterMenu();
                 menuPresentBefore = false;
             }
 
             if (spacerPresentBefore) {
-                button->setVisibleAfterSpacer(true);
+                m_isRightToLeft ? button->setVisibleBeforeSpacer() : button->setVisibleAfterSpacer();
                 spacerPresentBefore = false;
             }
 
@@ -1204,25 +1239,26 @@ void Decoration::updateButtonsGeometry()
                 spacerPresentBefore = true;
             }
 
-            rightmostRightVisibleIndex = i;
+            lastRightVisibleIndex = i;
         }
     }
 
-    if (rightmostRightVisibleIndex != -1) {
+    if (lastRightVisibleIndex != -1) {
         bool menuPresentAfter = false;
         bool spacerPresentAfter = false;
-        static_cast<Button *>(m_rightButtons->buttons()[rightmostRightVisibleIndex])->setRightmostRightVisible();
+        m_isRightToLeft ? static_cast<Button *>(m_rightButtons->buttons()[lastRightVisibleIndex])->setLeftmostRightVisible()
+                        : static_cast<Button *>(m_rightButtons->buttons()[lastRightVisibleIndex])->setRightmostRightVisible();
 
         for (int i = numRightButtons - 2; i >= 0; i--) {
             Button *button = static_cast<Button *>(m_rightButtons->buttons()[i]);
             if (button->isVisible() && (button->isEnabled() || button->type() == KDecoration3::DecorationButtonType::Spacer)) {
                 if (menuPresentAfter) {
-                    button->setVisibleBeforeMenu(true);
+                    m_isRightToLeft ? button->setVisibleAfterMenu() : button->setVisibleBeforeMenu();
                     menuPresentAfter = false;
                 }
 
                 if (spacerPresentAfter) {
-                    button->setVisibleBeforeSpacer(true);
+                    m_isRightToLeft ? button->setVisibleAfterSpacer() : button->setVisibleBeforeSpacer();
                     spacerPresentAfter = false;
                 }
 
@@ -1236,7 +1272,8 @@ void Decoration::updateButtonsGeometry()
     }
 
     // left buttons
-    if (!m_leftButtons->buttons().isEmpty() && leftmostLeftVisibleIndex != -1) {
+    int &leftEdgeButtonIndex = m_isRightToLeft ? lastLeftVisibleIndex : firstLeftVisibleIndex;
+    if (!m_leftButtons->buttons().isEmpty() && leftEdgeButtonIndex != -1) {
         // spacing
         m_leftButtons->setSpacing(buttonSpacingLeft);
 
@@ -1248,28 +1285,29 @@ void Decoration::updateButtonsGeometry()
             vPadding = isTopEdge() ? 0 : buttonTopMargin;
         const qreal hPadding = scaledTitleBarLeftMargin;
 
-        auto firstButton = static_cast<Button *>(m_leftButtons->buttons()[leftmostLeftVisibleIndex]);
+        auto leftEdgeButton = static_cast<Button *>(m_leftButtons->buttons()[leftEdgeButtonIndex]);
         if (isLeftEdge()) {
             // add offsets on the side buttons, to preserve padding, but satisfy Fitts law
-            firstButton->setGeometry(QRectF(QPoint(0, 0), QSizeF(firstButton->geometry().width() + hPadding, firstButton->geometry().height())));
+            leftEdgeButton->setGeometry(QRectF(QPoint(0, 0), QSizeF(leftEdgeButton->geometry().width() + hPadding, leftEdgeButton->geometry().height())));
 
-            if (m_buttonBackgroundType == ButtonBackgroundType::FullHeight && firstButton->type() == KDecoration3::DecorationButtonType::Close) {
-                firstButton->setHorizontalIconOffset(horizontalIconOffsetLeftFullHeightClose + hPadding);
+            if (m_buttonBackgroundType == ButtonBackgroundType::FullHeight && leftEdgeButton->type() == KDecoration3::DecorationButtonType::Close) {
+                leftEdgeButton->setHorizontalIconOffset(horizontalIconOffsetLeftFullHeightClose + hPadding);
             } else {
-                firstButton->setHorizontalIconOffset(horizontalIconOffsetLeftButtons + hPadding);
+                leftEdgeButton->setHorizontalIconOffset(horizontalIconOffsetLeftButtons + hPadding);
             }
-            firstButton->setFullHeightVisibleBackgroundOffset(QPointF(hPadding, 0));
+            leftEdgeButton->setFullHeightVisibleBackgroundOffset(QPointF(hPadding, 0));
 
             m_leftButtons->setPos(QPointF(0, vPadding));
 
         } else {
-            m_leftButtons->setPos(QPointF(hPadding + nextState()->borders().left(), vPadding));
-            firstButton->setFullHeightVisibleBackgroundOffset(QPointF(0, 0));
+            m_leftButtons->setPos(QPointF(hPadding + borderLeft(), vPadding));
+            leftEdgeButton->setFullHeightVisibleBackgroundOffset(QPointF(0, 0));
         }
     }
 
     // right buttons
-    if (!m_rightButtons->buttons().isEmpty() && rightmostRightVisibleIndex != -1) {
+    int &rightEdgeButtonIndex = m_isRightToLeft ? firstRightVisibleIndex : lastRightVisibleIndex;
+    if (!m_rightButtons->buttons().isEmpty() && lastRightVisibleIndex != -1) {
         // spacing
         m_rightButtons->setSpacing(buttonSpacingRight);
 
@@ -1281,14 +1319,14 @@ void Decoration::updateButtonsGeometry()
             vPadding = isTopEdge() ? 0 : buttonTopMargin;
         const qreal hPadding = scaledTitleBarRightMargin;
 
-        auto lastButton = static_cast<Button *>(m_rightButtons->buttons()[rightmostRightVisibleIndex]);
+        auto rightEdgeButton = static_cast<Button *>(m_rightButtons->buttons()[rightEdgeButtonIndex]);
         if (isRightEdge()) {
-            lastButton->setGeometry(QRectF(QPoint(0, 0), QSizeF(lastButton->geometry().width() + hPadding, lastButton->geometry().height())));
+            rightEdgeButton->setGeometry(QRectF(QPoint(0, 0), QSizeF(rightEdgeButton->geometry().width() + hPadding, rightEdgeButton->geometry().height())));
 
             m_rightButtons->setPos(QPointF(size().width() - m_rightButtons->geometry().width(), vPadding));
 
         } else {
-            m_rightButtons->setPos(QPointF(size().width() - m_rightButtons->geometry().width() - hPadding - nextState()->borders().right(), vPadding));
+            m_rightButtons->setPos(QPointF(size().width() - m_rightButtons->geometry().width() - hPadding - borderRight(), vPadding));
         }
     }
 
@@ -1298,8 +1336,6 @@ void Decoration::updateButtonsGeometry()
 //________________________________________________________________
 void Decoration::paint(QPainter *painter, const QRectF &repaintRegion)
 {
-    m_painting = true;
-
     // TODO: optimize based on repaintRegion
     auto c = window();
     auto s = settings();
@@ -1339,8 +1375,6 @@ void Decoration::paint(QPainter *painter, const QRectF &repaintRegion)
         painter->drawRect(rect().adjusted(0, 0, -1, -1));
         painter->restore();
     }
-
-    m_painting = false;
 }
 
 void Decoration::calculateWindowShape()
@@ -1491,7 +1525,7 @@ void Decoration::paintTitleBar(QPainter *painter, const QRectF &repaintRegion)
     painter->setFont(font);
     QColor fontColor = this->fontColor();
     painter->setPen(fontColor);
-    const auto [maxCaptionRectangle, alignment] = captionRect(false);
+    const auto [maxCaptionRectangle, alignment] = captionRect();
     const QString caption = painter->fontMetrics().elidedText(c->caption(), Qt::ElideMiddle, maxCaptionRectangle.width());
     QRectF captionBoundingRect;
     painter->drawText(maxCaptionRectangle, alignment | Qt::TextSingleLine, caption, &captionBoundingRect);
@@ -1522,7 +1556,7 @@ void Decoration::paintTitleBar(QPainter *painter, const QRectF &repaintRegion)
 // outputs the icon size + padding to make a small button, the actual icon size, and the background size to make a small button
 void Decoration::calculateIconSizes()
 {
-    qreal scale = window()->nextScale();
+    qreal scale = window()->scale();
     qreal baseSize = settings()->gridUnit(); // 10 on Wayland
     qreal basePaddingSize = m_smallSpacing; // 2 on Wayland
 
@@ -1614,24 +1648,23 @@ void Decoration::calculateIconSizes()
 }
 
 //________________________________________________________________
-qreal Decoration::captionHeight(const bool nextState, qreal scaledTitleBarTopMargin, qreal scaledTitleBarBottomMargin) const
+qreal Decoration::captionHeight(qreal scaledTitleBarTopMargin, qreal scaledTitleBarBottomMargin, qreal titleBarSeparatorHeight) const
 {
-    qreal scale = nextState ? window()->nextScale() : window()->scale();
-    qreal borderTop = nextState ? this->nextState()->borders().top() : this->borderTop();
-    return hideTitleBar() ? borderTop : borderTop - scaledTitleBarTopMargin - scaledTitleBarBottomMargin - titleBarSeparatorHeight(scale);
+    return hideTitleBar() ? borderTop() : borderTop() - scaledTitleBarTopMargin - scaledTitleBarBottomMargin - titleBarSeparatorHeight;
 }
 
 //________________________________________________________________
-QPair<QRectF, Qt::Alignment> Decoration::captionRect(bool nextState) const
+QPair<QRectF, Qt::Alignment> Decoration::captionRect() const
 {
     if (hideTitleBar()) {
         return qMakePair(QRect(), Qt::AlignCenter);
     } else {
         auto c = window();
-        qreal scale = nextState ? c->nextScale() : c->scale();
+        qreal scale = c->scale();
         qreal scaledTitleBarTopMargin, scaledTitleBarBottomMargin, scaledIntegratedRoundedRectangleBottomPadding;
         scaledTitleBarTopBottomMargins(scale, scaledTitleBarTopMargin, scaledTitleBarBottomMargin, scaledIntegratedRoundedRectangleBottomPadding);
-        qreal captionHeight = this->captionHeight(scale, scaledTitleBarTopMargin, scaledTitleBarBottomMargin);
+        qreal titleBarSeparatorHeight = this->titleBarSeparatorHeight(scale);
+        qreal captionHeight = this->captionHeight(scaledTitleBarTopMargin, scaledTitleBarBottomMargin, titleBarSeparatorHeight);
 
         qreal padding = KDecoration3::snapToPixelGrid(m_internalSettings->titleSidePadding() * m_x11Scale, scale);
 
@@ -1679,22 +1712,12 @@ void Decoration::updateShadow(const bool forceUpdateCache, bool noCache)
 {
     auto c = window();
 
-    // if the decoration is painting, abandon setting the shadow.
-    // Setting the shadow at the same time as paint() being executed causes a EGL_BAD_SURFACE error and a SEGFAULT from Plasma 5.26 onwards.
-    if (m_painting) {
-        qWarning("Klassy: paint() occurring at same time as shadow creation for \"%s\" - abandoning setting shadow to prevent EGL_BAD_SURFACE.",
-                 c->caption().toLatin1().data());
-        return;
-    }
-
     // The preset exception may modify the shadow, so in this case there is a "noCache" property set - we don't want to cache the exception shadow as it may
-    // corrupt the shadow cache for normal non-exception decoration windows For shaded windows the shadow/outline has a potentially different shape so do not
+    // corrupt the shadow cache for normal non-exception decoration windows. For shaded windows the shadow has a potentially different shape so do not
     // use the shadow cache when shaded
-    // also don't want to cache the shadow with a partial outline for when it is at a screen edge
-    if (m_internalSettings->property("noCacheException").toBool() || c->isShaded() || isTopEdge() || isRightEdge() || isBottomEdge() || isLeftEdge()) {
+    if (m_internalSettings->property("noCacheException").toBool() || c->isShaded()) {
         noCache = true;
     }
-    setWindowOutlineColor();
     // Animated case, no cached shadow object
     if ((m_shadowAnimation->state() == QAbstractAnimation::Running) && (m_shadowOpacity != 0.0) && (m_shadowOpacity != 1.0)) {
         QColor shadowColor = KColorUtils::mix(m_decorationColors->inactive()->shadow, m_decorationColors->active()->shadow, m_shadowOpacity);
@@ -1910,16 +1933,16 @@ void Decoration::setWindowOutlineColor()
                     m_windowOutline = keepAboveBackgroundPress;
                 }
             }
-        } else if (m_animation->state() == QAbstractAnimation::Running) { // get blended colour if animated
+        } else if (m_shadowAnimation->state() == QAbstractAnimation::Running) { // get blended colour if animated
             // deal with animation cases where there is an invalid colour (WindowOutlineNone)
             if (!(windowOutlineActiveFinal.isValid() && windowOutlineInactiveFinal.isValid())) {
                 if (!windowOutlineInactiveFinal.isValid() && windowOutlineActiveFinal.isValid()) {
-                    m_windowOutline = ColorTools::alphaMix(windowOutlineActiveFinal, m_opacity);
+                    m_windowOutline = ColorTools::alphaMix(windowOutlineActiveFinal, m_shadowOpacity);
                 } else if (windowOutlineInactiveFinal.isValid() && !windowOutlineActiveFinal.isValid()) {
-                    m_windowOutline = ColorTools::alphaMix(windowOutlineInactiveFinal, (1.0 - m_opacity));
+                    m_windowOutline = ColorTools::alphaMix(windowOutlineInactiveFinal, (1.0 - m_shadowOpacity));
                 }
             } else { // standard animated case with both valid colours
-                m_windowOutline = KColorUtils::mix(windowOutlineInactiveFinal, windowOutlineActiveFinal, m_opacity);
+                m_windowOutline = KColorUtils::mix(windowOutlineInactiveFinal, windowOutlineActiveFinal, m_shadowOpacity);
             }
         } else { // normal non-animated final colour
             m_windowOutline = c->isActive() ? windowOutlineActiveFinal : windowOutlineInactiveFinal;
@@ -2042,12 +2065,15 @@ qreal Decoration::titleBarSeparatorHeight(qreal scale) const
         return 0;
 }
 
-void Decoration::updateNextScale()
+void Decoration::updateScale()
 {
     calculateIconSizes();
-    recalculateBorders();
     updateButtonsGeometry();
-    updateWindowOutline();
+}
+
+void Decoration::updateNextScale()
+{
+    recalculateBorders();
 }
 
 // for unison hovering

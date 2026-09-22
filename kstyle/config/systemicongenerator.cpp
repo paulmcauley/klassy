@@ -13,6 +13,7 @@
 #include <QDir>
 #include <QDomDocument>
 #include <QFile>
+#include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QPainter>
@@ -21,7 +22,7 @@
 #include <QSvgGenerator>
 #include <QVariantMap>
 
-namespace Breeze
+namespace Klassy
 {
 
 SystemIconGenerator::SystemIconGenerator(InternalSettingsPtr internalSettings)
@@ -213,16 +214,19 @@ void SystemIconGenerator::generateIconThemeDir(const QString themeDirPath,
                 }
 
                 // paint the icon to SVG
-                auto [iconRenderer,
-                      localRenderingWidth](RenderDecorationButtonIcon::factory(m_internalSettings, painter.get(), false, boldButtons, m_scales.at(i)));
+                auto [iconRenderer, localRenderingWidth](RenderDecorationButtonIcon::factory(m_internalSettings, painter.get()));
                 painter->setWindow(0, 0, localRenderingWidth, localRenderingWidth);
 
                 pen.setWidthF(PenWidth::Symbol * qMax((qreal)1.0, qreal(localRenderingWidth) / iconSizeScaled.width()));
                 painter->setPen(pen);
+
+                iconRenderer->setBoldButtonIcons(boldButtons);
+                iconRenderer->setSystemScale(m_scales.at(i));
                 iconRenderer->setForceEvenSquares(true);
                 iconRenderer->setStrokeToFilledPath(true);
                 iconRenderer->setTaskManagerType(m_taskManagerType);
                 iconRenderer->setTaskManagerSide(m_taskManagerSide);
+                iconRenderer->setLeftButtonGroup(QGuiApplication::layoutDirection() == Qt::LayoutDirection::RightToLeft);
 
                 iconRenderer->renderIcon(iconType.type, iconType.checked);
 
@@ -356,14 +360,14 @@ void SystemIconGenerator::generateIconThemeDir(const QString themeDirPath,
     QFile::copy(basePanelDir + "/96/user-desktop.svg", desktopPath + "/96/user-desktop.svg");
 
     // write index file entries for desktop icons
-    QString desktopDirNames = "places/16,places/22,places/32,places/48,places/64,places/96";
+    QString desktopDirNames = "apps/22,places/16,places/22,places/32,places/48,places/64,places/96";
     if (!iconThemeGroup.readEntry("Directories", "").isEmpty()) {
         iconThemeGroup.writeEntry("Directories", iconThemeGroup.readEntry("Directories") + "," + desktopDirNames);
     } else {
         iconThemeGroup.writeEntry("Directories", desktopDirNames);
     }
 
-    QString desktopScaledDirNames = "places/16@2x,places/16@3x,places/22@2x,places/22@3x";
+    QString desktopScaledDirNames = "apps/22@2x,apps/22@3x,places/16@2x,places/16@3x,places/22@2x,places/22@3x";
     if (!iconThemeGroup.readEntry("ScaledDirectories", "").isEmpty()) {
         iconThemeGroup.writeEntry("ScaledDirectories", iconThemeGroup.readEntry("ScaledDirectories") + "," + desktopScaledDirNames);
     } else {
@@ -429,41 +433,87 @@ void SystemIconGenerator::generateIconThemeDir(const QString themeDirPath,
     svgDirGroup.writeEntry("MinSize", "96");
     svgDirGroup.writeEntry("MaxSize", "256");
 
+    // add apps icons
+    desktopPath = themeDirPath + "/apps";
+    desktopDir.setPath(desktopPath);
+    desktopDir.mkpath(desktopPath);
+    desktopDir.mkdir("22");
+    QFile::copy(":/icons/plasma-symbolic-reduced-margins.svg", desktopPath + "/22/plasma-symbolic-reduced-margins.svg");
+
+    QDir::setCurrent(desktopPath); // need to use relative paths to share icons
+    scaledSymlinkDir.setFileName("22");
+    ;
+    scaledSymlinkDir.link("22@2x");
+    scaledSymlinkDir.link("22@3x");
+
+    svgDirGroup = themeIndex.group("apps/22");
+    svgDirGroup.writeEntry("Size", "22");
+    svgDirGroup.writeEntry("Context", "Applications");
+    svgDirGroup.writeEntry("Type", "Fixed");
+
+    svgDirGroup = themeIndex.group("apps/22@2x");
+    svgDirGroup.writeEntry("Size", "22");
+    svgDirGroup.writeEntry("Scale", "2");
+    svgDirGroup.writeEntry("Context", "Applications");
+    svgDirGroup.writeEntry("Type", "Fixed");
+
+    svgDirGroup = themeIndex.group("apps/22@3x");
+    svgDirGroup.writeEntry("Size", "22");
+    svgDirGroup.writeEntry("Scale", "3");
+    svgDirGroup.writeEntry("Context", "Applications");
+    svgDirGroup.writeEntry("Type", "Fixed");
+
     themeIndex.sync();
 }
 
 void SystemIconGenerator::addSystemScales()
 {
-    QString outputsPath = QStandardPaths::locate(QStandardPaths::GenericDataLocation, QStringLiteral("kscreen/outputs"), QStandardPaths::LocateDirectory);
-    QDir outputsDir(outputsPath);
-    if (!outputsDir.exists())
+    // kwin/src/outputconfigurationstore.cpp OutputConfigurationStore::load() for reference
+    const QString jsonPath = QStandardPaths::locate(QStandardPaths::ConfigLocation, QStringLiteral("kwinoutputconfig.json"));
+    if (jsonPath.isEmpty()) {
         return;
+    }
 
-    QStringList outputsFiles = outputsDir.entryList(QDir::Files);
+    QFile f(jsonPath);
+    if (!f.open(QIODevice::ReadOnly)) {
+        return;
+    }
+    QJsonParseError error;
+    const auto doc = QJsonDocument::fromJson(f.readAll(), &error);
+    if (error.error != QJsonParseError::NoError) {
+        return;
+    }
+    const auto array = doc.array();
+    std::vector<QJsonObject> objects;
+    std::transform(array.begin(), array.end(), std::back_inserter(objects), [](const auto &json) {
+        return json.toObject();
+    });
+    const auto outputsIt = std::find_if(objects.begin(), objects.end(), [](const auto &obj) {
+        return obj["name"].toString() == "outputs" && obj["data"].isArray();
+    });
+    if (outputsIt == objects.end()) {
+        return;
+    }
+    const auto outputs = (*outputsIt)["data"].toArray();
 
-    for (QString &outputFile : outputsFiles) {
-        QFile file(outputsPath % QStringLiteral("/") % outputFile);
-        if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
-            continue;
+    for (const auto &output : outputs) {
+        const auto data = output.toObject();
 
-        QJsonDocument document = QJsonDocument::fromJson(file.readAll());
-        file.close();
-        QJsonObject jsonObj = document.object();
-        QVariantMap jsonMap = jsonObj.toVariantMap();
-        qreal scale = jsonMap.value(QStringLiteral("scale"), 1.0).toDouble();
-        if (scale < (0.5 - 0.0001) || scale > (3.0 + 0.0001))
-            continue;
+        if (const auto it = data.find("scale"); it != data.end()) {
+            const double scale = it->toDouble(0);
+            if (scale > 0 && scale <= 5) {
+                bool scaleInList = false;
+                for (auto i = m_scales.begin(); i != m_scales.end(); i++) {
+                    if (qAbs(*i - scale) < 0.0001) {
+                        scaleInList = true;
+                        break;
+                    }
+                }
 
-        bool scaleInList = false;
-        for (auto i = m_scales.begin(); i != m_scales.end(); i++) {
-            if (qAbs(*i - scale) < 0.0001) {
-                scaleInList = true;
-                break;
+                if (!scaleInList) {
+                    m_scales.append(scale);
+                }
             }
-        }
-
-        if (!scaleInList) {
-            m_scales.append(scale);
         }
     }
 }

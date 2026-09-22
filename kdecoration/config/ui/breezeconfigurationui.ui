@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>BreezeConfigurationUI</class>
- <widget class="QWidget" name="BreezeConfigurationUI">
+ <class>KlassyConfigurationUI</class>
+ <widget class="QWidget" name="KlassyConfigurationUI">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -1626,7 +1626,7 @@
           </widget>
          </item>
          <item>
-          <widget class="Breeze::ExceptionListWidget" name="defaultExceptions" native="true">
+          <widget class="Klassy::ExceptionListWidget" name="defaultExceptions" native="true">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
              <horstretch>0</horstretch>
@@ -1683,7 +1683,7 @@
           </widget>
          </item>
          <item>
-          <widget class="Breeze::ExceptionListWidget" name="exceptions" native="true">
+          <widget class="Klassy::ExceptionListWidget" name="exceptions" native="true">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
              <horstretch>0</horstretch>
@@ -1724,7 +1724,7 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>Breeze::ExceptionListWidget</class>
+   <class>Klassy::ExceptionListWidget</class>
    <extends>QWidget</extends>
    <header>config/breezeexceptionlistwidget.h</header>
    <container>1</container>

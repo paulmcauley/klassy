@@ -11,7 +11,7 @@
 #include "breezedatamap.h"
 #include "breezewidgetstatedata.h"
 
-namespace Breeze
+namespace Klassy
 {
 
 //* used for simple widgets

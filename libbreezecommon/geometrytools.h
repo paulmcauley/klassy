@@ -7,18 +7,18 @@
 #pragma once
 
 #include "breeze.h"
-#include "breezecommon_export.h"
+#include "klassycommon_export.h"
 
 #include <QPainterPath>
 
-namespace Breeze
+namespace Klassy
 {
 
 /**
  * @brief Functions to manipulate geometry within Klassy
  *        To be used as common code base across both kdecoration and kstyle.
  */
-class BREEZECOMMON_EXPORT GeometryTools
+class KLASSYCOMMON_EXPORT GeometryTools
 {
 public:
     static QPainterPath roundedPath(const QRectF &rect, Corners corners, qreal radius, Sides sides = AllSides, qreal penProtrusion = 0);

@@ -7,16 +7,16 @@
 #pragma once
 
 #include "breeze.h"
-#include "breezecommon_export.h"
+#include "klassycommon_export.h"
 
-namespace Breeze
+namespace Klassy
 {
 
 /**
  * @brief Functions to interact with Plasma shell within Klassy
  *
  */
-class BREEZECOMMON_EXPORT PlasmaTools
+class KLASSYCOMMON_EXPORT PlasmaTools
 {
 public:
     /**

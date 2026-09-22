@@ -8,7 +8,7 @@
 #include <KConfig>
 #include <map>
 
-namespace Breeze
+namespace Klassy
 {
 
 void PlasmaTools::taskManagerTypeAndSide(TaskManagerType &taskManagerType, Side &taskManagerSide)

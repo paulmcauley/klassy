@@ -11,7 +11,7 @@
 #include <QPropertyAnimation>
 #include <QVariant>
 
-namespace Breeze
+namespace Klassy
 {
 
 class Animation : public QPropertyAnimation

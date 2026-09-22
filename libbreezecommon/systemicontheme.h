@@ -7,15 +7,15 @@
 #pragma once
 
 #include "breeze.h"
-#include "breezecommon_export.h"
 #include "breezesettings.h"
+#include "klassycommon_export.h"
 #include <QPainter>
 #include <QPalette>
 
-namespace Breeze
+namespace Klassy
 {
 
-class BREEZECOMMON_EXPORT SystemIconTheme
+class KLASSYCOMMON_EXPORT SystemIconTheme
 {
 public:
     /**

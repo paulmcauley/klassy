@@ -12,7 +12,7 @@
 #include <QObject>
 #include <QTextStream>
 
-namespace Breeze
+namespace Klassy
 {
 
 //* generic data

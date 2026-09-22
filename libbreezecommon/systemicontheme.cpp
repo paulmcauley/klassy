@@ -9,7 +9,7 @@
 #include <KIconLoader>
 #include <QIcon>
 
-namespace Breeze
+namespace Klassy
 {
 
 void SystemIconTheme::paintIconFromSystemTheme(QString iconName)

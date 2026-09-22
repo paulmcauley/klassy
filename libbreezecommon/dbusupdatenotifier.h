@@ -7,14 +7,14 @@
 #pragma once
 
 #include "breeze.h"
-#include "breezecommon_export.h"
+#include "klassycommon_export.h"
 #include <QDBusVariant>
 #include <QString>
 
-namespace Breeze
+namespace Klassy
 {
 
-class BREEZECOMMON_EXPORT DBusUpdateNotifier : public QObject
+class KLASSYCOMMON_EXPORT DBusUpdateNotifier : public QObject
 {
     Q_OBJECT
 
@@ -33,6 +33,5 @@ Q_SIGNALS:
     void appletSettingsUpdate(QByteArray uuid);
 };
 
-extern DBusUpdateNotifier BREEZECOMMON_EXPORT g_dBusUpdateNotifier;
-
+extern DBusUpdateNotifier KLASSYCOMMON_EXPORT g_dBusUpdateNotifier;
 }

@@ -14,7 +14,7 @@
 
 #include <QObject>
 
-namespace Breeze
+namespace Klassy
 {
 
 class SettingsProvider : public QObject

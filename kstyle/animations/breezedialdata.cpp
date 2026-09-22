@@ -9,7 +9,7 @@
 #include <QDial>
 #include <QHoverEvent>
 
-namespace Breeze
+namespace Klassy
 {
 
 //______________________________________________

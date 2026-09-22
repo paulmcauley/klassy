@@ -12,7 +12,7 @@
 #include <QRegularExpression>
 #include <QTextStream>
 
-namespace Breeze
+namespace Klassy
 {
 
 DecorationSettingsProvider *DecorationSettingsProvider::s_self = nullptr;

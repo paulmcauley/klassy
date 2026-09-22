@@ -13,7 +13,7 @@
 #include <QComboBox>
 #include <QDialog>
 
-namespace Breeze
+namespace Klassy
 {
 
 class ButtonBehaviour : public QDialog

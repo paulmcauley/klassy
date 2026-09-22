@@ -7,12 +7,12 @@
 #pragma once
 
 #include "breeze.h"
-#include "breezecommon_export.h"
+#include "klassycommon_export.h"
 
-namespace Breeze
+namespace Klassy
 {
 
-enum struct BREEZECOMMON_EXPORT PresetsErrorFlag {
+enum struct KLASSYCOMMON_EXPORT PresetsErrorFlag {
     None,
     InvalidGlobalGroup,
     InvalidVersion,
@@ -23,7 +23,7 @@ enum struct BREEZECOMMON_EXPORT PresetsErrorFlag {
 /**
  * @brief Functions to read and write Presets from/to config file within Klassy
  */
-class BREEZECOMMON_EXPORT PresetsModel
+class KLASSYCOMMON_EXPORT PresetsModel
 {
 public:
     static QString presetGroupName(const QString str);

@@ -11,7 +11,7 @@
 #include "breezestyleconfigdata.h"
 #include <QtGlobal>
 
-namespace Breeze
+namespace Klassy
 {
 
 //* metrics

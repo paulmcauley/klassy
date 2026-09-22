@@ -32,7 +32,7 @@ class DecorationButton;
 class DecorationButtonGroup;
 }
 
-namespace Breeze
+namespace Klassy
 {
 
 enum struct ButtonBackgroundType {
@@ -67,7 +67,7 @@ public:
     }
 
     //* caption height
-    qreal captionHeight(const bool nextState, qreal scaledTitleBarTopMargin, qreal scaledTitleBarBottomMargin) const;
+    qreal captionHeight(qreal scaledTitleBarTopMargin, qreal scaledTitleBarBottomMargin, qreal titleBarSeparatorHeight) const;
 
     //*@name active state change animation
     //@{
@@ -153,6 +153,11 @@ public:
         return m_x11Scale;
     }
 
+    bool isRightToLeft()
+    {
+        return m_isRightToLeft;
+    }
+
     KDecoration3::DecorationButtonGroup *leftButtons()
     {
         return m_leftButtons;
@@ -214,6 +219,7 @@ private Q_SLOTS:
     {
         updateShadow(false, true);
     }
+    void updateScale();
     void updateNextScale();
 
 protected:
@@ -222,7 +228,7 @@ protected:
 
 private:
     //* return the rect in which caption will be drawn
-    QPair<QRectF, Qt::Alignment> captionRect(bool nextState) const;
+    QPair<QRectF, Qt::Alignment> captionRect() const;
 
     void reconfigureMain(const bool noUpdateShadow = false);
     void updateDecorationColors(const QPalette &clientPalette, QByteArray uuid = "");
@@ -267,14 +273,12 @@ private:
 
     static KSharedConfig::Ptr s_kdeGlobalConfig;
     InternalSettingsPtr m_internalSettings;
+    bool m_isRightToLeft = false;
     KDecoration3::DecorationButtonGroup *m_leftButtons = nullptr;
     KDecoration3::DecorationButtonGroup *m_rightButtons = nullptr;
 
     TaskManagerType m_taskManagerType = TaskManagerType::IconsAndTextTaskManager;
     Side m_taskManagerSide = SideBottom;
-
-    //* Whether the paint() method is active
-    bool m_painting = false;
 
     //* Object to return decoration palette colours
     std::unique_ptr<DecorationColors> m_decorationColors;
@@ -444,4 +448,4 @@ bool Decoration::hideTitleBar() const
     }
     return hide;
 }
-} // end Breeze namespace
+} // end Klassy namespace

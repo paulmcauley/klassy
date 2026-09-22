@@ -9,7 +9,7 @@
 #include <QDir>
 #include <QRegularExpression>
 
-namespace Breeze
+namespace Klassy
 {
 
 QString PresetsModel::presetGroupName(const QString str)
@@ -399,7 +399,7 @@ void PresetsModel::importBundledPresets(KConfig *presetsConfig)
                 QString presetName;
                 QString error;
 
-                PresetsErrorFlag importErrors = PresetsModel::importPreset(presetsConfig, presetFile, presetName, error, false, true);
+                PresetsErrorFlag importErrors = PresetsModel::importPreset(presetsConfig, presetFile, presetName, error, true, true);
                 if (importErrors != PresetsErrorFlag::None) {
                     continue;
                 }

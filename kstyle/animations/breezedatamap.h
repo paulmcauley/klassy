@@ -12,7 +12,7 @@
 #include <QObject>
 #include <QPaintDevice>
 
-namespace Breeze
+namespace Klassy
 {
 
 //* data map
