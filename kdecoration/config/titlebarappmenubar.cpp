@@ -52,6 +52,7 @@ TitleBarAppMenuBar::TitleBarAppMenuBar(KSharedConfig::Ptr config, KSharedConfig:
     connect(m_ui->buttonAllowDraggingWindow, SIGNAL(checkStateChanged(Qt::CheckState)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
 
     connect(m_ui->searchEnabled, SIGNAL(checkStateChanged(Qt::CheckState)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
+    connect(m_ui->searchEnabled, &QAbstractButton::toggled, this, &TitleBarAppMenuBar::onSearchEnabled);
     connect(m_ui->searchIgnoresDisabled, SIGNAL(checkStateChanged(Qt::CheckState)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
     connect(m_ui->searchIgnoresSubMenus, SIGNAL(checkStateChanged(Qt::CheckState)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
     connect(m_ui->searchIgnoresTopLevel, SIGNAL(checkStateChanged(Qt::CheckState)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
@@ -120,6 +121,7 @@ void TitleBarAppMenuBar::loadMain(const bool assignUiValuesOnly)
     m_ui->buttonAllowDraggingWindow->setChecked(m_internalSettings->appMenuBarButtonCanDragWindow());
 
     m_ui->searchEnabled->setChecked(m_internalSettings->appMenuBarSearchEnabled());
+    onSearchEnabled(m_ui->searchEnabled->isChecked());
     m_ui->searchIgnoresDisabled->setChecked(m_internalSettings->appMenuBarSearchIgnoreDisabled());
     m_ui->searchIgnoresSubMenus->setChecked(m_internalSettings->appMenuBarSearchIgnoreSubMenus());
     m_ui->searchIgnoresTopLevel->setChecked(m_internalSettings->appMenuBarSearchIgnoreTopLevel());
@@ -286,4 +288,10 @@ void TitleBarAppMenuBar::setApplyButtonState(const bool on)
     m_ui->buttonBox->button(QDialogButtonBox::Apply)->setEnabled(on);
 }
 
+void TitleBarAppMenuBar::onSearchEnabled(const bool enabled)
+{
+    m_ui->searchIgnoresDisabled->setEnabled(enabled);
+    m_ui->searchIgnoresSubMenus->setEnabled(enabled);
+    m_ui->searchIgnoresTopLevel->setEnabled(enabled);
+}
 }
