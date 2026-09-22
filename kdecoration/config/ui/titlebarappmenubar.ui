@@ -523,54 +523,6 @@
    </hints>
   </connection>
   <connection>
-   <sender>searchEnabled</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>searchIgnoresSubMenus</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>244</x>
-     <y>59</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>244</x>
-     <y>117</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>searchEnabled</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>searchIgnoresTopLevel</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>244</x>
-     <y>59</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>244</x>
-     <y>146</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>searchEnabled</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>searchIgnoresDisabled</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>244</x>
-     <y>59</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>244</x>
-     <y>88</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>menuEnableBlurEffect</sender>
    <signal>toggled(bool)</signal>
    <receiver>menuBlurCornerRadiusLabel</receiver>
