@@ -184,14 +184,16 @@ void SystemIconGenerator::generateIconThemeDir(const QString themeDirPath,
                      || m_internalSettings->boldButtonIcons() == InternalSettings::EnumBoldButtonIcons::BoldIconsActive
                      || (m_internalSettings->boldButtonIcons() == InternalSettings::EnumBoldButtonIcons::BoldIconsActiveHiDpi && m_scales.at(i) >= 1.2));
 
+                bool shrinkCloseIcon = false;
                 // paint the close background to SVG
                 if (iconType.type == DecorationButtonType::Close && iconType.name != QStringLiteral("window-close-symbolic")) {
+                    shrinkCloseIcon = true;
                     painter->setWindow(0, 0, 16, 16);
                     painter->setPen(Qt::NoPen);
                     painter->setBrush(decorationColors.buttonPalette(iconType.type)->active()->backgroundHover);
 
                     if (m_internalSettings->buttonShape() == InternalSettings::EnumButtonShape::ShapeSmallCircle) {
-                        boldButtons ? painter->drawEllipse(QRectF(0, 0, 16, 16)) : painter->drawEllipse(QRectF(1, 1, 14, 14));
+                        painter->drawEllipse(QRectF(1, 1, 14, 14));
                     } else {
                         qreal cornerRadius = 0;
                         if (m_internalSettings->buttonShape() == InternalSettings::EnumButtonShape::ShapeSmallRoundedSquare
@@ -224,6 +226,7 @@ void SystemIconGenerator::generateIconThemeDir(const QString themeDirPath,
                 iconRenderer->setSystemScale(m_scales.at(i));
                 iconRenderer->setForceEvenSquares(true);
                 iconRenderer->setStrokeToFilledPath(true);
+                iconRenderer->shrinkCloseIcon(shrinkCloseIcon);
                 iconRenderer->setTaskManagerType(m_taskManagerType);
                 iconRenderer->setTaskManagerSide(m_taskManagerSide);
                 iconRenderer->setLeftButtonGroup(QGuiApplication::layoutDirection() == Qt::LayoutDirection::RightToLeft);

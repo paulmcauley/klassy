@@ -84,6 +84,14 @@ public:
     }
 
     /**
+     * @brief When drawing a close button with a background (non-symbolic) then the icon appears too large unless this option is used to shrink the closr button
+     */
+    void shrinkCloseIcon(bool v)
+    {
+        m_shrinkCloseIcon = v;
+    }
+
+    /**
      * @brief sets the side of the screen on which a panel has a task manager (primary display)
      */
     void setTaskManagerSide(Side taskManagerSide)
@@ -258,6 +266,7 @@ protected:
     bool m_forceEvenSquares = false;
     bool m_strokeToFilledPath =
         false; // When outputting icons for GTK and the system, closed pens get filled -- this flag is to convert pen strokes to filled paths to fix this
+    bool m_shrinkCloseIcon = false;
     Side m_taskManagerSide = SideBottom;
     TaskManagerType m_taskManagerType = TaskManagerType::IconsAndTextTaskManager;
     bool m_leftButtonGroup = false;

@@ -562,6 +562,10 @@ void RenderDecorationButtonIcon18By18::renderCloseIconAtSquareMaximizeSize()
     pen.setWidthF(maximizePenWidth);
 
     m_painter->setPen(pen);
+    if (m_shrinkCloseIcon) { // render smaller close icon with thicker width from here
+        RenderDecorationButtonIcon18By18::renderCloseIcon();
+        return;
+    }
 
     QVector<QPointF> line1{maximizeRect.topLeft(), maximizeRect.bottomRight()};
     QVector<QPointF> line2{maximizeRect.topRight(), maximizeRect.bottomLeft()};
