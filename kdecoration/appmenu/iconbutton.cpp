@@ -128,9 +128,9 @@ bool AppMenuIconButton::shouldDrawBoldButtonIcons() const
 
     switch (m_d->internalSettings()->boldButtonIcons()) {
     case InternalSettings::EnumBoldButtonIcons::BoldIconsActiveHiDpi:
-        return m_d->window()->isActive() && m_systemScale > 1.2;
+        return m_systemScale > 1.2 && (m_d->window()->isActive() || isHovered() || isPressed());
     case InternalSettings::EnumBoldButtonIcons::BoldIconsActive:
-        return m_d->window()->isActive();
+        return m_d->window()->isActive() || isHovered() || isPressed();
     case InternalSettings::EnumBoldButtonIcons::BoldIconsHiDpiOnly:
         // If HiDPI system scaling use bold icons
         return m_systemScale > 1.2;
