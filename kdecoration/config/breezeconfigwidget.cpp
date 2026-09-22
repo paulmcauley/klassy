@@ -168,7 +168,6 @@ ConfigWidget::ConfigWidget(QObject *parent, const KPluginMetaData &data, const Q
     connect(m_ui.boldButtonIcons, qOverload<int>(&QComboBox::currentIndexChanged), this, &ConfigWidget::updateWindowControlPreviewIcons);
 
     // titlebar
-    connect(m_ui.titleAlignment, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
     connect(m_ui.matchTitleBarToApplicationColor, &QAbstractButton::toggled, this, &ConfigWidget::updateChanged, Qt::ConnectionType::DirectConnection);
     connect(m_ui.titleBarAppMenuBarEnabled,
             &QAbstractButton::toggled,
@@ -233,7 +232,6 @@ void ConfigWidget::load()
     m_ui.boldButtonIcons->setCurrentIndex(m_internalSettings->boldButtonIcons());
 
     // titlebar
-    m_ui.titleAlignment->setCurrentIndex(m_internalSettings->titleAlignment());
     m_ui.matchTitleBarToApplicationColor->setChecked(m_internalSettings->matchTitleBarToApplicationColor());
     setAppMenuBarEnabledCheckBoxState();
     m_ui.drawBackgroundGradient->setChecked(m_internalSettings->drawBackgroundGradient());
@@ -303,7 +301,6 @@ void ConfigWidget::saveMain(QString saveAsPresetName)
     m_internalSettings->setBoldButtonIcons(m_ui.boldButtonIcons->currentIndex());
 
     // titlebar
-    m_internalSettings->setTitleAlignment(m_ui.titleAlignment->currentIndex());
     m_internalSettings->setMatchTitleBarToApplicationColor(m_ui.matchTitleBarToApplicationColor->isChecked());
     m_internalSettings->setAppMenuBarEnabled(m_ui.titleBarAppMenuBarEnabled->isChecked());
     m_internalSettings->setDrawBackgroundGradient(m_ui.drawBackgroundGradient->isChecked());
@@ -391,7 +388,6 @@ void ConfigWidget::defaults()
     m_ui.boldButtonIcons->setCurrentIndex(m_internalSettings->boldButtonIcons());
 
     // titlebar
-    m_ui.titleAlignment->setCurrentIndex(m_internalSettings->titleAlignment());
     m_ui.matchTitleBarToApplicationColor->setChecked(m_internalSettings->matchTitleBarToApplicationColor());
     setAppMenuBarEnabledCheckBoxState();
     m_ui.drawBackgroundGradient->setChecked(m_internalSettings->drawBackgroundGradient());
@@ -519,8 +515,6 @@ void ConfigWidget::updateChanged()
         modified = true;
 
     // titlebar
-    else if (m_ui.titleAlignment->currentIndex() != m_internalSettings->titleAlignment())
-        modified = true;
     else if (m_ui.matchTitleBarToApplicationColor->isChecked() != m_internalSettings->matchTitleBarToApplicationColor())
         modified = true;
     else if (m_ui.titleBarAppMenuBarEnabled->isChecked() != m_internalSettings->appMenuBarEnabled()
