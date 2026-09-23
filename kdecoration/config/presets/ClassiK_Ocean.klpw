@@ -183,4 +183,4 @@ WindowOutlineCustomWithContrastOpacityInactive=25
 WindowOutlineShadowColorOpacity=20
 WindowOutlineStyleActive=WindowOutlineAccentColor
 WindowOutlineStyleInactive=WindowOutlineAccentWithContrast
-WindowOutlineThickness=2
+WindowOutlineThickness=1.49
