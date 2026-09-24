@@ -59,7 +59,6 @@ protected:
     void renderOnAllDesktopsIcon();
     void renderKeepBehindIconAsFromBreezeIcons();
     void renderKeepInFrontIconAsFromBreezeIcons();
-    void renderKlassyOriginalContextHelpIcon();
 };
 
 }

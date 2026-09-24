@@ -534,21 +534,6 @@ void RenderDecorationButtonIcon18By18::renderApplicationMenuIcon()
     appMenu->render(m_painter, QRectF(0, 0, 18, 18), QRectF(0, 0, 18, 18));
 }
 
-void RenderDecorationButtonIcon18By18::renderKlassyOriginalContextHelpIcon()
-{
-    QPainterPath path;
-    path.moveTo(5, 6);
-    path.arcTo(QRectF(5, 3.5, 8, 5), 180, -180);
-    path.cubicTo(QPointF(12.5, 9.5), QPointF(9, 7.5), QPointF(9, 11.5));
-
-    QPainterPath dot;
-    dot.addRect(QRectF(9, 15, 0.5, 0.5));
-
-    m_painter->drawPath(path);
-    m_painter->drawPath(dot);
-    // NB: m_strokeToFilledPath not added as this is not currently used
-}
-
 void RenderDecorationButtonIcon18By18::renderCloseIconAtSquareMaximizeSize()
 {
     // first determine the size of the maximize icon so the close icon can match in size
