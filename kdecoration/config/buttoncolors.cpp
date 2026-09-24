@@ -2157,7 +2157,6 @@ void ButtonColors::setHorizontalHeaderSectionIcon(DecorationButtonType type, QTa
         } else {
             auto [iconRenderer, localRenderingWidth](RenderDecorationButtonIcon::factory(m_internalSettings, painter.get()));
             iconRenderer->setFromKstyle(true);
-            iconRenderer->setBoldButtonIcons(true);
             iconRenderer->setForceEvenSquares(true);
             iconRenderer->setSystemScale(dpr);
             iconRenderer->setTaskManagerType(static_cast<ConfigWidget *>(m_parent)->taskManagerType());
