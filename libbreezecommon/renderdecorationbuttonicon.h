@@ -152,8 +152,6 @@ protected:
      * @brief Determines whether a rounded version of a given Pen's width is an odd number. Accounts for cosmetic/non-cosmetic pens.
      *
      *@param pen The input QPen
-     *@param outputRoundedPenWidth The output pen width, factored by boldingFactor, and rounded
-     *@param boldingFactor Optional bolding factor. Set to 1 for no bolding
      */
     bool roundedPenWidthIsOdd(const QPen &pen);
 
