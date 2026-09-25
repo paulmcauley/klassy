@@ -74,8 +74,7 @@ void AppMenuIconButton::drawContent(QPainter *painter, QPointF offsetDecorationT
     pen.setCosmetic(true);
     painter->setPen(pen);
 
-    bool renderSystemIcon =
-        m_d->internalSettings()->buttonIconStyle() == InternalSettings::EnumButtonIconStyle::StyleSystemIconTheme && isSystemIconAvailable();
+    bool renderSystemIcon = m_d->internalSettings()->buttonIconStyle() == InternalSettings::EnumButtonIconStyle::SystemIconTheme && isSystemIconAvailable();
 
     painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
     if (renderSystemIcon) {
@@ -98,7 +97,7 @@ void AppMenuIconButton::drawContent(QPainter *painter, QPointF offsetDecorationT
         // at loDPI backgrounds are even, therefore need an even icon in such circumstances for correct centring
         bool forceEvenSquares = (m_systemScale <= 1.001
                                  && (m_d->buttonBackgroundType() == ButtonBackgroundType::Small
-                                     || m_d->internalSettings()->iconSize() < InternalSettings::EnumIconSize::IconLargeMedium));
+                                     || m_d->internalSettings()->iconSize() < InternalSettings::EnumIconSize::LargeMedium));
 
         iconRenderer->setForceEvenSquares(forceEvenSquares);
 
@@ -116,7 +115,7 @@ void AppMenuIconButton::reconfigure()
 {
     AppMenuButton::reconfigure();
     // set m_systemIconName and m_systemIconCheckedName if a system icon theme is set
-    if (m_d->internalSettings()->buttonIconStyle() == InternalSettings::EnumButtonIconStyle::StyleSystemIconTheme) {
+    if (m_d->internalSettings()->buttonIconStyle() == InternalSettings::EnumButtonIconStyle::SystemIconTheme) {
         SystemIconTheme::systemIconNames(m_type, m_systemIconName, m_systemIconCheckedName);
     }
 }
@@ -127,16 +126,16 @@ bool AppMenuIconButton::shouldDrawBoldButtonIcons() const
         return false;
 
     switch (m_d->internalSettings()->boldButtonIcons()) {
-    case InternalSettings::EnumBoldButtonIcons::BoldIconsActiveHiDpi:
+    case InternalSettings::EnumBoldButtonIcons::BoldActiveHiDpi:
         return m_systemScale > 1.2 && (m_d->window()->isActive() || isHovered() || isPressed());
-    case InternalSettings::EnumBoldButtonIcons::BoldIconsActive:
+    case InternalSettings::EnumBoldButtonIcons::BoldActive:
         return m_d->window()->isActive() || isHovered() || isPressed();
-    case InternalSettings::EnumBoldButtonIcons::BoldIconsHiDpiOnly:
+    case InternalSettings::EnumBoldButtonIcons::BoldHiDpiOnly:
         // If HiDPI system scaling use bold icons
         return m_systemScale > 1.2;
-    case InternalSettings::EnumBoldButtonIcons::BoldIconsBold:
+    case InternalSettings::EnumBoldButtonIcons::Bold:
         return true;
-    case InternalSettings::EnumBoldButtonIcons::BoldIconsFine:
+    case InternalSettings::EnumBoldButtonIcons::Fine:
     default:
         return false;
     }
