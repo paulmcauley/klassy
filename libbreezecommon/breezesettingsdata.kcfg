@@ -423,7 +423,7 @@
                 <value>Active</value>
             </values>
         </parameter>
-        <default>60</default>
+        <default>72</default>
         <min>0</min>
         <max>100</max>
     </entry>
