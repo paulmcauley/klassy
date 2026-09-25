@@ -50,15 +50,15 @@ namespace Klassy
 CompositeShadowParams ShadowHelper::lookupShadowParams(int shadowSizeEnum)
 {
     switch (shadowSizeEnum) {
-    case InternalSettings::EnumShadowSize::ShadowNone:
+    case InternalSettings::EnumShadowSize::None:
         return s_shadowParams[0];
-    case InternalSettings::EnumShadowSize::ShadowSmall:
+    case InternalSettings::EnumShadowSize::Small:
         return s_shadowParams[1];
-    case InternalSettings::EnumShadowSize::ShadowMedium:
+    case InternalSettings::EnumShadowSize::Medium:
         return s_shadowParams[2];
-    case InternalSettings::EnumShadowSize::ShadowLarge:
+    case InternalSettings::EnumShadowSize::Large:
         return s_shadowParams[3];
-    case InternalSettings::EnumShadowSize::ShadowVeryLarge:
+    case InternalSettings::EnumShadowSize::VeryLarge:
         return s_shadowParams[4];
     default:
         // Fallback to the Large size.

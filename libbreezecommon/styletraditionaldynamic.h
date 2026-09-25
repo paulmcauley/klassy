@@ -13,11 +13,11 @@
 namespace Klassy
 {
 
-class RenderStyleTraditionalDynamic18By18 : public RenderStyleTraditional18By18
+class RenderTraditionalDynamic18By18 : public RenderTraditional18By18
 {
 public:
-    RenderStyleTraditionalDynamic18By18(QPainter *painter)
-        : RenderStyleTraditional18By18(painter) { };
+    RenderTraditionalDynamic18By18(QPainter *painter)
+        : RenderTraditional18By18(painter) { };
 
     void renderMinimizeIcon() override
     {

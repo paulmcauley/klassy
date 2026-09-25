@@ -10,17 +10,17 @@
 namespace Klassy
 {
 
-void RenderStyleMaterialDynamic18By18::renderCloseIcon()
+void RenderMaterialDynamic18By18::renderCloseIcon()
 {
     renderCloseIconAtSquareMaximizeSize();
 }
 
-void RenderStyleMaterialDynamic18By18::renderMaximizeIcon()
+void RenderMaterialDynamic18By18::renderMaximizeIcon()
 {
     renderSquareMaximizeIcon(false, 0);
 }
 
-void RenderStyleMaterialDynamic18By18::renderFloatIcon()
+void RenderMaterialDynamic18By18::renderFloatIcon()
 {
     // first determine the size of the maximize icon so the restore icon can align with it
     auto [maximizeRect, maximizePenWidth] = renderSquareMaximizeIcon(true);
@@ -113,7 +113,7 @@ void RenderStyleMaterialDynamic18By18::renderFloatIcon()
     m_painter->drawPath(arrowPath);
 }
 
-void RenderStyleMaterialDynamic18By18::renderMinimizeIcon()
+void RenderMaterialDynamic18By18::renderMinimizeIcon()
 {
     renderDynamicMinimizeIcon(true);
 }

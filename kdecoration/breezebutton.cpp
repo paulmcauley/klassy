@@ -164,7 +164,7 @@ void Button::paint(QPainter *painter, const QRectF &repaintRegion)
 
     setSystemScale(painter);
     setShouldDrawBoldButtonIcons();
-    m_renderSystemIcon = m_d->internalSettings()->buttonIconStyle() == InternalSettings::EnumButtonIconStyle::StyleSystemIconTheme && isSystemIconAvailable();
+    m_renderSystemIcon = m_d->internalSettings()->buttonIconStyle() == InternalSettings::EnumButtonIconStyle::SystemIconTheme && isSystemIconAvailable();
     setStandardScaledPenWidth();
 
     m_backgroundColor = this->backgroundColor(m_isGtkCsdButton);
@@ -310,7 +310,7 @@ void Button::drawIcon(QPainter *painter) const
         bool forceEvenSquares = (m_isGtkCsdButton || isStandAlone()
                                  || (m_systemScale <= 1.001
                                      && (m_d->buttonBackgroundType() == ButtonBackgroundType::Small
-                                         || m_d->internalSettings()->iconSize() < InternalSettings::EnumIconSize::IconLargeMedium)));
+                                         || m_d->internalSettings()->iconSize() < InternalSettings::EnumIconSize::LargeMedium)));
         iconRenderer->setForceEvenSquares(forceEvenSquares);
         iconRenderer->setLeftButtonGroup(m_d->isRightToLeft() ? !(!m_leftButtonVisible && m_rightButtonVisible) : m_leftButtonVisible && !m_rightButtonVisible);
 
@@ -606,7 +606,7 @@ bool Button::titlebarTextPinnedInversion() const
     bool active = c->isActive();
 
     return type() == KDecoration3::DecorationButtonType::OnAllDesktops
-        && m_d->internalSettings()->buttonIconStyle() == InternalSettings::EnumButtonIconStyle::StyleOxygen
+        && m_d->internalSettings()->buttonIconStyle() == InternalSettings::EnumButtonIconStyle::Oxygen
         && (m_d->internalSettings()->buttonBackgroundOpacity(active) > 50 && m_d->internalSettings()->buttonIconOpacity(active) > 50
             && (((m_d->internalSettings()->buttonBackgroundColors(active) == InternalSettings::EnumButtonBackgroundColors::TitleBarText
                   || m_d->internalSettings()->buttonBackgroundColors(active) == InternalSettings::EnumButtonBackgroundColors::TitleBarTextNegativeClose)
@@ -633,7 +633,7 @@ void Button::reconfigure()
     m_animation->setDuration(m_d->animationsDuration());
 
     // set m_systemIconName and m_systemIconCheckedName if a system icon theme is set
-    if (m_d->internalSettings()->buttonIconStyle() == InternalSettings::EnumButtonIconStyle::StyleSystemIconTheme) {
+    if (m_d->internalSettings()->buttonIconStyle() == InternalSettings::EnumButtonIconStyle::SystemIconTheme) {
         SystemIconTheme::systemIconNames(static_cast<DecorationButtonType>(type()), m_systemIconName, m_systemIconCheckedName);
     }
 }
@@ -700,7 +700,7 @@ void Button::paintFullHeightButtonBackground(QPainter *painter) const
 
     qreal cornerRadius = 0;
 
-    if (m_d->internalSettings()->buttonShape() != InternalSettings::EnumButtonShape::ShapeFullHeightRectangle) {
+    if (m_d->internalSettings()->buttonShape() != InternalSettings::EnumButtonShape::FullHeightRectangle) {
         if (m_d->internalSettings()->buttonCornerRadius() == InternalSettings::EnumButtonCornerRadius::Custom) {
             cornerRadius = m_d->internalSettings()->buttonCustomCornerRadius() * m_d->x11Scale();
         } else {
@@ -729,7 +729,7 @@ void Button::paintFullHeightButtonBackground(QPainter *painter) const
     if (m_outlineColor.isValid()) {
         qreal geometryShrinkOffsetVertical = geometryShrinkOffsetHorizontal;
 
-        if (m_d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullHeightRoundedRectangle) {
+        if (m_d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::FullHeightRoundedRectangle) {
             // shrink the backgroundBoundingRect to make border more visible
             backgroundBoundingRect = QRectF(backgroundBoundingRect.adjusted(geometryShrinkOffsetHorizontal,
                                                                             geometryShrinkOffsetVertical,
@@ -737,7 +737,7 @@ void Button::paintFullHeightButtonBackground(QPainter *painter) const
                                                                             -geometryShrinkOffsetVertical));
             background.addRoundedRect(backgroundBoundingRect, cornerRadius, cornerRadius);
 
-        } else if (m_d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangle) {
+        } else if (m_d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::IntegratedRoundedRectangle) {
             QPainterPath inner;
             qreal halfPenWidth = penWidth / 2;
             // these are the sensible values if there were no bugs in KDecoration
@@ -798,7 +798,7 @@ void Button::paintFullHeightButtonBackground(QPainter *painter) const
             }
 
             outline = outline.subtracted(inner);
-        } else if (m_d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangleGrouped) {
+        } else if (m_d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::IntegratedRoundedRectangleGrouped) {
             if (type() != KDecoration3::DecorationButtonType::Menu) {
                 QPainterPath inner;
                 qreal halfPenWidth = penWidth / 2;
@@ -952,10 +952,10 @@ void Button::paintFullHeightButtonBackground(QPainter *painter) const
 
     } else { // non-shrunk background without outline
         painter->setPen(Qt::NoPen);
-        if (m_d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullHeightRoundedRectangle) {
+        if (m_d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::FullHeightRoundedRectangle) {
             background.addRoundedRect(backgroundBoundingRect, cornerRadius, cornerRadius);
 
-        } else if (m_d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangle) {
+        } else if (m_d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::IntegratedRoundedRectangle) {
             if (m_rightmostRightVisible && !m_d->internalSettings()->titleBarRightMargin()) { // right-most-right
                 background = GeometryTools::roundedPath(backgroundBoundingRect, CornerBottomLeft, cornerRadius);
             } else if (m_leftmostLeftVisible && !m_d->internalSettings()->titleBarLeftMargin()) { // left-most-left
@@ -963,7 +963,7 @@ void Button::paintFullHeightButtonBackground(QPainter *painter) const
             } else {
                 background = GeometryTools::roundedPath(backgroundBoundingRect, CornersBottom, cornerRadius);
             }
-        } else if (m_d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangleGrouped) {
+        } else if (m_d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::IntegratedRoundedRectangleGrouped) {
             if (type() != KDecoration3::DecorationButtonType::Menu) {
                 painter->setPen(Qt::NoPen);
                 bool visibleAfterSpacer = m_visibleAfterMenu || m_visibleAfterSpacer;
@@ -1060,10 +1060,10 @@ void Button::paintSmallSizedButtonBackground(QPainter *painter) const
         painter->setBrush(Qt::NoBrush);
 
     qreal cornerRadiusUnscaled = 0;
-    if (m_d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeSmallRoundedSquare
-        || m_d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullHeightRoundedRectangle // case where standalone
-        || m_d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangle // case where standalone
-        || m_d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangleGrouped) {
+    if (m_d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::SmallRoundedSquare
+        || m_d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::FullHeightRoundedRectangle // case where standalone
+        || m_d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::IntegratedRoundedRectangle // case where standalone
+        || m_d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::IntegratedRoundedRectangleGrouped) {
         if (m_d->internalSettings()->buttonCornerRadius() == InternalSettings::EnumButtonCornerRadius::Custom) {
             cornerRadiusUnscaled = m_d->internalSettings()->buttonCustomCornerRadius();
         } else {
@@ -1071,17 +1071,17 @@ void Button::paintSmallSizedButtonBackground(QPainter *painter) const
         }
     }
 
-    if (cornerRadiusUnscaled < 0.1 && m_d->internalSettings()->buttonShape() != InternalSettings::EnumButtonShape::ShapeSmallCircle) {
+    if (cornerRadiusUnscaled < 0.1 && m_d->internalSettings()->buttonShape() != InternalSettings::EnumButtonShape::SmallCircle) {
         if (m_outlineColor.isValid())
             geometryEnlargeOffset = penWidth / 2;
         painter->drawRect(QRectF(0 - geometryEnlargeOffset,
                                  0 - geometryEnlargeOffset,
                                  backgroundSize + geometryEnlargeOffset * 2,
                                  backgroundSize + geometryEnlargeOffset * 2));
-    } else if (m_d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeSmallRoundedSquare
-               || m_d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullHeightRoundedRectangle // case where standalone
-               || m_d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangle // case where standalone
-               || m_d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangleGrouped // case where standalone
+    } else if (m_d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::SmallRoundedSquare
+               || m_d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::FullHeightRoundedRectangle // case where standalone
+               || m_d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::IntegratedRoundedRectangle // case where standalone
+               || m_d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::IntegratedRoundedRectangleGrouped // case where standalone
     ) {
         qreal cornerRadiusScaled = cornerRadiusUnscaled * m_d->x11Scale();
 
@@ -1135,23 +1135,23 @@ void Button::setShouldDrawBoldButtonIcons()
         switch (m_d->internalSettings()->boldButtonIcons()) {
         default:
             break;
-        case InternalSettings::EnumBoldButtonIcons::BoldIconsActiveHiDpi:
+        case InternalSettings::EnumBoldButtonIcons::BoldActiveHiDpi:
             if (m_systemScale > 1.2 && (c->isActive() || m_isGtkCsdButton || isHovered() || isPressed()))
                 m_boldButtonIcons = true;
             break;
-        case InternalSettings::EnumBoldButtonIcons::BoldIconsActive:
+        case InternalSettings::EnumBoldButtonIcons::BoldActive:
             if (c->isActive() || m_isGtkCsdButton || isHovered() || isPressed())
                 m_boldButtonIcons = true;
             break;
-        case InternalSettings::EnumBoldButtonIcons::BoldIconsHiDpiOnly:
+        case InternalSettings::EnumBoldButtonIcons::BoldHiDpiOnly:
             // If HiDPI system scaling use bold icons
             if (m_systemScale > 1.2)
                 m_boldButtonIcons = true;
             break;
-        case InternalSettings::EnumBoldButtonIcons::BoldIconsBold:
+        case InternalSettings::EnumBoldButtonIcons::Bold:
             m_boldButtonIcons = true;
             break;
-        case InternalSettings::EnumBoldButtonIcons::BoldIconsFine:
+        case InternalSettings::EnumBoldButtonIcons::Fine:
             break;
         }
     }

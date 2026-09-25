@@ -532,7 +532,7 @@ void ConfigWidget::setEnabledAnimationsSpeed()
 
 void ConfigWidget::onIconsChanged()
 {
-    if (m_ui.buttonIconStyle->currentIndex() == InternalSettings::EnumButtonIconStyle::StyleSystemIconTheme) {
+    if (m_ui.buttonIconStyle->currentIndex() == InternalSettings::EnumButtonIconStyle::SystemIconTheme) {
         m_ui.iconSizeStackedWidget->setCurrentIndex(1);
         m_ui.iconOptionsStackedWidget->setCurrentIndex(1);
     } else {
@@ -660,10 +660,10 @@ void ConfigWidget::updateWindowControlPreviewIcons()
     PlasmaTools::taskManagerTypeAndSide(m_taskManagerType, m_taskManagerSide);
 
     for (int i = 0; i < InternalSettings::EnumButtonIconStyle::COUNT; i++) {
-        if (i != static_cast<int>(InternalSettings::EnumButtonIconStyle::StyleSystemIconTheme)) {
+        if (i != static_cast<int>(InternalSettings::EnumButtonIconStyle::SystemIconTheme)) {
             generateWindowControlPreviewIcon(size, static_cast<InternalSettings::EnumButtonIconStyle::type>(i));
         } else {
-            m_ui.buttonIconStyle->setItemIcon(static_cast<int>(InternalSettings::EnumButtonIconStyle::StyleSystemIconTheme),
+            m_ui.buttonIconStyle->setItemIcon(static_cast<int>(InternalSettings::EnumButtonIconStyle::SystemIconTheme),
                                               QIcon::fromTheme(QStringLiteral("preferences-desktop-icons")));
         }
     }
@@ -699,10 +699,10 @@ void ConfigWidget::generateWindowControlPreviewIcon(QSize size, InternalSettings
     iconRenderer->setTaskManagerType(m_taskManagerType);
     iconRenderer->setTaskManagerSide(m_taskManagerSide);
 
-    bool boldIcons = (m_ui.boldButtonIcons->currentIndex() == InternalSettings::EnumBoldButtonIcons::BoldIconsBold
-                      || (m_ui.boldButtonIcons->currentIndex() == InternalSettings::EnumBoldButtonIcons::BoldIconsHiDpiOnly && dpr >= 1.2)
-                      || m_ui.boldButtonIcons->currentIndex() == InternalSettings::EnumBoldButtonIcons::BoldIconsActive)
-        || (m_ui.boldButtonIcons->currentIndex() == InternalSettings::EnumBoldButtonIcons::BoldIconsActiveHiDpi && dpr >= 1.2);
+    bool boldIcons = (m_ui.boldButtonIcons->currentIndex() == InternalSettings::EnumBoldButtonIcons::Bold
+                      || (m_ui.boldButtonIcons->currentIndex() == InternalSettings::EnumBoldButtonIcons::BoldHiDpiOnly && dpr >= 1.2)
+                      || m_ui.boldButtonIcons->currentIndex() == InternalSettings::EnumBoldButtonIcons::BoldActive)
+        || (m_ui.boldButtonIcons->currentIndex() == InternalSettings::EnumBoldButtonIcons::BoldActiveHiDpi && dpr >= 1.2);
     iconRenderer->setBoldButtonIcons(boldIcons);
     iconRenderer->setLeftButtonGroup(m_isRightToLeft);
 

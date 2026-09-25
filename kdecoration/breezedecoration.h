@@ -368,11 +368,11 @@ bool Decoration::windowOutlineNone() const
     auto c = window();
 
     // determine when a window outline does not need to be drawn (even when set to none, sometimes needs to be drawn if there is an animation)
-    return ((m_internalSettings->windowOutlineStyle(true) == InternalSettings::EnumWindowOutlineStyle::WindowOutlineNone
-             && m_internalSettings->windowOutlineStyle(false) == InternalSettings::EnumWindowOutlineStyle::WindowOutlineNone)
+    return ((m_internalSettings->windowOutlineStyle(true) == InternalSettings::EnumWindowOutlineStyle::None
+             && m_internalSettings->windowOutlineStyle(false) == InternalSettings::EnumWindowOutlineStyle::None)
             || (m_animation->state() != QAbstractAnimation::Running
-                && ((c->isActive() && m_internalSettings->windowOutlineStyle(true) == InternalSettings::EnumWindowOutlineStyle::WindowOutlineNone)
-                    || (!c->isActive() && m_internalSettings->windowOutlineStyle(false) == InternalSettings::EnumWindowOutlineStyle::WindowOutlineNone))))
+                && ((c->isActive() && m_internalSettings->windowOutlineStyle(true) == InternalSettings::EnumWindowOutlineStyle::None)
+                    || (!c->isActive() && m_internalSettings->windowOutlineStyle(false) == InternalSettings::EnumWindowOutlineStyle::None))))
         && (!(c->isKeepAbove() && m_internalSettings->colorizeWindowOutlineWithButton()));
 }
 

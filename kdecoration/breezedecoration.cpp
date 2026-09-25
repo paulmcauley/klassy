@@ -103,15 +103,15 @@ const CompositeShadowParams s_shadowParams[] = {
 inline CompositeShadowParams lookupShadowParams(int size)
 {
     switch (size) {
-    case Klassy::InternalSettings::EnumShadowSize::ShadowNone:
+    case Klassy::InternalSettings::EnumShadowSize::None:
         return s_shadowParams[0];
-    case Klassy::InternalSettings::EnumShadowSize::ShadowSmall:
+    case Klassy::InternalSettings::EnumShadowSize::Small:
         return s_shadowParams[1];
-    case Klassy::InternalSettings::EnumShadowSize::ShadowMedium:
+    case Klassy::InternalSettings::EnumShadowSize::Medium:
         return s_shadowParams[2];
-    case Klassy::InternalSettings::EnumShadowSize::ShadowLarge:
+    case Klassy::InternalSettings::EnumShadowSize::Large:
         return s_shadowParams[3];
-    case Klassy::InternalSettings::EnumShadowSize::ShadowVeryLarge:
+    case Klassy::InternalSettings::EnumShadowSize::VeryLarge:
         return s_shadowParams[4];
     default:
         // Fallback to the Large size.
@@ -134,10 +134,10 @@ static std::mutex g_setGlobalLookAndFeelOptionsMutex;
 
 // cached shadow values
 static int g_sDecoCount = 0;
-static int g_shadowSizeEnumActive = InternalSettings::EnumShadowSize::ShadowLarge;
+static int g_shadowSizeEnumActive = InternalSettings::EnumShadowSize::Large;
 static int g_shadowStrengthActive = 255;
 static QColor g_shadowColorActive = Qt::black;
-static int g_shadowSizeEnumInactive = InternalSettings::EnumShadowSize::ShadowLarge;
+static int g_shadowSizeEnumInactive = InternalSettings::EnumShadowSize::Large;
 static int g_shadowStrengthInactive = 128;
 static QColor g_shadowColorInactive = Qt::black;
 static qreal g_cornerRadius = 3;
@@ -348,7 +348,7 @@ bool Decoration::init()
     connect(&g_dBusUpdateNotifier, &DBusUpdateNotifier::decorationSettingsUpdate, this, &Decoration::generateDecorationColorsOnDecorationColorSettingsUpdate);
     connect(&g_dBusUpdateNotifier, &DBusUpdateNotifier::systemColorSchemeUpdate, this, &Decoration::generateDecorationColorsOnSystemColorSettingsUpdate);
     connect(&g_dBusUpdateNotifier, &DBusUpdateNotifier::systemIconsUpdate, this, [this]() {
-        if (m_internalSettings->buttonIconStyle() == InternalSettings::EnumButtonIconStyle::StyleSystemIconTheme) {
+        if (m_internalSettings->buttonIconStyle() == InternalSettings::EnumButtonIconStyle::SystemIconTheme) {
             Q_EMIT reconfigured(); // this will trigger Button::reconfigure
         }
         update(titleBar());
@@ -591,10 +591,10 @@ void Decoration::reconfigureMain(const bool noUpdateShadow)
 
     setScaledCornerRadius();
 
-    if (m_internalSettings->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullHeightRectangle
-        || m_internalSettings->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullHeightRoundedRectangle
-        || m_internalSettings->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangle
-        || m_internalSettings->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangleGrouped)
+    if (m_internalSettings->buttonShape() == InternalSettings::EnumButtonShape::FullHeightRectangle
+        || m_internalSettings->buttonShape() == InternalSettings::EnumButtonShape::FullHeightRoundedRectangle
+        || m_internalSettings->buttonShape() == InternalSettings::EnumButtonShape::IntegratedRoundedRectangle
+        || m_internalSettings->buttonShape() == InternalSettings::EnumButtonShape::IntegratedRoundedRectangleGrouped)
         m_buttonBackgroundType = ButtonBackgroundType::FullHeight;
     else
         m_buttonBackgroundType = ButtonBackgroundType::Small;
@@ -975,9 +975,9 @@ void Decoration::updateButtonsGeometry()
     if (m_buttonBackgroundType == ButtonBackgroundType::FullHeight) {
         bHeightNormal = borderTop();
         bHeightNormal = qMax(bHeightNormal - titleBarSeparatorHeight, 0.0);
-        if (internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangle
-            || internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangleGrouped) {
-            if (internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangleGrouped) {
+        if (internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::IntegratedRoundedRectangle
+            || internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::IntegratedRoundedRectangleGrouped) {
+            if (internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::IntegratedRoundedRectangleGrouped) {
                 bHeightMenuGrouped = bHeightNormal;
             }
             bHeightNormal = qMax(bHeightNormal - scaledIntegratedRoundedRectangleBottomPadding, 0.0);
@@ -987,15 +987,15 @@ void Decoration::updateButtonsGeometry()
             if (!window()->isMaximized()
                 && (((m_internalSettings->showOutlineOnHover(true) || m_internalSettings->showOutlineOnHover(false))
                      && (m_internalSettings->colorizeWindowOutlineWithButton()
-                         || !((m_internalSettings->windowOutlineStyle(true) == InternalSettings::EnumWindowOutlineStyle::WindowOutlineNone
-                               || m_internalSettings->windowOutlineStyle(true) == InternalSettings::EnumWindowOutlineStyle::WindowOutlineShadowColor)
-                              && (m_internalSettings->windowOutlineStyle(false) == InternalSettings::EnumWindowOutlineStyle::WindowOutlineNone
-                                  || m_internalSettings->windowOutlineStyle(false) == InternalSettings::EnumWindowOutlineStyle::WindowOutlineShadowColor))))
+                         || !((m_internalSettings->windowOutlineStyle(true) == InternalSettings::EnumWindowOutlineStyle::None
+                               || m_internalSettings->windowOutlineStyle(true) == InternalSettings::EnumWindowOutlineStyle::ShadowColor)
+                              && (m_internalSettings->windowOutlineStyle(false) == InternalSettings::EnumWindowOutlineStyle::None
+                                  || m_internalSettings->windowOutlineStyle(false) == InternalSettings::EnumWindowOutlineStyle::ShadowColor))))
                     || ((m_internalSettings->showOutlineNormally(true) || m_internalSettings->showOutlineNormally(false))
-                        && !((m_internalSettings->windowOutlineStyle(true) == InternalSettings::EnumWindowOutlineStyle::WindowOutlineNone
-                              || m_internalSettings->windowOutlineStyle(true) == InternalSettings::EnumWindowOutlineStyle::WindowOutlineShadowColor)
-                             && (m_internalSettings->windowOutlineStyle(false) == InternalSettings::EnumWindowOutlineStyle::WindowOutlineNone
-                                 || m_internalSettings->windowOutlineStyle(false) == InternalSettings::EnumWindowOutlineStyle::WindowOutlineShadowColor))))) {
+                        && !((m_internalSettings->windowOutlineStyle(true) == InternalSettings::EnumWindowOutlineStyle::None
+                              || m_internalSettings->windowOutlineStyle(true) == InternalSettings::EnumWindowOutlineStyle::ShadowColor)
+                             && (m_internalSettings->windowOutlineStyle(false) == InternalSettings::EnumWindowOutlineStyle::None
+                                 || m_internalSettings->windowOutlineStyle(false) == InternalSettings::EnumWindowOutlineStyle::ShadowColor))))) {
                 shiftUpWithOutline = PenWidth::Symbol;
                 if (KWindowSystem::isPlatformX11()) {
                     shiftUpWithOutline *= m_systemScaleFactorX11;
@@ -1003,7 +1003,7 @@ void Decoration::updateButtonsGeometry()
             }
             verticalIconOffsetNormal =
                 buttonTopMargin + qreal(captionHeight - m_smallButtonPaddedSize - scaledIntegratedRoundedRectangleBottomPadding - shiftUpWithOutline) / 2;
-            if (internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangleGrouped) {
+            if (internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::IntegratedRoundedRectangleGrouped) {
                 verticalIconOffsetMenuGrouped = buttonTopMargin + qreal(captionHeight - m_smallButtonPaddedSize) / 2;
             }
         } else {
@@ -1059,7 +1059,7 @@ void Decoration::updateButtonsGeometry()
         qreal bHeight = bHeightNormal;
         qreal verticalIconOffset = verticalIconOffsetNormal;
         if (button->type() == KDecoration3::DecorationButtonType::Menu) {
-            if (m_internalSettings->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangleGrouped) {
+            if (m_internalSettings->buttonShape() == InternalSettings::EnumButtonShape::IntegratedRoundedRectangleGrouped) {
                 bHeight = bHeightMenuGrouped;
                 verticalIconOffset = verticalIconOffsetMenuGrouped;
             }
@@ -1172,7 +1172,7 @@ void Decoration::updateButtonsGeometry()
         qreal verticalIconOffset = verticalIconOffsetNormal;
 
         if (button->type() == KDecoration3::DecorationButtonType::Menu) {
-            if (m_internalSettings->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangleGrouped) {
+            if (m_internalSettings->buttonShape() == InternalSettings::EnumButtonShape::IntegratedRoundedRectangleGrouped) {
                 bHeight = bHeightMenuGrouped;
                 verticalIconOffset = verticalIconOffsetMenuGrouped;
             }
@@ -1560,7 +1560,7 @@ void Decoration::calculateIconSizes()
     qreal baseSize = settings()->gridUnit(); // 10 on Wayland
     qreal basePaddingSize = m_smallSpacing; // 2 on Wayland
 
-    if (m_internalSettings->buttonIconStyle() == InternalSettings::EnumButtonIconStyle::StyleSystemIconTheme) {
+    if (m_internalSettings->buttonIconStyle() == InternalSettings::EnumButtonIconStyle::SystemIconTheme) {
         switch (m_internalSettings->systemIconSize()) {
         case InternalSettings::EnumSystemIconSize::SystemIcon8: // 10, 8 on Wayland
             break;
@@ -1597,35 +1597,35 @@ void Decoration::calculateIconSizes()
         }
     } else {
         switch (m_internalSettings->iconSize()) {
-        case InternalSettings::EnumIconSize::IconTiny: // 10, 8 on Wayland
+        case InternalSettings::EnumIconSize::Tiny: // 10, 8 on Wayland
             break;
-        case InternalSettings::EnumIconSize::IconVerySmall: // 14, 12 on Wayland
+        case InternalSettings::EnumIconSize::VerySmall: // 14, 12 on Wayland
             baseSize *= 1.4;
             break;
-        case InternalSettings::EnumIconSize::IconSmall: // 16, 14 on Wayland
+        case InternalSettings::EnumIconSize::Small: // 16, 14 on Wayland
             baseSize *= 1.6;
             break;
-        case InternalSettings::EnumIconSize::IconSmallMedium: // 18, 16 on Wayland
+        case InternalSettings::EnumIconSize::SmallMedium: // 18, 16 on Wayland
             baseSize *= 1.8;
             break;
         default:
-        case InternalSettings::EnumIconSize::IconMedium: // 20, 18 on Wayland
+        case InternalSettings::EnumIconSize::Medium: // 20, 18 on Wayland
             baseSize *= 2;
             break;
-        case InternalSettings::EnumIconSize::IconLargeMedium: // 22, 20 on Wayland
+        case InternalSettings::EnumIconSize::LargeMedium: // 22, 20 on Wayland
             baseSize *= 2.2;
             break;
-        case InternalSettings::EnumIconSize::IconLarge: // 24, 22 on Wayland
+        case InternalSettings::EnumIconSize::Large: // 24, 22 on Wayland
             baseSize *= 2.4;
             break;
-        case InternalSettings::EnumIconSize::IconVeryLarge: // 26, 24 on Wayland
+        case InternalSettings::EnumIconSize::VeryLarge: // 26, 24 on Wayland
             baseSize *= 2.6;
             break;
-        case InternalSettings::EnumIconSize::IconGiant: // 36, 32 on Wayland
+        case InternalSettings::EnumIconSize::Giant: // 36, 32 on Wayland
             baseSize *= 3.6;
             basePaddingSize *= 2;
             break;
-        case InternalSettings::EnumIconSize::IconHumongous: // 52, 48 on Wayland
+        case InternalSettings::EnumIconSize::Humongous: // 52, 48 on Wayland
             baseSize *= 5.2;
             basePaddingSize *= 2;
             break;
@@ -1771,10 +1771,10 @@ std::shared_ptr<KDecoration3::DecorationShadow> Decoration::createShadowObject(Q
     auto c = window();
     bool active = c->isActive();
 
-    if (active && m_internalSettings->shadowSize(true) == InternalSettings::EnumShadowSize::ShadowNone) {
+    if (active && m_internalSettings->shadowSize(true) == InternalSettings::EnumShadowSize::None) {
         return nullptr;
     }
-    if (!active && m_internalSettings->shadowSize(false) == InternalSettings::EnumShadowSize::ShadowNone) {
+    if (!active && m_internalSettings->shadowSize(false) == InternalSettings::EnumShadowSize::None) {
         return nullptr;
     }
 
@@ -1934,7 +1934,7 @@ void Decoration::setWindowOutlineColor()
                 }
             }
         } else if (m_shadowAnimation->state() == QAbstractAnimation::Running) { // get blended colour if animated
-            // deal with animation cases where there is an invalid colour (WindowOutlineNone)
+            // deal with animation cases where there is an invalid colour (EnumWindowOutlineStyle::None)
             if (!(windowOutlineActiveFinal.isValid() && windowOutlineInactiveFinal.isValid())) {
                 if (!windowOutlineInactiveFinal.isValid() && windowOutlineActiveFinal.isValid()) {
                     m_windowOutline = ColorTools::alphaMix(windowOutlineActiveFinal, m_shadowOpacity);
@@ -1973,8 +1973,8 @@ void Decoration::scaledTitleBarTopBottomMargins(qreal scale,
 
     qreal topMargin = m_internalSettings->titleBarTopMargin();
     qreal bottomMargin = m_internalSettings->titleBarBottomMargin();
-    if (m_internalSettings->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangle
-        || m_internalSettings->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangleGrouped) {
+    if (m_internalSettings->buttonShape() == InternalSettings::EnumButtonShape::IntegratedRoundedRectangle
+        || m_internalSettings->buttonShape() == InternalSettings::EnumButtonShape::IntegratedRoundedRectangleGrouped) {
         scaledIntegratedRoundedRectangleBottomPadding =
             KDecoration3::snapToPixelGrid(m_internalSettings->integratedRoundedRectangleBottomPadding() * m_x11Scale, scale);
     } else {

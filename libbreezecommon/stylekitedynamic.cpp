@@ -9,17 +9,17 @@
 
 namespace Klassy
 {
-void RenderStyleKiteDynamic18By18::renderCloseIcon()
+void RenderKiteDynamic18By18::renderCloseIcon()
 {
     renderCloseIconAtSquareMaximizeSize();
 }
 
-void RenderStyleKiteDynamic18By18::renderMaximizeIcon()
+void RenderKiteDynamic18By18::renderMaximizeIcon()
 {
     renderSquareMaximizeIcon(false);
 }
 
-void RenderStyleKiteDynamic18By18::renderFloatIcon()
+void RenderKiteDynamic18By18::renderFloatIcon()
 {
     // first determine the size of the maximize icon so the float icon can align with it vertically
     auto [maximizeRect, maximizePenWidth] = renderSquareMaximizeIcon(true);
@@ -50,7 +50,7 @@ void RenderStyleKiteDynamic18By18::renderFloatIcon()
     }
 }
 
-void RenderStyleKiteDynamic18By18::renderMinimizeIcon()
+void RenderKiteDynamic18By18::renderMinimizeIcon()
 {
     renderDynamicMinimizeIcon(true);
 }

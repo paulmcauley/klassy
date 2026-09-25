@@ -8,7 +8,7 @@
 
 namespace Klassy
 {
-void RenderStyleOxygen18By18::renderCloseIcon()
+void RenderOxygen18By18::renderCloseIcon()
 {
     QPen pen = m_painter->pen();
 
@@ -20,7 +20,7 @@ void RenderStyleOxygen18By18::renderCloseIcon()
     RenderDecorationButtonIcon18By18::renderCloseIcon();
 }
 
-void RenderStyleOxygen18By18::renderMaximizeIcon()
+void RenderOxygen18By18::renderMaximizeIcon()
 {
     QPen pen = m_painter->pen();
 
@@ -32,7 +32,7 @@ void RenderStyleOxygen18By18::renderMaximizeIcon()
     RenderDecorationButtonIcon18By18::renderMaximizeIcon();
 }
 
-void RenderStyleOxygen18By18::renderFloatIcon()
+void RenderOxygen18By18::renderFloatIcon()
 {
     QPen pen = m_painter->pen();
 
@@ -44,7 +44,7 @@ void RenderStyleOxygen18By18::renderFloatIcon()
     RenderDecorationButtonIcon18By18::renderFloatIcon();
 }
 
-void RenderStyleOxygen18By18::renderMinimizeIcon()
+void RenderOxygen18By18::renderMinimizeIcon()
 {
     QPen pen = m_painter->pen();
 
@@ -56,7 +56,7 @@ void RenderStyleOxygen18By18::renderMinimizeIcon()
     RenderDecorationButtonIcon18By18::renderMinimizeIcon();
 }
 
-void RenderStyleOxygen18By18::renderPinnedOnAllDesktopsIcon()
+void RenderOxygen18By18::renderPinnedOnAllDesktopsIcon()
 {
     QPen pen = m_painter->pen();
     QColor color = pen.color();
@@ -75,7 +75,7 @@ void RenderStyleOxygen18By18::renderPinnedOnAllDesktopsIcon()
     m_painter->drawPath(outerRing);
 }
 
-void RenderStyleOxygen18By18::renderPinOnAllDesktopsIcon()
+void RenderOxygen18By18::renderPinOnAllDesktopsIcon()
 {
     QPen pen = m_painter->pen();
     QColor color = pen.color();
@@ -106,7 +106,7 @@ void RenderStyleOxygen18By18::renderPinOnAllDesktopsIcon()
     }
 }
 
-void RenderStyleOxygen18By18::renderKeepBehindIcon()
+void RenderOxygen18By18::renderKeepBehindIcon()
 {
     QPen pen = m_painter->pen();
 
@@ -138,7 +138,7 @@ void RenderStyleOxygen18By18::renderKeepBehindIcon()
     }
 }
 
-void RenderStyleOxygen18By18::renderKeepInFrontIcon()
+void RenderOxygen18By18::renderKeepInFrontIcon()
 {
     QPen pen = m_painter->pen();
 

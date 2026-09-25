@@ -17,39 +17,39 @@
     <!-- button icon style -->
     <entry name="ButtonIconStyle" type="Enum">
       <choices>
-          <choice name="StyleSystemIconTheme" />
-          <choice name="StyleMaterialDynamic" />
-          <choice name="StyleMaterialCentered" />
-          <choice name="StyleMaterial" />
-          <choice name="StyleOxygen" />
-          <choice name="StyleKiteDynamic" />
-          <choice name="StyleKite" />
-          <choice name="StyleTraditionalDynamic" />
-          <choice name="StyleTraditional" />
-          <choice name="StyleMetro" />
-          <choice name="StyleFluent" />
-          <choice name="StyleArk" />
-          <choice name="StyleKisweetDynamic" />
-          <choice name="StyleKisweet" />
+          <choice name="SystemIconTheme" />
+          <choice name="MaterialDynamic" />
+          <choice name="MaterialCentered" />
+          <choice name="Material" />
+          <choice name="Oxygen" />
+          <choice name="KiteDynamic" />
+          <choice name="Kite" />
+          <choice name="TraditionalDynamic" />
+          <choice name="Traditional" />
+          <choice name="Metro" />
+          <choice name="Fluent" />
+          <choice name="Ark" />
+          <choice name="KisweetDynamic" />
+          <choice name="Kisweet" />
       </choices>
-      <default>StyleMaterialDynamic</default>
+      <default>MaterialDynamic</default>
     </entry>
 
     <!-- button size -->
     <entry name="IconSize" type="Enum">
       <choices>
-          <choice name="IconTiny" />
-          <choice name="IconVerySmall" />
-          <choice name="IconSmall" />
-          <choice name="IconSmallMedium" />
-          <choice name="IconMedium" />
-          <choice name="IconLargeMedium" />
-          <choice name="IconLarge" />
-          <choice name="IconVeryLarge" />
-          <choice name="IconGiant" />
-          <choice name="IconHumongous" />
+          <choice name="Tiny" />
+          <choice name="VerySmall" />
+          <choice name="Small" />
+          <choice name="SmallMedium" />
+          <choice name="Medium" />
+          <choice name="LargeMedium" />
+          <choice name="Large" />
+          <choice name="VeryLarge" />
+          <choice name="Giant" />
+          <choice name="Humongous" />
       </choices>
-      <default>IconLargeMedium</default>
+      <default>LargeMedium</default>
     </entry>
 
     <!-- system icon size -->
@@ -77,27 +77,27 @@
     <!-- bold button icons -->
     <entry name="BoldButtonIcons" type="Enum">
       <choices>
-          <choice name="BoldIconsBold" />
-          <choice name="BoldIconsFine" />
-          <choice name="BoldIconsHiDpiOnly" />
-          <choice name="BoldIconsActive" />
-          <choice name="BoldIconsActiveHiDpi" />
+          <choice name="Bold" />
+          <choice name="Fine" />
+          <choice name="BoldHiDpiOnly" />
+          <choice name="BoldActive" />
+          <choice name="BoldActiveHiDpi" />
       </choices>
-      <default>BoldIconsActiveHiDpi</default>
+      <default>BoldActiveHiDpi</default>
     </entry>
 
     <!-- button background shape -->
     <entry name="ButtonShape" type="Enum">
       <choices>
-          <choice name="ShapeFullHeightRectangle" />
-          <choice name="ShapeFullHeightRoundedRectangle" />
-          <choice name="ShapeIntegratedRoundedRectangle" />
-          <choice name="ShapeIntegratedRoundedRectangleGrouped" />
-          <choice name="ShapeSmallCircle" />
-          <choice name="ShapeSmallSquare" />
-          <choice name="ShapeSmallRoundedSquare" />
+          <choice name="FullHeightRectangle" />
+          <choice name="FullHeightRoundedRectangle" />
+          <choice name="IntegratedRoundedRectangle" />
+          <choice name="IntegratedRoundedRectangleGrouped" />
+          <choice name="SmallCircle" />
+          <choice name="SmallSquare" />
+          <choice name="SmallRoundedSquare" />
       </choices>
-      <default>ShapeIntegratedRoundedRectangle</default>
+      <default>IntegratedRoundedRectangle</default>
     </entry>
 
     <!-- ______________________________TITLEBAR______________________________ -->
@@ -959,16 +959,16 @@
             </values>
         </parameter>
         <choices>
-            <choice name="WindowOutlineNone" />
-            <choice name="WindowOutlineShadowColor" />
-            <choice name="WindowOutlineContrast" />
-            <choice name="WindowOutlineAccentColor" />
-            <choice name="WindowOutlineAccentWithContrast" />
-            <choice name="WindowOutlineCustomColor" />
-            <choice name="WindowOutlineCustomWithContrast" />
+            <choice name="None" />
+            <choice name="ShadowColor" />
+            <choice name="Contrast" />
+            <choice name="AccentColor" />
+            <choice name="AccentWithContrast" />
+            <choice name="CustomColor" />
+            <choice name="CustomWithContrast" />
         </choices>
-        <default param ="Active">WindowOutlineContrast</default>
-        <default param ="Inactive">WindowOutlineContrast</default>
+        <default param ="Active">Contrast</default>
+        <default param ="Inactive">Contrast</default>
     </entry>
 
 
@@ -1095,13 +1095,13 @@
             </values>
         </parameter>
     <choices>
-        <choice name="ShadowNone"/>
-        <choice name="ShadowSmall"/>
-        <choice name="ShadowMedium"/>
-        <choice name="ShadowLarge"/>
-        <choice name="ShadowVeryLarge"/>
+        <choice name="None"/>
+        <choice name="Small"/>
+        <choice name="Medium"/>
+        <choice name="Large"/>
+        <choice name="VeryLarge"/>
     </choices>
-    <default>ShadowLarge</default>
+    <default>Large</default>
     </entry>
 
     <entry name="ShadowColor$(ShadowColorActive)" type = "Color">

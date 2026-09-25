@@ -2130,7 +2130,7 @@ void ButtonColors::setHorizontalHeaderSectionIcon(DecorationButtonType type, QTa
     } else {
         bool renderSystemIcon = false;
         QString iconName;
-        if (m_internalSettings->buttonIconStyle() == InternalSettings::EnumButtonIconStyle::StyleSystemIconTheme) {
+        if (m_internalSettings->buttonIconStyle() == InternalSettings::EnumButtonIconStyle::SystemIconTheme) {
             QString iconNameChecked;
             SystemIconTheme::systemIconNames(type, iconName, iconNameChecked);
             if (!iconName.isEmpty()) {

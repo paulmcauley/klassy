@@ -32,7 +32,7 @@ SystemIconGenerator::SystemIconGenerator(InternalSettingsPtr internalSettings)
 
 void SystemIconGenerator::generate()
 {
-    if (m_internalSettings->buttonIconStyle() == InternalSettings::EnumButtonIconStyle::StyleSystemIconTheme) {
+    if (m_internalSettings->buttonIconStyle() == InternalSettings::EnumButtonIconStyle::SystemIconTheme) {
         return;
     }
 
@@ -179,10 +179,10 @@ void SystemIconGenerator::generateIconThemeDir(const QString themeDirPath,
                 QPen pen((QColor(textColorString)));
 
                 bool boldButtons =
-                    (m_internalSettings->boldButtonIcons() == InternalSettings::EnumBoldButtonIcons::BoldIconsBold
-                     || (m_internalSettings->boldButtonIcons() == InternalSettings::EnumBoldButtonIcons::BoldIconsHiDpiOnly && m_scales.at(i) >= 1.2)
-                     || m_internalSettings->boldButtonIcons() == InternalSettings::EnumBoldButtonIcons::BoldIconsActive
-                     || (m_internalSettings->boldButtonIcons() == InternalSettings::EnumBoldButtonIcons::BoldIconsActiveHiDpi && m_scales.at(i) >= 1.2));
+                    (m_internalSettings->boldButtonIcons() == InternalSettings::EnumBoldButtonIcons::Bold
+                     || (m_internalSettings->boldButtonIcons() == InternalSettings::EnumBoldButtonIcons::BoldHiDpiOnly && m_scales.at(i) >= 1.2)
+                     || m_internalSettings->boldButtonIcons() == InternalSettings::EnumBoldButtonIcons::BoldActive
+                     || (m_internalSettings->boldButtonIcons() == InternalSettings::EnumBoldButtonIcons::BoldActiveHiDpi && m_scales.at(i) >= 1.2));
 
                 bool shrinkCloseIcon = false;
                 // paint the close background to SVG
@@ -192,14 +192,14 @@ void SystemIconGenerator::generateIconThemeDir(const QString themeDirPath,
                     painter->setPen(Qt::NoPen);
                     painter->setBrush(decorationColors.buttonPalette(iconType.type)->active()->backgroundHover);
 
-                    if (m_internalSettings->buttonShape() == InternalSettings::EnumButtonShape::ShapeSmallCircle) {
+                    if (m_internalSettings->buttonShape() == InternalSettings::EnumButtonShape::SmallCircle) {
                         painter->drawEllipse(QRectF(1, 1, 14, 14));
                     } else {
                         qreal cornerRadius = 0;
-                        if (m_internalSettings->buttonShape() == InternalSettings::EnumButtonShape::ShapeSmallRoundedSquare
-                            || m_internalSettings->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullHeightRoundedRectangle
-                            || m_internalSettings->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangle
-                            || m_internalSettings->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangleGrouped) {
+                        if (m_internalSettings->buttonShape() == InternalSettings::EnumButtonShape::SmallRoundedSquare
+                            || m_internalSettings->buttonShape() == InternalSettings::EnumButtonShape::FullHeightRoundedRectangle
+                            || m_internalSettings->buttonShape() == InternalSettings::EnumButtonShape::IntegratedRoundedRectangle
+                            || m_internalSettings->buttonShape() == InternalSettings::EnumButtonShape::IntegratedRoundedRectangleGrouped) {
                             if (m_internalSettings->buttonCornerRadius() == InternalSettings::EnumButtonCornerRadius::Custom) {
                                 cornerRadius = m_internalSettings->buttonCustomCornerRadius();
                             } else {

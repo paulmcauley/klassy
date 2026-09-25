@@ -1627,7 +1627,7 @@ void Helper::renderDecorationButton(QPainter *painter,
             painter->setBrush(Qt::NoBrush);
         }
 
-        if (decorationConfig()->buttonShape() == InternalSettings::EnumButtonShape::ShapeSmallCircle) {
+        if (decorationConfig()->buttonShape() == InternalSettings::EnumButtonShape::SmallCircle) {
             if (outlineColor.isValid()) {
                 painter->drawEllipse(QRectF(1, 1, 16, 16)); // have to shrink outlined circle otherwise it gets clipped
             } else {
@@ -1635,10 +1635,10 @@ void Helper::renderDecorationButton(QPainter *painter,
             }
         } else {
             qreal cornerRadius = 0;
-            if (decorationConfig()->buttonShape() == InternalSettings::EnumButtonShape::ShapeSmallRoundedSquare
-                || decorationConfig()->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullHeightRoundedRectangle
-                || decorationConfig()->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangle
-                || decorationConfig()->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangleGrouped) {
+            if (decorationConfig()->buttonShape() == InternalSettings::EnumButtonShape::SmallRoundedSquare
+                || decorationConfig()->buttonShape() == InternalSettings::EnumButtonShape::FullHeightRoundedRectangle
+                || decorationConfig()->buttonShape() == InternalSettings::EnumButtonShape::IntegratedRoundedRectangle
+                || decorationConfig()->buttonShape() == InternalSettings::EnumButtonShape::IntegratedRoundedRectangleGrouped) {
                 if (decorationConfig()->buttonCornerRadius() == InternalSettings::EnumButtonCornerRadius::Custom) {
                     cornerRadius = decorationConfig()->buttonCustomCornerRadius();
                 } else {
@@ -1668,7 +1668,7 @@ void Helper::renderDecorationButton(QPainter *painter,
         QString systemIconNameChecked;
         QString &systemIconName = buttonChecked ? systemIconNameChecked : systemIconNameUnchecked;
 
-        if (_decorationConfig->buttonIconStyle() == InternalSettings::EnumButtonIconStyle::StyleSystemIconTheme) {
+        if (_decorationConfig->buttonIconStyle() == InternalSettings::EnumButtonIconStyle::SystemIconTheme) {
             SystemIconTheme::systemIconNames(buttonType, systemIconNameUnchecked, systemIconNameChecked);
         }
 

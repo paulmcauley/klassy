@@ -11,22 +11,22 @@
 namespace Klassy
 {
 
-void RenderStyleKisweetDynamic18By18::renderCloseIcon()
+void RenderKisweetDynamic18By18::renderCloseIcon()
 {
     renderCloseIconAtSquareMaximizeSize();
 }
 
-void RenderStyleKisweetDynamic18By18::renderMaximizeIcon()
+void RenderKisweetDynamic18By18::renderMaximizeIcon()
 {
     renderSquareMaximizeIcon(false, 0.025, true);
 }
 
-void RenderStyleKisweetDynamic18By18::renderFloatIcon()
+void RenderKisweetDynamic18By18::renderFloatIcon()
 {
     renderOverlappingWindowsIcon(true);
 }
 
-void RenderStyleKisweetDynamic18By18::renderMinimizeIcon()
+void RenderKisweetDynamic18By18::renderMinimizeIcon()
 {
     if ((m_taskManagerSide == SideLeft || m_taskManagerSide == SideRight) && m_taskManagerType == TaskManagerType::IconsOnlyTaskManager) {
         renderTinySquareMinimizeIcon(true);
@@ -139,7 +139,7 @@ void RenderStyleKisweetDynamic18By18::renderMinimizeIcon()
     m_painter->drawPolygon(arrow);
 }
 
-void RenderStyleKisweetDynamic18By18::renderShadeIcon()
+void RenderKisweetDynamic18By18::renderShadeIcon()
 {
     // first determine the size of the maximize icon so the minimize icon can align with it
     auto [maximizeRect, maximizePenWidth] = renderSquareMaximizeIcon(true);
@@ -187,7 +187,7 @@ void RenderStyleKisweetDynamic18By18::renderShadeIcon()
     m_painter->drawPolygon(arrow);
 }
 
-void RenderStyleKisweetDynamic18By18::renderUnShadeIcon()
+void RenderKisweetDynamic18By18::renderUnShadeIcon()
 {
     // first determine the size of the maximize icon so the minimize icon can align with it
     auto [maximizeRect, maximizePenWidth] = renderSquareMaximizeIcon(true);

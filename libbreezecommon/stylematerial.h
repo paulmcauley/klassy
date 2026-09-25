@@ -13,7 +13,7 @@
 namespace Klassy
 {
 
-class RenderStyleMaterial18By18 : public RenderStyleMaterialDynamic18By18
+class RenderMaterial18By18 : public RenderMaterialDynamic18By18
 {
 public:
     /**
@@ -23,8 +23,8 @@ public:
      * @param fromKstyle Indicates that button is not to be drawn in the title bar, but somewhere else in the UI -- ususally means will be smaller
      * @param boldButtonIcons When in titlebar this will draw bolder button icons if true
      */
-    RenderStyleMaterial18By18(QPainter *painter)
-        : RenderStyleMaterialDynamic18By18(painter) { };
+    RenderMaterial18By18(QPainter *painter)
+        : RenderMaterialDynamic18By18(painter) { };
 
     void renderMinimizeIcon() override
     {

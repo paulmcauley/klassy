@@ -318,7 +318,7 @@ Style::Style()
             &DBusUpdateNotifier::systemIconsUpdate,
             this,
             [this]() { // call this after loadConfiguration() as _helper->decorationConfig() needs to be initialized properly first
-                if (_helper->decorationConfig()->buttonIconStyle() == InternalSettings::EnumButtonIconStyle::StyleSystemIconTheme) {
+                if (_helper->decorationConfig()->buttonIconStyle() == InternalSettings::EnumButtonIconStyle::SystemIconTheme) {
                     loadConfiguration();
                 }
             });
@@ -9008,10 +9008,10 @@ QIcon Style::titleBarButtonIcon(StandardPixmap standardPixmap, const QStyleOptio
     bool rightToLeft = direction == Qt::LayoutDirection::RightToLeft;
 
     auto boldIconConfig = decorationConfig->boldButtonIcons();
-    bool forceFine = boldIconConfig == InternalSettings::EnumBoldButtonIcons::BoldIconsFine
+    bool forceFine = boldIconConfig == InternalSettings::EnumBoldButtonIcons::Fine
         || (qApp->devicePixelRatio() < 1.2
-            && (boldIconConfig == InternalSettings::EnumBoldButtonIcons::BoldIconsActiveHiDpi
-                || boldIconConfig == InternalSettings::EnumBoldButtonIcons::BoldIconsHiDpiOnly));
+            && (boldIconConfig == InternalSettings::EnumBoldButtonIcons::BoldActiveHiDpi
+                || boldIconConfig == InternalSettings::EnumBoldButtonIcons::BoldHiDpiOnly));
 
     for (const IconData &iconData : iconTypes) {
         for (const int &iconSize : iconSizes) {
