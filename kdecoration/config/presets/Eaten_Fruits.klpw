@@ -1,8 +1,7 @@
 [Klassy Window Decoration Preset File]
-version=6.7.4
+version=6.7.4.git
 
 [Windeco Preset Eaten Fruits]
-TitleBarOpacityActive=50
 AdjustBackgroundColorOnPoorContrastActive=true
 AdjustBackgroundColorOnPoorContrastInactive=true
 AnimationsEnabled=true
@@ -62,10 +61,9 @@ DrawTitleBarSeparator=false
 ForceColorizeSystemIcons=true
 FullHeightButtonSpacingLeft=2
 FullHeightButtonSpacingRight=2
-FullHeightButtonWidthMarginLeft=6
-FullHeightButtonWidthMarginRight=18
+FullHeightButtonWidthMarginLeft=7
+FullHeightButtonWidthMarginRight=10
 IconSize=Medium
-TitleBarOpacityInactive=30
 IntegratedRoundedRectangleBottomPadding=2
 KlassyDarkIconThemeInherits=breeze-dark
 KlassyIconThemeInherits=breeze
@@ -145,6 +143,8 @@ SystemIconSize=SystemIcon18
 TitleAlignment=AlignCenterFullWidth
 TitleBarBottomMargin=7
 TitleBarLeftMargin=10
+TitleBarOpacityActive=50
+TitleBarOpacityInactive=30
 TitleBarRightMargin=10
 TitleBarTopMargin=7
 TitleSidePadding=4

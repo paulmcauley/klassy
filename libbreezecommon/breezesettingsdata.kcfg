@@ -202,14 +202,14 @@
 
     <!-- Full-height button width margin left -->
     <entry name="FullHeightButtonWidthMarginLeft" type = "Int">
-       <default>12</default>
+       <default>7</default>
        <min>0</min>
        <max>100</max>
     </entry>
 
     <!-- Full-height button width margin right -->
     <entry name="FullHeightButtonWidthMarginRight" type = "Int">
-       <default>18</default>
+       <default>10</default>
        <min>0</min>
        <max>100</max>
     </entry>

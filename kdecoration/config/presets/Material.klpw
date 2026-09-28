@@ -1,8 +1,7 @@
 [Klassy Window Decoration Preset File]
-version=6.7.4
+version=6.7.4.git
 
 [Windeco Preset Material]
-TitleBarOpacityActive=100
 AdjustBackgroundColorOnPoorContrastActive=true
 AdjustBackgroundColorOnPoorContrastInactive=true
 AnimationsEnabled=true
@@ -62,10 +61,9 @@ DrawTitleBarSeparator=false
 ForceColorizeSystemIcons=true
 FullHeightButtonSpacingLeft=2
 FullHeightButtonSpacingRight=2
-FullHeightButtonWidthMarginLeft=6
-FullHeightButtonWidthMarginRight=16
+FullHeightButtonWidthMarginLeft=7
+FullHeightButtonWidthMarginRight=10
 IconSize=Medium
-TitleBarOpacityInactive=100
 IntegratedRoundedRectangleBottomPadding=2
 KlassyDarkIconThemeInherits=breeze-dark
 KlassyIconThemeInherits=breeze
@@ -145,6 +143,8 @@ SystemIconSize=SystemIcon16
 TitleAlignment=AlignCenterFullWidth
 TitleBarBottomMargin=1.5
 TitleBarLeftMargin=2
+TitleBarOpacityActive=100
+TitleBarOpacityInactive=100
 TitleBarRightMargin=2
 TitleBarTopMargin=1.5
 TitleSidePadding=4

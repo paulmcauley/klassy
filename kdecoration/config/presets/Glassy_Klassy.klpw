@@ -1,5 +1,5 @@
 [Klassy Window Decoration Preset File]
-version=6.7.4
+version=6.7.4.git
 
 [Windeco Preset Glassy Klassy]
 AdjustBackgroundColorOnPoorContrastActive=true
@@ -61,8 +61,8 @@ DrawTitleBarSeparator=true
 ForceColorizeSystemIcons=true
 FullHeightButtonSpacingLeft=2
 FullHeightButtonSpacingRight=3
-FullHeightButtonWidthMarginLeft=12
-FullHeightButtonWidthMarginRight=18
+FullHeightButtonWidthMarginLeft=7
+FullHeightButtonWidthMarginRight=10
 IconSize=LargeMedium
 IntegratedRoundedRectangleBottomPadding=1.5
 KlassyDarkIconThemeInherits=breeze-dark

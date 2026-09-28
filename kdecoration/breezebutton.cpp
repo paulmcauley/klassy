@@ -177,6 +177,8 @@ void Button::paint(QPainter *painter, const QRectF &repaintRegion)
         qreal iconWidth = qRound(qreal(m_smallButtonPaddedSize.width()) * 0.9);
         setIconSize(QSizeF(iconWidth, iconWidth));
         setBackgroundVisibleSize(QSizeF(iconWidth, iconWidth));
+        qreal hIconOffset = (m_smallButtonPaddedSize.width() - iconWidth) / 2;
+        setIconOffset(QPointF(hIconOffset, hIconOffset));
     }
 
     painter->save();
@@ -186,15 +188,12 @@ void Button::paint(QPainter *painter, const QRectF &repaintRegion)
     if (type() == KDecoration3::DecorationButtonType::Menu) {
         // draw a background only with Full-sized background shapes;
         // for standalone/GTK we draw small buttons so can't draw menu
-        if (m_d->buttonBackgroundType() == ButtonBackgroundType::FullHeight && !(isStandAlone() || m_isGtkCsdButton))
+
+        if (m_d->buttonBackgroundType() == ButtonBackgroundType::FullHeight && !(isStandAlone() || m_isGtkCsdButton)) {
             paintFullHeightButtonBackground(painter);
+        }
 
-        // translate from icon offset -- translates to the edge of smallButtonPaddedSize
         painter->translate(m_iconOffset);
-
-        // translate to draw icon in the centre of smallButtonPaddedWidth (smallButtonPaddedWidth has additional padding)
-        qreal iconTranslationOffset = (m_smallButtonPaddedSize.width() - m_iconSize.width()) / 2;
-        painter->translate(iconTranslationOffset, iconTranslationOffset);
 
         const QRectF iconRect(geometry().topLeft(), m_iconSize);
 
@@ -224,11 +223,11 @@ void Button::drawIcon(QPainter *painter) const
     if (!m_d)
         return;
 
-    // for standalone/GTK we draw small buttons so don't do anything
-    if (!(isStandAlone() || m_isGtkCsdButton)) {
-        // draw a background only with Full-sized Rectangle button shape;
-        if (m_d->buttonBackgroundType() == ButtonBackgroundType::FullHeight)
-            paintFullHeightButtonBackground(painter);
+    // for standalone/GTK we draw small buttons
+    if (m_d->buttonBackgroundType() == ButtonBackgroundType::Small || isStandAlone() || m_isGtkCsdButton) {
+        paintSmallSizedButtonBackground(painter);
+    } else {
+        paintFullHeightButtonBackground(painter);
     }
 
     QPointF deviceOffsetDecorationTopLeftToIconTopLeft;
@@ -241,7 +240,7 @@ void Button::drawIcon(QPainter *painter) const
 
     painter->translate(geometry().topLeft());
 
-    // translate from icon offset -- translates to the edge of smallButtonPaddedWidth
+    // translate from icon offset
     painter->translate(m_iconOffset);
     deviceOffsetDecorationTopLeftToIconTopLeft += (m_iconOffset * painter->device()->devicePixelRatioF());
 
@@ -255,19 +254,11 @@ void Button::drawIcon(QPainter *painter) const
         }
     }
 
-    if (m_d->buttonBackgroundType() == ButtonBackgroundType::Small || isStandAlone() || m_isGtkCsdButton)
-        paintSmallSizedButtonBackground(painter);
-
     if (!m_foregroundColor.isValid())
         return;
 
     // render the actual icon
     qreal iconWidth(m_iconSize.width());
-
-    // translate to draw icon in the centre of smallButtonPaddedWidth (smallButtonPaddedWidth has additional padding)
-    qreal iconTranslationOffset = (smallButtonPaddedWidth - iconWidth) / 2;
-    painter->translate(iconTranslationOffset, iconTranslationOffset);
-    deviceOffsetDecorationTopLeftToIconTopLeft += (QPointF(iconTranslationOffset, iconTranslationOffset) * painter->device()->devicePixelRatioF());
 
     // setup painter
     QPen pen(m_foregroundColor);
@@ -1032,8 +1023,12 @@ void Button::paintSmallSizedButtonBackground(QPainter *painter) const
 
     painter->save();
 
-    qreal translationOffset = (m_smallButtonPaddedSize.width() - m_backgroundVisibleSize.width()) / 2;
-    painter->translate(translationOffset, translationOffset);
+    qreal backgroundToIconDifference =
+        (m_smallButtonPaddedSize.width() - m_iconSize.width()) / 2 - (m_smallButtonPaddedSize.width() - m_backgroundVisibleSize.width()) / 2;
+    qreal translationOffsetX = m_iconOffset.x() - backgroundToIconDifference;
+    qreal translationOffsetY = m_iconOffset.y() - backgroundToIconDifference;
+    painter->translate(geometry().topLeft() + QPointF(translationOffsetX, translationOffsetY));
+
     qreal geometryEnlargeOffset = 0;
     qreal backgroundSize = m_backgroundVisibleSize.width();
 

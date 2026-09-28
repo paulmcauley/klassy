@@ -966,7 +966,6 @@ void Decoration::updateButtonsGeometry()
     qreal horizontalIconOffsetLeftFullHeightClose = 0;
     qreal horizontalIconOffsetRightButtons = 0;
     qreal horizontalIconOffsetRightFullHeightClose = 0;
-    qreal buttonTopMargin = scaledTitleBarTopMargin;
     qreal buttonSpacingLeft = 0;
     qreal buttonSpacingRight = 0;
     qreal titleBarSeparatorHeight = this->titleBarSeparatorHeight(scale);
@@ -1002,13 +1001,13 @@ void Decoration::updateButtonsGeometry()
                 }
             }
             verticalIconOffsetNormal =
-                buttonTopMargin + qreal(captionHeight - m_smallButtonPaddedSize - scaledIntegratedRoundedRectangleBottomPadding - shiftUpWithOutline) / 2;
+                scaledTitleBarTopMargin + qreal(captionHeight - m_iconSize - scaledIntegratedRoundedRectangleBottomPadding - shiftUpWithOutline) / 2;
             if (internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::IntegratedRoundedRectangleGrouped) {
-                verticalIconOffsetMenuGrouped = buttonTopMargin + qreal(captionHeight - m_smallButtonPaddedSize) / 2;
+                verticalIconOffsetMenuGrouped = scaledTitleBarTopMargin + qreal(captionHeight - m_iconSize) / 2;
             }
         } else {
             // do not pixel grid snap icon offsets -- the icon gets snapped at the end anyway, and this keeps icons centred
-            verticalIconOffsetNormal = buttonTopMargin + qreal(captionHeight - m_smallButtonPaddedSize) / 2;
+            verticalIconOffsetNormal = scaledTitleBarTopMargin + qreal(captionHeight - m_iconSize) / 2;
         }
 
         buttonSpacingLeft = KDecoration3::snapToPixelGrid(
@@ -1024,16 +1023,18 @@ void Decoration::updateButtonsGeometry()
         bWidthMarginRight = KDecoration3::snapToPixelGrid(
             m_x11Scale * (m_isRightToLeft ? m_internalSettings->fullHeightButtonWidthMarginLeft() : m_internalSettings->fullHeightButtonWidthMarginRight()),
             scale);
-        bWidthLeft = m_smallButtonPaddedSize + bWidthMarginLeft;
-        bWidthRight = m_smallButtonPaddedSize + bWidthMarginRight;
+        bWidthLeft = m_iconSize + bWidthMarginLeft * 2;
+        bWidthRight = m_iconSize + bWidthMarginRight * 2;
 
         // do not pixel grid snap icon offsets -- the icon gets snapped at the end anyway, and this keeps icons centred
-        horizontalIconOffsetLeftButtons = bWidthMarginLeft / 2;
-        horizontalIconOffsetRightButtons = bWidthMarginRight / 2;
+        horizontalIconOffsetLeftButtons = bWidthMarginLeft;
+        horizontalIconOffsetRightButtons = bWidthMarginRight;
     } else {
-        bHeightNormal = captionHeight + (isTopEdge() ? buttonTopMargin : 0);
+        qreal bWidthMargin = (m_smallButtonPaddedSize - m_iconSize) / 2;
+
+        bHeightNormal = captionHeight + (isTopEdge() ? scaledTitleBarTopMargin : 0);
         // do not pixel grid snap icon offsets -- the icon gets snapped at the end anyway, and this keeps icons centred
-        verticalIconOffsetNormal = (isTopEdge() ? buttonTopMargin : 0) + qreal(captionHeight - m_smallButtonPaddedSize);
+        verticalIconOffsetNormal = (isTopEdge() ? scaledTitleBarTopMargin : 0) + captionHeight - m_smallButtonPaddedSize + bWidthMargin;
 
         buttonSpacingLeft =
             KDecoration3::snapToPixelGrid(m_x11Scale * (isRightToLeft() ? m_internalSettings->buttonSpacingRight() : m_internalSettings->buttonSpacingLeft()),
@@ -1044,6 +1045,9 @@ void Decoration::updateButtonsGeometry()
 
         bWidthLeft = m_smallButtonPaddedSize;
         bWidthRight = m_smallButtonPaddedSize;
+
+        horizontalIconOffsetLeftButtons = bWidthMargin;
+        horizontalIconOffsetRightButtons = bWidthMargin;
     }
 
     int firstLeftVisibleIndex = -1;
@@ -1070,8 +1074,8 @@ void Decoration::updateButtonsGeometry()
             if (button->type() == KDecoration3::DecorationButtonType::Close) {
                 qreal bWidthMargin =
                     KDecoration3::snapToPixelGrid(bWidthMarginLeft * m_internalSettings->closeFullHeightButtonWidthMarginRelative() / 100.0f, scale);
-                bWidth = m_smallButtonPaddedSize + bWidthMargin;
-                horizontalIconOffsetLeftFullHeightClose = bWidthMargin / 2;
+                bWidth = m_iconSize + bWidthMargin * 2;
+                horizontalIconOffsetLeftFullHeightClose = bWidthMargin;
             } else {
                 bWidth = bWidthLeft;
             }
@@ -1183,8 +1187,8 @@ void Decoration::updateButtonsGeometry()
             if (button->type() == KDecoration3::DecorationButtonType::Close) {
                 qreal bWidthMargin =
                     KDecoration3::snapToPixelGrid(bWidthMarginRight * m_internalSettings->closeFullHeightButtonWidthMarginRelative() / 100.0f, scale);
-                bWidth = m_smallButtonPaddedSize + bWidthMargin;
-                horizontalIconOffsetRightFullHeightClose = bWidthMargin / 2;
+                bWidth = m_iconSize + bWidthMargin * 2;
+                horizontalIconOffsetRightFullHeightClose = bWidthMargin;
             } else {
                 bWidth = bWidthRight;
             }
@@ -1282,7 +1286,7 @@ void Decoration::updateButtonsGeometry()
         if (m_buttonBackgroundType == ButtonBackgroundType::FullHeight)
             vPadding = 0;
         else
-            vPadding = isTopEdge() ? 0 : buttonTopMargin;
+            vPadding = isTopEdge() ? 0 : scaledTitleBarTopMargin;
         const qreal hPadding = scaledTitleBarLeftMargin;
 
         auto leftEdgeButton = static_cast<Button *>(m_leftButtons->buttons()[leftEdgeButtonIndex]);
@@ -1316,7 +1320,7 @@ void Decoration::updateButtonsGeometry()
         if (m_buttonBackgroundType == ButtonBackgroundType::FullHeight)
             vPadding = 0;
         else
-            vPadding = isTopEdge() ? 0 : buttonTopMargin;
+            vPadding = isTopEdge() ? 0 : scaledTitleBarTopMargin;
         const qreal hPadding = scaledTitleBarRightMargin;
 
         auto rightEdgeButton = static_cast<Button *>(m_rightButtons->buttons()[rightEdgeButtonIndex]);
