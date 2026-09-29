@@ -214,47 +214,12 @@
         <widget class="QComboBox" name="buttonShape">
          <item>
           <property name="text">
-           <string>Full Height Rectangle</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
            <string>Full Height Rounded Rectangle</string>
           </property>
          </item>
          <item>
           <property name="text">
-           <string>Full Height Rounded Rectangle, Grouped</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Integrated Rounded Rectangle</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Integrated Rounded Rectangle, Grouped</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Tab</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Rectangle</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
            <string>Rounded Rectangle</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Rounded Rectangle, Grouped</string>
           </property>
          </item>
         </widget>
