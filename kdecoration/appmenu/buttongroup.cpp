@@ -705,19 +705,13 @@ void AppMenuButtonGroup::updateGeometry()
     const int buttonShape = internalSettings->appMenuBarButtonShape();
     const bool isFullHeight = AppMenuButton::isShapeFullHeight(buttonShape);
     const qreal baseSize = qMax(m_decoration->smallButtonPaddedSize(), captionHeight);
-    const qreal integratedPadding = (buttonShape == InternalSettings::EnumAppMenuBarButtonShape::Tab ? -1 : 1) * scaledIntegratedRoundedRectangleBottomPadding;
-    const qreal verticalIconOffsetNormal = isFullHeight ? scaledTitleBarTopMargin + qreal(captionHeight - baseSize - integratedPadding) / 2
-                                                        : scaledTitleBarTopMargin + qreal(captionHeight - baseSize) / 2;
+    const qreal verticalIconOffsetNormal = scaledTitleBarTopMargin + qreal(captionHeight - baseSize) / 2;
     const qreal topOffset = isFullHeight ? 0 : verticalIconOffsetNormal;
     const qreal contentOffset = isFullHeight ? verticalIconOffsetNormal : 0;
 
     qreal baseButtonHeight;
     if (isFullHeight) {
         baseButtonHeight = qMax(m_decoration->borderTop() - titleBarSeparatorHeight, 0.0);
-        if (buttonShape == InternalSettings::EnumAppMenuBarButtonShape::IntegratedRoundedRectangle
-            || buttonShape == InternalSettings::EnumAppMenuBarButtonShape::IntegratedRoundedRectangleGrouped) {
-            baseButtonHeight = qMax(baseButtonHeight - scaledIntegratedRoundedRectangleBottomPadding, 0.0);
-        }
     } else {
         baseButtonHeight = m_decoration->smallButtonBackgroundSize();
     }

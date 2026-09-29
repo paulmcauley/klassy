@@ -155,12 +155,7 @@ public:
     static inline bool isShapeFullHeight(int shape)
     {
         switch (shape) {
-        case InternalSettings::EnumAppMenuBarButtonShape::FullHeightRectangle:
         case InternalSettings::EnumAppMenuBarButtonShape::FullHeightRoundedRectangle:
-        case InternalSettings::EnumAppMenuBarButtonShape::FullHeightRoundedRectangleGrouped:
-        case InternalSettings::EnumAppMenuBarButtonShape::IntegratedRoundedRectangle:
-        case InternalSettings::EnumAppMenuBarButtonShape::IntegratedRoundedRectangleGrouped:
-        case InternalSettings::EnumAppMenuBarButtonShape::Tab:
             return true;
         default:
             return false;
