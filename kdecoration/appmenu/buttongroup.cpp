@@ -159,7 +159,6 @@ void AppMenuButtonGroup::reconfigure()
         setBehaviour(static_cast<AppMenuBehaviour>(internalSettings->appMenuBarBehaviour()));
     }
     setPosition(static_cast<AppMenuPosition>(internalSettings->appMenuBarPosition()));
-    setUnisonHoveringType(static_cast<AppMenuUnisonHovering>(internalSettings->appMenuBarUnisonHovering()));
 
     if (!internalSettings->appMenuBarSearchEnabled() && m_searchButton) {
         removeButton(m_searchButton);
