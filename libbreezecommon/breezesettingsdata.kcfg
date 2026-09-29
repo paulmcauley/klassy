@@ -993,15 +993,6 @@
         <default>Left</default>
     </entry>
 
-    <entry name="AppMenuBarUnisonHovering" type="Enum">
-        <choices>
-            <choice name="Disabled" />
-            <choice name="Separate" />
-            <choice name="Together" />
-        </choices>
-        <default>Disabled</default>
-    </entry>
-
     <entry name="AppMenuBarReplacesMenuButton" type="Bool">
         <default>true</default>
     </entry>

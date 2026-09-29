@@ -32,7 +32,6 @@ TitleBarAppMenuBar::TitleBarAppMenuBar(KSharedConfig::Ptr config, KSharedConfig:
     // direct connections are used in several places so the slot can detect the immediate m_loading status (not available in a queued connection)
     connect(m_ui->menuBehaviour, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
     connect(m_ui->menuPosition, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
-    connect(m_ui->menuUnisonHovering, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
     connect(m_ui->menuReplacesApplicationMenuButton, SIGNAL(checkStateChanged(Qt::CheckState)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
     connect(m_ui->menuBarDrawBackgroundWindowColored,
             &QAbstractButton::toggled,
@@ -105,7 +104,6 @@ void TitleBarAppMenuBar::loadMain(const bool assignUiValuesOnly)
     // Load configuration data
     m_ui->menuBehaviour->setCurrentIndex(m_internalSettings->appMenuBarBehaviour());
     m_ui->menuPosition->setCurrentIndex(m_internalSettings->appMenuBarPosition());
-    m_ui->menuUnisonHovering->setCurrentIndex(m_internalSettings->appMenuBarUnisonHovering());
     m_ui->menuReplacesApplicationMenuButton->setChecked(m_internalSettings->appMenuBarReplacesMenuButton());
     m_ui->menuBarDrawBackgroundWindowColored->setChecked(m_internalSettings->appMenuBarDrawBackgroundWindowColored());
     m_ui->menuEnableBlurEffect->setChecked(m_internalSettings->appMenuBarEnableBlur());
@@ -152,7 +150,6 @@ void TitleBarAppMenuBar::save(const bool reloadKwinConfig)
 
     m_internalSettings->setAppMenuBarBehaviour(m_ui->menuBehaviour->currentIndex());
     m_internalSettings->setAppMenuBarPosition(m_ui->menuPosition->currentIndex());
-    m_internalSettings->setAppMenuBarUnisonHovering(m_ui->menuUnisonHovering->currentIndex());
     m_internalSettings->setAppMenuBarReplacesMenuButton(m_ui->menuReplacesApplicationMenuButton->isChecked());
     m_internalSettings->setAppMenuBarDrawBackgroundWindowColored(m_ui->menuBarDrawBackgroundWindowColored->isChecked());
     m_internalSettings->setAppMenuBarEnableBlur(m_ui->menuEnableBlurEffect->isChecked());
@@ -244,8 +241,6 @@ void TitleBarAppMenuBar::updateChanged()
     if (m_ui->menuBehaviour->currentIndex() != m_internalSettings->appMenuBarBehaviour())
         modified = true;
     else if (m_ui->menuPosition->currentIndex() != m_internalSettings->appMenuBarPosition())
-        modified = true;
-    else if (m_ui->menuUnisonHovering->currentIndex() != m_internalSettings->appMenuBarUnisonHovering())
         modified = true;
     else if (m_ui->menuReplacesApplicationMenuButton->isChecked() != m_internalSettings->appMenuBarReplacesMenuButton())
         modified = true;

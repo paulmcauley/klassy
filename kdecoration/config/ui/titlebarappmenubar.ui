@@ -97,50 +97,21 @@
          </item>
         </widget>
        </item>
-       <item row="2" column="0">
-        <widget class="QLabel" name="menuUnisonHoveringLabel">
-         <property name="text">
-          <string>Unison Hovering:</string>
-         </property>
-         <property name="buddy">
-          <cstring>menuUnisonHovering</cstring>
-         </property>
-        </widget>
-       </item>
        <item row="2" column="1">
-        <widget class="QComboBox" name="menuUnisonHovering">
-         <item>
-          <property name="text">
-           <string>Disabled</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Separate</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Together</string>
-          </property>
-         </item>
-        </widget>
-       </item>
-       <item row="3" column="1">
         <widget class="QCheckBox" name="menuReplacesApplicationMenuButton">
          <property name="text">
           <string>Replace application menu button</string>
          </property>
         </widget>
        </item>
-       <item row="4" column="1">
+       <item row="3" column="1">
         <widget class="QCheckBox" name="menuBarDrawBackgroundWindowColored">
          <property name="text">
           <string>Draw menubar background in application background colour</string>
          </property>
         </widget>
        </item>
-       <item row="5" column="1">
+       <item row="4" column="1">
         <spacer name="verticalSpacer_5">
          <property name="orientation">
           <enum>Qt::Orientation::Vertical</enum>
@@ -156,14 +127,14 @@
          </property>
         </spacer>
        </item>
-       <item row="6" column="1">
+       <item row="5" column="1">
         <widget class="QCheckBox" name="menuEnableBlurEffect">
          <property name="text">
           <string>Enable blur effect</string>
          </property>
         </widget>
        </item>
-       <item row="7" column="0">
+       <item row="6" column="0">
         <layout class="QHBoxLayout" name="horizontalLayout_4">
          <item>
           <widget class="QLabel" name="menuBlurCornerRadiusIcon">
@@ -184,7 +155,7 @@
          </item>
         </layout>
        </item>
-       <item row="7" column="1">
+       <item row="6" column="1">
         <layout class="QHBoxLayout" name="horizontalLayout_2">
          <item>
           <widget class="QComboBox" name="menuBlurCornerRadius">
@@ -209,7 +180,7 @@
          </item>
         </layout>
        </item>
-       <item row="8" column="1">
+       <item row="7" column="1">
         <spacer name="verticalSpacer_3">
          <property name="orientation">
           <enum>Qt::Orientation::Vertical</enum>
@@ -468,7 +439,6 @@
   <tabstop>tabWidget</tabstop>
   <tabstop>menuBehaviour</tabstop>
   <tabstop>menuPosition</tabstop>
-  <tabstop>menuUnisonHovering</tabstop>
   <tabstop>menuReplacesApplicationMenuButton</tabstop>
   <tabstop>menuBarDrawBackgroundWindowColored</tabstop>
   <tabstop>menuEnableBlurEffect</tabstop>
