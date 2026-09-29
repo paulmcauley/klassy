@@ -138,52 +138,13 @@ void AppMenuButton::paint(QPainter *painter, const QRectF &repaintRegion)
             backgroundRect.adjust(0, -m_verticalContentOffset, 0, 0);
         }
         backgroundRect = KDecoration3::snapToPixelGrid(backgroundRect, painter->device()->devicePixelRatioF());
-        if (buttonShape == InternalSettings::EnumAppMenuBarButtonShape::IntegratedRoundedRectangle
-            || buttonShape == InternalSettings::EnumAppMenuBarButtonShape::IntegratedRoundedRectangleGrouped) {
-            backgroundRect.adjust(geometryShrinkOffset, -geometryShrinkOffset, -geometryShrinkOffset, -geometryShrinkOffset);
-        } else if (buttonShape == InternalSettings::EnumAppMenuBarButtonShape::Tab) {
-            backgroundRect.adjust(geometryShrinkOffset, geometryShrinkOffset, -geometryShrinkOffset, geometryShrinkOffset);
-        } else {
-            backgroundRect.adjust(geometryShrinkOffset, geometryShrinkOffset, -geometryShrinkOffset, -geometryShrinkOffset);
-        }
+        backgroundRect.adjust(geometryShrinkOffset, geometryShrinkOffset, -geometryShrinkOffset, -geometryShrinkOffset);
         backgroundRect = backgroundRect.translated(-geometry().topLeft());
 
-        if (buttonShape == InternalSettings::EnumAppMenuBarButtonShape::Rectangle) {
-            painter->drawRect(backgroundRect);
-        } else {
-            Corners corners = Corners();
-            if (buttonShape == InternalSettings::EnumAppMenuBarButtonShape::RoundedRectangle
-                || buttonShape == InternalSettings::EnumAppMenuBarButtonShape::FullHeightRoundedRectangle) {
-                corners = AllCorners;
-            } else if (buttonShape == InternalSettings::EnumAppMenuBarButtonShape::IntegratedRoundedRectangle) {
-                corners = CornerBottomLeft | CornerBottomRight;
-            } else if (buttonShape == InternalSettings::EnumAppMenuBarButtonShape::RoundedRectangleGrouped
-                       || buttonShape == InternalSettings::EnumAppMenuBarButtonShape::FullHeightRoundedRectangleGrouped) {
-                if (m_leftmostVisible) {
-                    corners |= CornerTopLeft | CornerBottomLeft;
-                }
-                if (m_rightmostVisible) {
-                    corners |= CornerTopRight | CornerBottomRight;
-                }
-            } else if (buttonShape == InternalSettings::EnumAppMenuBarButtonShape::IntegratedRoundedRectangleGrouped) {
-                if (m_leftmostVisible) {
-                    corners |= CornerBottomLeft;
-                }
-                if (m_rightmostVisible) {
-                    corners |= CornerBottomRight;
-                }
-            } else if (buttonShape == InternalSettings::EnumAppMenuBarButtonShape::Tab) {
-                corners |= CornerTopLeft | CornerTopRight;
-            }
-
-            QPainterPath background;
-            if (!corners) {
-                background.addRect(backgroundRect);
-            } else {
-                background = GeometryTools::roundedPath(backgroundRect, corners, m_d->appMenuBarButtonCornerRadius());
-            }
-            painter->drawPath(background);
-        }
+        QPainterPath background;
+        qreal cornerRadius = m_d->appMenuBarButtonCornerRadius();
+        background.addRoundedRect(backgroundRect, cornerRadius, cornerRadius);
+        painter->drawPath(background);
     }
 
     const QPointF offsetDecorationTopLeftToIconTopLeft = geometry().topLeft() + QPointF(0, m_verticalBackgroundOffset - m_verticalContentOffset);
