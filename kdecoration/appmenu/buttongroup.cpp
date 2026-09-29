@@ -172,8 +172,9 @@ void AppMenuButtonGroup::reconfigure()
     m_animation->setDuration(m_decoration->animationsDuration());
 
     for (KDecoration3::DecorationButton *button : this->buttons()) {
-        if (auto appMenuButton = qobject_cast<AppMenuButton *>(button))
+        if (auto appMenuButton = qobject_cast<AppMenuButton *>(button)) {
             appMenuButton->reconfigure();
+        }
     }
 
     updateShowing();
@@ -509,6 +510,9 @@ void AppMenuButtonGroup::updateOverflow(QRectF availableRect)
         for (auto &tb : std::as_const(m_textButtons)) {
             if (tb)
                 tb->setVisible(false);
+        }
+        if (m_overflowButton) {
+            m_overflowButton->setVisible(false);
         }
     } else {
         // First pass: check if all enabled text buttons fit without overflow button.
