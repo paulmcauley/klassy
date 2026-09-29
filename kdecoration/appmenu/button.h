@@ -145,8 +145,6 @@ public:
         m_rightmostVisible = value;
     }
 
-    bool hovered() const;
-
     int buttonIndex() const
     {
         return m_buttonIndex;
