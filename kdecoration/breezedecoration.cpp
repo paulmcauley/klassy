@@ -2231,7 +2231,6 @@ void Decoration::hoverLeaveEvent(QHoverEvent *event)
 
     if (m_appMenuBarButtons) {
         m_appMenuBarButtons->setHovered(false);
-        m_appMenuBarButtons->setUnisonHovered(false);
         m_appMenuBarButtons->updateShowing();
     }
     KDecoration3::Decoration::hoverLeaveEvent(event);
@@ -2264,8 +2263,7 @@ void Decoration::hoverMoveEvent(QHoverEvent *event)
     const bool overAppMenuBarButtons = m_appMenuBarButtons && m_appMenuBarButtons->geometry().contains(event->position());
     if (m_internalSettings->unisonHovering()) {
         const bool groupContains = m_leftButtons->geometry().contains(event->position()) || m_rightButtons->geometry().contains(event->position());
-        const bool appMenuBarContains = overAppMenuBarButtons && m_appMenuBarButtons->unisonHoveringType() == AppMenuUnisonHovering::Together;
-        setButtonUnisonHovered(groupContains || appMenuBarContains);
+        setButtonUnisonHovered(groupContains);
     }
 
     // Update AppMenuBar button showing state based on titlebar hover
@@ -2273,10 +2271,6 @@ void Decoration::hoverMoveEvent(QHoverEvent *event)
         const bool titleBarHovered = titleBar().contains(event->position());
         m_appMenuBarButtons->setHovered(titleBarHovered);
         m_appMenuBarButtons->updateShowing();
-        if (m_appMenuBarButtons->unisonHoveringType() != AppMenuUnisonHovering::Disabled) {
-            const bool togetherHovered = m_buttonUnisonHovered && m_appMenuBarButtons->unisonHoveringType() == AppMenuUnisonHovering::Together;
-            m_appMenuBarButtons->setUnisonHovered(overAppMenuBarButtons || togetherHovered);
-        }
 
         if (overAppMenuBarButtons)
             m_appMenuBarButtons->handleHoverMove(event->position());
