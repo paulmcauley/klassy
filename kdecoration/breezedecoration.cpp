@@ -1794,11 +1794,13 @@ QPair<QRectF, Qt::Alignment> Decoration::captionRect(bool minimumAppMenuBar) con
         bool appMenuBarVisible = false;
         if (m_appMenuBarButtons && !m_appMenuBarButtons->buttons().isEmpty() && m_appMenuBarButtons->takesSpace()) {
             appMenuBarVisible = true;
-            const qreal menuWidth = padding + (minimumAppMenuBar ? m_appMenuBarButtons->minimumWidth() : m_appMenuBarButtons->visibleWidth());
+            const qreal menuWidth = padding
+                + KDecoration3::snapToPixelGrid((minimumAppMenuBar ? m_appMenuBarButtons->minimumWidth() : m_appMenuBarButtons->visibleWidth()) * m_x11Scale,
+                                                scale);
             if (m_appMenuBarButtons->position() == AppMenuPosition::Right) {
-                rightOffset += menuWidth + m_internalSettings->buttonSpacingRight() * scale;
+                rightOffset += menuWidth + KDecoration3::snapToPixelGrid(m_internalSettings->buttonSpacingRight() * m_x11Scale, scale);
             } else {
-                leftOffset += menuWidth + m_internalSettings->buttonSpacingLeft() * scale;
+                leftOffset += menuWidth + KDecoration3::snapToPixelGrid(m_internalSettings->buttonSpacingLeft() * m_x11Scale, scale);
             }
         }
 
