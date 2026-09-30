@@ -1631,7 +1631,8 @@ void Decoration::paintTitleBar(QPainter *painter, const QRectF &repaintRegion)
 
     if (m_appMenuBarButtons) { // paint background of AppMenuBar
         if (shouldPaintAppMenuBarBackgroundWindowColored()) {
-            QColor base = c->isActive() ? m_appMenuBarWindowColoredColors->active()->titleBarBase : m_appMenuBarWindowColoredColors->inactive()->titleBarBase;
+            QColor base, separator;
+            std::tie(base, separator) = appMenuBarBackgroundColors();
 
             painter->setBrush(base);
             painter->setPen(Qt::PenStyle::NoPen);
@@ -1641,9 +1642,8 @@ void Decoration::paintTitleBar(QPainter *painter, const QRectF &repaintRegion)
             QPainterPath visibleAppMenuBarPathBackground = GeometryTools::roundedPath(visibleAppMenuBarRect, CornersTop, m_appMenuBarButtonCornerRadius);
             painter->drawPath(visibleAppMenuBarPathBackground);
 
-            QColor separatorColor = this->titleBarSeparatorColor();
-            if (bool(separatorHeight) && separatorColor.isValid()) {
-                QPen p(separatorColor);
+            if (bool(separatorHeight) && separator.isValid()) {
+                QPen p(separator);
                 p.setWidthF(separatorHeight);
                 p.setCapStyle(Qt::FlatCap);
                 painter->setPen(p);
@@ -2350,7 +2350,27 @@ bool Decoration::appMenuBarBackgroundWindowColoredEnabled()
 
 bool Decoration::shouldPaintAppMenuBarBackgroundWindowColored()
 {
-    return appMenuBarBackgroundWindowColoredEnabled() && !m_toolsAreaWillBeDrawn && m_appMenuBarButtons && m_appMenuBarButtons->visibleWidth() > 1;
+    return appMenuBarBackgroundWindowColoredEnabled() && !m_toolsAreaWillBeDrawn && m_appMenuBarButtons && m_appMenuBarButtons->visibleWidth() > 1
+        && (m_appMenuBarButtons->showing() || m_appMenuBarButtons->behaviour() == AppMenuBehaviour::AlwaysExpandOnHover
+            || m_appMenuBarButtons->animation()->state() == QAbstractAnimation::Running);
+}
+
+std::tuple<QColor, QColor> Decoration::appMenuBarBackgroundColors()
+{
+    auto c = window();
+    QColor base = c->isActive() ? m_appMenuBarWindowColoredColors->active()->titleBarBase : m_appMenuBarWindowColoredColors->inactive()->titleBarBase;
+    QColor separator = this->titleBarSeparatorColor();
+
+    if ((m_appMenuBarButtons->animation()->state() == QAbstractAnimation::Running)) {
+        qreal opacity = m_appMenuBarButtons->opacity();
+        if (base.isValid()) {
+            base = ColorTools::alphaMix(base, opacity);
+        }
+        if (separator.isValid()) {
+            separator = ColorTools::alphaMix(separator, opacity);
+        }
+    }
+    return std::tuple<QColor, QColor>(base, separator);
 }
 
 void Decoration::setAppMenuBarButtonCornerRadius()
