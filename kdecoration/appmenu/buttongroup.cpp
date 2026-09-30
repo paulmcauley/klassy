@@ -29,6 +29,7 @@
 
 // KDecoration
 #include <KDecoration3/DecoratedWindow>
+#include <KDecoration3/ScaleHelpers>
 
 // KF
 #include <KLocalizedString>
@@ -692,8 +693,11 @@ void AppMenuButtonGroup::updateGeometry()
         return;
     const auto internalSettings = m_decoration->internalSettings();
     const qreal scale = m_decoration->window()->scale();
-    const qreal leftOffset = m_decoration->leftButtons()->geometry().right() + internalSettings->buttonSpacingLeft() * scale;
-    const qreal rightOffset = (m_decoration->size().width() - m_decoration->rightButtons()->geometry().left()) + internalSettings->buttonSpacingRight() * scale;
+    const qreal x11Scale = m_decoration->x11Scale();
+    const qreal leftOffset =
+        m_decoration->leftButtons()->geometry().right() + KDecoration3::snapToPixelGrid(internalSettings->buttonSpacingLeft() * x11Scale, scale);
+    const qreal rightOffset = (m_decoration->size().width() - m_decoration->rightButtons()->geometry().left())
+        + KDecoration3::snapToPixelGrid(internalSettings->buttonSpacingRight() * x11Scale, scale);
 
     const qreal titleBarSeparatorHeight = m_decoration->titleBarSeparatorHeight(scale);
     qreal scaledTitleBarTopMargin, scaledTitleBarBottomMargin, scaledIntegratedRoundedRectangleBottomPadding;
