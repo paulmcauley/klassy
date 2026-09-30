@@ -100,7 +100,6 @@ void AppMenuButton::paint(QPainter *painter, const QRectF &repaintRegion)
 
     painter->save();
     QRectF backgroundBoundingRect = (QRectF(geometry().topLeft() + QPointF(0, m_verticalBackgroundOffset), m_backgroundVisibleSize));
-    backgroundBoundingRect = KDecoration3::snapToPixelGrid(backgroundBoundingRect, painter->device()->devicePixelRatioF());
     painter->setClipRect(backgroundBoundingRect);
     painter->setRenderHints(QPainter::Antialiasing);
     painter->setOpacity(m_opacity * m_expansionOpacity);
@@ -137,7 +136,6 @@ void AppMenuButton::paint(QPainter *painter, const QRectF &repaintRegion)
         if (isShapeFullHeight(buttonShape)) {
             backgroundRect.adjust(0, -m_verticalContentOffset, 0, 0);
         }
-        backgroundRect = KDecoration3::snapToPixelGrid(backgroundRect, painter->device()->devicePixelRatioF());
         backgroundRect.adjust(geometryShrinkOffset, geometryShrinkOffset, -geometryShrinkOffset, -geometryShrinkOffset);
         backgroundRect = backgroundRect.translated(-geometry().topLeft());
 
