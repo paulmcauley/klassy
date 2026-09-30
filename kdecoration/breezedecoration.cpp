@@ -181,20 +181,6 @@ Decoration::~Decoration()
     }
 }
 
-void Decoration::setCaptionOpacity(qreal value)
-{
-    if (m_captionOpacity == value) {
-        return;
-    }
-    m_captionOpacity = value;
-    update();
-}
-
-QRectF Decoration::getMaxCaptionSize() const
-{
-    return settings()->fontMetrics().boundingRect(window()->caption());
-}
-
 //________________________________________________________________
 void Decoration::setOpacity(qreal value)
 {
@@ -945,7 +931,7 @@ void Decoration::recalculateBorders()
         top = bottom;
     } else {
         QFontMetrics fm(s->font());
-        top += KDecoration3::snapToPixelGrid(qMax(qreal(fm.height()), m_scaledSmallButtonPaddedSizeNext), scale);
+        top += qCeil(qMax(qreal(fm.height()), m_scaledSmallButtonPaddedSize) * scale) / scale;
 
         // padding below
         top += scaledTitleBarSeparatorHeight(true);
@@ -1794,9 +1780,8 @@ QPair<QRectF, Qt::Alignment> Decoration::captionRect(bool minimumAppMenuBar) con
         bool appMenuBarVisible = false;
         if (m_appMenuBarButtons && !m_appMenuBarButtons->buttons().isEmpty() && m_appMenuBarButtons->takesSpace() && m_appMenuBarButtons->visibleWidth() > 1) {
             appMenuBarVisible = true;
-            const qreal menuWidth = padding
-                + KDecoration3::snapToPixelGrid((minimumAppMenuBar ? m_appMenuBarButtons->minimumWidth() : m_appMenuBarButtons->visibleWidth()) * m_x11Scale,
-                                                scale);
+            const qreal menuWidth =
+                padding + KDecoration3::snapToPixelGrid((minimumAppMenuBar ? m_appMenuBarButtons->minimumWidth() : m_appMenuBarButtons->visibleWidth()), scale);
             if (m_appMenuBarButtons->position() == AppMenuPosition::Right) {
                 rightOffset += menuWidth + KDecoration3::snapToPixelGrid(m_internalSettings->buttonSpacingRight() * m_x11Scale, scale);
             } else {
@@ -2392,6 +2377,24 @@ void Decoration::setAppMenuBarButtonCornerRadius()
     if (m_appMenuBarButtonCornerRadius < 0.1) {
         m_appMenuBarButtonCornerRadius = 0;
     }
+}
+
+void Decoration::setCaptionOpacity(qreal value)
+{
+    if (m_captionOpacity == value) {
+        return;
+    }
+    m_captionOpacity = value;
+    update();
+}
+
+QRectF Decoration::getMaxCaptionSize() const
+{
+    qreal scale = window()->scale();
+    QRectF boundingRect = settings()->fontMetrics().boundingRect(window()->caption());
+    boundingRect.setWidth(qCeil(boundingRect.width() * scale) / scale);
+    boundingRect.setHeight(qCeil(boundingRect.width() * scale) / scale);
+    return boundingRect;
 }
 
 } // namespace
