@@ -1794,7 +1794,7 @@ QPair<QRectF, Qt::Alignment> Decoration::captionRect(bool minimumAppMenuBar) con
         qreal rightOffset = m_rightButtons->buttons().isEmpty() ? padding : size().width() - m_rightButtons->geometry().x() + padding;
 
         bool appMenuBarVisible = false;
-        if (m_appMenuBarButtons && !m_appMenuBarButtons->buttons().isEmpty() && m_appMenuBarButtons->takesSpace()) {
+        if (m_appMenuBarButtons && !m_appMenuBarButtons->buttons().isEmpty() && m_appMenuBarButtons->takesSpace() && m_appMenuBarButtons->visibleWidth() > 1) {
             appMenuBarVisible = true;
             const qreal menuWidth = padding
                 + KDecoration3::snapToPixelGrid((minimumAppMenuBar ? m_appMenuBarButtons->minimumWidth() : m_appMenuBarButtons->visibleWidth()) * m_x11Scale,
@@ -2318,7 +2318,7 @@ bool Decoration::appMenuBarBackgroundWindowColoredEnabled()
 
 bool Decoration::shouldPaintAppMenuBarBackgroundWindowColored()
 {
-    return appMenuBarBackgroundWindowColoredEnabled() && !m_toolsAreaWillBeDrawn && m_appMenuBarButtons && m_appMenuBarButtons->visibleWidth() > 0;
+    return appMenuBarBackgroundWindowColoredEnabled() && !m_toolsAreaWillBeDrawn && m_appMenuBarButtons && m_appMenuBarButtons->visibleWidth() > 1;
 }
 
 void Decoration::setAppMenuBarButtonCornerRadius()
