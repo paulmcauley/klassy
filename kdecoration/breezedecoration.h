@@ -328,6 +328,7 @@ private:
 
     void setGlobalLookAndFeelOptions(QString lookAndFeelPackageName);
 
+    std::tuple<QColor, QColor> appMenuBarBackgroundColors();
     void setAppMenuBarButtonCornerRadius();
 
     static KSharedConfig::Ptr s_kdeGlobalConfig;
