@@ -107,9 +107,7 @@ AppMenuButtonGroup::AppMenuButtonGroup(Decoration *decoration)
 
     // Hover animation for AppMenuBar buttons
     connect(this, &AppMenuButtonGroup::hoveredChanged, this, [this](bool hovered) {
-        if (!m_decoration->internalSettings()->unisonHovering()) {
-            updateHoverAnimationState(hovered);
-        }
+        updateHoverAnimationState(hovered);
     });
 
     m_animationEnabled = decoration->internalSettings()->animationsEnabled();
