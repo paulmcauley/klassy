@@ -104,6 +104,11 @@ public:
     Q_PROPERTY(bool showing READ showing WRITE setShowing NOTIFY showingChanged)
     Q_PROPERTY(AppMenuBehaviour behaviour READ behaviour WRITE setBehaviour NOTIFY behaviourChanged)
 
+    QVariantAnimation *animation() const
+    {
+        return m_animation;
+    }
+
     int animationDuration() const
     {
         return m_animation->duration();
@@ -212,12 +217,15 @@ public:
         return m_minimumWidth;
     }
 
-public:
     void updateAppMenuModel();
     void updateOverflow(QRectF availableRect);
     void updateAdjacencyFlags();
     void updateGeometry();
     void updateShowing();
+    bool showing() const
+    {
+        return m_showing;
+    }
 
     // Drag-from-buttons support
     void startDragMove(const QPoint &pos);
@@ -276,10 +284,6 @@ private:
             return;
         m_showing = value;
         Q_EMIT showingChanged(value);
-    }
-    bool showing() const
-    {
-        return m_showing;
     }
 
     bool isMenuOpen() const;
