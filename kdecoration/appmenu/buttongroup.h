@@ -80,6 +80,10 @@ public:
     {
         return m_behaviour == AppMenuBehaviour::AlwaysExpandOnHover || m_behaviour == AppMenuBehaviour::RevealOnHover;
     }
+    inline bool risesOnHover() const
+    {
+        return m_behaviour == AppMenuBehaviour::ReplaceTitleOnHover || m_behaviour == AppMenuBehaviour::RevealOnHover;
+    }
 
     qreal visibleWidth() const;
 
@@ -255,6 +259,7 @@ signals:
     void animationDurationChanged(int);
     void currentIndexChanged();
     void expansionPercentChanged(qreal);
+    void geometryAnimationChanged(qreal);
     void hoveredChanged(bool);
     void opacityChanged(qreal);
     void positionChanged(AppMenuPosition);

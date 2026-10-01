@@ -755,6 +755,12 @@ void AppMenuButtonGroup::updateGeometry()
     } else {
         setPos(availableRect.topLeft());
     }
+
+    if (risesOnHover() && m_animation->state() == QAbstractAnimation::State::Running) {
+        QPointF originalPos = pos();
+        qreal delta = m_decoration->borderTop() * (1 - m_animation->currentValue().toReal());
+        setPos(QPointF(originalPos.x(), originalPos.y() + delta));
+    }
 }
 
 qreal AppMenuButtonGroup::visibleWidth() const
@@ -1037,6 +1043,10 @@ void AppMenuButtonGroup::onHoverAnimationValueChanged(const QVariant &value)
             setOpacity(value.toReal());
     } else {
         setOpacity(value.toReal());
+    }
+
+    if (expandsOnHover() || risesOnHover()) {
+        Q_EMIT geometryAnimationChanged(value.toReal());
     }
 }
 
