@@ -54,16 +54,16 @@ public:
         return m_action.data();
     }
 
-    void setHorizontalPadding(qreal value)
+    void setHorizontalMargin(qreal value)
     {
-        if (qFuzzyCompare(m_horizontalPadding, value))
+        if (qFuzzyCompare(m_horizontalMargin, value))
             return;
-        m_horizontalPadding = value;
+        m_horizontalMargin = value;
         updateGeometry();
     }
-    qreal horizontalPadding() const
+    qreal horizontalMargin() const
     {
-        return m_horizontalPadding;
+        return m_horizontalMargin;
     }
 
     void setText(const QString &value)
@@ -101,7 +101,7 @@ private:
 
     QPointer<QAction> m_action = nullptr;
     QString m_text = QStringLiteral("Menu");
-    qreal m_horizontalPadding = 0;
+    qreal m_horizontalMargin = 0;
     QSizeF m_textSize;
     QFont m_font;
 };

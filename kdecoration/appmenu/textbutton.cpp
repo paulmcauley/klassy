@@ -89,7 +89,7 @@ qreal AppMenuTextButton::getTextWidth(bool showMnemonic) const
 void AppMenuTextButton::updateGeometry()
 {
     const QSizeF textSize = getTextSize();
-    const qreal width = textSize.width() + m_horizontalPadding * 2;
+    const qreal width = textSize.width() + m_horizontalMargin * 2;
     const QSizeF size = QSizeF(width, buttonHeight());
     setGeometry(QRectF(geometry().topLeft(), size));
     setBackgroundVisibleSize(QSizeF(size.width(), buttonHeight() - verticalBackgroundOffset() * 2));
