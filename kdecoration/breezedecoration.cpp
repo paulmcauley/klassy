@@ -2274,7 +2274,7 @@ void Decoration::updateAppMenuBar()
     if (window()->hasApplicationMenu() && m_internalSettings->appMenuBarEnabled() && !m_appMenuBarButtons) {
         m_appMenuBarButtons = new AppMenuButtonGroup(this);
         connect(m_appMenuBarButtons, &AppMenuButtonGroup::menuUpdated, this, &Decoration::updateButtonsGeometry);
-        connect(m_appMenuBarButtons, &AppMenuButtonGroup::expansionPercentChanged, this, &Decoration::updateButtonsGeometryDelayed);
+        connect(m_appMenuBarButtons, &AppMenuButtonGroup::geometryAnimationChanged, this, &Decoration::updateButtonsGeometryDelayed);
         m_appMenuBarButtons->updateAppMenuModel();
     } else if ((!window()->hasApplicationMenu() || !m_internalSettings->appMenuBarEnabled()) && m_appMenuBarButtons) {
         m_appMenuBarButtons->deleteLater();
