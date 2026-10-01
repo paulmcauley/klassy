@@ -44,7 +44,7 @@ TitleBarAppMenuBar::TitleBarAppMenuBar(KSharedConfig::Ptr config, KSharedConfig:
 
     connect(m_ui->buttonShape, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
     connect(m_ui->buttonHorizontalMargin, SIGNAL(valueChanged(qreal)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
-    connect(m_ui->buttonHorizontalPadding, SIGNAL(valueChanged(qreal)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
+    connect(m_ui->buttonHorizontalSpacing, SIGNAL(valueChanged(qreal)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
     connect(m_ui->buttonCornerRadius, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
     connect(m_ui->buttonCustomCornerRadius, SIGNAL(valueChanged(qreal)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
     connect(m_ui->buttonUseSystemMenuFont, SIGNAL(checkStateChanged(Qt::CheckState)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
@@ -112,7 +112,7 @@ void TitleBarAppMenuBar::loadMain(const bool assignUiValuesOnly)
 
     m_ui->buttonShape->setCurrentIndex(m_internalSettings->appMenuBarButtonShape());
     m_ui->buttonHorizontalMargin->setValue(m_internalSettings->appMenuBarButtonHorizontalMargin());
-    m_ui->buttonHorizontalPadding->setValue(m_internalSettings->appMenuBarButtonHorizontalPadding());
+    m_ui->buttonHorizontalSpacing->setValue(m_internalSettings->appMenuBarButtonHorizontalSpacing());
     m_ui->buttonCornerRadius->setCurrentIndex(m_internalSettings->appMenuBarButtonCornerRadius());
     m_ui->buttonCustomCornerRadius->setValue(m_internalSettings->appMenuBarButtonCustomCornerRadius());
     m_ui->buttonUseSystemMenuFont->setChecked(m_internalSettings->appMenuBarButtonUseSystemMenuFont());
@@ -158,7 +158,7 @@ void TitleBarAppMenuBar::save(const bool reloadKwinConfig)
 
     m_internalSettings->setAppMenuBarButtonShape(m_ui->buttonShape->currentIndex());
     m_internalSettings->setAppMenuBarButtonHorizontalMargin(m_ui->buttonHorizontalMargin->value());
-    m_internalSettings->setAppMenuBarButtonHorizontalPadding(m_ui->buttonHorizontalPadding->value());
+    m_internalSettings->setAppMenuBarButtonHorizontalSpacing(m_ui->buttonHorizontalSpacing->value());
     m_internalSettings->setAppMenuBarButtonCornerRadius(m_ui->buttonCornerRadius->currentIndex());
     m_internalSettings->setAppMenuBarButtonCustomCornerRadius(m_ui->buttonCustomCornerRadius->value());
     m_internalSettings->setAppMenuBarButtonUseSystemMenuFont(m_ui->buttonUseSystemMenuFont->isChecked());
@@ -256,7 +256,7 @@ void TitleBarAppMenuBar::updateChanged()
         modified = true;
     else if (m_ui->buttonHorizontalMargin->value() != m_internalSettings->appMenuBarButtonHorizontalMargin())
         modified = true;
-    else if (m_ui->buttonHorizontalPadding->value() != m_internalSettings->appMenuBarButtonHorizontalPadding())
+    else if (m_ui->buttonHorizontalSpacing->value() != m_internalSettings->appMenuBarButtonHorizontalSpacing())
         modified = true;
     else if (m_ui->buttonCornerRadius->currentIndex() != m_internalSettings->appMenuBarButtonCornerRadius())
         modified = true;
