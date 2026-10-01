@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>603</width>
-    <height>418</height>
+    <height>342</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -224,68 +224,45 @@
          </item>
         </widget>
        </item>
-       <item row="1" column="0">
-        <widget class="QLabel" name="buttonHorizontalMarginLabel">
-         <property name="text">
-          <string>Horizontal margin:</string>
-         </property>
-         <property name="buddy">
-          <cstring>buttonHorizontalMargin</cstring>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="1">
-        <widget class="QDoubleSpinBox" name="buttonHorizontalMargin">
-         <property name="singleStep">
-          <double>0.100000000000000</double>
-         </property>
-        </widget>
-       </item>
        <item row="2" column="0">
-        <widget class="QLabel" name="buttonHorizontalPaddingLabel">
+        <widget class="QLabel" name="buttonHorizontalSpacingLabel">
          <property name="text">
-          <string>Horizontal padding:</string>
+          <string>Horizontal spacing:</string>
          </property>
          <property name="buddy">
-          <cstring>buttonHorizontalPadding</cstring>
+          <cstring>buttonHorizontalSpacing</cstring>
          </property>
         </widget>
        </item>
        <item row="2" column="1">
-        <widget class="QDoubleSpinBox" name="buttonHorizontalPadding">
+        <widget class="QDoubleSpinBox" name="buttonHorizontalSpacing">
          <property name="singleStep">
           <double>0.100000000000000</double>
          </property>
         </widget>
        </item>
+       <item row="4" column="0">
+        <layout class="QHBoxLayout" name="horizontalLayout_3">
+         <item>
+          <widget class="QLabel" name="buttonCornerRadiusIcon">
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="buttonCornerRadiusLabel">
+           <property name="text">
+            <string>Corner Radius:</string>
+           </property>
+           <property name="buddy">
+            <cstring>buttonCornerRadius</cstring>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
        <item row="4" column="1">
-        <widget class="QCheckBox" name="buttonUseSystemMenuFont">
-         <property name="text">
-          <string>Use system menu font</string>
-         </property>
-        </widget>
-       </item>
-       <item row="5" column="1">
-        <widget class="QCheckBox" name="buttonAllowDraggingWindow">
-         <property name="text">
-          <string>Allow dragging window</string>
-         </property>
-        </widget>
-       </item>
-       <item row="6" column="1">
-        <spacer name="verticalSpacer">
-         <property name="orientation">
-          <enum>Qt::Orientation::Vertical</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>40</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item row="3" column="1">
         <layout class="QHBoxLayout" name="horizontalLayout">
          <item>
           <widget class="QComboBox" name="buttonCornerRadius">
@@ -315,26 +292,49 @@
          </item>
         </layout>
        </item>
-       <item row="3" column="0">
-        <layout class="QHBoxLayout" name="horizontalLayout_3">
-         <item>
-          <widget class="QLabel" name="buttonCornerRadiusIcon">
-           <property name="text">
-            <string/>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLabel" name="buttonCornerRadiusLabel">
-           <property name="text">
-            <string>Corner Radius:</string>
-           </property>
-           <property name="buddy">
-            <cstring>buttonCornerRadius</cstring>
-           </property>
-          </widget>
-         </item>
-        </layout>
+       <item row="5" column="1">
+        <widget class="QCheckBox" name="buttonUseSystemMenuFont">
+         <property name="text">
+          <string>Use system menu font</string>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="1">
+        <widget class="QCheckBox" name="buttonAllowDraggingWindow">
+         <property name="text">
+          <string>Allow dragging window</string>
+         </property>
+        </widget>
+       </item>
+       <item row="7" column="1">
+        <spacer name="verticalSpacer">
+         <property name="orientation">
+          <enum>Qt::Orientation::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="1" column="1">
+        <widget class="QDoubleSpinBox" name="buttonHorizontalMargin">
+         <property name="singleStep">
+          <double>0.100000000000000</double>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="buttonHorizontalMarginLabel">
+         <property name="text">
+          <string>Horizontal margin:</string>
+         </property>
+         <property name="buddy">
+          <cstring>buttonHorizontalMargin</cstring>
+         </property>
+        </widget>
        </item>
       </layout>
      </widget>
@@ -411,7 +411,7 @@
   <tabstop>menuBlurCustomCornerRadius</tabstop>
   <tabstop>buttonShape</tabstop>
   <tabstop>buttonHorizontalMargin</tabstop>
-  <tabstop>buttonHorizontalPadding</tabstop>
+  <tabstop>buttonHorizontalSpacing</tabstop>
   <tabstop>buttonCornerRadius</tabstop>
   <tabstop>buttonCustomCornerRadius</tabstop>
   <tabstop>buttonUseSystemMenuFont</tabstop>
