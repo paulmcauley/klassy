@@ -92,7 +92,8 @@ void NavigableMenu::showEvent(QShowEvent *event)
         // Restrict the blur to the area inside the menu's rounded corners, otherwise
         // the blur is visible outside of the menu's borders.
         QPainterPath path;
-        path.addRoundedRect(QRectF(rect()), cornerRadius, cornerRadius);
+        qreal shrinkAdjustment = 1; // adjustment to reduce size by 1px to reduce noticability of Wayland kornerbug
+        path.addRoundedRect(QRectF(rect().adjusted(shrinkAdjustment, shrinkAdjustment, -shrinkAdjustment, -shrinkAdjustment)), cornerRadius, cornerRadius);
         KWindowEffects::enableBlurBehind(windowHandle(), true, QRegion(path.toFillPolygon().toPolygon()));
     }
 }
