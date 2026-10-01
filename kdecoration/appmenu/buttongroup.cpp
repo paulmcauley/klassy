@@ -727,7 +727,7 @@ void AppMenuButtonGroup::updateGeometry()
         AppMenuButton *appMenuButton;
         if (auto *textButton = qobject_cast<AppMenuTextButton *>(button)) {
             appMenuButton = textButton;
-            textButton->setHorizontalPadding(internalSettings->appMenuBarButtonHorizontalPadding());
+            textButton->setHorizontalMargin(KDecoration3::snapToPixelGrid(internalSettings->appMenuBarButtonHorizontalMargin() * x11Scale, scale));
         } else if (auto *iconButton = qobject_cast<AppMenuIconButton *>(button)) {
             appMenuButton = iconButton;
             iconButton->setIconOffset(iconOffset);
@@ -740,7 +740,7 @@ void AppMenuButtonGroup::updateGeometry()
         appMenuButton->setButtonHeight(realButtonHeight);
     }
 
-    setSpacing(internalSettings->appMenuBarButtonHorizontalMargin());
+    setSpacing(KDecoration3::snapToPixelGrid(internalSettings->appMenuBarButtonHorizontalSpacing() * x11Scale, scale));
     updateOverflow(availableRect);
 
     const bool isReplaceStyle = m_behaviour == AppMenuBehaviour::ReplaceTitleOnHover;
