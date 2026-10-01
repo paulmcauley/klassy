@@ -578,10 +578,10 @@ void AppMenuButtonGroup::updateOverflow(QRectF availableRect)
                 }
             }
             // Third pass: apply opacity and calculate min width
-            const bool isUnexpanded = qFuzzyCompare(m_expansionPercent, 0);
+            const bool isUnexpanded = qFuzzyCompare(m_expansionFraction, 0);
             qreal remainingMinWidth = availableUnexpandedWidth;
             qreal remainingExpandedWidth =
-                remainingMinWidth + (availableExpandedWidth - availableUnexpandedWidth + searchBtnWidth + overflowBtnWidth) * m_expansionPercent;
+                remainingMinWidth + (availableExpandedWidth - availableUnexpandedWidth + searchBtnWidth + overflowBtnWidth) * m_expansionFraction;
             bool fitsInMin = true;
             bool fitsInCurrentExpansion = true;
             auto forButton = [&](KDecoration3::DecorationButton *const &rawButton) {
@@ -600,12 +600,12 @@ void AppMenuButtonGroup::updateOverflow(QRectF availableRect)
                 }
 
                 if (fitsInCurrentExpansion && fuzzyLessThanOrEqual(w, remainingExpandedWidth)) {
-                    opacity = qMax(opacity, m_expansionPercent);
+                    opacity = qMax(opacity, m_expansionFraction);
                     remainingExpandedWidth -= w;
                     minVisibleWidth += w;
                 } else if (fitsInCurrentExpansion) {
                     if (!isUnexpanded) {
-                        opacity = qMax(opacity, remainingExpandedWidth / w * m_expansionPercent);
+                        opacity = qMax(opacity, remainingExpandedWidth / w * m_expansionFraction);
                     }
                     fitsInCurrentExpansion = false;
                 } else {
@@ -765,7 +765,7 @@ void AppMenuButtonGroup::updateGeometry()
 
 qreal AppMenuButtonGroup::visibleWidth() const
 {
-    return m_minimumWidth + (m_maximumWidth - m_minimumWidth) * m_expansionPercent;
+    return m_minimumWidth + (m_maximumWidth - m_minimumWidth) * m_expansionFraction;
 }
 
 bool AppMenuButtonGroup::menuLoadedOnce() const
@@ -1038,7 +1038,7 @@ void AppMenuButtonGroup::onHitRight()
 void AppMenuButtonGroup::onHoverAnimationValueChanged(const QVariant &value)
 {
     if (expandsOnHover()) {
-        setExpansionPercent(value.toReal());
+        setExpansionFraction(value.toReal());
         if (m_behaviour == AppMenuBehaviour::RevealOnHover)
             setOpacity(value.toReal());
     } else {
