@@ -100,7 +100,7 @@ public:
     Q_PROPERTY(int animationDuration READ animationDuration WRITE setAnimationDuration NOTIFY animationDurationChanged)
     Q_PROPERTY(bool animationEnabled READ animationEnabled WRITE setAnimationEnabled NOTIFY animationEnabledChanged)
     Q_PROPERTY(int currentIndex READ currentIndex WRITE setCurrentIndex NOTIFY currentIndexChanged)
-    Q_PROPERTY(qreal expansionPercent READ expansionPercent WRITE setExpansionPercent NOTIFY expansionPercentChanged)
+    Q_PROPERTY(qreal expansionFraction READ expansionFraction WRITE setExpansionFraction NOTIFY expansionFractionChanged)
     Q_PROPERTY(bool hovered READ hovered WRITE setHovered NOTIFY hoveredChanged)
     Q_PROPERTY(qreal opacity READ opacity WRITE setOpacity NOTIFY opacityChanged)
     Q_PROPERTY(int overflowing READ overflowing WRITE setOverflowing NOTIFY overflowingChanged)
@@ -137,16 +137,16 @@ public:
         Q_EMIT animationEnabledChanged(value);
     }
 
-    qreal expansionPercent() const
+    qreal expansionFraction() const
     {
-        return m_expansionPercent;
+        return m_expansionFraction;
     }
-    void setExpansionPercent(qreal value)
+    void setExpansionFraction(qreal value)
     {
-        if (qFuzzyCompare(m_expansionPercent, value))
+        if (qFuzzyCompare(m_expansionFraction, value))
             return;
-        m_expansionPercent = value;
-        Q_EMIT expansionPercentChanged(value);
+        m_expansionFraction = value;
+        Q_EMIT expansionFractionChanged(value);
     }
 
     void setHovered(bool value)
@@ -258,7 +258,7 @@ signals:
     void animationEnabledChanged(bool);
     void animationDurationChanged(int);
     void currentIndexChanged();
-    void expansionPercentChanged(qreal);
+    void expansionFractionChanged(qreal);
     void geometryAnimationChanged(qreal);
     void hoveredChanged(bool);
     void opacityChanged(qreal);
@@ -318,7 +318,7 @@ private:
     bool m_hovered = false;
     bool m_showing = true;
     bool m_animationEnabled = true;
-    qreal m_expansionPercent = 0;
+    qreal m_expansionFraction = 0;
     AppMenuBehaviour m_behaviour = AppMenuBehaviour::AlwaysExpandOnHover;
     AppMenuPosition m_position = AppMenuPosition::Left;
     QVariantAnimation *m_animation;
