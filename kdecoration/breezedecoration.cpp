@@ -1586,7 +1586,7 @@ void Decoration::paintTitleBar(QPainter *painter, const QRectF &repaintRegion)
     }
     painter->setFont(font);
     QColor fontColor = this->fontColor();
-    fontColor.setAlphaF(this->m_captionOpacity);
+    fontColor = ColorTools::alphaMix(fontColor, m_captionOpacity);
     painter->setPen(fontColor);
     const auto [maxCaptionRectangle, alignment] = captionRect(false);
     const QString caption = painter->fontMetrics().elidedText(c->caption(), Qt::ElideMiddle, maxCaptionRectangle.width());
