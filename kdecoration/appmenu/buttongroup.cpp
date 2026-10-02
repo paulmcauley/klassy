@@ -1048,6 +1048,19 @@ void AppMenuButtonGroup::onHoverAnimationValueChanged(const QVariant &value)
     if (expandsOnHover() || risesOnHover()) {
         Q_EMIT geometryAnimationChanged(value.toReal());
     }
+
+    // when the rise animation occurs, the widget can move under the mouse pointer, rather than the mouse pointer moving over the widget
+    // In this case at the end of the animation the button won't be in a hovered state even if the mouse pointer is over the button
+    // Therefore, create a QHoverEvent manually in this situation
+    if (risesOnHover() && qFuzzyCompare(value.toReal(), 1.0)) {
+        auto *deco = const_cast<Decoration *>(qobject_cast<const Decoration *>(decoration()));
+        QPointF lastDecoMousePos, lastGlobalMousePos;
+        deco->lastMousePositions(&lastDecoMousePos, &lastGlobalMousePos);
+        if (deco && lastDecoMousePos != QPointF() && lastGlobalMousePos != QPointF()) {
+            QHoverEvent hoverEvent(QEvent::HoverMove, lastDecoMousePos, lastGlobalMousePos, lastDecoMousePos);
+            QApplication::sendEvent(deco, &hoverEvent);
+        }
+    }
 }
 
 void AppMenuButtonGroup::onShowingChanged(bool showing)
