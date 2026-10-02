@@ -2367,7 +2367,7 @@ QRectF Decoration::getMaxCaptionSize() const
     qreal scale = window()->scale();
     QRectF boundingRect = settings()->fontMetrics().boundingRect(window()->caption());
     boundingRect.setWidth(qCeil(boundingRect.width() * scale) / scale);
-    boundingRect.setHeight(qCeil(boundingRect.width() * scale) / scale);
+    boundingRect.setHeight(qCeil(boundingRect.height() * scale) / scale);
     return boundingRect;
 }
 
