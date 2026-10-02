@@ -115,7 +115,7 @@ AppMenuButtonGroup::AppMenuButtonGroup(Decoration *decoration)
     m_animation->setDuration(decoration->animationsDuration());
     m_animation->setStartValue(0.0);
     m_animation->setEndValue(1.0);
-    m_animation->setEasingCurve(QEasingCurve::InOutCubic);
+    m_animation->setEasingCurve(QEasingCurve::OutCirc);
     connect(m_animation, &QVariantAnimation::valueChanged, this, &AppMenuButtonGroup::onHoverAnimationValueChanged);
 
     auto decoratedClient = decoration->window();
