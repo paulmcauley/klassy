@@ -486,7 +486,7 @@ bool fuzzyLessThanOrEqual(qreal a, qreal b)
 void AppMenuButtonGroup::updateOverflow(QRectF availableRect)
 {
     const qreal availableExpandedWidth = availableRect.width();
-    const qreal overflowBtnWidth = m_overflowButton ? m_overflowButton->geometry().width() + spacing() : 0;
+    const qreal overflowBtnWidth = m_overflowButton ? m_overflowButton->geometry().width() : 0;
     const qreal searchBtnWidth = m_searchButton ? m_searchButton->geometry().width() + spacing() : 0;
     if (expandsOnHover()) {
         const qreal captionMargins = m_decoration->internalSettings()->titleBarLeftMargin() + m_decoration->internalSettings()->titleBarRightMargin();
@@ -517,9 +517,13 @@ void AppMenuButtonGroup::updateOverflow(QRectF availableRect)
         // We perform this pass without side effects to avoid layout thrashing in Qt.
         qreal totalTextWidth = 0;
         bool allFit = true;
+        auto lastTextButton = m_textButtons.constLast();
         for (auto &tb : std::as_const(m_textButtons)) {
             if (tb->isEnabled()) {
-                totalTextWidth += tb->geometry().width() + spacing();
+                totalTextWidth += tb->geometry().width();
+                if (tb != lastTextButton) {
+                    totalTextWidth += spacing();
+                }
                 if (searchBtnWidth + totalTextWidth > availableUnexpandedWidth) {
                     allFit = false;
                     break;
@@ -557,8 +561,8 @@ void AppMenuButtonGroup::updateOverflow(QRectF availableRect)
                     button->setVisible(false);
                     continue;
                 }
-                const qreal w = button->geometry().width() + spacing();
-                const bool isLastTextButton = button == m_textButtons.constLast();
+                const qreal w = button->geometry().width();
+                const bool isLastTextButton = button == lastTextButton;
                 if (m_overflowButton && button == m_overflowButton) {
                     if (!fitsInExpanded) {
                         m_overflowButton->setVisible(true);
@@ -571,6 +575,10 @@ void AppMenuButtonGroup::updateOverflow(QRectF availableRect)
                 } else if (fitsInExpanded && fuzzyLessThanOrEqual(w + (isLastTextButton ? 0 : overflowBtnWidth), remainingMaxWidth)) {
                     remainingMaxWidth -= w;
                     maxVisibleWidth += w;
+                    if (!isLastTextButton) {
+                        remainingMaxWidth -= spacing();
+                        maxVisibleWidth += spacing();
+                    }
                     button->setVisible(true);
                 } else {
                     button->setVisible(false);
@@ -584,13 +592,26 @@ void AppMenuButtonGroup::updateOverflow(QRectF availableRect)
                 remainingMinWidth + (availableExpandedWidth - availableUnexpandedWidth + searchBtnWidth + overflowBtnWidth) * m_expansionFraction;
             bool fitsInMin = true;
             bool fitsInCurrentExpansion = true;
+            auto buttons = this->buttons();
+            auto firstButton = buttons.constFirst();
+            auto lastButton = buttons.constLast();
             auto forButton = [&](KDecoration3::DecorationButton *const &rawButton) {
                 auto button = qobject_cast<AppMenuButton *>(rawButton);
                 if (!(button && button->isVisible())) {
                     return;
                 }
 
-                const qreal w = button->geometry().width() + spacing();
+                qreal w = button->geometry().width();
+                bool isLastButton;
+                if (m_position == AppMenuPosition::Right) {
+                    isLastButton = rawButton == firstButton;
+                } else {
+                    isLastButton = rawButton == lastButton;
+                }
+                if (!isLastButton) {
+                    w += spacing();
+                }
+
                 qreal opacity = 0;
                 if (fitsInMin && fuzzyLessThanOrEqual(w, remainingMinWidth)) {
                     opacity = 1;
@@ -616,9 +637,9 @@ void AppMenuButtonGroup::updateOverflow(QRectF availableRect)
             };
 
             if (m_position == AppMenuPosition::Right) {
-                std::for_each(buttons().crbegin(), buttons().crend(), forButton);
+                std::for_each(buttons.crbegin(), buttons.crend(), forButton);
             } else {
-                std::for_each(buttons().cbegin(), buttons().cend(), forButton);
+                std::for_each(buttons.cbegin(), buttons.cend(), forButton);
             }
         } else {
             qreal remainingWidth = availableExpandedWidth - searchBtnWidth - overflowBtnWidth;
@@ -630,7 +651,8 @@ void AppMenuButtonGroup::updateOverflow(QRectF availableRect)
                     continue;
                 }
                 if (fits && tb->isEnabled()) {
-                    const qreal w = tb->geometry().width() + spacing();
+                    qreal spacing = (tb == lastTextButton) ? 0 : this->spacing();
+                    const qreal w = tb->geometry().width() + spacing;
                     if (w <= remainingWidth) {
                         tb->setVisible(true);
                         tb->setExpansionOpacity(1);
