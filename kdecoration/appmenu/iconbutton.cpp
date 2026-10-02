@@ -64,9 +64,15 @@ void AppMenuIconButton::drawContent(QPainter *painter, QPointF offsetDecorationT
         return;
     }
 
+    QPointF deviceOffsetDecorationTopLeftToIconTopLeft;
+    QPointF topLeftButtonDevice = painter->deviceTransform().map(geometry().topLeft());
+    QPointF decorationTopLeftDevice = painter->deviceTransform().map(QRectF(m_d->rect()).topLeft());
+    deviceOffsetDecorationTopLeftToIconTopLeft = topLeftButtonDevice - decorationTopLeftDevice;
+
     // Center icon in button
-    painter->translate(this->geometry().topLeft() - offsetDecorationTopLeftToContentTopLeft + iconOffset());
-    QPointF deviceOffsetDecorationTopLeftToIconTopLeft = offsetDecorationTopLeftToContentTopLeft * painter->device()->devicePixelRatioF();
+    QPointF translationToIcon(this->geometry().topLeft() - offsetDecorationTopLeftToContentTopLeft + iconOffset());
+    painter->translate(translationToIcon);
+    deviceOffsetDecorationTopLeftToIconTopLeft += (translationToIcon * painter->device()->devicePixelRatioF());
 
     // Setup pen for icon drawing
     QPen pen(foregroundColor());
