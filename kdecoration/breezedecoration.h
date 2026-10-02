@@ -264,6 +264,11 @@ public:
 
     bool appMenuBarBackgroundWindowColoredEnabled();
     bool shouldPaintAppMenuBarBackgroundWindowColored();
+    void lastMousePositions(QPointF *localPos, QPointF *globalPos)
+    {
+        *localPos = m_lastMouseLocalPosition;
+        *globalPos = m_lastMouseGlobalPosition;
+    }
 
 Q_SIGNALS:
     void reconfigured();
@@ -458,6 +463,9 @@ private:
     bool m_animateOutOverriddenWindowOutline = false;
 
     bool m_buttonUnisonHovered = false; // for unison hovering
+
+    QPointF m_lastMouseGlobalPosition;
+    QPointF m_lastMouseLocalPosition;
 };
 
 bool Decoration::hasBorders() const
