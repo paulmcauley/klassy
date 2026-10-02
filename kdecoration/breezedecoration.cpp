@@ -2263,6 +2263,12 @@ void Decoration::hoverMoveEvent(QHoverEvent *event)
             m_appMenuBarButtons->handleHoverMove(event->position());
         if (m_appMenuBarButtons->dragMoveTick(event->position().toPoint()))
             return;
+
+        if (m_appMenuBarButtons->risesOnHover()) {
+            // storing these values used at end of risesonHover animation as can't get cursor position on Wayland
+            m_lastMouseGlobalPosition = event->globalPosition();
+            m_lastMouseLocalPosition = event->position();
+        }
     }
 
     KDecoration3::Decoration::hoverMoveEvent(event);
