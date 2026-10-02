@@ -231,12 +231,12 @@ void Button::drawIcon(QPainter *painter) const
     }
 
     QPointF deviceOffsetDecorationTopLeftToIconTopLeft;
-    QPointF topLeftPaddedButtonDeviceGeometry = painter->deviceTransform().map(geometry().topLeft());
+    QPointF topLeftButtonDevice = painter->deviceTransform().map(geometry().topLeft());
 
     // get top-left geometry relative to the decoration top-left as is is what kwin snaps to a whole pixel since Plasma 5.27
     //(on button hover sometimes the painter gives geometry relative to the button rather than to titlebar, so this is also why this is necessary)
-    QPointF decorationTopLeftDeviceGeometry = painter->deviceTransform().map(QRectF(m_d->rect()).topLeft());
-    deviceOffsetDecorationTopLeftToIconTopLeft = topLeftPaddedButtonDeviceGeometry - decorationTopLeftDeviceGeometry;
+    QPointF decorationTopLeftDevice = painter->deviceTransform().map(QRectF(m_d->rect()).topLeft());
+    deviceOffsetDecorationTopLeftToIconTopLeft = topLeftButtonDevice - decorationTopLeftDevice;
 
     painter->translate(geometry().topLeft());
 
