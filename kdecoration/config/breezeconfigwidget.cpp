@@ -649,7 +649,7 @@ void ConfigWidget::titleBarOpacityButtonClicked()
 
 void ConfigWidget::titleBarAppMenuBarButtonClicked()
 {
-    m_titleBarMenuDialog->setWindowTitle(i18n("App Menubar in Titlebar - Klassy Settings"));
+    m_titleBarMenuDialog->setWindowTitle(i18n("Titlebar Application Menubar - Klassy Settings"));
     m_titleBarMenuDialog->show();
 }
 
