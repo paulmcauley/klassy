@@ -2279,27 +2279,41 @@ void Decoration::mouseReleaseEvent(QMouseEvent *event)
 
 void Decoration::hoverMoveEvent(QHoverEvent *event)
 {
-    const bool overAppMenuBarButtons = m_appMenuBarButtons && m_appMenuBarButtons->geometry().contains(event->position());
+    QPointF position = event->position();
+    const bool overAppMenuBarButtons = m_appMenuBarButtons && m_appMenuBarButtons->geometry().contains(position);
     if (m_internalSettings->unisonHovering()) {
-        const bool groupContains = m_leftButtons->geometry().contains(event->position()) || m_rightButtons->geometry().contains(event->position());
+        const bool groupContains = m_leftButtons->geometry().contains(position) || m_rightButtons->geometry().contains(position);
         setButtonUnisonHovered(groupContains);
     }
 
-    // Update AppMenuBar button showing state based on titlebar hover
+    // Update AppMenuBar button showing state based on title hover
     if (m_appMenuBarButtons) {
-        const bool titleBarHovered = titleBar().contains(event->position());
-        m_appMenuBarButtons->setHovered(titleBarHovered);
+        QRectF titleBar = this->titleBar();
+        QRectF deco = rect();
+
+        QRectF leftNonTitleArea = m_leftButtons->geometry();
+        leftNonTitleArea.setTop(deco.top() - resizeOnlyBorderTop() - 1);
+        leftNonTitleArea.setBottom(deco.bottom() + resizeOnlyBorderBottom() + 1);
+        leftNonTitleArea.setLeft(deco.left() - resizeOnlyBorderLeft() - 1);
+
+        QRectF rightNonTitleArea = m_rightButtons->geometry();
+        rightNonTitleArea.setTop(deco.top() - resizeOnlyBorderTop() - 1);
+        rightNonTitleArea.setBottom(deco.bottom() + resizeOnlyBorderBottom() + 1);
+        rightNonTitleArea.setRight(deco.right() + resizeOnlyBorderRight() + 1);
+
+        const bool titleHovered = titleBar.contains(position) && !leftNonTitleArea.contains(position) && !rightNonTitleArea.contains(position);
+        m_appMenuBarButtons->setHovered(titleHovered);
         m_appMenuBarButtons->updateShowing();
 
         if (overAppMenuBarButtons)
-            m_appMenuBarButtons->handleHoverMove(event->position());
-        if (m_appMenuBarButtons->dragMoveTick(event->position().toPoint()))
+            m_appMenuBarButtons->handleHoverMove(position);
+        if (m_appMenuBarButtons->dragMoveTick(position.toPoint()))
             return;
 
         if (m_appMenuBarButtons->risesOnHover()) {
             // storing these values used at end of risesonHover animation as can't get cursor position on Wayland
             m_lastMouseGlobalPosition = event->globalPosition();
-            m_lastMouseLocalPosition = event->position();
+            m_lastMouseLocalPosition = position;
         }
     }
 
