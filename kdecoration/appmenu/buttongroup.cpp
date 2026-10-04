@@ -782,7 +782,7 @@ void AppMenuButtonGroup::updateGeometry()
         setPos(availableRect.topLeft());
     }
 
-    if (risesOnHover() && m_animation->state() == QAbstractAnimation::State::Running) {
+    if (m_animationEnabled && risesOnHover()) {
         QPointF originalPos = pos();
         qreal delta = m_decoration->borderTop() * (1 - m_animation->currentValue().toReal());
         setPos(QPointF(originalPos.x(), originalPos.y() + delta));
