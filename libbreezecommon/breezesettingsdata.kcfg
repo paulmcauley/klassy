@@ -1051,7 +1051,7 @@
     </entry>
 
     <entry name="AppMenuBarButtonUseSystemMenuFont" type="Bool">
-        <default>false</default>
+        <default>true</default>
     </entry>
 
     <entry name="AppMenuBarButtonCanDragWindow" type="Bool">
