@@ -2352,7 +2352,7 @@ std::tuple<QColor, QColor> Decoration::appMenuBarBackgroundColors()
     QColor base = c->isActive() ? m_appMenuBarWindowColoredColors->active()->titleBarBase : m_appMenuBarWindowColoredColors->inactive()->titleBarBase;
     QColor separator = this->titleBarSeparatorColor();
 
-    if ((m_appMenuBarButtons->animation()->state() == QAbstractAnimation::Running)) {
+    if (m_appMenuBarButtons->animation()->state() == QAbstractAnimation::Running && !m_appMenuBarButtons->risesOnHover()) {
         qreal opacity = m_appMenuBarButtons->opacity();
         if (base.isValid()) {
             base = ColorTools::alphaMix(base, opacity);
