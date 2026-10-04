@@ -82,7 +82,7 @@ public:
     }
     inline bool risesOnHover() const
     {
-        return m_behaviour == AppMenuBehaviour::ReplaceTitleOnHover || m_behaviour == AppMenuBehaviour::RevealOnHover;
+        return m_behaviour == AppMenuBehaviour::ReplaceTitleOnHover;
     }
 
     qreal visibleWidth() const;
