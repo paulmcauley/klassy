@@ -369,6 +369,10 @@ private:
     //* frame corner radius, scaled for x11
     qreal m_scaledCornerRadius = 4.0;
 
+    //* button scaling, scaled for x11, snapped
+    qreal m_scaledButtonSpacingLeft = 0;
+    qreal m_scaledButtonSpacingRight = 0;
+
     qreal m_appMenuBarButtonCornerRadius = 4.0;
 
     //* border sizes, scaled for x11, snapped
