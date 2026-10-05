@@ -55,13 +55,13 @@ Button::Button(KDecoration3::DecorationButtonType type, Decoration *decoration, 
     }
 
     // setup default geometry
-    qreal smallButtonPaddedSize = decoration->smallButtonPaddedSize();
-    int iconSize = decoration->iconSize();
-    qreal smallButtonBackgroundSize = decoration->smallButtonBackgroundSize();
+    qreal smallButtonPaddedSize = decoration->scaledSmallButtonPaddedSize();
+    int iconSize = decoration->scaledIconSize();
+    qreal smallButtonBackgroundSize = decoration->scaledSmallButtonBackgroundSize();
 
     setGeometry(QRectF(0, 0, smallButtonPaddedSize, smallButtonPaddedSize));
-    setSmallButtonPaddedSize(QSize(smallButtonPaddedSize, smallButtonPaddedSize));
-    setIconSize(QSize(iconSize, iconSize));
+    setScaledSmallButtonPaddedSize(QSize(smallButtonPaddedSize, smallButtonPaddedSize));
+    setScaledIconSize(QSize(iconSize, iconSize));
     setBackgroundVisibleSize((QSizeF(smallButtonBackgroundSize, smallButtonBackgroundSize)));
 
     // connections
@@ -92,7 +92,7 @@ Button::Button(QObject *parent, const QVariantList &args)
     m_standAlone = true;
     //! small button size must return to !valid because it was altered from the default constructor,
     //! in Standalone mode the button is not using the decoration metrics but its geometry
-    m_smallButtonPaddedSize = QSize(-1, -1);
+    m_scaledSmallButtonPaddedSize = QSize(-1, -1);
 }
 
 //__________________________________________________________________
@@ -172,12 +172,12 @@ void Button::paint(QPainter *painter, const QRectF &repaintRegion)
     m_outlineColor = this->outlineColor(m_isGtkCsdButton);
     // (the active-state animation breaks over states in m_isGtkCsdButton generation)
 
-    if (!m_smallButtonPaddedSize.isValid() || isStandAlone()) {
-        m_smallButtonPaddedSize = geometry().size();
-        qreal iconWidth = qRound(qreal(m_smallButtonPaddedSize.width()) * 0.9);
-        setIconSize(QSizeF(iconWidth, iconWidth));
+    if (!m_scaledSmallButtonPaddedSize.isValid() || isStandAlone()) {
+        m_scaledSmallButtonPaddedSize = geometry().size();
+        qreal iconWidth = qRound(qreal(m_scaledSmallButtonPaddedSize.width()) * 0.9);
+        setScaledIconSize(QSizeF(iconWidth, iconWidth));
         setBackgroundVisibleSize(QSizeF(iconWidth, iconWidth));
-        qreal hIconOffset = (m_smallButtonPaddedSize.width() - iconWidth) / 2;
+        qreal hIconOffset = (m_scaledSmallButtonPaddedSize.width() - iconWidth) / 2;
         setIconOffset(QPointF(hIconOffset, hIconOffset));
     }
 
@@ -195,7 +195,7 @@ void Button::paint(QPainter *painter, const QRectF &repaintRegion)
 
         painter->translate(m_iconOffset);
 
-        const QRectF iconRect(geometry().topLeft(), m_iconSize);
+        const QRectF iconRect(geometry().topLeft(), m_scaledIconSize);
 
         KIconLoader *iconLoader = KIconLoader::global();
         const QPalette originalPalette = iconLoader->customPalette();
@@ -244,7 +244,7 @@ void Button::drawIcon(QPainter *painter) const
     painter->translate(m_iconOffset);
     deviceOffsetDecorationTopLeftToIconTopLeft += (m_iconOffset * painter->device()->devicePixelRatioF());
 
-    const qreal smallButtonPaddedWidth(m_smallButtonPaddedSize.width());
+    const qreal smallButtonPaddedWidth(m_scaledSmallButtonPaddedSize.width());
 
     if (m_isGtkCsdButton) {
         if (smallButtonPaddedWidth > 20) { // outlines appear thin so scale them proportionally
@@ -258,7 +258,7 @@ void Button::drawIcon(QPainter *painter) const
         return;
 
     // render the actual icon
-    qreal iconWidth(m_iconSize.width());
+    qreal iconWidth(m_scaledIconSize.width());
 
     // setup painter
     QPen pen(m_foregroundColor);
@@ -1024,7 +1024,7 @@ void Button::paintSmallSizedButtonBackground(QPainter *painter) const
     painter->save();
 
     qreal backgroundToIconDifference =
-        (m_smallButtonPaddedSize.width() - m_iconSize.width()) / 2 - (m_smallButtonPaddedSize.width() - m_backgroundVisibleSize.width()) / 2;
+        (m_scaledSmallButtonPaddedSize.width() - m_scaledIconSize.width()) / 2 - (m_scaledSmallButtonPaddedSize.width() - m_backgroundVisibleSize.width()) / 2;
     qreal translationOffsetX = m_iconOffset.x() - backgroundToIconDifference;
     qreal translationOffsetY = m_iconOffset.y() - backgroundToIconDifference;
     painter->translate(geometry().topLeft() + QPointF(translationOffsetX, translationOffsetY));

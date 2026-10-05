@@ -67,7 +67,7 @@ public:
     }
 
     //* caption height
-    qreal captionHeight(qreal scaledTitleBarTopMargin, qreal scaledTitleBarBottomMargin, qreal titleBarSeparatorHeight) const;
+    qreal captionHeight() const;
 
     //*@name active state change animation
     //@{
@@ -126,17 +126,17 @@ public:
     {
         return m_buttonBackgroundType;
     }
-    qreal smallButtonPaddedSize()
+    qreal scaledSmallButtonPaddedSize()
     {
-        return m_smallButtonPaddedSize;
+        return m_scaledSmallButtonPaddedSize;
     }
-    qreal iconSize()
+    qreal scaledIconSize()
     {
-        return m_iconSize;
+        return m_scaledIconSize;
     }
-    qreal smallButtonBackgroundSize()
+    qreal scaledSmallButtonBackgroundSize()
     {
-        return m_smallButtonBackgroundSize;
+        return m_scaledSmallButtonBackgroundSize;
     }
     qreal scaledCornerRadius()
     {
@@ -250,11 +250,16 @@ private:
     std::shared_ptr<KDecoration3::DecorationShadow> createShadowObject(QColor shadowColor);
     void updateWindowOutline(bool override = false);
     void setScaledCornerRadius();
-    void setScaledButtonSpacing();
+    void setScaledTitleBarMargins(const bool nextScale);
+
+    //* icon + padding sizes
+    void setScaledIconSizes(const bool nextScale);
+
+    void setScaledButtonDimensions();
 
     //*@name border size
     //@{
-    qreal borderSize(bool bottom, qreal scale) const;
+    void setScaledBorderSizes(const bool nextScale);
     inline bool hasBorders() const;
     inline bool hasNoBorders() const;
     inline bool hasNoSideBorders() const;
@@ -262,17 +267,9 @@ private:
     inline bool windowOutlineNone() const;
     //@}
 
-    void scaledTitleBarTopBottomMargins(qreal scale,
-                                        qreal &scaledTitleBarTopMargin,
-                                        qreal &scaledTitleBarBottomMargin,
-                                        qreal &scaledIntegratedRoundedRectangleBottomPadding) const;
-    void scaledTitleBarSideMargins(qreal scale, qreal &scaledTitleBarLeftMargin, qreal &scaledTitleBarRightMargin) const;
     bool isOpaqueTitleBar();
-    qreal titleBarSeparatorHeight(qreal scale) const;
+    qreal scaledTitleBarSeparatorHeight(const bool nextScale) const;
     qreal devicePixelRatio(QPainter *painter) const;
-
-    //* icon + padding sizes
-    void calculateIconSizes();
 
     //* override thin window outline colour from button colour animation update
     void updateOverrideWindowOutlineFromButtonAnimationState();
@@ -308,12 +305,38 @@ private:
     //* overridden thin window outline change animation progress
     qreal m_overrideOutlineAnimationProgress = 0;
 
-    //* button scaling, scaled for x11, snapped
+    //* frame corner radius, scaled for x11
+    qreal m_scaledCornerRadius = 3.0;
+
+    //* border sizes, scaled for x11, snapped
+    qreal m_scaledBorderLeftRight = 0;
+    qreal m_scaledBorderLeftRightNext = 0;
+    qreal m_scaledBorderBottom = 0;
+    qreal m_scaledBorderBottomNext = 0;
+
+    //* titebar margins, scaled for x11, snapped
+    qreal m_scaledIntegratedRoundedRectangleBottomPadding = 0;
+    qreal m_scaledIntegratedRoundedRectangleBottomPaddingNext = 0;
+    qreal m_scaledTitleBarTopMargin = 0;
+    qreal m_scaledTitleBarTopMarginNext = 0;
+    qreal m_scaledTitleBarBottomMargin = 0;
+    qreal m_scaledTitleBarBottomMarginNext = 0;
+    qreal m_scaledTitleBarLeftMargin = 0;
+    qreal m_scaledTitleBarLeftMarginNext = 0;
+    qreal m_scaledTitleBarRightMargin = 0;
+    qreal m_scaledTitleBarRightMarginNext = 0;
+    qreal m_scaledTitleBarLeftMarginMaximizedHorizontally = 0;
+    qreal m_scaledTitleBarLeftMarginMaximizedHorizontallyNext = 0;
+    qreal m_scaledTitleBarRightMarginMaximizedHorizontally = 0;
+    qreal m_scaledTitleBarRightMarginMaximizedHorizontallyNext = 0;
+    qreal m_scaledTitleBarSeparatorHeight = 0;
+    qreal m_scaledTitleBarSeparatorHeightNext = 0;
+
+    //* button dimensions, scaled for x11, snapped
     qreal m_scaledButtonSpacingLeft = 0;
     qreal m_scaledButtonSpacingRight = 0;
-
-    //* frame corner radius, scaled according to smallspacing
-    qreal m_scaledCornerRadius = 3.0;
+    qreal m_scaledButtonWidthMarginLeft = 0;
+    qreal m_scaledButtonWidthMarginRight = 0;
 
     bool m_darkTheme = false;
 
@@ -331,9 +354,12 @@ private:
     qreal m_gridUnit = 10.0;
 
     ButtonBackgroundType m_buttonBackgroundType = ButtonBackgroundType::Small;
-    qreal m_smallButtonPaddedSize = 20;
-    qreal m_iconSize = 18;
-    qreal m_smallButtonBackgroundSize = 18;
+    qreal m_scaledSmallButtonPaddedSize = 0;
+    qreal m_scaledSmallButtonPaddedSizeNext = 0;
+    qreal m_scaledSmallButtonBackgroundSize = 0;
+    qreal m_scaledSmallButtonBackgroundSizeNext = 0;
+    qreal m_scaledIconSize = 0;
+    qreal m_scaledIconSizeNext = 0;
 
     bool m_colorSchemeHasHeaderColor = true;
     bool m_toolsAreaWillBeDrawn = true;

@@ -145,15 +145,15 @@ public:
     }
 
     //* set small button padded size
-    void setSmallButtonPaddedSize(const QSizeF &value)
+    void setScaledSmallButtonPaddedSize(const QSizeF &value)
     {
-        m_smallButtonPaddedSize = value;
+        m_scaledSmallButtonPaddedSize = value;
     }
 
     //* set icon size
-    void setIconSize(const QSizeF &value)
+    void setScaledIconSize(const QSizeF &value)
     {
-        m_iconSize = value;
+        m_scaledIconSize = value;
     }
 
     //*@name active state change animation
@@ -271,10 +271,10 @@ private:
     QSizeF m_backgroundVisibleSize = QSizeF();
 
     //* small button size (icon + padding)
-    QSizeF m_smallButtonPaddedSize = QSizeF();
+    QSizeF m_scaledSmallButtonPaddedSize = QSizeF();
 
     //* icon size
-    QSizeF m_iconSize = QSizeF();
+    QSizeF m_scaledIconSize = QSizeF();
 
     //* active state change opacity
     qreal m_opacity = 0;
