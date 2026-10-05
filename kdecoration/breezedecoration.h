@@ -68,7 +68,6 @@ public:
 
     //* caption height
     qreal captionHeight() const;
-    qreal captionHeight() const;
     void setCaptionOpacity(qreal);
     qreal captionOpacity() const
     {
@@ -198,12 +197,10 @@ public:
     {
         return nextScale ? m_scaledTitleBarTopMarginNext : m_scaledTitleBarTopMargin;
     }
-
-    qreal scaledTitleSidePadding(const bool nextScale) const
+     qreal scaledTitleSidePadding(const bool nextScale) const
     {
         return nextScale ? m_scaledTitleSidePaddingNext : m_scaledTitleSidePadding;
     }
-
     qreal scaledTitleBarSeparatorHeight(const bool nextScale) const;
 
     qreal smallSpacing()
@@ -255,12 +252,6 @@ public:
     {
         return m_buttonUnisonHovered;
     }
-
-    void scaledTitleBarTopBottomMargins(qreal scale,
-                                        qreal &scaledTitleBarTopMargin,
-                                        qreal &scaledTitleBarBottomMargin,
-                                        qreal &scaledIntegratedRoundedRectangleBottomPadding) const;
-    qreal titleBarSeparatorHeight(qreal scale) const;
 
     bool appMenuBarBackgroundWindowColoredEnabled();
     bool shouldPaintAppMenuBarBackgroundWindowColored();
@@ -391,10 +382,6 @@ private:
 
     //* frame corner radius, scaled for x11
     qreal m_scaledCornerRadius = 4.0;
-
-    //* button scaling, scaled for x11, snapped
-    qreal m_scaledButtonSpacingLeft = 0;
-    qreal m_scaledButtonSpacingRight = 0;
 
     qreal m_appMenuBarButtonCornerRadius = 4.0;
 

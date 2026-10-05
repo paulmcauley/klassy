@@ -47,10 +47,10 @@ void AppMenuIconButton::updateGeometry()
         return;
     }
 
-    const qreal paddedSize = m_d->smallButtonPaddedSize();
+    const qreal paddedSize = m_d->scaledSmallButtonPaddedSize();
     setGeometry(QRectF(geometry().topLeft(), QSizeF(paddedSize, buttonHeight())));
     setSmallButtonPaddedWidth(paddedSize);
-    setIconWidth(m_d->iconSize());
+    setIconWidth(m_d->scaledIconSize());
     setBackgroundVisibleSize(QSizeF(paddedSize, buttonHeight() - verticalBackgroundOffset() * 2));
 }
 
