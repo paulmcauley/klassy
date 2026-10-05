@@ -1028,11 +1028,11 @@
     </entry>
 
     <entry name="AppMenuBarButtonHorizontalMargin" type="Double">
-        <default>4.0</default>
+        <default>5.0</default>
     </entry>
 
     <entry name="AppMenuBarButtonHorizontalSpacing" type="Double">
-        <default>2.0</default>
+        <default>1.0</default>
     </entry>
 
     <entry name="AppMenuBarButtonCornerRadius" type="Enum">
