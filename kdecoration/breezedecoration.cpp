@@ -1752,15 +1752,6 @@ qreal Decoration::captionHeight() const
 }
 
 //________________________________________________________________
-qreal Decoration::captionHeight() const
-{
-    qreal scale = window()->scale();
-    qreal scaledTitleBarTopMargin, scaledTitleBarBottomMargin, scaledIntegratedRoundedRectangleBottomPadding;
-    scaledTitleBarTopBottomMargins(scale, scaledTitleBarTopMargin, scaledTitleBarBottomMargin, scaledIntegratedRoundedRectangleBottomPadding);
-    return captionHeight(scaledTitleBarTopMargin, scaledTitleBarBottomMargin, titleBarSeparatorHeight(scale));
-}
-
-//________________________________________________________________
 QPair<QRectF, Qt::Alignment> Decoration::captionRect(bool minimumAppMenuBar) const
 {
     if (hideTitleBar()) {
