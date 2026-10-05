@@ -1091,7 +1091,6 @@ void Decoration::updateButtonsGeometry()
         bHeightNormal = captionHeight + (isTopEdge() ? m_scaledTitleBarTopMargin : 0);
         // do not pixel grid snap icon offsets -- the icon gets snapped at the end anyway, and this keeps icons centred
         verticalIconOffsetNormal = (isTopEdge() ? m_scaledTitleBarTopMargin : 0) + captionHeight - m_scaledSmallButtonPaddedSize + bWidthMargin;
-
         bWidthLeft = m_scaledSmallButtonPaddedSize;
         bWidthRight = m_scaledSmallButtonPaddedSize;
 
@@ -1783,9 +1782,9 @@ QPair<QRectF, Qt::Alignment> Decoration::captionRect(bool minimumAppMenuBar) con
             const qreal menuWidth =
                 padding + KDecoration3::snapToPixelGrid((minimumAppMenuBar ? m_appMenuBarButtons->minimumWidth() : m_appMenuBarButtons->visibleWidth()), scale);
             if (m_appMenuBarButtons->position() == AppMenuPosition::Right) {
-                rightOffset += menuWidth + KDecoration3::snapToPixelGrid(m_internalSettings->buttonSpacingRight() * m_x11Scale, scale);
+                rightOffset += menuWidth + m_scaledButtonSpacingRight;
             } else {
-                leftOffset += menuWidth + KDecoration3::snapToPixelGrid(m_internalSettings->buttonSpacingLeft() * m_x11Scale, scale);
+                leftOffset += menuWidth + m_scaledButtonSpacingLeft;
             }
         }
 
