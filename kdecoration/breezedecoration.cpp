@@ -599,6 +599,8 @@ void Decoration::reconfigureMain(const bool noUpdateShadow)
     else
         m_buttonBackgroundType = ButtonBackgroundType::Small;
 
+    setScaledButtonSpacing();
+
     calculateIconSizes();
 
     const KConfigGroup cg(s_kdeGlobalConfig, QStringLiteral("KDE"));
@@ -966,8 +968,6 @@ void Decoration::updateButtonsGeometry()
     qreal horizontalIconOffsetLeftFullHeightClose = 0;
     qreal horizontalIconOffsetRightButtons = 0;
     qreal horizontalIconOffsetRightFullHeightClose = 0;
-    qreal buttonSpacingLeft = 0;
-    qreal buttonSpacingRight = 0;
     qreal titleBarSeparatorHeight = this->titleBarSeparatorHeight(scale);
     qreal captionHeight = this->captionHeight(scaledTitleBarTopMargin, scaledTitleBarBottomMargin, titleBarSeparatorHeight);
 
@@ -1010,13 +1010,6 @@ void Decoration::updateButtonsGeometry()
             verticalIconOffsetNormal = scaledTitleBarTopMargin + qreal(captionHeight - m_iconSize) / 2;
         }
 
-        buttonSpacingLeft = KDecoration3::snapToPixelGrid(
-            m_x11Scale * (m_isRightToLeft ? m_internalSettings->fullHeightButtonSpacingRight() : m_internalSettings->fullHeightButtonSpacingLeft()),
-            scale);
-        buttonSpacingRight = KDecoration3::snapToPixelGrid(
-            m_x11Scale * (m_isRightToLeft ? m_internalSettings->fullHeightButtonSpacingLeft() : m_internalSettings->fullHeightButtonSpacingRight()),
-            scale);
-
         bWidthMarginLeft = KDecoration3::snapToPixelGrid(
             m_x11Scale * (m_isRightToLeft ? m_internalSettings->fullHeightButtonWidthMarginRight() : m_internalSettings->fullHeightButtonWidthMarginLeft()),
             scale);
@@ -1035,13 +1028,6 @@ void Decoration::updateButtonsGeometry()
         bHeightNormal = captionHeight + (isTopEdge() ? scaledTitleBarTopMargin : 0);
         // do not pixel grid snap icon offsets -- the icon gets snapped at the end anyway, and this keeps icons centred
         verticalIconOffsetNormal = (isTopEdge() ? scaledTitleBarTopMargin : 0) + captionHeight - m_smallButtonPaddedSize + bWidthMargin;
-
-        buttonSpacingLeft =
-            KDecoration3::snapToPixelGrid(m_x11Scale * (isRightToLeft() ? m_internalSettings->buttonSpacingRight() : m_internalSettings->buttonSpacingLeft()),
-                                          scale);
-        buttonSpacingRight =
-            KDecoration3::snapToPixelGrid(m_x11Scale * (isRightToLeft() ? m_internalSettings->buttonSpacingLeft() : m_internalSettings->buttonSpacingRight()),
-                                          scale);
 
         bWidthLeft = m_smallButtonPaddedSize;
         bWidthRight = m_smallButtonPaddedSize;
@@ -1279,7 +1265,7 @@ void Decoration::updateButtonsGeometry()
     int &leftEdgeButtonIndex = m_isRightToLeft ? lastLeftVisibleIndex : firstLeftVisibleIndex;
     if (!m_leftButtons->buttons().isEmpty() && leftEdgeButtonIndex != -1) {
         // spacing
-        m_leftButtons->setSpacing(buttonSpacingLeft);
+        m_leftButtons->setSpacing(m_scaledButtonSpacingLeft);
 
         // padding
         qreal vPadding;
@@ -1313,7 +1299,7 @@ void Decoration::updateButtonsGeometry()
     int &rightEdgeButtonIndex = m_isRightToLeft ? firstRightVisibleIndex : lastRightVisibleIndex;
     if (!m_rightButtons->buttons().isEmpty() && lastRightVisibleIndex != -1) {
         // spacing
-        m_rightButtons->setSpacing(buttonSpacingRight);
+        m_rightButtons->setSpacing(m_scaledButtonSpacingRight);
 
         // padding
         qreal vPadding;
@@ -2013,6 +1999,23 @@ void Decoration::setScaledCornerRadius()
     m_scaledCornerRadius = m_internalSettings->windowCornerRadius() * m_x11Scale;
 }
 
+void Decoration::setScaledButtonSpacing()
+{
+    qreal buttonSpacingLeft;
+    qreal buttonSpacingRight;
+    if (m_buttonBackgroundType == ButtonBackgroundType::FullHeight) {
+        buttonSpacingLeft = m_isRightToLeft ? m_internalSettings->fullHeightButtonSpacingRight() : m_internalSettings->fullHeightButtonSpacingLeft();
+        buttonSpacingRight = m_isRightToLeft ? m_internalSettings->fullHeightButtonSpacingLeft() : m_internalSettings->fullHeightButtonSpacingRight();
+    } else {
+        buttonSpacingLeft = m_isRightToLeft ? m_internalSettings->buttonSpacingRight() : m_internalSettings->buttonSpacingLeft();
+        buttonSpacingRight = m_isRightToLeft ? m_internalSettings->buttonSpacingLeft() : m_internalSettings->buttonSpacingRight();
+    }
+
+    qreal scale = window()->scale();
+    m_scaledButtonSpacingLeft = KDecoration3::snapToPixelGrid(m_x11Scale * buttonSpacingLeft, scale);
+    m_scaledButtonSpacingRight = KDecoration3::snapToPixelGrid(m_x11Scale * buttonSpacingRight, scale);
+}
+
 void Decoration::updateOpaque()
 {
     // access client
@@ -2071,6 +2074,7 @@ qreal Decoration::titleBarSeparatorHeight(qreal scale) const
 
 void Decoration::updateScale()
 {
+    setScaledButtonSpacing();
     calculateIconSizes();
     updateButtonsGeometry();
 }

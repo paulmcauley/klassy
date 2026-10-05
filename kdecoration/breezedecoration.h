@@ -143,6 +143,16 @@ public:
         return m_scaledCornerRadius;
     }
 
+    qreal scaledButtonSpacingLeft()
+    {
+        return m_scaledButtonSpacingLeft;
+    }
+
+    qreal scaledButtonSpacingRight()
+    {
+        return m_scaledButtonSpacingRight;
+    }
+
     qreal smallSpacing()
     {
         return m_smallSpacing;
@@ -240,6 +250,7 @@ private:
     std::shared_ptr<KDecoration3::DecorationShadow> createShadowObject(QColor shadowColor);
     void updateWindowOutline(bool override = false);
     void setScaledCornerRadius();
+    void setScaledButtonSpacing();
 
     //*@name border size
     //@{
@@ -296,6 +307,10 @@ private:
     qreal m_shadowOpacity = 0;
     //* overridden thin window outline change animation progress
     qreal m_overrideOutlineAnimationProgress = 0;
+
+    //* button scaling, scaled for x11, snapped
+    qreal m_scaledButtonSpacingLeft = 0;
+    qreal m_scaledButtonSpacingRight = 0;
 
     //* frame corner radius, scaled according to smallspacing
     qreal m_scaledCornerRadius = 3.0;
