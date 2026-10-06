@@ -137,14 +137,18 @@ QString DecorationExceptionList::defaultExceptionGroupName(int index)
 //______________________________________________________________
 void DecorationExceptionList::writeConfig(KCoreConfigSkeleton *skeleton, KConfig *config, const QString &groupName)
 {
+    if (groupName.isEmpty()) {
+        return;
+    }
+
     // write all items in windecoExceptionKeys
     for (auto key : windecoExceptionKeys) {
         KConfigSkeletonItem *item(skeleton->findItem(key));
-        if (!item)
+        if (!item) {
             continue;
+        }
 
-        if (!groupName.isEmpty())
-            item->setGroup(groupName);
+        item->setGroup(groupName);
         KConfigGroup configGroup(config, item->group());
         configGroup.writeEntry(item->key(), item->property());
     }
