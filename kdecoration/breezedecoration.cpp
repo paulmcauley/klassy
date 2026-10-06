@@ -417,7 +417,6 @@ void Decoration::updateTitleBar()
 {
     auto c = window();
 
-    const bool maximized = isMaximized();
     qreal width, height, x, y;
 
     qreal borderTop = this->borderTop();
@@ -425,17 +424,18 @@ void Decoration::updateTitleBar()
     // prevents resize handles appearing in button at top window edge for large full-height buttons
     if (m_buttonBackgroundType == ButtonBackgroundType::FullHeight
         && !(m_internalSettings->drawBorderOnMaximizedWindows() && (c->isMaximizedVertically() || c->adjacentScreenEdges().testFlag(Qt::TopEdge)))) {
-        width = maximized ? c->width() : c->width() - m_scaledTitleBarLeftMargin - m_scaledTitleBarRightMargin;
+        width = c->width();
         height = borderTop;
-        x = maximized ? 0 : m_scaledTitleBarLeftMargin;
+        x = 0;
         y = 0;
 
     } else {
         // for smaller circular buttons increase the resizable area
-        width = maximized ? c->width() : c->width() - m_scaledTitleBarLeftMargin - m_scaledTitleBarRightMargin;
-        height = (maximized || isTopEdge()) ? borderTop : borderTop - m_scaledTitleBarTopMargin;
-        x = maximized ? 0 : m_scaledTitleBarLeftMargin;
-        y = (maximized || isTopEdge()) ? 0 : m_scaledTitleBarTopMargin;
+        const bool maximizedHorizontally = isMaximizedHorizontally();
+        width = maximizedHorizontally ? c->width() : c->width() - this->scaledTitleBarLeftMargin(false) - this->scaledTitleBarRightMargin(false);
+        height = (isMaximizedVertically() || isTopEdge()) ? borderTop : borderTop - m_scaledTitleBarTopMargin;
+        x = maximizedHorizontally ? 0 : m_scaledTitleBarLeftMargin;
+        y = (isMaximizedVertically() || isTopEdge()) ? 0 : m_scaledTitleBarTopMargin;
     }
 
     setTitleBar(QRectF(x, y, width, height));
@@ -912,9 +912,9 @@ void Decoration::recalculateBorders()
             extLeft = extSize;
             extRight = extSize;
         } else {
-            if (m_scaledTitleBarLeftMarginNext < extSize)
+            if (scaledTitleBarLeftMargin(true) < extSize)
                 extLeft = extSize;
-            if (m_scaledTitleBarRightMarginNext < extSize)
+            if (scaledTitleBarRightMargin(true) < extSize)
                 extRight = extSize;
         }
     }
@@ -1283,7 +1283,7 @@ void Decoration::updateButtonsGeometry()
             vPadding = 0;
         else
             vPadding = isTopEdge() ? 0 : m_scaledTitleBarTopMargin;
-        const qreal hPadding = isMaximizedHorizontally() ? m_scaledTitleBarLeftMarginMaximizedHorizontally : m_scaledTitleBarLeftMargin;
+        const qreal hPadding = scaledTitleBarLeftMargin(false);
 
         auto leftEdgeButton = static_cast<Button *>(m_leftButtons->buttons()[leftEdgeButtonIndex]);
         if (isLeftEdge()) {
@@ -1317,7 +1317,7 @@ void Decoration::updateButtonsGeometry()
             vPadding = 0;
         else
             vPadding = isTopEdge() ? 0 : m_scaledTitleBarTopMargin;
-        const qreal hPadding = isMaximizedHorizontally() ? m_scaledTitleBarRightMarginMaximizedHorizontally : m_scaledTitleBarRightMargin;
+        const qreal hPadding = scaledTitleBarRightMargin(false);
 
         auto rightEdgeButton = static_cast<Button *>(m_rightButtons->buttons()[rightEdgeButtonIndex]);
         if (isRightEdge()) {

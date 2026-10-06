@@ -122,6 +122,23 @@ public:
     {
         return m_systemScaleFactorX11;
     }
+    qreal scaledTitleBarRightMargin(const bool nextScale) const
+    {
+        if (isMaximizedHorizontally()) {
+            return nextScale ? m_scaledTitleBarRightMarginMaximizedHorizontallyNext : m_scaledTitleBarRightMarginMaximizedHorizontally;
+        } else {
+            return nextScale ? m_scaledTitleBarRightMarginNext : m_scaledTitleBarRightMargin;
+        }
+    }
+
+    qreal scaledTitleBarLeftMargin(const bool nextScale) const
+    {
+        if (isMaximizedHorizontally()) {
+            return nextScale ? m_scaledTitleBarLeftMarginMaximizedHorizontallyNext : m_scaledTitleBarLeftMarginMaximizedHorizontally;
+        } else {
+            return nextScale ? m_scaledTitleBarLeftMarginNext : m_scaledTitleBarLeftMargin;
+        }
+    }
     ButtonBackgroundType buttonBackgroundType()
     {
         return m_buttonBackgroundType;
@@ -489,4 +506,5 @@ bool Decoration::hideTitleBar() const
     }
     return hide;
 }
+
 } // end Klassy namespace
