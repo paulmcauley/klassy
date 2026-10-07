@@ -1050,6 +1050,7 @@ void Decoration::updateButtonsGeometry()
     int numLeftButtons = m_leftButtons->buttons().count();
     bool menuPresentBefore = false;
     bool spacerPresentBefore = false;
+    m_leftButtonsVisible = false;
 
     for (int i = 0; i < numLeftButtons; i++) {
         Button *button = static_cast<Button *>(m_leftButtons->buttons()[i]);
@@ -1100,8 +1101,10 @@ void Decoration::updateButtonsGeometry()
         m_isRightToLeft ? button->setLeftmostLeftVisible(false) : button->setRightmostLeftVisible(false);
         button->setVisibleAfterSpacer(false);
         button->setVisibleBeforeSpacer(false);
+
         // determine leftmost left visible and rightmostLeftVisible
         if (button->isVisible() && (button->isEnabled() || button->type() == KDecoration3::DecorationButtonType::Spacer)) {
+            m_leftButtonsVisible = true;
             button->setLeftButtonVisible(true);
 
             if (firstLeftVisibleIndex == -1) {
@@ -1163,6 +1166,7 @@ void Decoration::updateButtonsGeometry()
     int numRightButtons = m_rightButtons->buttons().count();
     menuPresentBefore = false;
     spacerPresentBefore = false;
+    m_rightButtonsVisible = false;
 
     for (int i = 0; i < numRightButtons; i++) {
         Button *button = static_cast<Button *>(m_rightButtons->buttons()[i]);
@@ -1216,6 +1220,7 @@ void Decoration::updateButtonsGeometry()
         button->setVisibleBeforeSpacer(false);
         // determine leftmost right visible and rightmostRightVisible
         if (button->isVisible() && (button->isEnabled() || button->type() == KDecoration3::DecorationButtonType::Spacer)) {
+            m_rightButtonsVisible = true;
             button->setRightButtonVisible(true);
 
             if (firstRightVisibleIndex == -1) {

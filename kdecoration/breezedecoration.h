@@ -195,6 +195,16 @@ public:
         return m_rightButtons;
     }
 
+    bool leftButtonsVisible()
+    {
+        return m_leftButtonsVisible;
+    }
+
+    bool rightButtonsVisible()
+    {
+        return m_rightButtonsVisible;
+    }
+
     QVariantAnimation *activeStateChangeAnimation()
     {
         return m_animation;
@@ -301,6 +311,8 @@ private:
     bool m_isRightToLeft = false;
     KDecoration3::DecorationButtonGroup *m_leftButtons = nullptr;
     KDecoration3::DecorationButtonGroup *m_rightButtons = nullptr;
+    bool m_leftButtonsVisible = false;
+    bool m_rightButtonsVisible = false;
 
     TaskManagerType m_taskManagerType = TaskManagerType::IconsAndTextTaskManager;
     Side m_taskManagerSide = SideBottom;
