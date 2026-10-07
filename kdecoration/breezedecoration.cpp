@@ -1622,7 +1622,7 @@ void Decoration::paintTitleBar(QPainter *painter, const QRectF &repaintRegion)
             painter->setBrush(base);
             painter->setPen(Qt::PenStyle::NoPen);
 
-            QRectF visibleAppMenuBarRect(m_appMenuBarButtons->geometry().topLeft() + QPointF(0, KDecoration3::snapToPixelGrid(1 * m_x11Scale, scale)),
+            QRectF visibleAppMenuBarRect(m_appMenuBarButtons->visibleTopLeft() + QPointF(0, KDecoration3::snapToPixelGrid(1 * m_x11Scale, scale)),
                                          QSizeF(m_appMenuBarButtons->visibleWidth(), m_appMenuBarButtons->geometry().height() + separatorHeight));
             QPainterPath visibleAppMenuBarPathBackground = GeometryTools::roundedPath(visibleAppMenuBarRect, CornersTop, m_appMenuBarButtonCornerRadius);
             painter->drawPath(visibleAppMenuBarPathBackground);
