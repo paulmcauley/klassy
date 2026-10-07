@@ -428,7 +428,7 @@ void Decoration::updateTitleBar()
     qreal borderTop = this->borderTop();
 
     // prevents resize handles appearing in button at top window edge for large full-height buttons
-    if (m_buttonBackgroundType == ButtonBackgroundType::FullHeight
+    if ((m_buttonBackgroundType == ButtonBackgroundType::FullHeight || m_internalSettings->appMenuBarEnabled())
         && !(m_internalSettings->drawBorderOnMaximizedWindows() && (c->isMaximizedVertically() || c->adjacentScreenEdges().testFlag(Qt::TopEdge)))) {
         width = c->width();
         height = borderTop;
@@ -948,7 +948,7 @@ void Decoration::recalculateBorders()
     qreal extTop = 0;
 
     // Add extended resize handles for Full-sized Rectangle highlight as they cannot overlap with larger full-sized buttons
-    if (m_buttonBackgroundType == ButtonBackgroundType::FullHeight || m_scaledTitleBarTopMarginNext < extSize) {
+    if (m_buttonBackgroundType == ButtonBackgroundType::FullHeight || m_internalSettings->appMenuBarEnabled() || m_scaledTitleBarTopMarginNext < extSize) {
         if (!isMaximizedVertically())
             extTop = extSize;
     }
