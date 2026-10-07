@@ -96,6 +96,10 @@ public:
         return m_appMenuModel;
     }
 
+    QRectF activeHoverArea()
+    {
+        return m_activeHoverArea;
+    }
     void handleHoverMove(const QPointF &pos);
 
     Q_PROPERTY(int animationDuration READ animationDuration WRITE setAnimationDuration NOTIFY animationDurationChanged)
@@ -316,6 +320,7 @@ private:
     int m_overflowIndex = -1;
     int m_searchIndex = -1;
     bool m_overflowing = false;
+    QRectF m_activeHoverArea;
     bool m_hovered = false;
     bool m_showing = true;
     bool m_animationEnabled = true;
