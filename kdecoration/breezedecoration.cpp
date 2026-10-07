@@ -2277,33 +2277,25 @@ void Decoration::hoverMoveEvent(QHoverEvent *event)
 
     // Update AppMenuBar button showing state based on title hover
     if (m_appMenuBarButtons) {
-        QRectF titleBar = this->titleBar();
-        QRectF deco = rect();
+        QRectF activeAppMenuBarHoverArea = m_appMenuBarButtons->activeHoverArea();
 
-        QRectF leftNonTitleArea = m_leftButtons->geometry();
-        leftNonTitleArea.setTop(deco.top() - resizeOnlyBorderTop() - 1);
-        leftNonTitleArea.setBottom(deco.bottom() + resizeOnlyBorderBottom() + 1);
-        leftNonTitleArea.setLeft(deco.left() - resizeOnlyBorderLeft() - 1);
+        if (!activeAppMenuBarHoverArea.isNull()) {
+            const bool titleHovered = activeAppMenuBarHoverArea.contains(position);
+            m_appMenuBarButtons->setHovered(titleHovered);
+            m_appMenuBarButtons->updateShowing();
 
-        QRectF rightNonTitleArea = m_rightButtons->geometry();
-        rightNonTitleArea.setTop(deco.top() - resizeOnlyBorderTop() - 1);
-        rightNonTitleArea.setBottom(deco.bottom() + resizeOnlyBorderBottom() + 1);
-        rightNonTitleArea.setRight(deco.right() + resizeOnlyBorderRight() + 1);
+            if (overAppMenuBarButtons)
+                m_appMenuBarButtons->handleHoverMove(position);
 
-        const bool titleHovered = titleBar.contains(position) && !leftNonTitleArea.contains(position) && !rightNonTitleArea.contains(position);
-        m_appMenuBarButtons->setHovered(titleHovered);
-        m_appMenuBarButtons->updateShowing();
+            if (m_appMenuBarButtons->risesOnHover()) {
+                // storing these values used at end of risesonHover animation as can't get cursor position on Wayland
+                m_lastMouseGlobalPosition = event->globalPosition();
+                m_lastMouseLocalPosition = position;
+            }
+        }
 
-        if (overAppMenuBarButtons)
-            m_appMenuBarButtons->handleHoverMove(position);
         if (m_appMenuBarButtons->dragMoveTick(position.toPoint()))
             return;
-
-        if (m_appMenuBarButtons->risesOnHover()) {
-            // storing these values used at end of risesonHover animation as can't get cursor position on Wayland
-            m_lastMouseGlobalPosition = event->globalPosition();
-            m_lastMouseLocalPosition = position;
-        }
     }
 
     KDecoration3::Decoration::hoverMoveEvent(event);
