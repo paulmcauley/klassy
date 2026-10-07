@@ -1095,10 +1095,12 @@ void AppMenuButtonGroup::onHoverAnimationValueChanged(const QVariant &value)
     if (risesOnHover() && qFuzzyCompare(value.toReal(), 1.0)) {
         auto *deco = const_cast<Decoration *>(qobject_cast<const Decoration *>(decoration()));
         QPointF lastDecoMousePos, lastGlobalMousePos;
-        deco->lastMousePositions(&lastDecoMousePos, &lastGlobalMousePos);
-        if (deco && lastDecoMousePos != QPointF() && lastGlobalMousePos != QPointF()) {
-            QHoverEvent hoverEvent(QEvent::HoverMove, lastDecoMousePos, lastGlobalMousePos, lastDecoMousePos);
-            QApplication::sendEvent(deco, &hoverEvent);
+        if (deco) {
+            deco->lastMousePositions(&lastDecoMousePos, &lastGlobalMousePos);
+            if (lastDecoMousePos.x() > -1 && lastDecoMousePos.y() > -1 && lastGlobalMousePos.x() > -1 && lastGlobalMousePos.y() > -1) {
+                QHoverEvent hoverEvent(QEvent::HoverMove, lastDecoMousePos, lastGlobalMousePos, lastDecoMousePos);
+                QApplication::sendEvent(deco, &hoverEvent);
+            }
         }
     }
 }

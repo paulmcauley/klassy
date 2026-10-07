@@ -438,8 +438,8 @@ private:
 
     bool m_buttonUnisonHovered = false; // for unison hovering
 
-    QPointF m_lastMouseGlobalPosition;
-    QPointF m_lastMouseLocalPosition;
+    QPointF m_lastMouseGlobalPosition = QPointF(-1, -1);
+    QPointF m_lastMouseLocalPosition = QPointF(-1, -1);
 };
 
 bool Decoration::hasBorders() const
