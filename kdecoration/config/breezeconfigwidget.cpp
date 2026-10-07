@@ -936,7 +936,9 @@ void ConfigWidget::getButtonsOrderFromKwinConfig()
 
     m_allCustomizableButtonsOrder = m_visibleButtonsOrder + m_hiddenButtons;
 
-    m_visibleButtonsOrder.insert(indexOfCustom,
-                                 DecorationButtonType::Custom); // dummy Custom button inserted for illustrating colour palettes in icons
+    if (indexOfCustom >= 0) {
+        m_visibleButtonsOrder.insert(indexOfCustom,
+                                     DecorationButtonType::Custom); // dummy Custom button inserted for illustrating colour palettes in icons
+    }
 }
 }
