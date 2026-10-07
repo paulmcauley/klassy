@@ -783,6 +783,15 @@ void AppMenuButtonGroup::updateGeometry()
     }
 }
 
+QPointF AppMenuButtonGroup::visibleTopLeft() const
+{
+    if (m_position == AppMenuPosition::Right) {
+        return this->geometry().topLeft() + QPointF((m_maximumWidth - m_minimumWidth) * (1 - m_expansionFraction), 0);
+    } else {
+        return this->geometry().topLeft();
+    }
+}
+
 qreal AppMenuButtonGroup::visibleWidth() const
 {
     return m_minimumWidth + (m_maximumWidth - m_minimumWidth) * m_expansionFraction;
