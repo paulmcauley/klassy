@@ -70,6 +70,7 @@ void NavigableMenu::keyPressEvent(QKeyEvent *event)
 
 void NavigableMenu::showEvent(QShowEvent *event)
 {
+    setPalette(m_decoration->window()->palette());
     QMenu::showEvent(event);
     if (!windowHandle()) {
         return;
