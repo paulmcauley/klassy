@@ -716,8 +716,19 @@ void AppMenuButtonGroup::updateGeometry()
     const auto internalSettings = m_decoration->internalSettings();
     const qreal scale = m_decoration->window()->scale();
     const qreal x11Scale = m_decoration->x11Scale();
-    const qreal leftOffset = m_decoration->leftButtons()->geometry().right() + m_decoration->scaledButtonSpacingLeft();
-    const qreal rightOffset = (m_decoration->size().width() - m_decoration->rightButtons()->geometry().left()) + m_decoration->scaledButtonSpacingRight();
+
+    bool isLeftButtons = !m_decoration->leftButtons()->buttons().isEmpty();
+    bool isRightButtons = !m_decoration->rightButtons()->buttons().isEmpty();
+
+    QRectF decoRect = m_decoration->rect();
+    const qreal leftOffset =
+        isLeftButtons ? (m_decoration->leftButtons()->geometry().right() + m_decoration->scaledButtonSpacingLeft()) : m_decoration->borderLeft();
+    const qreal rightOffset = isRightButtons ? (decoRect.width() - m_decoration->rightButtons()->geometry().left() + m_decoration->scaledButtonSpacingRight())
+                                             : m_decoration->borderRight();
+
+    m_activeHoverArea = QRectF(isLeftButtons ? m_decoration->leftButtons()->geometry().topRight() : QPointF(m_decoration->borderLeft(), 0),
+                               isRightButtons ? m_decoration->rightButtons()->geometry().bottomLeft()
+                                              : QPointF(decoRect.right() - m_decoration->borderRight(), m_decoration->borderTop()));
 
     const qreal scaledTitleBarSeparatorHeight = m_decoration->scaledTitleBarSeparatorHeight(false);
     qreal scaledTitleBarTopMargin = m_decoration->scaledTitleBarTopMargin(false);
@@ -741,7 +752,7 @@ void AppMenuButtonGroup::updateGeometry()
     const qreal realButtonHeight = qMax(captionHeight, baseButtonHeight) + topOffset * 2;
     const qreal iconTranslation = (m_decoration->scaledSmallButtonPaddedSize() - m_decoration->scaledIconSize()) / 2;
     const QPointF iconOffset = {iconTranslation, iconTranslation + (realButtonHeight - contentOffset - m_decoration->scaledSmallButtonPaddedSize()) / 2};
-    QRectF availableRect(leftOffset, 0, m_decoration->size().width() - leftOffset - rightOffset, captionHeight + contentOffset + topOffset * 2);
+    QRectF availableRect(leftOffset, 0, decoRect.width() - leftOffset - rightOffset, captionHeight + contentOffset + topOffset * 2);
 
     for (auto *button : buttons()) {
         AppMenuButton *appMenuButton;
