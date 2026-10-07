@@ -85,6 +85,7 @@ public:
         return m_behaviour == AppMenuBehaviour::ReplaceTitleOnHover;
     }
 
+    QPointF visibleTopLeft() const;
     qreal visibleWidth() const;
 
     bool menuLoadedOnce() const;
