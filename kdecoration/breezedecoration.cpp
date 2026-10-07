@@ -1636,8 +1636,30 @@ void Decoration::paintTitleBar(QPainter *painter, const QRectF &repaintRegion)
                 painter->setPen(Qt::PenStyle::NoPen);
             }
             painter->setBrush(Qt::BrushStyle::NoBrush);
-            QPainterPath visibleAppMenuBarPathOutline =
-                GeometryTools::roundedPath(visibleAppMenuBarRect, CornersTop, m_appMenuBarButtonCornerRadius, SideTop | SideLeft | SideRight);
+            Sides sides = SideTop;
+            qreal subtractTopLeft = 0;
+            qreal subtractTopRight = 0;
+            qreal subtractBottomRight = 0;
+            qreal subtractBottomLeft = 0;
+            if (visibleAppMenuBarRect.left() > borderLeft()) {
+                sides |= SideLeft;
+
+            } else {
+                subtractTopLeft = m_appMenuBarButtonCornerRadius;
+            }
+            if (visibleAppMenuBarRect.right() < (rect().right() - borderRight())) {
+                sides |= SideRight;
+            } else {
+                subtractTopRight = m_appMenuBarButtonCornerRadius;
+            }
+            QPainterPath visibleAppMenuBarPathOutline = GeometryTools::roundedPath(visibleAppMenuBarRect,
+                                                                                   CornersTop,
+                                                                                   m_appMenuBarButtonCornerRadius,
+                                                                                   sides,
+                                                                                   subtractTopLeft,
+                                                                                   subtractTopRight,
+                                                                                   subtractBottomRight,
+                                                                                   subtractBottomLeft);
             painter->drawPath(visibleAppMenuBarPathOutline);
         }
 
