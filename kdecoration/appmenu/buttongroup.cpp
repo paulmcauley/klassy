@@ -717,8 +717,8 @@ void AppMenuButtonGroup::updateGeometry()
     const qreal scale = m_decoration->window()->scale();
     const qreal x11Scale = m_decoration->x11Scale();
 
-    bool isLeftButtons = !m_decoration->leftButtons()->buttons().isEmpty();
-    bool isRightButtons = !m_decoration->rightButtons()->buttons().isEmpty();
+    bool isLeftButtons = m_decoration->leftButtonsVisible();
+    bool isRightButtons = m_decoration->rightButtonsVisible();
 
     QRectF decoRect = m_decoration->rect();
     const qreal leftOffset =
