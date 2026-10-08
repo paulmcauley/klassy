@@ -2279,7 +2279,7 @@ void Decoration::mousePressEvent(QMouseEvent *event)
         return;
     }
 
-    const QPoint pos = event->position().toPoint();
+    const QPointF pos = event->position();
     QRectF activeAppMenuBarHoverArea = m_appMenuBarButtons->activeHoverArea();
 
     if (!activeAppMenuBarHoverArea.isNull() && activeAppMenuBarHoverArea.contains(pos) && event->button() == Qt::LeftButton) {
@@ -2320,7 +2320,7 @@ void Decoration::hoverMoveEvent(QHoverEvent *event)
             m_lastMouseGlobalPosition = event->globalPosition();
             m_lastMouseLocalPosition = position;
 
-            if (m_appMenuBarButtons->dragMoveTick(position.toPoint())) {
+            if (m_appMenuBarButtons->dragMoveTick(position)) {
                 m_appMenuBarButtons->setHovered(false);
                 m_appMenuBarButtons->updateShowing();
                 return;

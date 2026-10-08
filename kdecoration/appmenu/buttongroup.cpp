@@ -207,23 +207,23 @@ KDecoration3::DecorationButton *AppMenuButtonGroup::buttonAt(QPoint pos) const
     return nullptr;
 }
 
-void AppMenuButtonGroup::startDragMove(const QPoint &pos)
+void AppMenuButtonGroup::startDragMove(const QPointF &pos)
 {
     m_pressedPoint = pos;
 }
 
 void AppMenuButtonGroup::resetDragMove()
 {
-    m_pressedPoint = QPoint(-1, -1);
+    m_pressedPoint = QPointF(-1, -1);
 }
 
-bool AppMenuButtonGroup::dragMoveTick(const QPoint &pos)
+bool AppMenuButtonGroup::dragMoveTick(const QPointF &pos)
 {
-    if (m_pressedPoint == QPoint(-1, -1)) {
+    if (!(m_pressedPoint.x() > -0.5 && m_pressedPoint.y() > -0.5)) {
         return false;
     }
 
-    const QPoint diff = pos - m_pressedPoint;
+    const QPointF diff = pos - m_pressedPoint;
     if (diff.manhattanLength() >= QApplication::startDragDistance()) {
         resetDragMove();
         unpressAllButtons();
@@ -1103,7 +1103,7 @@ void AppMenuButtonGroup::sendFakeHoverEventAtLastKnownPosition()
     QPointF lastDecoMousePos, lastGlobalMousePos;
     if (deco) {
         deco->lastMousePositions(&lastDecoMousePos, &lastGlobalMousePos);
-        if (lastDecoMousePos.x() > -1 && lastDecoMousePos.y() > -1 && lastGlobalMousePos.x() > -1 && lastGlobalMousePos.y() > -1) {
+        if (lastDecoMousePos.x() > -0.5 && lastDecoMousePos.y() > -0.5 && lastGlobalMousePos.x() > -0.5 && lastGlobalMousePos.y() > -0.5) {
             QHoverEvent hoverEvent(QEvent::HoverMove, lastDecoMousePos, lastGlobalMousePos, lastDecoMousePos);
             QApplication::sendEvent(deco, &hoverEvent);
         }
