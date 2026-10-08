@@ -240,6 +240,7 @@ public:
     void startDragMove(const QPoint &pos);
     void resetDragMove();
     bool dragMoveTick(const QPoint &pos);
+    void sendFakeHoverEventAtLastKnownPosition();
 
 private:
     void onMenuReadyForSearch();
@@ -315,7 +316,7 @@ private:
 
     Decoration *m_decoration;
     AppMenuModel *m_appMenuModel;
-    QPoint m_pressedPoint;
+    QPoint m_pressedPoint = QPoint(-1, -1);
     int m_currentIndex = -1;
     int m_overflowIndex = -1;
     int m_searchIndex = -1;
