@@ -40,7 +40,7 @@ public:
 
     void drawContent(QPainter *, QPointF) const override;
 
-    void reconfigure() override;
+    void setFont(QFont font);
 
     void setAction(QAction *value)
     {
