@@ -2280,7 +2280,9 @@ void Decoration::mousePressEvent(QMouseEvent *event)
     }
 
     const QPoint pos = event->position().toPoint();
-    if (m_appMenuBarButtons->geometry().contains(pos) && event->button() == Qt::LeftButton) {
+    QRectF activeAppMenuBarHoverArea = m_appMenuBarButtons->activeHoverArea();
+
+    if (!activeAppMenuBarHoverArea.isNull() && activeAppMenuBarHoverArea.contains(pos) && event->button() == Qt::LeftButton) {
         m_appMenuBarButtons->startDragMove(pos);
         event->setAccepted(false);
     }
@@ -2289,8 +2291,10 @@ void Decoration::mousePressEvent(QMouseEvent *event)
 void Decoration::mouseReleaseEvent(QMouseEvent *event)
 {
     KDecoration3::Decoration::mouseReleaseEvent(event);
-    if (m_appMenuBarButtons)
+    if (m_appMenuBarButtons) {
         m_appMenuBarButtons->resetDragMove();
+        m_appMenuBarButtons->sendFakeHoverEventAtLastKnownPosition();
+    }
 }
 
 void Decoration::hoverMoveEvent(QHoverEvent *event)
@@ -2308,21 +2312,23 @@ void Decoration::hoverMoveEvent(QHoverEvent *event)
 
         if (!activeAppMenuBarHoverArea.isNull()) {
             const bool titleHovered = activeAppMenuBarHoverArea.contains(position);
-            m_appMenuBarButtons->setHovered(titleHovered);
-            m_appMenuBarButtons->updateShowing();
 
             if (overAppMenuBarButtons)
                 m_appMenuBarButtons->handleHoverMove(position);
 
-            if (m_appMenuBarButtons->risesOnHover()) {
-                // storing these values used at end of risesonHover animation as can't get cursor position on Wayland
-                m_lastMouseGlobalPosition = event->globalPosition();
-                m_lastMouseLocalPosition = position;
+            // storing these values used at end of drag or risesonHover animation as can't get cursor position on Wayland
+            m_lastMouseGlobalPosition = event->globalPosition();
+            m_lastMouseLocalPosition = position;
+
+            if (m_appMenuBarButtons->dragMoveTick(position.toPoint())) {
+                m_appMenuBarButtons->setHovered(false);
+                m_appMenuBarButtons->updateShowing();
+                return;
+            } else {
+                m_appMenuBarButtons->setHovered(titleHovered);
+                m_appMenuBarButtons->updateShowing();
             }
         }
-
-        if (m_appMenuBarButtons->dragMoveTick(position.toPoint()))
-            return;
     }
 
     KDecoration3::Decoration::hoverMoveEvent(event);
