@@ -59,11 +59,9 @@ void AppMenuTextButton::drawContent(QPainter *painter, QPointF offsetDecorationT
                       m_text);
 }
 
-void AppMenuTextButton::reconfigure()
+void AppMenuTextButton::setFont(QFont font)
 {
-    AppMenuButton::reconfigure();
-
-    m_font = m_d->internalSettings()->appMenuBarButtonUseSystemMenuFont() ? QApplication::font("QMenu") : m_d->settings()->font();
+    m_font = font;
 }
 
 QSizeF AppMenuTextButton::getTextSize() const
