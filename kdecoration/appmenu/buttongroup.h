@@ -237,9 +237,9 @@ public:
     }
 
     // Drag-from-buttons support
-    void startDragMove(const QPoint &pos);
+    void startDragMove(const QPointF &pos);
     void resetDragMove();
-    bool dragMoveTick(const QPoint &pos);
+    bool dragMoveTick(const QPointF &pos);
     void sendFakeHoverEventAtLastKnownPosition();
 
 private:
@@ -316,7 +316,7 @@ private:
 
     Decoration *m_decoration;
     AppMenuModel *m_appMenuModel;
-    QPoint m_pressedPoint = QPoint(-1, -1);
+    QPointF m_pressedPoint = QPointF(-1, -1);
     int m_currentIndex = -1;
     int m_overflowIndex = -1;
     int m_searchIndex = -1;
