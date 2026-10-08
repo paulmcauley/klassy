@@ -100,6 +100,7 @@ AppMenuButtonGroup::AppMenuButtonGroup(Decoration *decoration)
     } else {
         setBehaviour(static_cast<AppMenuBehaviour>(internalSettings->appMenuBarBehaviour()));
     }
+    setFont();
     updateShowing();
 
     connect(this, &AppMenuButtonGroup::showingChanged, this, &AppMenuButtonGroup::onShowingChanged);
@@ -168,8 +169,11 @@ void AppMenuButtonGroup::reconfigure()
 
     m_animationEnabled = internalSettings->animationsEnabled();
     m_animation->setDuration(m_decoration->animationsDuration());
-
+    setFont();
     for (KDecoration3::DecorationButton *button : this->buttons()) {
+        if (auto appMenuTextButton = qobject_cast<AppMenuTextButton *>(button)) {
+            appMenuTextButton->setFont(m_font);
+        }
         if (auto appMenuButton = qobject_cast<AppMenuButton *>(button)) {
             appMenuButton->reconfigure();
         }
@@ -189,6 +193,11 @@ bool AppMenuButtonGroup::alwaysShow() const
     // NOTE: AlwaysExpandOnHover is excluded because it's not 'fully' shown until hovered.
     return m_behaviour != AppMenuBehaviour::AlwaysExpandOnHover && m_behaviour != AppMenuBehaviour::ReplaceTitleOnHover
         && m_behaviour != AppMenuBehaviour::RevealOnHover;
+}
+
+void AppMenuButtonGroup::setFont()
+{
+    m_font = m_decoration->internalSettings()->appMenuBarButtonUseSystemMenuFont() ? QApplication::font("QMenu") : m_decoration->settings()->font();
 }
 
 KDecoration3::DecorationButton *AppMenuButtonGroup::buttonAt(QPoint pos) const
@@ -421,6 +430,7 @@ void AppMenuButtonGroup::updateAppMenuModel()
                 const QString itemLabel = itemAction->text().trimmed();
 
                 AppMenuTextButton *b = new AppMenuTextButton(deco, i, this);
+                b->setFont(m_font);
                 b->setText(itemLabel);
                 b->setAction(itemAction);
                 b->setOpacity(m_opacity);

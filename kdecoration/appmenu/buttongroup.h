@@ -297,6 +297,8 @@ private:
         Q_EMIT showingChanged(value);
     }
 
+    void setFont();
+
     bool isMenuOpen() const;
 
     KDecoration3::DecorationButton *buttonAt(QPoint pos) const;
@@ -316,6 +318,7 @@ private:
 
     Decoration *m_decoration;
     AppMenuModel *m_appMenuModel;
+    QFont m_font;
     QPointF m_pressedPoint = QPointF(-1, -1);
     int m_currentIndex = -1;
     int m_overflowIndex = -1;
