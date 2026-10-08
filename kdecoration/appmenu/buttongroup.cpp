@@ -214,12 +214,12 @@ void AppMenuButtonGroup::startDragMove(const QPoint &pos)
 
 void AppMenuButtonGroup::resetDragMove()
 {
-    m_pressedPoint = QPoint();
+    m_pressedPoint = QPoint(-1, -1);
 }
 
 bool AppMenuButtonGroup::dragMoveTick(const QPoint &pos)
 {
-    if (m_pressedPoint.isNull()) {
+    if (m_pressedPoint == QPoint(-1, -1)) {
         return false;
     }
 
@@ -1089,18 +1089,23 @@ void AppMenuButtonGroup::onHoverAnimationValueChanged(const QVariant &value)
         Q_EMIT geometryAnimationChanged(value.toReal());
     }
 
-    // when the rise animation occurs, the widget can move under the mouse pointer, rather than the mouse pointer moving over the widget
-    // In this case at the end of the animation the button won't be in a hovered state even if the mouse pointer is over the button
-    // Therefore, create a QHoverEvent manually in this situation
     if (risesOnHover() && qFuzzyCompare(value.toReal(), 1.0)) {
-        auto *deco = const_cast<Decoration *>(qobject_cast<const Decoration *>(decoration()));
-        QPointF lastDecoMousePos, lastGlobalMousePos;
-        if (deco) {
-            deco->lastMousePositions(&lastDecoMousePos, &lastGlobalMousePos);
-            if (lastDecoMousePos.x() > -1 && lastDecoMousePos.y() > -1 && lastGlobalMousePos.x() > -1 && lastGlobalMousePos.y() > -1) {
-                QHoverEvent hoverEvent(QEvent::HoverMove, lastDecoMousePos, lastGlobalMousePos, lastDecoMousePos);
-                QApplication::sendEvent(deco, &hoverEvent);
-            }
+        sendFakeHoverEventAtLastKnownPosition();
+    }
+}
+
+// when the rise animation occurs or a window drag occurs, the widget can move under the mouse pointer, rather than the mouse pointer moving over the widget
+// In this case at the end of the animation the button won't be in a hovered state even if the mouse pointer is over the button
+// Therefore, create a QHoverEvent manually for this situation
+void AppMenuButtonGroup::sendFakeHoverEventAtLastKnownPosition()
+{
+    auto *deco = const_cast<Decoration *>(qobject_cast<const Decoration *>(decoration()));
+    QPointF lastDecoMousePos, lastGlobalMousePos;
+    if (deco) {
+        deco->lastMousePositions(&lastDecoMousePos, &lastGlobalMousePos);
+        if (lastDecoMousePos.x() > -1 && lastDecoMousePos.y() > -1 && lastGlobalMousePos.x() > -1 && lastGlobalMousePos.y() > -1) {
+            QHoverEvent hoverEvent(QEvent::HoverMove, lastDecoMousePos, lastGlobalMousePos, lastDecoMousePos);
+            QApplication::sendEvent(deco, &hoverEvent);
         }
     }
 }
