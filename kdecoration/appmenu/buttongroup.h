@@ -354,6 +354,7 @@ private:
     QList<QPointer<AppMenuTextButton>> m_textButtons;
     QPointer<AppMenuIconButton> m_overflowButton;
     QPointer<AppMenuSearchButton> m_searchButton;
+    bool m_hasEllipsis = false;
 
     QPointer<KDecoration3::DecorationButton> m_hoveredButton = nullptr;
 
