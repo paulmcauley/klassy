@@ -54,9 +54,20 @@ void AppMenuTextButton::drawContent(QPainter *painter, QPointF offsetDecorationT
     // const bool isAltPressed = (QGuiApplication::keyboardModifiers() & Qt::AltModifier) != 0;
     const bool isAltPressed = false;
     const Qt::TextFlag mnemonicFlag = isAltPressed ? Qt::TextShowMnemonic : Qt::TextHideMnemonic;
-    painter->drawText(QRectF(geometry().topLeft() - offsetDecorationTopLeftToContentTopLeft + QPointF(0, verticalBackgroundOffset()), m_textSize),
+    QString text = m_text;
+    QSizeF textSize = m_textSize;
+
+    if (m_hasEllipsis) {
+        QString ellipsis = QStringLiteral("...");
+        if (m_reversedEllipsisDirection) {
+            text = ellipsis + text;
+        } else {
+            text = text + ellipsis;
+        }
+    }
+    painter->drawText(QRectF(geometry().topLeft() - offsetDecorationTopLeftToContentTopLeft + QPointF(0, verticalBackgroundOffset()), textSize),
                       mnemonicFlag | Qt::AlignCenter | Qt::TextSingleLine,
-                      m_text);
+                      text);
 }
 
 void AppMenuTextButton::setFont(QFont font)
@@ -77,16 +88,28 @@ QSizeF AppMenuTextButton::getTextSize() const
 
 qreal AppMenuTextButton::getTextWidth(bool showMnemonic) const
 {
-    const QFontMetricsF fontMetrics(m_font);
+    return getTextWidth(m_text, m_font, m_d->window()->scale(), showMnemonic);
+}
+
+qreal AppMenuTextButton::getTextWidth(const QString text, const QFont font, qreal scale, const bool showMnemonic)
+{
+    const QFontMetricsF fontMetrics(font);
     const int flags = showMnemonic ? Qt::TextShowMnemonic : Qt::TextHideMnemonic;
-    const QRectF boundingRect = fontMetrics.boundingRect(QRectF(), flags, m_text);
-    const qreal scale = m_d->window()->scale();
+    const QRectF boundingRect = fontMetrics.boundingRect(QRectF(), flags, text);
     return qCeil(boundingRect.width() * scale) / scale;
+}
+
+qreal AppMenuTextButton::ellipsisWidth(const QFont font, qreal scale)
+{
+    return getTextWidth(QStringLiteral("..."), font, scale, false);
 }
 
 void AppMenuTextButton::updateGeometry()
 {
-    const QSizeF textSize = getTextSize();
+    QSizeF textSize = getTextSize();
+    if (m_hasEllipsis) {
+        textSize = QSizeF(textSize.width() + ellipsisWidth(m_font, m_d->window()->scale()), textSize.height());
+    }
     const qreal width = textSize.width() + m_horizontalMargin * 2;
     const QSizeF size = QSizeF(width, buttonHeight());
     setGeometry(QRectF(geometry().topLeft(), size));

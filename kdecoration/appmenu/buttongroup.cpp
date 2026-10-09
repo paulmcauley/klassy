@@ -498,6 +498,7 @@ void AppMenuButtonGroup::updateOverflow(QRectF availableRect)
     const qreal availableExpandedWidth = availableRect.width();
     const qreal overflowBtnWidth = m_overflowButton ? m_overflowButton->geometry().width() : 0;
     const qreal searchBtnWidth = m_searchButton ? m_searchButton->geometry().width() + spacing() : 0;
+    const qreal ellipsisWidth = AppMenuTextButton::ellipsisWidth(m_font, m_decoration->window()->scale());
     if (expandsOnHover()) {
         const qreal captionMargins = m_decoration->internalSettings()->titleBarLeftMargin() + m_decoration->internalSettings()->titleBarRightMargin();
         const QRectF maxCaptionSize = m_decoration->getMaxCaptionSize().adjusted(0, 0, captionMargins, 0);
@@ -513,12 +514,8 @@ void AppMenuButtonGroup::updateOverflow(QRectF availableRect)
 
     qreal minVisibleWidth = 0;
     qreal maxVisibleWidth = searchBtnWidth;
-
+    m_hasEllipsis = false;
     if (m_behaviour == AppMenuBehaviour::SearchOnly) {
-        for (auto &tb : std::as_const(m_textButtons)) {
-            if (tb)
-                tb->setVisible(false);
-        }
         if (m_overflowButton) {
             m_overflowButton->setVisible(false);
         }
@@ -529,6 +526,7 @@ void AppMenuButtonGroup::updateOverflow(QRectF availableRect)
         bool allFit = true;
         auto lastTextButton = m_textButtons.constLast();
         for (auto &tb : std::as_const(m_textButtons)) {
+            tb->setHasEllipsis(false, false);
             if (tb->isEnabled()) {
                 totalTextWidth += tb->geometry().width();
                 if (tb != lastTextButton) {
@@ -536,7 +534,6 @@ void AppMenuButtonGroup::updateOverflow(QRectF availableRect)
                 }
                 if (searchBtnWidth + totalTextWidth > availableUnexpandedWidth) {
                     allFit = false;
-                    break;
                 }
             }
         }
@@ -567,6 +564,7 @@ void AppMenuButtonGroup::updateOverflow(QRectF availableRect)
                 if (!button) {
                     continue;
                 }
+
                 if (!button->isEnabled()) {
                     button->setVisible(false);
                     continue;
@@ -597,7 +595,7 @@ void AppMenuButtonGroup::updateOverflow(QRectF availableRect)
             }
             // Third pass: apply opacity and calculate min width
             const bool isUnexpanded = qFuzzyCompare(m_expansionFraction, 0);
-            qreal remainingMinWidth = availableUnexpandedWidth;
+            qreal remainingMinWidth = availableUnexpandedWidth - ellipsisWidth;
             qreal remainingExpandedWidth =
                 remainingMinWidth + (availableExpandedWidth - availableUnexpandedWidth + searchBtnWidth + overflowBtnWidth) * m_expansionFraction;
             bool fitsInMin = true;
@@ -605,19 +603,21 @@ void AppMenuButtonGroup::updateOverflow(QRectF availableRect)
             auto buttons = this->buttons();
             auto firstButton = buttons.constFirst();
             auto lastButton = buttons.constLast();
+            AppMenuButton *lastUnexpandedButton = nullptr;
+            bool reverseLoop = m_position == AppMenuPosition::Right;
             auto forButton = [&](KDecoration3::DecorationButton *const &rawButton) {
                 auto button = qobject_cast<AppMenuButton *>(rawButton);
                 if (!(button && button->isVisible())) {
                     return;
                 }
-
-                qreal w = button->geometry().width();
                 bool isLastButton;
-                if (m_position == AppMenuPosition::Right) {
+                if (reverseLoop) {
                     isLastButton = rawButton == firstButton;
                 } else {
                     isLastButton = rawButton == lastButton;
                 }
+
+                qreal w = button->geometry().width();
                 if (!isLastButton) {
                     w += spacing();
                 }
@@ -643,13 +643,28 @@ void AppMenuButtonGroup::updateOverflow(QRectF availableRect)
                     fitsInCurrentExpansion = false;
                 }
 
+                if (isUnexpanded && fitsInMin) {
+                    lastUnexpandedButton = button;
+                }
                 button->setExpansionOpacity(opacity);
             };
 
-            if (m_position == AppMenuPosition::Right) {
+            if (reverseLoop) {
                 std::for_each(buttons.crbegin(), buttons.crend(), forButton);
             } else {
                 std::for_each(buttons.cbegin(), buttons.cend(), forButton);
+            }
+
+            // add ellipsis to last opaque unexpanded button
+            if (auto lastUnexpandedTextButton = qobject_cast<AppMenuTextButton *>(lastUnexpandedButton)) {
+                m_hasEllipsis = true;
+                minVisibleWidth += ellipsisWidth;
+                if (reverseLoop) {
+                    lastUnexpandedTextButton->setHasEllipsis(true, true);
+
+                } else {
+                    lastUnexpandedTextButton->setHasEllipsis(true, false);
+                }
             }
         } else {
             qreal remainingWidth = availableExpandedWidth - searchBtnWidth - overflowBtnWidth;
@@ -792,7 +807,8 @@ void AppMenuButtonGroup::updateGeometry()
         const qreal x = (m_decoration->size().width() - visibleWidth()) / 2;
         setPos(QPointF(x, availableRect.y()));
     } else if (m_position == AppMenuPosition::Right) {
-        setPos(availableRect.topRight() - QPointF(m_maximumWidth, 0));
+        qreal ellipsisWidth = m_hasEllipsis ? AppMenuTextButton::ellipsisWidth(m_font, scale) : 0;
+        setPos(availableRect.topRight() - QPointF(m_maximumWidth, 0) - QPointF(ellipsisWidth, 0));
     } else {
         setPos(availableRect.topLeft());
     }
@@ -807,7 +823,8 @@ void AppMenuButtonGroup::updateGeometry()
 QPointF AppMenuButtonGroup::visibleTopLeft() const
 {
     if (m_position == AppMenuPosition::Right) {
-        return this->geometry().topLeft() + QPointF((m_maximumWidth - m_minimumWidth) * (1 - m_expansionFraction), 0);
+        qreal ellipsisWidth = m_hasEllipsis ? AppMenuTextButton::ellipsisWidth(m_font, m_decoration->window()->scale()) : 0;
+        return this->geometry().topLeft() + QPointF((m_maximumWidth - m_minimumWidth + ellipsisWidth) * (1 - m_expansionFraction), 0);
     } else {
         return this->geometry().topLeft();
     }
@@ -815,7 +832,8 @@ QPointF AppMenuButtonGroup::visibleTopLeft() const
 
 qreal AppMenuButtonGroup::visibleWidth() const
 {
-    return m_minimumWidth + (m_maximumWidth - m_minimumWidth) * m_expansionFraction;
+    qreal minimumWidth = m_minimumWidth;
+    return minimumWidth + (m_maximumWidth - minimumWidth) * m_expansionFraction;
 }
 
 bool AppMenuButtonGroup::menuLoadedOnce() const
