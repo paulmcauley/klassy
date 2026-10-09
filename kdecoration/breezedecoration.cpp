@@ -1629,43 +1629,58 @@ void Decoration::paintTitleBar(QPainter *painter, const QRectF &repaintRegion)
 
             QRectF visibleAppMenuBarRect(m_appMenuBarButtons->visibleTopLeft(),
                                          QSizeF(m_appMenuBarButtons->visibleWidth(), m_appMenuBarButtons->geometry().height() + separatorHeight));
-            QPainterPath visibleAppMenuBarPathBackground = GeometryTools::roundedPath(visibleAppMenuBarRect, CornersTop, m_appMenuBarButtonCornerRadius);
+            bool notAtLeftEdge = visibleAppMenuBarRect.left() > borderLeft();
+            bool notAtRightEdge = visibleAppMenuBarRect.right() < (rect().right() - borderRight());
+            bool maximized = isMaximized();
+            Corners corners;
+            if (!maximized) {
+                corners = CornersTop;
+            } else {
+                if (notAtLeftEdge) {
+                    corners |= CornerTopLeft;
+                }
+                if (notAtRightEdge) {
+                    corners |= CornerTopRight;
+                }
+            }
+
+            QPainterPath visibleAppMenuBarPathBackground = GeometryTools::roundedPath(visibleAppMenuBarRect, corners, m_appMenuBarButtonCornerRadius);
             painter->drawPath(visibleAppMenuBarPathBackground);
 
+            // draw AppMenuOutline in separator colour, if separator enabled
             if (bool(separatorHeight) && separator.isValid()) {
                 QPen p(separator);
                 p.setWidthF(separatorHeight);
                 p.setCapStyle(Qt::FlatCap);
                 painter->setPen(p);
-            } else {
-                painter->setPen(Qt::PenStyle::NoPen);
-            }
-            painter->setBrush(Qt::BrushStyle::NoBrush);
-            Sides sides = SideTop;
-            qreal subtractTopLeft = 0;
-            qreal subtractTopRight = 0;
-            qreal subtractBottomRight = 0;
-            qreal subtractBottomLeft = 0;
-            if (visibleAppMenuBarRect.left() > borderLeft()) {
-                sides |= SideLeft;
 
-            } else {
-                subtractTopLeft = m_appMenuBarButtonCornerRadius;
+                painter->setBrush(Qt::BrushStyle::NoBrush);
+                Sides sides = SideTop;
+                qreal subtractTopLeft = 0;
+                qreal subtractTopRight = 0;
+                qreal subtractBottomRight = 0;
+                qreal subtractBottomLeft = 0;
+                if (notAtLeftEdge) {
+                    sides |= SideLeft;
+
+                } else if (!maximized) {
+                    subtractTopLeft = m_appMenuBarButtonCornerRadius / 2;
+                }
+                if (notAtRightEdge) {
+                    sides |= SideRight;
+                } else if (!maximized) {
+                    subtractTopRight = m_appMenuBarButtonCornerRadius / 2;
+                }
+                QPainterPath visibleAppMenuBarPathOutline = GeometryTools::roundedPath(visibleAppMenuBarRect.adjusted(0, separatorHeight / 2, 0, 0),
+                                                                                       corners,
+                                                                                       m_appMenuBarButtonCornerRadius,
+                                                                                       sides,
+                                                                                       subtractTopLeft,
+                                                                                       subtractTopRight,
+                                                                                       subtractBottomRight,
+                                                                                       subtractBottomLeft);
+                painter->drawPath(visibleAppMenuBarPathOutline);
             }
-            if (visibleAppMenuBarRect.right() < (rect().right() - borderRight())) {
-                sides |= SideRight;
-            } else {
-                subtractTopRight = m_appMenuBarButtonCornerRadius;
-            }
-            QPainterPath visibleAppMenuBarPathOutline = GeometryTools::roundedPath(visibleAppMenuBarRect,
-                                                                                   CornersTop,
-                                                                                   m_appMenuBarButtonCornerRadius,
-                                                                                   sides,
-                                                                                   subtractTopLeft,
-                                                                                   subtractTopRight,
-                                                                                   subtractBottomRight,
-                                                                                   subtractBottomLeft);
-            painter->drawPath(visibleAppMenuBarPathOutline);
         }
 
         painter->setBrush(Qt::BrushStyle::NoBrush);
