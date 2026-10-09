@@ -42,6 +42,10 @@ public:
 
     void setFont(QFont font);
 
+    static qreal getTextWidth(const QString text, const QFont font, qreal scale, const bool showMnemonic);
+
+    static qreal ellipsisWidth(const QFont font, qreal scale);
+
     void setAction(QAction *value)
     {
         if (m_action == value)
@@ -90,6 +94,20 @@ public:
         return m_textSize;
     }
 
+    bool hasEllipsis()
+    {
+        return m_hasEllipsis;
+    }
+
+    void setHasEllipsis(bool value, bool reversedDirection)
+    {
+        if (m_hasEllipsis != value) {
+            m_hasEllipsis = value;
+            updateGeometry();
+        }
+        m_reversedEllipsisDirection = reversedDirection;
+    }
+
 signals:
     void actionChanged();
     void textChanged();
@@ -104,6 +122,9 @@ private:
     qreal m_horizontalMargin = 0;
     QSizeF m_textSize;
     QFont m_font;
+
+    bool m_hasEllipsis = false;
+    bool m_reversedEllipsisDirection = false;
 };
 
 } // namespace Klassy
