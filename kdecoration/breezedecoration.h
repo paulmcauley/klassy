@@ -197,10 +197,12 @@ public:
     {
         return nextScale ? m_scaledTitleBarTopMarginNext : m_scaledTitleBarTopMargin;
     }
-     qreal scaledTitleSidePadding(const bool nextScale) const
+
+    qreal scaledTitleSidePadding(const bool nextScale) const
     {
         return nextScale ? m_scaledTitleSidePaddingNext : m_scaledTitleSidePadding;
     }
+
     qreal scaledTitleBarSeparatorHeight(const bool nextScale) const;
 
     qreal smallSpacing()
