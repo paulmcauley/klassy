@@ -170,6 +170,18 @@ public:
         return m_scaledButtonSpacingRight;
     }
 
+    qreal scaledTitleBarTopMargin(const bool nextScale) const
+    {
+        return nextScale ? m_scaledTitleBarTopMarginNext : m_scaledTitleBarTopMargin;
+    }
+
+    qreal scaledTitleSidePadding(const bool nextScale) const
+    {
+        return nextScale ? m_scaledTitleSidePaddingNext : m_scaledTitleSidePadding;
+    }
+
+    qreal scaledTitleBarSeparatorHeight(const bool nextScale) const;
+
     qreal smallSpacing()
     {
         return m_smallSpacing;
@@ -295,7 +307,6 @@ private:
     //@}
 
     bool isOpaqueTitleBar();
-    qreal scaledTitleBarSeparatorHeight(const bool nextScale) const;
     qreal devicePixelRatio(QPainter *painter) const;
 
     //* override thin window outline colour from button colour animation update
@@ -360,6 +371,8 @@ private:
     qreal m_scaledTitleBarRightMarginMaximizedHorizontallyNext = 0;
     qreal m_scaledTitleBarSeparatorHeight = 0;
     qreal m_scaledTitleBarSeparatorHeightNext = 0;
+    qreal m_scaledTitleSidePadding = 0;
+    qreal m_scaledTitleSidePaddingNext = 0;
 
     //* button dimensions, scaled for x11, snapped
     qreal m_scaledButtonSpacingLeft = 0;

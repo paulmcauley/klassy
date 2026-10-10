@@ -1669,14 +1669,14 @@ QPair<QRectF, Qt::Alignment> Decoration::captionRect() const
         return qMakePair(QRect(), Qt::AlignCenter);
     } else {
         auto c = window();
-        qreal scale = c->scale();
 
         qreal captionHeight = this->captionHeight();
 
-        qreal padding = KDecoration3::snapToPixelGrid(m_internalSettings->titleSidePadding() * m_x11Scale, scale);
-
-        const qreal leftOffset = m_leftButtons->buttons().isEmpty() ? padding : m_leftButtons->geometry().x() + m_leftButtons->geometry().width() + padding;
-        const qreal rightOffset = m_rightButtons->buttons().isEmpty() ? padding : size().width() - m_rightButtons->geometry().x() + padding;
+        const qreal leftOffset = m_leftButtons->buttons().isEmpty()
+            ? m_scaledTitleSidePadding
+            : m_leftButtons->geometry().x() + m_leftButtons->geometry().width() + m_scaledTitleSidePadding;
+        const qreal rightOffset =
+            m_rightButtons->buttons().isEmpty() ? m_scaledTitleSidePadding : size().width() - m_rightButtons->geometry().x() + m_scaledTitleSidePadding;
 
         const qreal yOffset = m_scaledTitleBarTopMargin;
         const QRectF maxRect(leftOffset, yOffset, size().width() - leftOffset - rightOffset, captionHeight);
@@ -1990,6 +1990,7 @@ void Decoration::setScaledTitleBarMargins(const bool nextScale)
         nextScale ? m_scaledTitleBarRightMarginMaximizedHorizontallyNext : m_scaledTitleBarRightMarginMaximizedHorizontally;
     qreal &scaledTitleBarLeftMargin = nextScale ? m_scaledTitleBarLeftMarginNext : m_scaledTitleBarLeftMargin;
     qreal &scaledTitleBarRightMargin = nextScale ? m_scaledTitleBarRightMarginNext : m_scaledTitleBarRightMargin;
+    qreal &scaledTitleSidePadding = nextScale ? m_scaledTitleSidePaddingNext : m_scaledTitleSidePadding;
 
     qreal topMargin = m_internalSettings->titleBarTopMargin();
     qreal bottomMargin = m_internalSettings->titleBarBottomMargin();
@@ -2019,6 +2020,8 @@ void Decoration::setScaledTitleBarMargins(const bool nextScale)
     qreal &borderSizeLeftRight = nextScale ? m_scaledBorderLeftRightNext : m_scaledBorderLeftRight;
     scaledTitleBarLeftMargin = scaledTitleBarLeftMarginMaximizedHorizontally - borderSizeLeftRight;
     scaledTitleBarRightMargin = scaledTitleBarRightMarginMaximizedHorizontally - borderSizeLeftRight;
+
+    scaledTitleSidePadding = KDecoration3::snapToPixelGrid(m_internalSettings->titleSidePadding() * m_x11Scale, scale);
 }
 
 void Decoration::setScaledButtonDimensions()
