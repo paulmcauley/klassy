@@ -28,6 +28,7 @@
 #include <KDecoration3/DecorationButtonGroup>
 
 // Qt
+#include <QFont>
 #include <QHash>
 #include <QLineEdit>
 #include <QMenu>
