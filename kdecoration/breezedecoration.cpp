@@ -1798,12 +1798,12 @@ QPair<QRectF, Qt::Alignment> Decoration::captionRect(bool minimumAppMenuBar) con
     if (hideTitleBar()) {
         return qMakePair(QRect(), Qt::AlignCenter);
     } else {
-        auto c = window();
-
         qreal captionHeight = this->captionHeight();
 
-        qreal leftOffset = m_leftButtons->buttons().isEmpty() ? m_scaledTitleSidePadding : m_leftButtons->geometry().x() + m_leftButtons->geometry().width() + m_scaledTitleSidePadding;
-        qreal rightOffset = m_rightButtons->buttons().isEmpty() ? m_scaledTitleSidePadding : size().width() - m_rightButtons->geometry().x() + m_scaledTitleSidePadding;
+        qreal leftOffset = m_leftButtons->buttons().isEmpty() ? m_scaledTitleSidePadding
+                                                              : m_leftButtons->geometry().x() + m_leftButtons->geometry().width() + m_scaledTitleSidePadding;
+        qreal rightOffset =
+            m_rightButtons->buttons().isEmpty() ? m_scaledTitleSidePadding : size().width() - m_rightButtons->geometry().x() + m_scaledTitleSidePadding;
 
         bool appMenuBarVisible = false;
         if (m_appMenuBarButtons && !m_appMenuBarButtons->buttons().isEmpty() && m_appMenuBarButtons->takesSpace() && m_appMenuBarButtons->visibleWidth() > 1) {
