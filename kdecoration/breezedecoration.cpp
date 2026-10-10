@@ -44,6 +44,7 @@
 #include <QPainter>
 #include <QTextStream>
 #include <QTimer>
+#include <QtNumeric>
 
 #include <cmath>
 #include <mutex>
@@ -1629,8 +1630,8 @@ void Decoration::paintTitleBar(QPainter *painter, const QRectF &repaintRegion)
 
             QRectF visibleAppMenuBarRect(m_appMenuBarButtons->visibleTopLeft(),
                                          QSizeF(m_appMenuBarButtons->visibleWidth(), m_appMenuBarButtons->geometry().height() + separatorHeight));
-            bool notAtLeftEdge = visibleAppMenuBarRect.left() > borderLeft();
-            bool notAtRightEdge = visibleAppMenuBarRect.right() < (rect().right() - borderRight());
+            bool notAtLeftEdge = !qFuzzyCompare(visibleAppMenuBarRect.left(), borderLeft());
+            bool notAtRightEdge = !qFuzzyCompare(visibleAppMenuBarRect.right(), rect().right() - borderRight());
             bool maximized = isMaximized();
             Corners corners;
             if (!maximized) {
