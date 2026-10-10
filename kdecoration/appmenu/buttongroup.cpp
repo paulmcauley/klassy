@@ -500,7 +500,7 @@ void AppMenuButtonGroup::updateOverflow(QRectF availableRect)
     const qreal searchBtnWidth = m_searchButton ? m_searchButton->geometry().width() + spacing() : 0;
     const qreal ellipsisWidth = AppMenuTextButton::ellipsisWidth(m_font, m_decoration->window()->scale());
     if (expandsOnHover()) {
-        const qreal captionMargins = m_decoration->internalSettings()->titleBarLeftMargin() + m_decoration->internalSettings()->titleBarRightMargin();
+        const qreal captionMargins = m_decoration->scaledTitleSidePadding(false) * 2;
         const QRectF maxCaptionSize = m_decoration->getMaxCaptionSize().adjusted(0, 0, captionMargins, 0);
         const qreal captionSize = qMin(maxCaptionSize.width(), availableRect.width() - overflowBtnWidth - searchBtnWidth - captionMargins);
         const qreal captionOffset = captionSize + captionMargins;
@@ -520,16 +520,25 @@ void AppMenuButtonGroup::updateOverflow(QRectF availableRect)
             m_overflowButton->setVisible(false);
         }
     } else {
-        // First pass: check if all enabled text buttons fit without overflow button.
+        // First pass: reset ellipsis flags and get index of last enabled text button
+        int lastEnabledTextButtonIndex = -1;
+        int numTextButtons = m_textButtons.size();
+        for (int i = 0; i < numTextButtons; ++i) {
+            m_textButtons[i]->setHasEllipsis(false, false);
+            if (m_textButtons[i]->isEnabled()) {
+                lastEnabledTextButtonIndex = i;
+            }
+        }
+
+        // Second pass: check if all enabled text buttons fit without overflow button.
         // We perform this pass without side effects to avoid layout thrashing in Qt.
         qreal totalTextWidth = 0;
         bool allFit = true;
-        auto lastTextButton = m_textButtons.constLast();
-        for (auto &tb : std::as_const(m_textButtons)) {
-            tb->setHasEllipsis(false, false);
-            if (tb->isEnabled()) {
-                totalTextWidth += tb->geometry().width();
-                if (tb != lastTextButton) {
+
+        for (int i = 0; i <= lastEnabledTextButtonIndex; ++i) {
+            if (m_textButtons[i]->isEnabled()) {
+                totalTextWidth += m_textButtons[i]->geometry().width();
+                if (i != lastEnabledTextButtonIndex) {
                     totalTextWidth += spacing();
                 }
                 if (searchBtnWidth + totalTextWidth > availableUnexpandedWidth) {
@@ -557,8 +566,9 @@ void AppMenuButtonGroup::updateOverflow(QRectF availableRect)
             }
         } else if (expandsOnHover()) {
             qreal remainingMaxWidth = availableExpandedWidth - searchBtnWidth;
-            // Second pass: Mark which ones are in the fully expanded menu by setting visibility
+            // Third pass: Mark which ones are in the fully expanded menu by setting visibility
             bool fitsInExpanded = true;
+
             for (auto &rawButton : buttons()) {
                 auto button = qobject_cast<AppMenuButton *>(rawButton);
                 if (!button) {
@@ -570,7 +580,7 @@ void AppMenuButtonGroup::updateOverflow(QRectF availableRect)
                     continue;
                 }
                 const qreal w = button->geometry().width();
-                const bool isLastTextButton = button == lastTextButton;
+                const bool isLastEnabledTextButton = button == m_textButtons[lastEnabledTextButtonIndex];
                 if (m_overflowButton && button == m_overflowButton) {
                     if (!fitsInExpanded) {
                         m_overflowButton->setVisible(true);
@@ -580,10 +590,10 @@ void AppMenuButtonGroup::updateOverflow(QRectF availableRect)
                     }
                 } else if (m_searchButton && button == m_searchButton) {
                     m_searchButton->setVisible(true);
-                } else if (fitsInExpanded && fuzzyLessThanOrEqual(w + (isLastTextButton ? 0 : overflowBtnWidth), remainingMaxWidth)) {
+                } else if (fitsInExpanded && fuzzyLessThanOrEqual(w + (isLastEnabledTextButton ? 0 : overflowBtnWidth), remainingMaxWidth)) {
                     remainingMaxWidth -= w;
                     maxVisibleWidth += w;
-                    if (!isLastTextButton) {
+                    if (!isLastEnabledTextButton) {
                         remainingMaxWidth -= spacing();
                         maxVisibleWidth += spacing();
                     }
@@ -593,16 +603,16 @@ void AppMenuButtonGroup::updateOverflow(QRectF availableRect)
                     fitsInExpanded = false;
                 }
             }
-            // Third pass: apply opacity and calculate min width
+            // Fourth pass: apply opacity and calculate min width
             const bool isUnexpanded = qFuzzyCompare(m_expansionFraction, 0);
-            qreal remainingMinWidth = availableUnexpandedWidth - ellipsisWidth;
-            qreal remainingExpandedWidth =
-                remainingMinWidth + (availableExpandedWidth - availableUnexpandedWidth + searchBtnWidth + overflowBtnWidth) * m_expansionFraction;
+            qreal remainingMinWidth =
+                availableUnexpandedWidth - ellipsisWidth + spacing(); // add spacing to account for fact that last button doesn't need spacing
+            qreal remainingExpandedWidth = remainingMinWidth
+                + (availableExpandedWidth - availableUnexpandedWidth + searchBtnWidth + overflowBtnWidth + spacing() + ellipsisWidth)
+                    * m_expansionFraction; // add spacing to account for fact that last button doesn't need spacing
             bool fitsInMin = true;
             bool fitsInCurrentExpansion = true;
             auto buttons = this->buttons();
-            auto firstButton = buttons.constFirst();
-            auto lastButton = buttons.constLast();
             AppMenuButton *lastUnexpandedButton = nullptr;
             bool reverseLoop = m_position == AppMenuPosition::Right;
             auto forButton = [&](KDecoration3::DecorationButton *const &rawButton) {
@@ -610,17 +620,8 @@ void AppMenuButtonGroup::updateOverflow(QRectF availableRect)
                 if (!(button && button->isVisible())) {
                     return;
                 }
-                bool isLastButton;
-                if (reverseLoop) {
-                    isLastButton = rawButton == firstButton;
-                } else {
-                    isLastButton = rawButton == lastButton;
-                }
 
-                qreal w = button->geometry().width();
-                if (!isLastButton) {
-                    w += spacing();
-                }
+                qreal w = button->geometry().width() + spacing();
 
                 qreal opacity = 0;
                 if (fitsInMin && fuzzyLessThanOrEqual(w, remainingMinWidth)) {
@@ -658,7 +659,7 @@ void AppMenuButtonGroup::updateOverflow(QRectF availableRect)
             // add ellipsis to last opaque unexpanded button
             if (auto lastUnexpandedTextButton = qobject_cast<AppMenuTextButton *>(lastUnexpandedButton)) {
                 m_hasEllipsis = true;
-                minVisibleWidth += ellipsisWidth;
+                minVisibleWidth += ellipsisWidth - spacing(); // last unexpanded button doesn't need spacing so subtract
                 if (reverseLoop) {
                     lastUnexpandedTextButton->setHasEllipsis(true, true);
 
@@ -669,14 +670,14 @@ void AppMenuButtonGroup::updateOverflow(QRectF availableRect)
         } else {
             qreal remainingWidth = availableExpandedWidth - searchBtnWidth - overflowBtnWidth;
 
-            // Second pass: apply visibility and calculate final width
+            // Third pass: apply visibility and calculate final width
             bool fits = true;
             for (auto &tb : std::as_const(m_textButtons)) {
                 if (!tb) {
                     continue;
                 }
                 if (fits && tb->isEnabled()) {
-                    qreal spacing = (tb == lastTextButton) ? 0 : this->spacing();
+                    qreal spacing = (tb == m_textButtons[lastEnabledTextButtonIndex]) ? 0 : this->spacing();
                     const qreal w = tb->geometry().width() + spacing;
                     if (w <= remainingWidth) {
                         tb->setVisible(true);
