@@ -751,9 +751,9 @@ void AppMenuButtonGroup::updateGeometry()
     const qreal rightOffset = isRightButtons ? (decoRect.width() - m_decoration->rightButtons()->geometry().left() + m_decoration->scaledButtonSpacingRight())
                                              : m_decoration->borderRight();
 
-    m_activeHoverArea = QRectF(isLeftButtons ? m_decoration->leftButtons()->geometry().topRight() : QPointF(m_decoration->borderLeft(), 0),
-                               isRightButtons ? m_decoration->rightButtons()->geometry().bottomLeft()
-                                              : QPointF(decoRect.right() - m_decoration->borderRight(), m_decoration->borderTop()));
+    m_activeHoverArea = QRectF(
+        isLeftButtons ? m_decoration->leftButtons()->geometry().topRight() : QPointF(m_decoration->borderLeft(), 0),
+        QPointF(isRightButtons ? m_decoration->rightButtons()->geometry().left() : decoRect.right() - m_decoration->borderRight(), m_decoration->borderTop()));
 
     const qreal scaledTitleBarSeparatorHeight = m_decoration->scaledTitleBarSeparatorHeight(false);
     qreal scaledTitleBarTopMargin = m_decoration->scaledTitleBarTopMargin(false);
