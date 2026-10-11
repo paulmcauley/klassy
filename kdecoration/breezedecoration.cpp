@@ -2338,14 +2338,13 @@ void Decoration::hoverMoveEvent(QHoverEvent *event)
             }
 
             m_appMenuBarButtons->setHovered(hovered);
-            m_appMenuBarButtons->updateShowing();
 
             if (!dragStarted && overAppMenuBarButtons && hovered)
                 m_appMenuBarButtons->handleHoverMove(position);
         }
     }
 
-    if (!titleHovered) { // maybe need only !dragStarted?
+    if (!titleHovered) {
         KDecoration3::Decoration::hoverMoveEvent(event);
     }
 }
