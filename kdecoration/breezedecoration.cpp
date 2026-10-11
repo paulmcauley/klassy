@@ -2296,7 +2296,7 @@ void Decoration::mousePressEvent(QMouseEvent *event)
     }
 
     const QPointF pos = event->position();
-    QRectF activeAppMenuBarHoverArea = m_appMenuBarButtons->activeHoverArea();
+    QRectF activeAppMenuBarHoverArea = m_appMenuBarButtons->titleHoverArea();
 
     if (!activeAppMenuBarHoverArea.isNull() && activeAppMenuBarHoverArea.contains(pos) && event->button() == Qt::MouseButton::LeftButton) {
         m_appMenuBarButtons->startDragMove(pos);
@@ -2325,7 +2325,7 @@ void Decoration::hoverMoveEvent(QHoverEvent *event)
     bool dragStarted = false;
     // Update AppMenuBar button showing state based on title hover
     if (m_appMenuBarButtons) {
-        QRectF activeAppMenuBarHoverArea = m_appMenuBarButtons->activeHoverArea();
+        QRectF activeAppMenuBarHoverArea = m_appMenuBarButtons->titleHoverArea();
 
         if (!activeAppMenuBarHoverArea.isNull()) {
             const bool overAppMenuBarButtons = m_appMenuBarButtons && m_appMenuBarButtons->geometry().contains(position);

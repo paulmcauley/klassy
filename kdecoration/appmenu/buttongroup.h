@@ -97,9 +97,9 @@ public:
         return m_appMenuModel;
     }
 
-    QRectF activeHoverArea()
+    QRectF titleHoverArea()
     {
-        return m_activeHoverArea;
+        return m_titleHoverArea;
     }
     void handleHoverMove(const QPointF &pos);
 
@@ -326,7 +326,7 @@ private:
     int m_overflowIndex = -1;
     int m_searchIndex = -1;
     bool m_overflowing = false;
-    QRectF m_activeHoverArea;
+    QRectF m_titleHoverArea;
     bool m_hovered = false;
     bool m_showing = true;
     bool m_animationEnabled = true;
