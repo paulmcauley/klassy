@@ -200,7 +200,7 @@ void AppMenuButtonGroup::setFont()
     m_font = m_decoration->internalSettings()->appMenuBarButtonUseSystemMenuFont() ? QApplication::font("QMenu") : m_decoration->settings()->font();
 }
 
-KDecoration3::DecorationButton *AppMenuButtonGroup::buttonAt(QPoint pos) const
+KDecoration3::DecorationButton *AppMenuButtonGroup::buttonAt(QPointF pos) const
 {
     for (auto &tb : std::as_const(m_textButtons)) {
         if (tb && tb->isVisible() && tb->geometry().contains(pos)) {
@@ -219,16 +219,17 @@ KDecoration3::DecorationButton *AppMenuButtonGroup::buttonAt(QPoint pos) const
 void AppMenuButtonGroup::startDragMove(const QPointF &pos)
 {
     m_pressedPoint = pos;
+    m_preStartDragging = true;
 }
 
 void AppMenuButtonGroup::resetDragMove()
 {
-    m_pressedPoint = QPointF(-1, -1);
+    m_preStartDragging = false;
 }
 
 bool AppMenuButtonGroup::dragMoveTick(const QPointF &pos)
 {
-    if (!(m_pressedPoint.x() > -0.5 && m_pressedPoint.y() > -0.5)) {
+    if (!m_preStartDragging) {
         return false;
     }
 
@@ -1119,21 +1120,27 @@ void AppMenuButtonGroup::onHoverAnimationValueChanged(const QVariant &value)
     }
 
     if (risesOnHover() && qFuzzyCompare(value.toReal(), 1.0)) {
-        sendFakeHoverEventAtLastKnownPosition();
+        sendFakeHoverEventAtCursorPosition();
     }
 }
 
 // when the rise animation occurs or a window drag occurs, the widget can move under the mouse pointer, rather than the mouse pointer moving over the widget
 // In this case at the end of the animation the button won't be in a hovered state even if the mouse pointer is over the button
 // Therefore, create a QHoverEvent manually for this situation
-void AppMenuButtonGroup::sendFakeHoverEventAtLastKnownPosition()
+void AppMenuButtonGroup::sendFakeHoverEventAtCursorPosition()
 {
     auto *deco = const_cast<Decoration *>(qobject_cast<const Decoration *>(decoration()));
-    QPointF lastDecoMousePos, lastGlobalMousePos;
     if (deco) {
-        deco->lastMousePositions(&lastDecoMousePos, &lastGlobalMousePos);
-        if (lastDecoMousePos.x() > -0.5 && lastDecoMousePos.y() > -0.5 && lastGlobalMousePos.x() > -0.5 && lastGlobalMousePos.y() > -0.5) {
-            QHoverEvent hoverEvent(QEvent::HoverMove, lastDecoMousePos, lastGlobalMousePos, lastDecoMousePos);
+        QPointF globalPos = QCursor::pos();
+        QPointF localPos;
+        if (KWindowSystem::isPlatformX11()) {
+            localPos = globalPos - deco->windowPos();
+        } else {
+            localPos = globalPos;
+        }
+        QRectF hoverArea = activeHoverArea();
+        if (!hoverArea.isNull() && hoverArea.contains(localPos)) {
+            QHoverEvent hoverEvent(QEvent::HoverMove, localPos, globalPos, localPos);
             QApplication::sendEvent(deco, &hoverEvent);
         }
     }
@@ -1268,7 +1275,7 @@ void AppMenuButtonGroup::handleHoverMove(const QPointF &pos)
         return;
     }
 
-    KDecoration3::DecorationButton *newHoveredButton = buttonAt(pos.toPoint());
+    KDecoration3::DecorationButton *newHoveredButton = buttonAt(pos);
 
     if (m_hoveredButton != newHoveredButton) {
         m_hoveredButton = newHoveredButton;

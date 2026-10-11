@@ -2298,7 +2298,7 @@ void Decoration::mousePressEvent(QMouseEvent *event)
     const QPointF pos = event->position();
     QRectF activeAppMenuBarHoverArea = m_appMenuBarButtons->activeHoverArea();
 
-    if (!activeAppMenuBarHoverArea.isNull() && activeAppMenuBarHoverArea.contains(pos) && event->button() == Qt::LeftButton) {
+    if (!activeAppMenuBarHoverArea.isNull() && activeAppMenuBarHoverArea.contains(pos) && event->button() == Qt::MouseButton::LeftButton) {
         m_appMenuBarButtons->startDragMove(pos);
         event->setAccepted(false);
     }
@@ -2309,45 +2309,45 @@ void Decoration::mouseReleaseEvent(QMouseEvent *event)
     KDecoration3::Decoration::mouseReleaseEvent(event);
     if (m_appMenuBarButtons) {
         m_appMenuBarButtons->resetDragMove();
-        m_appMenuBarButtons->sendFakeHoverEventAtLastKnownPosition();
+        m_appMenuBarButtons->sendFakeHoverEventAtCursorPosition();
     }
 }
 
 void Decoration::hoverMoveEvent(QHoverEvent *event)
 {
     QPointF position = event->position();
-    const bool overAppMenuBarButtons = m_appMenuBarButtons && m_appMenuBarButtons->geometry().contains(position);
     if (m_internalSettings->unisonHovering()) {
         const bool groupContains = m_leftButtons->geometry().contains(position) || m_rightButtons->geometry().contains(position);
         setButtonUnisonHovered(groupContains);
     }
 
+    bool titleHovered = false;
+    bool dragStarted = false;
     // Update AppMenuBar button showing state based on title hover
     if (m_appMenuBarButtons) {
         QRectF activeAppMenuBarHoverArea = m_appMenuBarButtons->activeHoverArea();
 
         if (!activeAppMenuBarHoverArea.isNull()) {
-            const bool titleHovered = activeAppMenuBarHoverArea.contains(position);
+            const bool overAppMenuBarButtons = m_appMenuBarButtons && m_appMenuBarButtons->geometry().contains(position);
+            bool titleHovered = activeAppMenuBarHoverArea.contains(position);
+            bool hovered = titleHovered;
 
-            if (overAppMenuBarButtons)
-                m_appMenuBarButtons->handleHoverMove(position);
-
-            // storing these values used at end of drag or risesonHover animation as can't get cursor position on Wayland
-            m_lastMouseGlobalPosition = event->globalPosition();
-            m_lastMouseLocalPosition = position;
-
-            if (m_appMenuBarButtons->dragMoveTick(position)) {
-                m_appMenuBarButtons->setHovered(false);
-                m_appMenuBarButtons->updateShowing();
-                return;
-            } else {
-                m_appMenuBarButtons->setHovered(titleHovered);
-                m_appMenuBarButtons->updateShowing();
+            dragStarted = m_appMenuBarButtons->dragMoveTick(position);
+            if (dragStarted) {
+                hovered = false;
             }
+
+            m_appMenuBarButtons->setHovered(hovered);
+            m_appMenuBarButtons->updateShowing();
+
+            if (!dragStarted && overAppMenuBarButtons && hovered)
+                m_appMenuBarButtons->handleHoverMove(position);
         }
     }
 
-    KDecoration3::Decoration::hoverMoveEvent(event);
+    if (!titleHovered) { // maybe need only !dragStarted?
+        KDecoration3::Decoration::hoverMoveEvent(event);
+    }
 }
 
 void Decoration::updateAppMenuBar()

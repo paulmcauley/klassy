@@ -241,7 +241,7 @@ public:
     void startDragMove(const QPointF &pos);
     void resetDragMove();
     bool dragMoveTick(const QPointF &pos);
-    void sendFakeHoverEventAtLastKnownPosition();
+    void sendFakeHoverEventAtCursorPosition();
 
 private:
     void onMenuReadyForSearch();
@@ -302,7 +302,7 @@ private:
 
     bool isMenuOpen() const;
 
-    KDecoration3::DecorationButton *buttonAt(QPoint pos) const;
+    KDecoration3::DecorationButton *buttonAt(QPointF pos) const;
 
     void unpressAllButtons();
 
@@ -320,7 +320,8 @@ private:
     Decoration *m_decoration;
     AppMenuModel *m_appMenuModel;
     QFont m_font;
-    QPointF m_pressedPoint = QPointF(-1, -1);
+    QPointF m_pressedPoint;
+    bool m_preStartDragging = false;
     int m_currentIndex = -1;
     int m_overflowIndex = -1;
     int m_searchIndex = -1;
