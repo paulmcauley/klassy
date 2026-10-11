@@ -753,8 +753,8 @@ void AppMenuButtonGroup::updateGeometry()
     const qreal rightOffset = isRightButtons ? (decoRect.width() - m_decoration->rightButtons()->geometry().left() + m_decoration->scaledButtonSpacingRight())
                                              : m_decoration->borderRight();
 
-    m_activeHoverArea = QRectF(
-        isLeftButtons ? m_decoration->leftButtons()->geometry().topRight() : QPointF(m_decoration->borderLeft(), 0),
+    m_titleHoverArea = QRectF(
+        QPointF(isLeftButtons ? m_decoration->leftButtons()->geometry().right() : m_decoration->borderLeft(), 0),
         QPointF(isRightButtons ? m_decoration->rightButtons()->geometry().left() : decoRect.right() - m_decoration->borderRight(), m_decoration->borderTop()));
 
     const qreal scaledTitleBarSeparatorHeight = m_decoration->scaledTitleBarSeparatorHeight(false);
@@ -1138,7 +1138,7 @@ void AppMenuButtonGroup::sendFakeHoverEventAtCursorPosition()
         } else {
             localPos = globalPos;
         }
-        QRectF hoverArea = activeHoverArea();
+        QRectF hoverArea = titleHoverArea();
         if (!hoverArea.isNull() && hoverArea.contains(localPos)) {
             QHoverEvent hoverEvent(QEvent::HoverMove, localPos, globalPos, localPos);
             QApplication::sendEvent(deco, &hoverEvent);
