@@ -2586,7 +2586,10 @@ void Decoration::paintAppOrWindowIcon(QPainter *painter, QRect iconRect, QColor 
         QIcon icon = QIcon::fromTheme(QStringLiteral("kde-symbolic"));
         icon.paint(painter, iconRect);
     } else {
+        painter->save();
+        painter->setOpacity(m_captionOpacity);
         c->icon().paint(painter, iconRect);
+        painter->restore();
     }
     if (originalPalette == QPalette()) {
         iconLoader->resetPalette();
