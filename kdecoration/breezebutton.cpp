@@ -181,7 +181,6 @@ void Button::paint(QPainter *painter, const QRectF &repaintRegion)
     if (!m_d) {
         return;
     }
-    auto c = m_d->window();
 
     m_buttonPalette =
         m_d->decorationColors()->buttonPalette(static_cast<DecorationButtonType>(type())); // this is in paint() in-case caching type on m_buttonPalette changes
@@ -225,7 +224,7 @@ void Button::paint(QPainter *painter, const QRectF &repaintRegion)
 
         const QRectF iconRect(geometry().topLeft(), m_scaledIconSize);
 
-        m_d->paintAppOrWindowIcon(painter, iconRect.toRect(), m_foregroundColor, m_d->internalSettings()->showTitleAppIcon());
+        m_d->paintAppOrWindowIcon(painter, iconRect.toRect(), m_foregroundColor, true);
 
     } else {
         drawIcon(painter);
