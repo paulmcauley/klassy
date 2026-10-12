@@ -1647,9 +1647,9 @@ void Decoration::paintTitleBar(QPainter *painter, const QRectF &repaintRegion)
                                 + QPointF(titleParams->appIconWidth + titleParams->appIconSpaceWidthBefore + titleParams->appIconSpaceWidthAfter, 0));
 
         // draw text and icon
-        painter->drawText(documentNameRect, Qt::TextFlag::TextSingleLine, titleParams->documentName);
+        painter->drawText(documentNameRect, Qt::TextFlag::TextSingleLine | Qt::TextFlag::TextDontClip, titleParams->documentName);
         paintAppOrWindowIcon(painter, iconRect.toRect(), fontColor, false);
-        painter->drawText(appNameRect, Qt::TextFlag::TextSingleLine, titleParams->appName);
+        painter->drawText(appNameRect, Qt::TextFlag::TextSingleLine | Qt::TextFlag::TextDontClip, titleParams->appName);
     }
 
     // draw underline
