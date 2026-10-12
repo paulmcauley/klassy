@@ -519,6 +519,10 @@ void AppMenuButtonGroup::updateOverflow(QRectF availableRect)
     qreal maxVisibleWidth = searchBtnWidth;
     m_hasEllipsis = false;
     if (m_behaviour == AppMenuBehaviour::SearchOnly) {
+        for (auto &tb : std::as_const(m_textButtons)) {
+            if (tb)
+                tb->setVisible(false);
+        }
         if (m_overflowButton) {
             m_overflowButton->setVisible(false);
         }
