@@ -19,6 +19,7 @@
 #include <KDecoration3/DecorationSettings>
 #include <KSharedConfig>
 
+#include <QFont>
 #include <QPainterPath>
 #include <QPalette>
 #include <QVariant>
@@ -73,9 +74,24 @@ public:
     {
         return m_captionOpacity;
     }
-    QRectF getMaxCaptionSize() const;
+
+    struct TitleParams {
+        bool useRawTitle;
+        QString rawTitle;
+        QString documentName;
+        QString appName;
+        qreal documentNameWidth;
+        qreal appNameWidth;
+        qreal appIconSpaceWidthAfter;
+        qreal appIconSpaceWidthBefore;
+        qreal appIconWidth;
+        qreal maxTitleWidth;
+        qreal maxTitleWidthCeil;
+        bool appNameIsRawTitle;
+    };
+    std::shared_ptr<TitleParams> getTitleParams();
     //* return the rect in which caption will be drawn
-    QPair<QRectF, Qt::Alignment> captionRect(bool minimumAppMenuBar) const;
+    QPair<QRectF, Qt::Alignment> captionRect(std::shared_ptr<TitleParams>) const;
 
     //*@name active state change animation
     //@{
@@ -132,6 +148,8 @@ public:
     //@}
 
     void setWindowOutlineOverrideColor(const bool on, const QColor &color);
+
+    void paintAppOrWindowIcon(QPainter *painter, QRect iconRect, QColor windowTextColor, bool paintWindowMenu) const;
 
     QPainterPath *titleBarPath()
     {
@@ -310,6 +328,7 @@ private:
     void calculateWindowShape();
     void calculateTitleBarShape();
     void paintTitleBar(QPainter *painter, const QRectF &repaintRegion);
+    QFont fontWithAddedWeight() const;
     void updateShadow(const bool forceUpdateCache = false, bool noCache = false);
     std::shared_ptr<KDecoration3::DecorationShadow> createShadowObject(QColor shadowColor);
     void updateWindowOutline(bool override = false);

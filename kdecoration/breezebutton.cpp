@@ -17,7 +17,6 @@
 #include <KDecoration3/DecoratedWindow>
 #include <KDecoration3/DecorationButtonGroup>
 #include <KDecoration3/ScaleHelpers>
-#include <KIconLoader>
 #include <KWindowSystem>
 
 #include <QPainter>
@@ -206,18 +205,7 @@ void Button::paint(QPainter *painter, const QRectF &repaintRegion)
 
         const QRectF iconRect(geometry().topLeft(), m_scaledIconSize);
 
-        KIconLoader *iconLoader = KIconLoader::global();
-        const QPalette originalPalette = iconLoader->customPalette();
-        QPalette palette = c->palette();
-        palette.setColor(QPalette::WindowText, m_foregroundColor);
-
-        iconLoader->setCustomPalette(palette);
-        c->icon().paint(painter, iconRect.toRect());
-        if (originalPalette == QPalette()) {
-            iconLoader->resetPalette();
-        } else {
-            iconLoader->setCustomPalette(originalPalette);
-        }
+        m_d->paintAppOrWindowIcon(painter, iconRect.toRect(), m_foregroundColor, m_d->internalSettings()->showTitleAppIcon());
 
     } else {
         drawIcon(painter);
