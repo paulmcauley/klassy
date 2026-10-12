@@ -502,9 +502,11 @@ void AppMenuButtonGroup::updateOverflow(QRectF availableRect)
     const qreal ellipsisWidth = AppMenuTextButton::ellipsisWidth(m_font, m_decoration->window()->scale());
     if (expandsOnHover()) {
         const qreal captionMargins = m_decoration->scaledTitleSidePadding(false) * 2;
-        const QRectF maxCaptionSize = m_decoration->getMaxCaptionSize().adjusted(0, 0, captionMargins, 0);
-        const qreal captionSize = qMin(maxCaptionSize.width(), availableRect.width() - overflowBtnWidth - searchBtnWidth - captionMargins);
-        const qreal captionOffset = captionSize + captionMargins;
+
+        auto titleParams = m_decoration->getTitleParams();
+        const qreal maxCaptionWidth = titleParams->maxTitleWidthCeil + captionMargins;
+        const qreal captionWidth = qMin(maxCaptionWidth, availableRect.width() - overflowBtnWidth - searchBtnWidth - captionMargins);
+        const qreal captionOffset = captionWidth + captionMargins;
         if (m_position == AppMenuPosition::Left) {
             availableRect.adjust(0, 0, -captionOffset, 0);
         } else {

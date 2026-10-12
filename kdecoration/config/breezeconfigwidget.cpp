@@ -168,6 +168,9 @@ ConfigWidget::ConfigWidget(QObject *parent, const KPluginMetaData &data, const Q
     connect(m_ui.boldButtonIcons, qOverload<int>(&QComboBox::currentIndexChanged), this, &ConfigWidget::updateWindowControlPreviewIcons);
 
     // titlebar
+    connect(m_ui.showTitleDocumentName, &QAbstractButton::toggled, this, &ConfigWidget::updateChanged, Qt::ConnectionType::DirectConnection);
+    connect(m_ui.showTitleAppIcon, &QAbstractButton::toggled, this, &ConfigWidget::updateChanged, Qt::ConnectionType::DirectConnection);
+    connect(m_ui.showTitleAppName, &QAbstractButton::toggled, this, &ConfigWidget::updateChanged, Qt::ConnectionType::DirectConnection);
     connect(m_ui.matchTitleBarToApplicationColor, &QAbstractButton::toggled, this, &ConfigWidget::updateChanged, Qt::ConnectionType::DirectConnection);
     connect(m_ui.titleBarAppMenuBarEnabled,
             &QAbstractButton::toggled,
@@ -232,6 +235,9 @@ void ConfigWidget::load()
     m_ui.boldButtonIcons->setCurrentIndex(m_internalSettings->boldButtonIcons());
 
     // titlebar
+    m_ui.showTitleDocumentName->setChecked(m_internalSettings->showTitleDocumentName());
+    m_ui.showTitleAppIcon->setChecked(m_internalSettings->showTitleAppIcon());
+    m_ui.showTitleAppName->setChecked(m_internalSettings->showTitleAppName());
     m_ui.matchTitleBarToApplicationColor->setChecked(m_internalSettings->matchTitleBarToApplicationColor());
     setAppMenuBarEnabledCheckBoxState();
     m_ui.drawBackgroundGradient->setChecked(m_internalSettings->drawBackgroundGradient());
@@ -301,6 +307,9 @@ void ConfigWidget::saveMain(QString saveAsPresetName)
     m_internalSettings->setBoldButtonIcons(m_ui.boldButtonIcons->currentIndex());
 
     // titlebar
+    m_internalSettings->setShowTitleDocumentName(m_ui.showTitleDocumentName->isChecked());
+    m_internalSettings->setShowTitleAppIcon(m_ui.showTitleAppIcon->isChecked());
+    m_internalSettings->setShowTitleAppName(m_ui.showTitleAppName->isChecked());
     m_internalSettings->setMatchTitleBarToApplicationColor(m_ui.matchTitleBarToApplicationColor->isChecked());
     m_internalSettings->setAppMenuBarEnabled(m_ui.titleBarAppMenuBarEnabled->isChecked());
     m_internalSettings->setDrawBackgroundGradient(m_ui.drawBackgroundGradient->isChecked());
@@ -388,6 +397,9 @@ void ConfigWidget::defaults()
     m_ui.boldButtonIcons->setCurrentIndex(m_internalSettings->boldButtonIcons());
 
     // titlebar
+    m_ui.showTitleDocumentName->setChecked(m_internalSettings->showTitleDocumentName());
+    m_ui.showTitleAppIcon->setChecked(m_internalSettings->showTitleAppIcon());
+    m_ui.showTitleAppName->setChecked(m_internalSettings->showTitleAppName());
     m_ui.matchTitleBarToApplicationColor->setChecked(m_internalSettings->matchTitleBarToApplicationColor());
     setAppMenuBarEnabledCheckBoxState();
     m_ui.drawBackgroundGradient->setChecked(m_internalSettings->drawBackgroundGradient());
@@ -515,6 +527,12 @@ void ConfigWidget::updateChanged()
         modified = true;
 
     // titlebar
+    else if (m_ui.showTitleDocumentName->isChecked() != m_internalSettings->showTitleDocumentName())
+        modified = true;
+    else if (m_ui.showTitleAppIcon->isChecked() != m_internalSettings->showTitleAppIcon())
+        modified = true;
+    else if (m_ui.showTitleAppName->isChecked() != m_internalSettings->showTitleAppName())
+        modified = true;
     else if (m_ui.matchTitleBarToApplicationColor->isChecked() != m_internalSettings->matchTitleBarToApplicationColor())
         modified = true;
     else if (m_ui.titleBarAppMenuBarEnabled->isChecked() != m_internalSettings->appMenuBarEnabled()

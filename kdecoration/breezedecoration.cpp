@@ -31,6 +31,7 @@
 
 #include <KColorUtils>
 #include <KConfigGroup>
+#include <KIconLoader>
 #include <KPluginFactory>
 #include <KWindowSystem>
 
@@ -1579,22 +1580,77 @@ void Decoration::paintTitleBar(QPainter *painter, const QRectF &repaintRegion)
     painter->restore();
 
     // draw caption
-    QFont font = s->font();
-    if (m_internalSettings->boldTitle() && c->isActive()) {
-        QFont::Weight weight = font.weight();
-        if (weight < QFont::Black) {
-            weight = (weight >= QFont::DemiBold) ? QFont::ExtraBold : QFont::DemiBold;
-        }
-        font.setWeight(weight);
-    }
-    painter->setFont(font);
+    painter->setFont(fontWithAddedWeight());
     QColor fontColor = this->fontColor();
     fontColor = ColorTools::alphaMix(fontColor, m_captionOpacity);
     painter->setPen(fontColor);
-    const auto [maxCaptionRectangle, alignment] = captionRect(false);
-    const QString caption = painter->fontMetrics().elidedText(c->caption(), Qt::ElideMiddle, maxCaptionRectangle.width());
-    QRectF captionBoundingRect;
-    painter->drawText(maxCaptionRectangle, alignment | Qt::TextSingleLine, caption, &captionBoundingRect);
+
+    auto titleParams = getTitleParams();
+    QRectF maxCaptionRectangle;
+    Qt::Alignment alignment;
+    std::tie(maxCaptionRectangle, alignment) = captionRect(titleParams);
+
+    QRectF fullTitleRect;
+    // elide and draw text
+    if (titleParams->useRawTitle) {
+        const QString title = painter->fontMetrics().elidedText(c->caption(), Qt::TextElideMode::ElideMiddle, maxCaptionRectangle.width());
+        painter->drawText(maxCaptionRectangle, alignment | Qt::TextFlag::TextSingleLine, title, &fullTitleRect);
+    } else {
+        qreal totalWidth = titleParams->maxTitleWidth;
+        // if not enough space, first collapse AppName into icon only
+        if ((titleParams->maxTitleWidth > maxCaptionRectangle.width()) && m_internalSettings->showTitleAppIcon() && !titleParams->appNameIsRawTitle) {
+            totalWidth -= titleParams->appNameWidth;
+            titleParams->appName = QStringLiteral("");
+            titleParams->appNameWidth = 0;
+        }
+
+        // elide documentName and recalculate elided width and totalWidth
+        if (titleParams->appNameIsRawTitle) {
+            titleParams->appName = painter->fontMetrics().elidedText(titleParams->appName,
+                                                                     Qt::TextElideMode::ElideMiddle,
+                                                                     maxCaptionRectangle.width() - titleParams->appIconWidth
+                                                                         - titleParams->appIconSpaceWidthBefore - titleParams->appIconSpaceWidthAfter);
+            totalWidth -= titleParams->appNameWidth;
+            titleParams->appNameWidth = painter->fontMetrics().boundingRect(titleParams->appName).width();
+            totalWidth += titleParams->appNameWidth;
+        } else { // normal case for eliding documentName
+            titleParams->documentName = painter->fontMetrics().elidedText(titleParams->documentName,
+                                                                          Qt::TextElideMode::ElideMiddle,
+                                                                          maxCaptionRectangle.width() - titleParams->appIconWidth
+                                                                              - titleParams->appIconSpaceWidthBefore - titleParams->appIconSpaceWidthAfter);
+            totalWidth -= titleParams->documentNameWidth;
+            titleParams->documentNameWidth = painter->fontMetrics().boundingRect(titleParams->documentName).width();
+            totalWidth += titleParams->documentNameWidth;
+        }
+
+        qreal textHeight = painter->fontMetrics().height();
+        QRectF documentNameRect = QRectF(QPointF(0, 0), QSizeF(titleParams->documentNameWidth, textHeight));
+        QRectF iconRect = QRectF(QPointF(0, 0), QSizeF(titleParams->appIconWidth, titleParams->appIconWidth));
+        QRectF appNameRect = QRectF(QPointF(0, 0), QSizeF(titleParams->appNameWidth, textHeight));
+
+        fullTitleRect = QRectF(QPointF(0, 0), QSizeF(totalWidth, textHeight));
+
+        // set alignments
+        if (alignment.testFlag(Qt::AlignmentFlag::AlignCenter)) {
+            fullTitleRect.moveCenter(maxCaptionRectangle.center());
+        } else if (alignment.testFlag(Qt::AlignmentFlag::AlignLeft)) {
+            fullTitleRect.moveCenter(maxCaptionRectangle.center()); // center vertically first
+            fullTitleRect.moveLeft(maxCaptionRectangle.left());
+        } else if (alignment.testFlag(Qt::AlignmentFlag::AlignRight)) {
+            fullTitleRect.moveCenter(maxCaptionRectangle.center()); // center vertically first
+            fullTitleRect.moveRight(maxCaptionRectangle.right());
+        }
+        documentNameRect.moveTopLeft(fullTitleRect.topLeft());
+        iconRect.moveCenter(documentNameRect.center());
+        iconRect.moveLeft(documentNameRect.right() + titleParams->appIconSpaceWidthBefore);
+        appNameRect.moveTopLeft(documentNameRect.topRight()
+                                + QPointF(titleParams->appIconWidth + titleParams->appIconSpaceWidthBefore + titleParams->appIconSpaceWidthAfter, 0));
+
+        // draw text and icon
+        painter->drawText(documentNameRect, Qt::TextFlag::TextSingleLine, titleParams->documentName);
+        paintAppOrWindowIcon(painter, iconRect.toRect(), fontColor, false);
+        painter->drawText(appNameRect, Qt::TextFlag::TextSingleLine, titleParams->appName);
+    }
 
     // draw underline
     if (m_internalSettings->underlineTitle() && c->isActive()) {
@@ -1606,10 +1662,7 @@ void Decoration::paintTitleBar(QPainter *painter, const QRectF &repaintRegion)
         underlinePen.setWidthF(penWidth);
         painter->setPen(underlinePen);
         qreal halfPenWidth = penWidth / 2;
-        QLine underline(captionBoundingRect.left(),
-                        captionBoundingRect.bottom() + halfPenWidth,
-                        captionBoundingRect.right(),
-                        captionBoundingRect.bottom() + halfPenWidth);
+        QLine underline(fullTitleRect.left(), fullTitleRect.bottom() + halfPenWidth, fullTitleRect.right(), fullTitleRect.bottom() + halfPenWidth);
         painter->drawLine(underline);
     }
 
@@ -1686,6 +1739,22 @@ void Decoration::paintTitleBar(QPainter *painter, const QRectF &repaintRegion)
         painter->setPen(fontColor);
         m_appMenuBarButtons->paint(painter, repaintRegion);
     }
+}
+
+QFont Decoration::fontWithAddedWeight() const
+{
+    auto s = settings();
+    auto c = window();
+
+    QFont font = s->font();
+    if (m_internalSettings->boldTitle() && c->isActive()) {
+        QFont::Weight weight = font.weight();
+        if (weight < QFont::Black) {
+            weight = (weight >= QFont::DemiBold) ? QFont::ExtraBold : QFont::DemiBold;
+        }
+        font.setWeight(weight);
+    }
+    return font;
 }
 
 // outputs the icon size + padding to make a small button, the actual icon size, and the background size to make a small button
@@ -1793,7 +1862,7 @@ qreal Decoration::captionHeight() const
 }
 
 //________________________________________________________________
-QPair<QRectF, Qt::Alignment> Decoration::captionRect(bool minimumAppMenuBar) const
+QPair<QRectF, Qt::Alignment> Decoration::captionRect(std::shared_ptr<TitleParams> titleParams) const
 {
     if (hideTitleBar()) {
         return qMakePair(QRect(), Qt::AlignCenter);
@@ -1808,7 +1877,7 @@ QPair<QRectF, Qt::Alignment> Decoration::captionRect(bool minimumAppMenuBar) con
         bool appMenuBarVisible = false;
         if (m_appMenuBarButtons && !m_appMenuBarButtons->buttons().isEmpty() && m_appMenuBarButtons->takesSpace() && m_appMenuBarButtons->visibleWidth() > 1) {
             appMenuBarVisible = true;
-            const qreal menuWidth = m_scaledTitleSidePadding + (minimumAppMenuBar ? m_appMenuBarButtons->minimumWidth() : m_appMenuBarButtons->visibleWidth());
+            const qreal menuWidth = m_scaledTitleSidePadding + m_appMenuBarButtons->visibleWidth();
             if (m_appMenuBarButtons->position() == AppMenuPosition::Right) {
                 rightOffset += menuWidth + m_scaledButtonSpacingRight;
             } else {
@@ -1837,16 +1906,18 @@ QPair<QRectF, Qt::Alignment> Decoration::captionRect(bool minimumAppMenuBar) con
 
             // full caption rect
             const QRectF fullRect = QRectF(0, yOffset, size().width(), captionHeight);
-            QRectF boundingRect = getMaxCaptionSize();
 
             // text bounding rect
-            boundingRect.setTop(yOffset);
-            boundingRect.setHeight(captionHeight);
-            boundingRect.moveLeft((size().width() - boundingRect.width()) / 2);
+            QRectF maxTitleTextRect;
 
-            if (boundingRect.left() < leftOffset) {
+            maxTitleTextRect.setWidth(titleParams->maxTitleWidthCeil);
+            maxTitleTextRect.setTop(yOffset);
+            maxTitleTextRect.setHeight(captionHeight);
+            maxTitleTextRect.moveLeft((size().width() - maxTitleTextRect.width()) / 2);
+
+            if (maxTitleTextRect.left() < leftOffset) {
                 return qMakePair(maxRect, Qt::AlignVCenter | Qt::AlignLeft);
-            } else if (boundingRect.right() > size().width() - rightOffset) {
+            } else if (maxTitleTextRect.right() > size().width() - rightOffset) {
                 return qMakePair(maxRect, Qt::AlignVCenter | Qt::AlignRight);
             } else {
                 return qMakePair(fullRect, Qt::AlignCenter);
@@ -2437,13 +2508,91 @@ void Decoration::setCaptionOpacity(qreal value)
     update();
 }
 
-QRectF Decoration::getMaxCaptionSize() const
+std::shared_ptr<Decoration::TitleParams> Decoration::getTitleParams()
 {
+    QFont font = fontWithAddedWeight();
+    auto c = window();
     qreal scale = window()->scale();
-    QRectF boundingRect = settings()->fontMetrics().boundingRect(window()->caption());
-    boundingRect.setWidth(qCeil(boundingRect.width() * scale) / scale);
-    boundingRect.setHeight(qCeil(boundingRect.height() * scale) / scale);
-    return boundingRect;
+    QFontMetricsF fontMetrics(font);
+
+    std::shared_ptr<TitleParams> titleParams = std::make_shared<TitleParams>();
+
+    titleParams->useRawTitle = m_internalSettings->showTitleDocumentName() && !m_internalSettings->showTitleAppIcon() && m_internalSettings->showTitleAppName();
+
+    titleParams->rawTitle = c->caption();
+    if (titleParams->useRawTitle) {
+        titleParams->maxTitleWidth = fontMetrics.boundingRect(titleParams->rawTitle).width();
+        titleParams->documentNameWidth = -1;
+        titleParams->appNameWidth = -1;
+        titleParams->appIconSpaceWidthAfter = -1;
+        titleParams->appIconSpaceWidthBefore = -1;
+        titleParams->appIconWidth = -1;
+    } else {
+        int emDashIndex = titleParams->rawTitle.lastIndexOf(QStringLiteral(" — "));
+        bool noEmDash = emDashIndex == -1;
+
+        titleParams->appNameIsRawTitle = false;
+        // set appName
+        if (m_internalSettings->showTitleAppName()) {
+            if (noEmDash) {
+                titleParams->appName = titleParams->rawTitle;
+                titleParams->appNameIsRawTitle = true;
+            } else {
+                int numCharsAfterEmDash = titleParams->rawTitle.size() - (emDashIndex + 3); // the emdash separator has 3 characters including spaces
+                titleParams->appName = titleParams->rawTitle.last(numCharsAfterEmDash);
+            }
+        } else {
+            titleParams->appName = QStringLiteral("");
+        }
+
+        // set documentName
+        if (m_internalSettings->showTitleDocumentName()) {
+            if (noEmDash) {
+                titleParams->documentName = QStringLiteral("");
+            } else {
+                titleParams->documentName = titleParams->rawTitle.first(emDashIndex);
+            }
+        } else {
+            titleParams->documentName = QStringLiteral("");
+        }
+
+        // calculate widths
+        titleParams->documentNameWidth = fontMetrics.boundingRect(titleParams->documentName).width();
+        titleParams->appNameWidth = fontMetrics.boundingRect(titleParams->appName).width();
+        titleParams->appIconSpaceWidthAfter = m_internalSettings->showTitleAppIcon() ? fontMetrics.boundingRect(QStringLiteral("-")).width()
+                                                                                     : 0; // have to use a dash as a space will return a size of 0
+        titleParams->appIconSpaceWidthBefore = titleParams->appIconSpaceWidthAfter * 2;
+        titleParams->appIconWidth = m_internalSettings->showTitleAppIcon() ? m_scaledIconSize : 0;
+        titleParams->maxTitleWidth = titleParams->documentNameWidth + titleParams->appIconWidth + titleParams->appIconSpaceWidthBefore
+            + titleParams->appIconSpaceWidthAfter + titleParams->appNameWidth;
+    }
+
+    titleParams->maxTitleWidthCeil = qCeil(titleParams->maxTitleWidth * scale) / scale;
+    return titleParams;
+}
+
+void Decoration::paintAppOrWindowIcon(QPainter *painter, QRect iconRect, QColor windowTextColor, bool paintWindowMenuIcon) const
+{
+    auto c = window();
+
+    KIconLoader *iconLoader = KIconLoader::global();
+    const QPalette originalPalette = iconLoader->customPalette();
+    QPalette palette = c->palette();
+    palette.setColor(QPalette::WindowText, windowTextColor);
+
+    iconLoader->setCustomPalette(palette);
+
+    if (paintWindowMenuIcon && m_internalSettings->showTitleAppIcon()) {
+        QIcon icon = QIcon::fromTheme(QStringLiteral("kde-symbolic"));
+        icon.paint(painter, iconRect);
+    } else {
+        c->icon().paint(painter, iconRect);
+    }
+    if (originalPalette == QPalette()) {
+        iconLoader->resetPalette();
+    } else {
+        iconLoader->setCustomPalette(originalPalette);
+    }
 }
 
 } // namespace
