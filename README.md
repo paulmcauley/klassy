@@ -172,6 +172,10 @@ git checkout master
 ./install.sh
 ```
 
+```
+kwin_wayland --replace &
+```
+
 Uninstall build script:
 
 ```
