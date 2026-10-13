@@ -20,6 +20,8 @@
 
 #include <KColorScheme>
 #include <KColorUtils>
+#include <KConfig>
+#include <KConfigGroup>
 #include <KIconLoader>
 #include <KWindowSystem>
 #if __has_include(<KX11Extras>)
@@ -37,6 +39,7 @@
 #include <QMdiArea>
 #include <QMenuBar>
 #include <QPainter>
+#include <QStandardPaths>
 #include <QStyleOption>
 #include <QTreeView>
 #include <QWindow>
@@ -172,6 +175,79 @@ void Helper::loadConfig()
     Metrics::Frame_FrameRadius =
         StyleConfigData::frameCornerRadius() ? StyleConfigData::frameCustomCornerRadius() : qMin(5.0, _decorationConfig->windowCornerRadius());
     Metrics::CheckBox_Radius = qMax(0.0, Metrics::Frame_FrameRadius - 1);
+
+    // Load the Plasma desktop theme palette
+    loadPlasmaPalette();
+}
+
+//____________________________________________________________________
+void Helper::loadPlasmaPalette()
+{
+    _isPlasmaPalette = false;
+
+    const KConfigGroup plasmaThemeGroup(KSharedConfig::openConfig(QStringLiteral("plasmarc")), QStringLiteral("Theme"));
+    const QString themeName = plasmaThemeGroup.readEntry("name", QStringLiteral("default"));
+    QString colorsPath = QStandardPaths::locate(QStandardPaths::GenericDataLocation, QStringLiteral("plasma/desktoptheme/%1/colors").arg(themeName));
+    if (colorsPath.isEmpty() && themeName != QStringLiteral("default")) {
+        colorsPath = QStandardPaths::locate(QStandardPaths::GenericDataLocation, QStringLiteral("plasma/desktoptheme/default/colors"));
+    }
+    if (colorsPath.isEmpty()) {
+        return;
+    }
+
+    const KConfig colorsConfig(colorsPath, KConfig::SimpleConfig);
+    const KConfigGroup windowColors(&colorsConfig, QStringLiteral("Colors:Window"));
+    const KConfigGroup selectionColors(&colorsConfig, QStringLiteral("Colors:Selection"));
+
+    const QPalette basePalette(QApplication::palette());
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    constexpr auto highlightColorRole = QPalette::Accent;
+#else
+    constexpr auto highlightColorRole = QPalette::Highlight;
+#endif
+
+    const QColor background = windowColors.readEntry("BackgroundNormal", basePalette.color(QPalette::Active, QPalette::Window));
+    const QColor foreground = windowColors.readEntry("ForegroundNormal", basePalette.color(QPalette::Active, QPalette::WindowText));
+    const QColor disabledForeground = windowColors.readEntry("ForegroundInactive", basePalette.color(QPalette::Disabled, QPalette::WindowText));
+    const QColor highlight = selectionColors.readEntry("BackgroundNormal", basePalette.color(QPalette::Active, highlightColorRole));
+    const QColor highlightedText = selectionColors.readEntry("ForegroundNormal", basePalette.color(QPalette::Active, QPalette::HighlightedText));
+
+    QPalette palette(basePalette);
+    for (const auto colorGroup : {QPalette::Active, QPalette::Inactive}) {
+        palette.setColor(colorGroup, QPalette::Window, background);
+        palette.setColor(colorGroup, QPalette::Base, background);
+        palette.setColor(colorGroup, QPalette::WindowText, foreground);
+        palette.setColor(colorGroup, QPalette::Text, foreground);
+        palette.setColor(colorGroup, highlightColorRole, highlight);
+        palette.setColor(colorGroup, QPalette::HighlightedText, highlightedText);
+    }
+
+    palette.setColor(QPalette::Disabled, QPalette::Window, background);
+    palette.setColor(QPalette::Disabled, QPalette::Base, background);
+    palette.setColor(QPalette::Disabled, QPalette::WindowText, disabledForeground);
+    palette.setColor(QPalette::Disabled, QPalette::Text, disabledForeground);
+    palette.setColor(QPalette::Disabled, highlightColorRole, highlight);
+    palette.setColor(QPalette::Disabled, QPalette::HighlightedText, highlightedText);
+
+    _plasmaPalette = palette;
+    _isPlasmaPalette = true;
+}
+
+//____________________________________________________________________
+QPalette Helper::plasmaThemeMenuPalette(const QPalette &fallbackPalette) const
+{
+    if (!StyleConfigData::menuUsePlasmaTheme() || !_isPlasmaPalette) {
+        return fallbackPalette;
+    }
+
+    // The Plasma theme only makes sense for menus belonging to Plasma itself
+    // (e.g. the panel's global menu/Application Menu widget). Menus of regular
+    // application windows keep using the KDE (kdeglobals) application colors.
+    if (qApp->applicationName() != QStringLiteral("plasmashell")) {
+        return fallbackPalette;
+    }
+
+    return _plasmaPalette;
 }
 
 QColor transparentize(const QColor &color, qreal amount)

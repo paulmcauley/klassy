@@ -903,6 +903,16 @@
          </item>
         </layout>
        </item>
+        <item row="8" column="0" colspan="2">
+         <widget class="QCheckBox" name="_menuUsePlasmaTheme">
+          <property name="toolTip">
+           <string>Only affects Plasma's own menus, such as the panel's global menu (Application Menu) widget. Menus of application windows always use the KDE application color scheme.</string>
+          </property>
+          <property name="text">
+           <string>Use Plasma Theme colors for Plasma's own menus</string>
+          </property>
+         </widget>
+        </item>
        <item row="1" column="0">
         <spacer name="horizontalSpacer_5">
          <property name="orientation">
