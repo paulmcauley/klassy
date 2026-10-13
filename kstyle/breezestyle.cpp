@@ -240,7 +240,6 @@ ToolButtonMenuArrowStyle toolButtonMenuArrowStyle(const QStyleOption *option)
 
     return ToolButtonMenuArrowStyle::None;
 }
-
 }
 
 namespace Klassy
@@ -297,6 +296,16 @@ Style::Style()
                  QStringLiteral("notifyChange"),
                  this,
                  SLOT(configurationChanged()));
+
+    // notified when the Plasma desktop theme changes, to refresh menus using the Plasma theme palette
+    if (qApp->applicationName() == QStringLiteral("plasmashell")) {
+        dbus.connect(QString(),
+                     QStringLiteral("/plasmarc"),
+                     QStringLiteral("org.kde.kconfig.notify"),
+                     QStringLiteral("ConfigChanged"),
+                     this,
+                     SLOT(updatePlasmaThemeMenuPalette()));
+    }
 
     connect(&g_dBusUpdateNotifier, &DBusUpdateNotifier::decorationSettingsUpdate, this, &Style::generateDecorationColorsOnDecorationColorSettingsUpdate);
 
@@ -2293,6 +2302,14 @@ void Style::configurationChanged()
 
     // reload configuration
     loadConfiguration();
+}
+
+//_____________________________________________________________________
+void Style::updatePlasmaThemeMenuPalette()
+{
+    if (StyleConfigData::menuUsePlasmaTheme()) {
+        _helper->loadPlasmaPalette();
+    }
 }
 
 //_____________________________________________________________________
@@ -5013,7 +5030,7 @@ bool Style::drawPanelMenuPrimitive(const QStyleOption *option, QPainter *painter
         return true;
     }
 
-    const auto &palette(option->palette);
+    const auto palette(_helper->plasmaThemeMenuPalette(option->palette));
     const bool hasAlpha(_helper->hasAlphaChannel(widget));
     const auto seamlessEdges = _helper->menuSeamlessEdges(widget);
     auto background(_helper->frameBackgroundColor(palette));
@@ -6260,7 +6277,7 @@ bool Style::drawMenuItemControl(const QStyleOption *option, QPainter *painter, c
     // but with width set to the widest menu item width.
     // see QMenuPrivate::updateActionRects()
     const auto &rect = option->rect;
-    const auto &palette = option->palette;
+    const auto palette = _helper->plasmaThemeMenuPalette(option->palette);
 
     // store state
     const State &state = option->state;
@@ -6410,7 +6427,7 @@ bool Style::drawMenuItemControl(const QStyleOption *option, QPainter *painter, c
         // icon state
         const QIcon::State iconState(sunken ? QIcon::On : QIcon::Off);
         const qreal dpr = painter->device() ? painter->device()->devicePixelRatioF() : qApp->devicePixelRatio();
-        const QPixmap pixmap = _helper->coloredIcon(menuItemOption->icon, menuItemOption->palette, iconRect.size(), dpr, mode, iconState);
+        const QPixmap pixmap = _helper->coloredIcon(menuItemOption->icon, palette, iconRect.size(), dpr, mode, iconState);
         drawItemPixmap(painter, iconRect, Qt::AlignCenter, pixmap);
     }
 
