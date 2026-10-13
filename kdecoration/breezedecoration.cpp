@@ -486,6 +486,10 @@ void Decoration::updateOverrideWindowOutlineFromButtonAnimationState()
 //________________________________________________________________
 void Decoration::setScaledBorderSizes(const bool nextScale)
 {
+    if (style() == KDecoration3::Style::Shadow) {
+        return 0;
+    }
+
     auto c = window();
     qreal scale = nextScale ? c->nextScale() : c->scale();
 
