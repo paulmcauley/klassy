@@ -115,7 +115,7 @@ It is recommended to first try the bundled Presets in Klassy Settings before any
 <a name="installation"/>
 
 ## Installation
-_Klassy_ master branch requires Plasma 6.6, or later, so please check you have this in kinfocenter before trying to install. For the master branch you should compile from source.
+_Klassy_ plasma6.8 branch requires Plasma 6.8, or later, so please check you have this in kinfocenter before trying to install. For the master branch you should compile from source.
 
 <a name="compile"/>
 
@@ -165,7 +165,7 @@ cd klassy
 ```
 
 ```
-git checkout master
+git checkout plasma6.8
 ```
 
 ```
