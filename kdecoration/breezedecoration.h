@@ -84,7 +84,7 @@ public:
         qreal appNameWidth;
         qreal appIconSpaceWidthAfter;
         qreal appIconSpaceWidthBefore;
-        qreal appIconWidth;
+        int appIconWidth;
         qreal maxTitleWidth;
         qreal maxTitleWidthCeil;
         bool appNameIsRawTitle;
