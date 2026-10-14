@@ -125,7 +125,7 @@ void ButtonSizing::setVisibleUiElements()
     case InternalSettings::EnumButtonShape::FullHeightRectangle:
     case InternalSettings::EnumButtonShape::FullHeightRoundedRectangle:
 
-        setWindowTitle(i18n("Button Sizing & Spacing - Klassy Settings"));
+        setWindowTitle(i18n("Button Sizing & Spacing — Klassy Settings"));
         m_ui.groupBox->setTitle(i18n("Full-height Rectangle Sizing && Spacing"));
 
         m_ui.scaleBackgroundPercentLabel->setVisible(false);
@@ -186,7 +186,7 @@ void ButtonSizing::setVisibleUiElements()
 
     case InternalSettings::EnumButtonShape::IntegratedRoundedRectangle:
     case InternalSettings::EnumButtonShape::IntegratedRoundedRectangleGrouped:
-        setWindowTitle(i18n("Button Sizing & Spacing - Klassy Settings"));
+        setWindowTitle(i18n("Button Sizing & Spacing — Klassy Settings"));
         m_ui.groupBox->setTitle(i18n("Integrated Rounded Rectangle Sizing && Spacing"));
 
         m_ui.scaleBackgroundPercentLabel->setVisible(false);
@@ -246,7 +246,7 @@ void ButtonSizing::setVisibleUiElements()
         break;
 
     default:
-        setWindowTitle(i18n("Button Size & Spacing - Klassy Settings"));
+        setWindowTitle(i18n("Button Size & Spacing — Klassy Settings"));
         m_ui.groupBox->setTitle(i18n("Button Size && Spacing"));
 
         m_ui.scaleBackgroundPercentLabel->setVisible(true);

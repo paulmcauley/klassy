@@ -23,7 +23,7 @@ SystemIconGeneration::SystemIconGeneration(KSharedConfig::Ptr config, KSharedCon
     , m_parent(parent)
 {
     m_ui->setupUi(this);
-    this->setWindowTitle(i18n("System Icon Generation - Klassy Settings"));
+    this->setWindowTitle(i18n("System Icon Generation — Klassy Settings"));
     populateComboBoxesWithSystemIconThemes();
 
     connect(m_ui->klassyIconThemeInherits, &QComboBox::currentTextChanged, this, &SystemIconGeneration::updateChanged, Qt::ConnectionType::DirectConnection);

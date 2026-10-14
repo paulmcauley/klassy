@@ -559,44 +559,44 @@ void ConfigWidget::buttonSizingButtonClicked()
 
 void ConfigWidget::buttonColorsButtonClicked()
 {
-    m_buttonColorsDialog->setWindowTitle(i18n("Button Colours - Klassy Settings"));
+    m_buttonColorsDialog->setWindowTitle(i18n("Button Colours — Klassy Settings"));
     m_buttonColorsDialog->setWindowIcon(QIcon::fromTheme(QStringLiteral("color-management")));
     m_buttonColorsDialog->show();
 }
 
 void ConfigWidget::buttonBehaviourButtonClicked()
 {
-    m_buttonBehaviourDialog->setWindowTitle(i18n("Button Behaviour - Klassy Settings"));
+    m_buttonBehaviourDialog->setWindowTitle(i18n("Button Behaviour — Klassy Settings"));
     m_buttonBehaviourDialog->show();
 }
 
 void ConfigWidget::titleBarSpacingButtonClicked()
 {
-    m_titleBarSpacingDialog->setWindowTitle(i18n("Titlebar Spacing - Klassy Settings"));
+    m_titleBarSpacingDialog->setWindowTitle(i18n("Titlebar Spacing — Klassy Settings"));
     m_titleBarSpacingDialog->show();
 }
 
 void ConfigWidget::titleBarOpacityButtonClicked()
 {
-    m_titleBarOpacityDialog->setWindowTitle(i18n("Titlebar Opacity - Klassy Settings"));
+    m_titleBarOpacityDialog->setWindowTitle(i18n("Titlebar Opacity — Klassy Settings"));
     m_titleBarOpacityDialog->show();
 }
 
 void ConfigWidget::shadowStyleButtonClicked()
 {
-    m_shadowStyleDialog->setWindowTitle(i18n("Shadow Style - Klassy Settings"));
+    m_shadowStyleDialog->setWindowTitle(i18n("Shadow Style — Klassy Settings"));
     m_shadowStyleDialog->show();
 }
 
 void ConfigWidget::windowOutlineStyleButtonClicked()
 {
-    m_windowOutlineStyleDialog->setWindowTitle(i18n("Window Outline Style - Klassy Settings"));
+    m_windowOutlineStyleDialog->setWindowTitle(i18n("Window Outline Style — Klassy Settings"));
     m_windowOutlineStyleDialog->show();
 }
 
 void ConfigWidget::presetsButtonClicked()
 {
-    m_loadPresetDialog->setWindowTitle(i18n("Presets - Klassy Settings"));
+    m_loadPresetDialog->setWindowTitle(i18n("Presets — Klassy Settings"));
     m_loadPresetDialog->initPresetsList();
     m_loadPresetDialog->show();
 }
