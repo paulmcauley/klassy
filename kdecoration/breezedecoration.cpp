@@ -339,9 +339,7 @@ bool Decoration::init()
 
     // a change in font might cause the borders to change
     connect(s.get(), &KDecoration3::DecorationSettings::fontChanged, this, &Decoration::recalculateBorders);
-    connect(s.get(), &KDecoration3::DecorationSettings::fontChanged, this, &Decoration::updateBlur); // for the case when a border with transparency
     connect(s.get(), &KDecoration3::DecorationSettings::spacingChanged, this, &Decoration::recalculateBorders);
-    connect(s.get(), &KDecoration3::DecorationSettings::spacingChanged, this, &Decoration::updateBlur); // for the case when a border with transparency
 
     // color cache update
     // The slot will only update if the UUID has changed, hence preventing unnecessary multiple colour cache updates
@@ -2110,6 +2108,7 @@ void Decoration::updateScale()
     setScaledIconSizes(false);
     setScaledButtonDimensions();
     updateButtonsGeometry();
+    updateBlur();
 }
 
 void Decoration::updateNextScale()
@@ -2118,6 +2117,7 @@ void Decoration::updateNextScale()
     setScaledTitleBarMargins(true);
     setScaledIconSizes(true);
     recalculateBorders();
+    updateBlur();
 }
 
 // for unison hovering
