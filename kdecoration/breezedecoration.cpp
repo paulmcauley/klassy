@@ -2353,7 +2353,6 @@ void Decoration::hoverLeaveEvent(QHoverEvent *event)
 
     if (m_appMenuBarButtons) {
         m_appMenuBarButtons->setHovered(false);
-        m_appMenuBarButtons->updateShowing();
     }
     KDecoration3::Decoration::hoverLeaveEvent(event);
 }
@@ -2367,9 +2366,9 @@ void Decoration::mousePressEvent(QMouseEvent *event)
     }
 
     const QPointF pos = event->position();
-    QRectF activeAppMenuBarHoverArea = m_appMenuBarButtons->titleHoverArea();
+    QRectF appMenuBarHoverArea = m_appMenuBarButtons->titleHoverArea();
 
-    if (!activeAppMenuBarHoverArea.isNull() && activeAppMenuBarHoverArea.contains(pos) && event->button() == Qt::MouseButton::LeftButton) {
+    if (appMenuBarHoverArea.contains(pos) && event->button() == Qt::MouseButton::LeftButton) {
         m_appMenuBarButtons->startDragMove(pos);
         event->setAccepted(false);
     }
@@ -2378,9 +2377,18 @@ void Decoration::mousePressEvent(QMouseEvent *event)
 void Decoration::mouseReleaseEvent(QMouseEvent *event)
 {
     KDecoration3::Decoration::mouseReleaseEvent(event);
+
     if (m_appMenuBarButtons) {
         m_appMenuBarButtons->resetDragMove();
-        m_appMenuBarButtons->sendFakeHoverEventAtCursorPosition();
+
+        QPointF position = event->position();
+        QRectF hoverArea = m_appMenuBarButtons->titleHoverArea();
+        if (hoverArea.contains(position)) {
+            // on drag the menu is set not to be hovered; this restores the hover state at the end of a drag
+            m_appMenuBarButtons->setHovered(true);
+        } else {
+            m_appMenuBarButtons->setHovered(false);
+        }
     }
 }
 
@@ -2396,23 +2404,20 @@ void Decoration::hoverMoveEvent(QHoverEvent *event)
     bool dragStarted = false;
     // Update AppMenuBar button showing state based on title hover
     if (m_appMenuBarButtons) {
-        QRectF activeAppMenuBarHoverArea = m_appMenuBarButtons->titleHoverArea();
+        QRectF appMenuBarHoverArea = m_appMenuBarButtons->titleHoverArea();
 
-        if (!activeAppMenuBarHoverArea.isNull()) {
-            const bool overAppMenuBarButtons = m_appMenuBarButtons && m_appMenuBarButtons->geometry().contains(position);
-            bool titleHovered = activeAppMenuBarHoverArea.contains(position);
-            bool hovered = titleHovered;
+        const bool overAppMenuBarButtons = m_appMenuBarButtons && m_appMenuBarButtons->geometry().contains(position);
+        bool titleHovered = appMenuBarHoverArea.contains(position);
+        bool hovered = titleHovered;
 
-            dragStarted = m_appMenuBarButtons->dragMoveTick(position);
-            if (dragStarted) {
-                hovered = false;
-            }
-
-            m_appMenuBarButtons->setHovered(hovered);
-
-            if (!dragStarted && overAppMenuBarButtons && hovered)
-                m_appMenuBarButtons->handleHoverMove(position);
+        dragStarted = m_appMenuBarButtons->dragMoveTick(position);
+        if (dragStarted) {
+            hovered = false;
         }
+        m_appMenuBarButtons->setHovered(hovered);
+
+        if (!dragStarted && overAppMenuBarButtons && hovered)
+            m_appMenuBarButtons->handleHoverMove(position);
     }
 
     if (!titleHovered) {
@@ -2426,7 +2431,7 @@ void Decoration::updateAppMenuBar()
     if (window()->hasApplicationMenu() && m_internalSettings->appMenuBarEnabled() && !m_appMenuBarButtons) {
         m_appMenuBarButtons = new AppMenuButtonGroup(this);
         connect(m_appMenuBarButtons, &AppMenuButtonGroup::menuUpdated, this, &Decoration::updateButtonsGeometry);
-        connect(m_appMenuBarButtons, &AppMenuButtonGroup::geometryAnimationChanged, this, &Decoration::updateButtonsGeometryDelayed);
+        connect(m_appMenuBarButtons, &AppMenuButtonGroup::geometryAnimationChanged, this, &Decoration::updateButtonsGeometry);
         m_appMenuBarButtons->updateAppMenuModel();
     } else if ((!window()->hasApplicationMenu() || !m_internalSettings->appMenuBarEnabled()) && m_appMenuBarButtons) {
         m_appMenuBarButtons->deleteLater();
