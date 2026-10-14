@@ -2566,7 +2566,7 @@ std::shared_ptr<Decoration::TitleParams> Decoration::getTitleParams()
         titleParams->appIconSpaceWidthAfter = m_internalSettings->showTitleAppIcon() ? fontMetrics.boundingRect(QStringLiteral("-")).width()
                                                                                      : 0; // have to use a dash as a space will return a size of 0
         titleParams->appIconSpaceWidthBefore = titleParams->appIconSpaceWidthAfter * 2;
-        titleParams->appIconWidth = m_internalSettings->showTitleAppIcon() ? m_scaledIconSize : 0;
+        titleParams->appIconWidth = m_internalSettings->showTitleAppIcon() ? qRound(m_scaledIconSize) : 0; // QIcon paint only accepts integer
         titleParams->maxTitleWidth = titleParams->documentNameWidth + titleParams->appIconWidth + titleParams->appIconSpaceWidthBefore
             + titleParams->appIconSpaceWidthAfter + titleParams->appNameWidth;
     }
