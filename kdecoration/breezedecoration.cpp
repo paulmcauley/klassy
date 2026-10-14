@@ -2360,7 +2360,6 @@ void Decoration::hoverLeaveEvent(QHoverEvent *event)
 void Decoration::mousePressEvent(QMouseEvent *event)
 {
     KDecoration3::Decoration::mousePressEvent(event);
-
     if (!m_internalSettings->appMenuBarButtonCanDragWindow() || !m_appMenuBarButtons) {
         return;
     }
@@ -2376,8 +2375,6 @@ void Decoration::mousePressEvent(QMouseEvent *event)
 
 void Decoration::mouseReleaseEvent(QMouseEvent *event)
 {
-    KDecoration3::Decoration::mouseReleaseEvent(event);
-
     if (m_appMenuBarButtons) {
         m_appMenuBarButtons->resetDragMove();
 
@@ -2390,6 +2387,8 @@ void Decoration::mouseReleaseEvent(QMouseEvent *event)
             m_appMenuBarButtons->setHovered(false);
         }
     }
+
+    KDecoration3::Decoration::mouseReleaseEvent(event);
 }
 
 void Decoration::hoverMoveEvent(QHoverEvent *event)
