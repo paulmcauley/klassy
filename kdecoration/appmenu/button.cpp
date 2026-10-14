@@ -54,9 +54,9 @@ AppMenuButton::AppMenuButton(DecorationButtonType type, Decoration *decoration, 
     connect(this, &AppMenuButton::clicked, this, &AppMenuButton::trigger);
     connect(this, &KDecoration3::DecorationButton::hoveredChanged, this, &AppMenuButton::updateAnimationState);
 
-    const auto *buttonGroup = qobject_cast<AppMenuButtonGroup *>(parent);
-    if (buttonGroup) {
-        setOpacity(buttonGroup->opacity());
+    m_buttonGroup = qobject_cast<AppMenuButtonGroup *>(parent);
+    if (m_buttonGroup) {
+        setOpacity(m_buttonGroup->opacity());
     }
 }
 

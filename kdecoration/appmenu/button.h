@@ -185,6 +185,8 @@ protected:
     DecorationButtonPalette *m_buttonPalette = nullptr;
 
 private:
+    AppMenuButtonGroup *m_buttonGroup = nullptr;
+
     void setSystemScale(QPainter *painter);
     void updateAnimationState(bool hovered);
 
