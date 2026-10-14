@@ -235,7 +235,7 @@ bool AppMenuButtonGroup::dragMoveTick(const QPointF &pos)
 
     const QPointF diff = pos - m_pressedPoint;
     if (diff.manhattanLength() >= QApplication::startDragDistance()) {
-        resetDragMove();
+        m_preStartDragging = false;
         unpressAllButtons();
         return true;
     }
@@ -1130,8 +1130,8 @@ void AppMenuButtonGroup::onHoverAnimationValueChanged(const QVariant &value)
     }
 }
 
-// when the rise animation occurs or a window drag occurs, the widget can move under the mouse pointer, rather than the mouse pointer moving over the widget
-// In this case at the end of the animation the button won't be in a hovered state even if the mouse pointer is over the button
+// when the rise animation occurs, the widget can move under the mouse pointer, rather than the mouse pointer moving over the widget
+// In this case, at the end of the animation, the button won't be in a hovered state even if the mouse pointer is over the button
 // Therefore, create a QHoverEvent manually for this situation
 void AppMenuButtonGroup::sendFakeHoverEventAtCursorPosition()
 {
@@ -1156,6 +1156,9 @@ void AppMenuButtonGroup::onShowingChanged(bool showing)
 {
     if (m_animationEnabled && m_animation->duration() > 0) {
         const QAbstractAnimation::Direction dir = showing ? QAbstractAnimation::Forward : QAbstractAnimation::Backward;
+        if (m_animation->state() == QAbstractAnimation::Running && m_animation->direction() != dir) {
+            m_animation->stop();
+        }
         m_animation->setDirection(dir);
         if (m_animation->state() != QAbstractAnimation::Running) {
             m_animation->start();
@@ -1184,7 +1187,7 @@ void AppMenuButtonGroup::updateHoverAnimationState(bool hovered)
 
     m_animation->setDirection(dir);
     if (m_animation->state() != QAbstractAnimation::Running) {
-        m_animation->resume();
+        m_animation->start();
     }
 }
 
