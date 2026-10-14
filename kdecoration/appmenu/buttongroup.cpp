@@ -107,17 +107,12 @@ AppMenuButtonGroup::AppMenuButtonGroup(Decoration *decoration)
     connect(this, &AppMenuButtonGroup::hoveredChanged, this, &AppMenuButtonGroup::updateShowing);
     connect(this, &AppMenuButtonGroup::currentIndexChanged, this, &AppMenuButtonGroup::updateShowing);
 
-    // Hover animation for AppMenuBar buttons
-    connect(this, &AppMenuButtonGroup::hoveredChanged, this, [this](bool hovered) {
-        updateHoverAnimationState(hovered);
-    });
-
     m_animationEnabled = decoration->internalSettings()->animationsEnabled();
     m_animation->setDuration(decoration->animationsDuration());
     m_animation->setStartValue(0.0);
     m_animation->setEndValue(1.0);
     m_animation->setEasingCurve(QEasingCurve::OutCirc);
-    connect(m_animation, &QVariantAnimation::valueChanged, this, &AppMenuButtonGroup::onHoverAnimationValueChanged);
+    connect(m_animation, &QVariantAnimation::valueChanged, this, &AppMenuButtonGroup::onAnimationValueChanged);
 
     auto decoratedClient = decoration->window();
     connect(decoratedClient, &KDecoration3::DecoratedWindow::hasApplicationMenuChanged, this, &AppMenuButtonGroup::onHasApplicationMenuChanged);
@@ -1111,25 +1106,6 @@ void AppMenuButtonGroup::onHitRight()
     trigger(desiredIndex, true);
 }
 
-void AppMenuButtonGroup::onHoverAnimationValueChanged(const QVariant &value)
-{
-    if (expandsOnHover()) {
-        setExpansionFraction(value.toReal());
-        if (m_behaviour == AppMenuBehaviour::RevealOnHover)
-            setOpacity(value.toReal());
-    } else {
-        setOpacity(value.toReal());
-    }
-
-    if (expandsOnHover() || risesOnHover()) {
-        Q_EMIT geometryAnimationChanged(value.toReal());
-    }
-
-    if (risesOnHover() && qFuzzyCompare(value.toReal(), 1.0)) {
-        sendFakeHoverEventAtCursorPosition();
-    }
-}
-
 // when the rise animation occurs, the widget can move under the mouse pointer, rather than the mouse pointer moving over the widget
 // In this case, at the end of the animation, the button won't be in a hovered state even if the mouse pointer is over the button
 // Therefore, create a QHoverEvent manually for this situation
@@ -1165,29 +1141,26 @@ void AppMenuButtonGroup::onShowingChanged(bool showing)
         }
     } else {
         const qreal target = showing ? 1.0 : 0.0;
-        onHoverAnimationValueChanged(QVariant(target));
+        onAnimationValueChanged(QVariant(target));
     }
 }
 
-void AppMenuButtonGroup::updateHoverAnimationState(bool hovered)
+void AppMenuButtonGroup::onAnimationValueChanged(const QVariant &value)
 {
-    if (!(m_decoration && m_decoration->animationsDuration() > 0)) {
-        return;
-    }
-    // Buttons are always visible — no hover fade
-    if (alwaysShow()) {
-        return;
-    }
-    // Don't fade out buttons while hovered or a menu is open
-    if (!hovered && isMenuOpen()) {
-        return;
+    if (expandsOnHover()) {
+        setExpansionFraction(value.toReal());
+        if (m_behaviour == AppMenuBehaviour::RevealOnHover)
+            setOpacity(value.toReal());
+    } else {
+        setOpacity(value.toReal());
     }
 
-    const QAbstractAnimation::Direction dir = hovered ? QAbstractAnimation::Forward : QAbstractAnimation::Backward;
+    if (expandsOnHover() || risesOnHover()) {
+        Q_EMIT geometryAnimationChanged(value.toReal());
+    }
 
-    m_animation->setDirection(dir);
-    if (m_animation->state() != QAbstractAnimation::Running) {
-        m_animation->start();
+    if (risesOnHover() && qFuzzyCompare(value.toReal(), 1.0)) {
+        sendFakeHoverEventAtCursorPosition();
     }
 }
 

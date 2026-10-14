@@ -253,9 +253,8 @@ private:
     void performDebouncedMenuUpdate();
     void onMenuUpdateThrottleTimeout();
     void onDelayedCacheTimerTimeout();
-    void onHoverAnimationValueChanged(const QVariant &value);
+    void onAnimationValueChanged(const QVariant &value);
     void onShowingChanged(bool hovered);
-    void updateHoverAnimationState(bool hovered);
     void onSubMenuReady(QMenu *menu);
 
 signals:
