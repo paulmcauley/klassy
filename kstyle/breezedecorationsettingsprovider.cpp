@@ -83,6 +83,11 @@ InternalSettingsPtr DecorationSettingsProvider::internalSettings()
                                               true); // this property is to indicate not to cache shadows or colours for an exception with a Preset
                                                      // -- this is because the Preset exception can alter shadows and colours
             }
+            if (internalSettings->exceptionShowInTitle()) {
+                internalSettings->setShowTitleDocumentName(internalSettings->exceptionShowTitleDocumentName());
+                internalSettings->setShowTitleAppIcon(internalSettings->exceptionShowTitleAppIcon());
+                internalSettings->setShowTitleAppName(internalSettings->exceptionShowTitleAppName());
+            }
             if (internalSettings->opaqueTitleBar()) {
                 internalSettings->setProperty("noCacheException", true);
             }
