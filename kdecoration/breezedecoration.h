@@ -506,13 +506,15 @@ bool Decoration::isBottomEdge() const
 
 bool Decoration::hideTitleBar() const
 {
+    if (!m_internalSettings->hideTitleBarChecked()) {
+        return false;
+    }
+
     bool hide = false;
     auto c = window();
 
     switch (m_internalSettings->hideTitleBar()) {
     default:
-    case InternalSettings::EnumHideTitleBar::Never:
-        break;
     case InternalSettings::EnumHideTitleBar::Always:
         hide = !c->isShaded();
         break;

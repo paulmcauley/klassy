@@ -49,7 +49,7 @@ void DecorationSettingsProvider::reconfigure()
 
     DecorationExceptionList exceptions;
     exceptions.readConfig(m_config);
-    m_exceptions = exceptions.getDefault();
+    m_exceptions = exceptions.getBundled();
     m_exceptions.append(exceptions.get());
 }
 

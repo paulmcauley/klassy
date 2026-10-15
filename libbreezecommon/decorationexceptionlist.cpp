@@ -18,23 +18,23 @@ namespace Klassy
 void DecorationExceptionList::readConfig(KSharedConfig::Ptr config, const bool readDefaults)
 {
     _exceptions.clear();
-    _defaultExceptions.clear();
+    _bundledExceptions.clear();
 
     // set the default exceptions that are bundled with Klassy
-    InternalSettingsPtr defaultException0(new InternalSettings());
-    defaultException0->setExceptionWindowPropertyType(InternalSettings::EnumExceptionWindowPropertyType::ExceptionWindowClassName);
-    defaultException0->setExceptionWindowPropertyPattern("");
-    defaultException0->setOpaqueTitleBar(false);
-    defaultException0->setExceptionProgramNamePattern("VirtualBox.*");
-    defaultException0->setPreventApplyOpacityToHeader(true);
-    _defaultExceptions.append(defaultException0);
+    InternalSettingsPtr bundledException0(new InternalSettings());
+    bundledException0->setExceptionWindowPropertyType(InternalSettings::EnumExceptionWindowPropertyType::ExceptionWindowClassName);
+    bundledException0->setExceptionWindowPropertyPattern("");
+    bundledException0->setOpaqueTitleBar(false);
+    bundledException0->setExceptionProgramNamePattern("VirtualBox.*");
+    bundledException0->setPreventApplyOpacityToHeader(true);
+    _bundledExceptions.append(bundledException0);
 
     QString groupName;
 
-    // load default enabled settings for the default exceptions
+    // load user-set enabled states for the bundled exceptions
     if (!readDefaults) {
-        for (int index = 0; index < _defaultExceptions.count(); ++index) {
-            readExceptionEnabledFromConfig(config, defaultExceptionGroupName(index), _defaultExceptions, index);
+        for (int index = 0; index < _bundledExceptions.count(); ++index) {
+            readExceptionEnabledFromConfig(config, bundledExceptionGroupName(index), _bundledExceptions, index);
         }
     }
 
@@ -67,6 +67,7 @@ void DecorationExceptionList::readIndividualExceptionFromConfig(KSharedConfig::P
 
     if (exception.exceptionBorder())
         configuration->setBorderSize(exception.borderSize());
+    configuration->setHideTitleBarChecked(exception.hideTitleBarChecked());
     configuration->setHideTitleBar(exception.hideTitleBar());
     configuration->setOpaqueTitleBar(exception.opaqueTitleBar());
     configuration->setExceptionMatchTitleBarToApplicationColor(exception.exceptionMatchTitleBarToApplicationColor());
@@ -78,6 +79,10 @@ void DecorationExceptionList::readIndividualExceptionFromConfig(KSharedConfig::P
 
 void DecorationExceptionList::readExceptionEnabledFromConfig(KSharedConfig::Ptr config, QString groupName, InternalSettingsList &settingsList, int index)
 {
+    if (groupName.isEmpty()) {
+        return;
+    }
+
     // create exception
     InternalSettings exception;
 
@@ -88,24 +93,24 @@ void DecorationExceptionList::readExceptionEnabledFromConfig(KSharedConfig::Ptr 
     settingsList[index]->setEnabled(exception.enabled());
 }
 
-int DecorationExceptionList::numberDefaults()
+int DecorationExceptionList::numberBundled()
 {
-    return _defaultExceptions.size();
+    return _bundledExceptions.size();
 }
 
 //______________________________________________________________
 void DecorationExceptionList::writeConfig(KSharedConfig::Ptr config)
 {
     QString groupName;
-    // remove all existing default-set exceptions
-    for (int index = 0; config->hasGroup(groupName = defaultExceptionGroupName(index)); ++index) {
+    // remove all existing bundled exceptions
+    for (int index = 0; config->hasGroup(groupName = bundledExceptionGroupName(index)); ++index) {
         config->deleteGroup(groupName);
     }
 
-    // rewrite current default exceptions with user-set enable flag
+    // rewrite current bundled exceptions with user-set enable flag
     int index = 0;
-    for (const InternalSettingsPtr &exception : std::as_const(_defaultExceptions)) {
-        writeDefaultsConfig(exception.data(), config.data(), defaultExceptionGroupName(index));
+    for (const InternalSettingsPtr &exception : std::as_const(_bundledExceptions)) {
+        writeBundledConfig(exception.data(), config.data(), bundledExceptionGroupName(index));
         ++index;
     }
 
@@ -129,9 +134,9 @@ QString DecorationExceptionList::exceptionGroupName(int index)
 }
 
 //_______________________________________________________________________
-QString DecorationExceptionList::defaultExceptionGroupName(int index)
+QString DecorationExceptionList::bundledExceptionGroupName(int index)
 {
-    return QString("Default Windeco Exception %1").arg(index);
+    return QString("Bundled Windeco Exception %1").arg(index);
 }
 
 //______________________________________________________________
@@ -155,8 +160,12 @@ void DecorationExceptionList::writeConfig(KCoreConfigSkeleton *skeleton, KConfig
 }
 
 //______________________________________________________________
-void DecorationExceptionList::writeDefaultsConfig(KCoreConfigSkeleton *skeleton, KConfig *config, const QString &groupName)
+void DecorationExceptionList::writeBundledConfig(KCoreConfigSkeleton *skeleton, KConfig *config, const QString &groupName)
 {
+    if (groupName.isEmpty()) {
+        return;
+    }
+
     // list of items to be written
     QStringList keys = {"Enabled"};
 
@@ -166,8 +175,7 @@ void DecorationExceptionList::writeDefaultsConfig(KCoreConfigSkeleton *skeleton,
         if (!item || item->isEqual(true)) // don't write true to file as it's already the default
             continue;
 
-        if (!groupName.isEmpty())
-            item->setGroup(groupName);
+        item->setGroup(groupName);
         KConfigGroup configGroup(config, item->group());
         configGroup.writeEntry(item->key(), item->property());
     }
@@ -176,10 +184,13 @@ void DecorationExceptionList::writeDefaultsConfig(KCoreConfigSkeleton *skeleton,
 //______________________________________________________________
 void DecorationExceptionList::readConfig(KCoreConfigSkeleton *skeleton, KConfig *config, const QString &groupName)
 {
+    if (groupName.isEmpty()) {
+        return;
+    }
+
     const auto items = skeleton->items();
     for (KConfigSkeletonItem *item : items) {
-        if (!groupName.isEmpty())
-            item->setGroup(groupName);
+        item->setGroup(groupName);
         item->readConfig(config);
     }
 }
