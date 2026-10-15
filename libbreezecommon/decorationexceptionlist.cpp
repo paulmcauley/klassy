@@ -69,6 +69,11 @@ void DecorationExceptionList::readIndividualExceptionFromConfig(KSharedConfig::P
         configuration->setBorderSize(exception.borderSize());
     configuration->setHideTitleBarChecked(exception.hideTitleBarChecked());
     configuration->setHideTitleBar(exception.hideTitleBar());
+    configuration->setExceptionShowInTitle(exception.exceptionShowInTitle());
+    configuration->setExceptionShowTitleDocumentName(exception.exceptionShowTitleDocumentName());
+    configuration->setExceptionShowTitleAppIcon(exception.exceptionShowTitleAppIcon());
+    configuration->setExceptionShowTitleAppName(exception.exceptionShowTitleAppName());
+    configuration->setExceptionAppMenuBarBehaviourChecked(exception.exceptionAppMenuBarBehaviourChecked());
     configuration->setExceptionAppMenuBarBehaviour(exception.exceptionAppMenuBarBehaviour());
     configuration->setOpaqueTitleBar(exception.opaqueTitleBar());
     configuration->setExceptionMatchTitleBarToApplicationColor(exception.exceptionMatchTitleBarToApplicationColor());

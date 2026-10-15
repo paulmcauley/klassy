@@ -95,8 +95,8 @@ AppMenuButtonGroup::AppMenuButtonGroup(Decoration *decoration)
     // Assign style, showing, and opacity before we bind the onShowingChanged animation
     // so that new windows do not animate.
     auto internalSettings = m_decoration->internalSettings();
-    if (internalSettings->exceptionAppMenuBarBehaviour()) {
-        setBehaviour(static_cast<AppMenuBehaviour>(internalSettings->exceptionAppMenuBarBehaviour() - 1));
+    if (internalSettings->exceptionAppMenuBarBehaviourChecked()) {
+        setBehaviour(static_cast<AppMenuBehaviour>(internalSettings->exceptionAppMenuBarBehaviour()));
     } else {
         setBehaviour(static_cast<AppMenuBehaviour>(internalSettings->appMenuBarBehaviour()));
     }
@@ -148,8 +148,8 @@ AppMenuButtonGroup::~AppMenuButtonGroup()
 void AppMenuButtonGroup::reconfigure()
 {
     auto internalSettings = m_decoration->internalSettings();
-    if (internalSettings->exceptionAppMenuBarBehaviour()) {
-        setBehaviour(static_cast<AppMenuBehaviour>(internalSettings->exceptionAppMenuBarBehaviour() - 1));
+    if (internalSettings->exceptionAppMenuBarBehaviourChecked()) {
+        setBehaviour(static_cast<AppMenuBehaviour>(internalSettings->exceptionAppMenuBarBehaviour()));
     } else {
         setBehaviour(static_cast<AppMenuBehaviour>(internalSettings->appMenuBarBehaviour()));
     }

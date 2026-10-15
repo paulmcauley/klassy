@@ -102,7 +102,7 @@
       <item row="2" column="1">
        <layout class="QHBoxLayout" name="horizontalLayout_4">
         <item>
-         <widget class="QCheckBox" name="exceptioniShowTitleDocumentName">
+         <widget class="QCheckBox" name="exceptionShowTitleDocumentName">
           <property name="enabled">
            <bool>false</bool>
           </property>
@@ -339,7 +339,7 @@
       <item row="1" column="0">
        <widget class="QCheckBox" name="exceptionHideTitleBarCheckBox">
         <property name="text">
-         <string>Hide window titlebar:</string>
+         <string>Hide titlebar:</string>
         </property>
        </widget>
       </item>
@@ -432,7 +432,7 @@
   <tabstop>exceptionHideTitleBarCheckBox</tabstop>
   <tabstop>hideTitleBar</tabstop>
   <tabstop>exceptionShowInTitle</tabstop>
-  <tabstop>exceptioniShowTitleDocumentName</tabstop>
+  <tabstop>exceptionShowTitleDocumentName</tabstop>
   <tabstop>exceptionShowTitleAppIcon</tabstop>
   <tabstop>exceptionShowTitleAppName</tabstop>
   <tabstop>exceptionMatchTitleBarToApplicationColor</tabstop>
@@ -513,7 +513,7 @@
   <connection>
    <sender>exceptionShowInTitle</sender>
    <signal>toggled(bool)</signal>
-   <receiver>exceptioniShowTitleDocumentName</receiver>
+   <receiver>exceptionShowTitleDocumentName</receiver>
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
