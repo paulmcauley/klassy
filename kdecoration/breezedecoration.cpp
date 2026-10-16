@@ -2526,16 +2526,12 @@ std::shared_ptr<Decoration::TitleParams> Decoration::getTitleParams()
     titleParams->rawTitle = c->caption();
     if (titleParams->useRawTitle) {
         titleParams->maxTitleWidth = fontMetrics.boundingRect(titleParams->rawTitle).width();
-        titleParams->documentNameWidth = -1;
-        titleParams->appNameWidth = -1;
-        titleParams->appIconSpaceWidthAfter = -1;
-        titleParams->appIconSpaceWidthBefore = -1;
-        titleParams->appIconWidth = -1;
     } else {
         int emDashIndex = titleParams->rawTitle.lastIndexOf(QStringLiteral(" — "));
         bool noEmDash = emDashIndex == -1;
 
         titleParams->appNameIsRawTitle = false;
+        titleParams->documentNameIsRawTitle = false;
         // set appName
         if (m_internalSettings->showTitleAppName()) {
             if (noEmDash) {
@@ -2552,7 +2548,12 @@ std::shared_ptr<Decoration::TitleParams> Decoration::getTitleParams()
         // set documentName
         if (m_internalSettings->showTitleDocumentName()) {
             if (noEmDash) {
-                titleParams->documentName = QStringLiteral("");
+                if (!m_internalSettings->showTitleAppName()) {
+                    titleParams->documentName = titleParams->rawTitle;
+                    titleParams->documentNameIsRawTitle = true;
+                } else {
+                    titleParams->documentName = QStringLiteral("");
+                }
             } else {
                 titleParams->documentName = titleParams->rawTitle.first(emDashIndex);
             }
