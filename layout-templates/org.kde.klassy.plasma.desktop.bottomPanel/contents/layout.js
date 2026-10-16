@@ -31,6 +31,7 @@ taskmanager.currentConfigGroup = ["General"];
 taskmanager.writeConfig('launchers', 'preferred://filemanager,preferred://browser');
 taskmanager.reloadConfig(); //launchers don't get set unless reloadConfig() is called between writes
 taskmanager.writeConfig('separateLaunchers', false);
+taskmanager.writeConfig('highlightWindows', true); //enable "Hide other windows when hovering over previews" (a.k.a. "Aero peek")
 taskmanager.reloadConfig();
 
 /* Next up is determining whether to add the Input Method Panel
