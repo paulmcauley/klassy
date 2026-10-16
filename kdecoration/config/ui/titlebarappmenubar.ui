@@ -82,12 +82,12 @@
          </item>
          <item>
           <property name="text">
-           <string>Center (Replace title on hover only)</string>
+           <string>Centre (Replace title on hover only)</string>
           </property>
          </item>
          <item>
           <property name="text">
-           <string>Center (Full-width) (Replace title on hover only)</string>
+           <string>Centre (Full-width) (Replace title on hover only)</string>
           </property>
          </item>
          <item>
@@ -432,8 +432,8 @@
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>364</x>
-     <y>411</y>
+     <x>370</x>
+     <y>335</y>
     </hint>
     <hint type="destinationlabel">
      <x>329</x>
@@ -448,8 +448,8 @@
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>552</x>
-     <y>411</y>
+     <x>558</x>
+     <y>335</y>
     </hint>
     <hint type="destinationlabel">
      <x>563</x>
@@ -465,11 +465,11 @@
    <hints>
     <hint type="sourcelabel">
      <x>286</x>
-     <y>251</y>
+     <y>213</y>
     </hint>
     <hint type="destinationlabel">
-     <x>117</x>
-     <y>290</y>
+     <x>140</x>
+     <y>252</y>
     </hint>
    </hints>
   </connection>
@@ -481,11 +481,11 @@
    <hints>
     <hint type="sourcelabel">
      <x>286</x>
-     <y>251</y>
+     <y>213</y>
     </hint>
     <hint type="destinationlabel">
      <x>348</x>
-     <y>290</y>
+     <y>252</y>
     </hint>
    </hints>
   </connection>
@@ -497,11 +497,11 @@
    <hints>
     <hint type="sourcelabel">
      <x>286</x>
-     <y>251</y>
+     <y>213</y>
     </hint>
     <hint type="destinationlabel">
      <x>425</x>
-     <y>290</y>
+     <y>252</y>
     </hint>
    </hints>
   </connection>
@@ -513,11 +513,11 @@
    <hints>
     <hint type="sourcelabel">
      <x>286</x>
-     <y>251</y>
+     <y>213</y>
     </hint>
     <hint type="destinationlabel">
      <x>22</x>
-     <y>290</y>
+     <y>252</y>
     </hint>
    </hints>
   </connection>
