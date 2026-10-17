@@ -491,24 +491,22 @@ bool fuzzyLessThanOrEqual(qreal a, qreal b)
 
 void AppMenuButtonGroup::updateOverflow(QRectF availableRect)
 {
-    const qreal availableExpandedWidth = availableRect.width();
+    qreal availableWidth = availableRect.width();
+    qreal availableExpandedWidth = availableWidth;
     const qreal overflowBtnWidth = m_overflowButton ? m_overflowButton->geometry().width() : 0;
     const qreal searchBtnWidth = m_searchButton ? m_searchButton->geometry().width() + spacing() : 0;
     const qreal ellipsisWidth = AppMenuTextButton::ellipsisWidth(m_font, m_decoration->window()->scale());
+    qreal availableUnexpandedWidth = availableExpandedWidth;
     if (expandsOnHover()) {
-        const qreal captionMargins = m_decoration->scaledTitleSidePadding(false) * 2;
+        const qreal titleMargins = m_decoration->scaledTitleSidePadding(false) * 2;
 
         auto titleParams = m_decoration->getTitleParams();
-        const qreal maxCaptionWidth = titleParams->maxTitleWidthCeil + captionMargins;
-        const qreal captionWidth = qMin(maxCaptionWidth, availableRect.width() - overflowBtnWidth - searchBtnWidth - captionMargins);
-        const qreal captionOffset = captionWidth + captionMargins;
-        if (m_position == AppMenuPosition::Left) {
-            availableRect.adjust(0, 0, -captionOffset, 0);
-        } else {
-            availableRect.adjust(captionOffset, 0, 0, 0);
-        }
+        const qreal maxTitleWidth = titleParams->maxTitleWidthCeil + titleMargins;
+        const qreal croppedMaxTitleWidth = qMin(maxTitleWidth, availableWidth);
+        availableUnexpandedWidth -= croppedMaxTitleWidth;
+
+        availableExpandedWidth -= (titleParams->appIconWidth + titleParams->appIconSpaceWidthAfter * 2); // always show the icon
     }
-    const qreal availableUnexpandedWidth = availableRect.width();
 
     qreal minVisibleWidth = 0;
     qreal maxVisibleWidth = searchBtnWidth;
@@ -607,6 +605,7 @@ void AppMenuButtonGroup::updateOverflow(QRectF availableRect)
             }
             // Fourth pass: apply opacity and calculate min width
             const bool isUnexpanded = qFuzzyCompare(m_expansionFraction, 0);
+
             qreal remainingMinWidth =
                 availableUnexpandedWidth - ellipsisWidth + spacing(); // add spacing to account for fact that last button doesn't need spacing
             qreal remainingExpandedWidth = remainingMinWidth
