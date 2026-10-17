@@ -522,11 +522,17 @@ void AppMenuButtonGroup::updateOverflow(QRectF availableRect)
     } else {
         // First pass: reset ellipsis flags and get index of last enabled text button
         int lastEnabledTextButtonIndex = -1;
+        int firstEnabledTextButtonIndex = -1;
+        int numEnabledTextButtons = 0;
         int numTextButtons = m_textButtons.size();
         for (int i = 0; i < numTextButtons; ++i) {
             m_textButtons[i]->setHasEllipsis(false, false);
             if (m_textButtons[i]->isEnabled()) {
+                if (firstEnabledTextButtonIndex == -1) {
+                    firstEnabledTextButtonIndex = i;
+                }
                 lastEnabledTextButtonIndex = i;
+                numEnabledTextButtons++;
             }
         }
 
@@ -535,14 +541,16 @@ void AppMenuButtonGroup::updateOverflow(QRectF availableRect)
         qreal totalTextWidth = 0;
         bool allFit = true;
 
-        for (int i = 0; i <= lastEnabledTextButtonIndex; ++i) {
-            if (m_textButtons[i]->isEnabled()) {
-                totalTextWidth += m_textButtons[i]->geometry().width();
-                if (i != lastEnabledTextButtonIndex) {
-                    totalTextWidth += spacing();
-                }
-                if (searchBtnWidth + totalTextWidth > availableUnexpandedWidth) {
-                    allFit = false;
+        if (firstEnabledTextButtonIndex != -1) {
+            for (int i = firstEnabledTextButtonIndex; i <= lastEnabledTextButtonIndex; ++i) {
+                if (m_textButtons[i]->isEnabled()) {
+                    totalTextWidth += m_textButtons[i]->geometry().width();
+                    if (i != lastEnabledTextButtonIndex) {
+                        totalTextWidth += spacing();
+                    }
+                    if (searchBtnWidth + totalTextWidth > availableUnexpandedWidth) {
+                        allFit = false;
+                    }
                 }
             }
         }
@@ -565,6 +573,19 @@ void AppMenuButtonGroup::updateOverflow(QRectF availableRect)
                 m_searchButton->setExpansionOpacity(1);
             }
         } else if (expandsOnHover()) {
+            // alwaysShowFirstTextButton is so the user knows that there is a menu present even when a small window width
+            // when alwaysShowFirstButton, even when prefer title, the first button will take title space
+            bool alwaysShowFirstTextButton = true;
+            if (firstEnabledTextButtonIndex != -1) {
+                qreal firstTextButtonWidth = m_textButtons[firstEnabledTextButtonIndex]->geometry().width();
+                if (numEnabledTextButtons > 1 || m_searchButton) {
+                    firstTextButtonWidth += ellipsisWidth;
+                }
+                if (firstTextButtonWidth > availableExpandedWidth) {
+                    alwaysShowFirstTextButton = false;
+                }
+            }
+
             qreal remainingMaxWidth = availableExpandedWidth - searchBtnWidth;
             // Third pass: Mark which ones are in the fully expanded menu by setting visibility
             bool fitsInExpanded = true;
@@ -580,6 +601,7 @@ void AppMenuButtonGroup::updateOverflow(QRectF availableRect)
                     continue;
                 }
                 const qreal w = button->geometry().width();
+                const bool isFirstEnabledTextButtonAlwaysShown = alwaysShowFirstTextButton && (button == m_textButtons[firstEnabledTextButtonIndex]);
                 const bool isLastEnabledTextButton = button == m_textButtons[lastEnabledTextButtonIndex];
                 if (m_overflowButton && button == m_overflowButton) {
                     if (!fitsInExpanded) {
@@ -590,7 +612,8 @@ void AppMenuButtonGroup::updateOverflow(QRectF availableRect)
                     }
                 } else if (m_searchButton && button == m_searchButton) {
                     m_searchButton->setVisible(true);
-                } else if (fitsInExpanded && fuzzyLessThanOrEqual(w + (isLastEnabledTextButton ? 0 : overflowBtnWidth), remainingMaxWidth)) {
+                } else if (isFirstEnabledTextButtonAlwaysShown
+                           || (fitsInExpanded && fuzzyLessThanOrEqual(w + (isLastEnabledTextButton ? 0 : overflowBtnWidth), remainingMaxWidth))) {
                     remainingMaxWidth -= w;
                     maxVisibleWidth += w;
                     if (!isLastEnabledTextButton) {
@@ -624,15 +647,17 @@ void AppMenuButtonGroup::updateOverflow(QRectF availableRect)
 
                 qreal w = button->geometry().width() + spacing();
 
+                const bool isFirstEnabledTextButtonAlwaysShown = alwaysShowFirstTextButton && (button == m_textButtons[firstEnabledTextButtonIndex]);
+
                 qreal opacity = 0;
-                if (fitsInMin && fuzzyLessThanOrEqual(w, remainingMinWidth)) {
+                if (isFirstEnabledTextButtonAlwaysShown || (fitsInMin && fuzzyLessThanOrEqual(w, remainingMinWidth))) {
                     opacity = 1;
                     remainingMinWidth -= w;
                 } else {
                     fitsInMin = false;
                 }
 
-                if (fitsInCurrentExpansion && fuzzyLessThanOrEqual(w, remainingExpandedWidth)) {
+                if (isFirstEnabledTextButtonAlwaysShown || (fitsInCurrentExpansion && fuzzyLessThanOrEqual(w, remainingExpandedWidth))) {
                     opacity = qMax(opacity, m_expansionFraction);
                     remainingExpandedWidth -= w;
                     minVisibleWidth += w;
@@ -659,13 +684,17 @@ void AppMenuButtonGroup::updateOverflow(QRectF availableRect)
 
             // add ellipsis to last opaque unexpanded button
             if (auto lastUnexpandedTextButton = qobject_cast<AppMenuTextButton *>(lastUnexpandedButton)) {
-                m_hasEllipsis = true;
-                minVisibleWidth += ellipsisWidth - spacing(); // last unexpanded button doesn't need spacing so subtract
-                if (reverseLoop) {
-                    lastUnexpandedTextButton->setHasEllipsis(true, true);
+                minVisibleWidth -= spacing(); // last unexpanded button doesn't need spacing so subtract
 
-                } else {
-                    lastUnexpandedTextButton->setHasEllipsis(true, false);
+                if (numEnabledTextButtons > 1 || m_searchButton) { // add ellipsis
+                    m_hasEllipsis = true;
+                    minVisibleWidth += ellipsisWidth;
+                    if (reverseLoop) {
+                        lastUnexpandedTextButton->setHasEllipsis(true, true);
+
+                    } else {
+                        lastUnexpandedTextButton->setHasEllipsis(true, false);
+                    }
                 }
             }
         } else {
