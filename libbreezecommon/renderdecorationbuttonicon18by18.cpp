@@ -228,32 +228,82 @@ void RenderDecorationButtonIcon18By18::renderOnAllDesktopsIcon()
     QPen pen = m_painter->pen();
     QColor color = pen.color();
     color.setAlphaF(color.alphaF() * 0.8);
-    m_painter->setBrush(color);
-    m_painter->setPen(Qt::NoPen);
+    QBrush brush(color);
+    pen = Qt::PenStyle::NoPen;
+    m_painter->setBrush(brush);
+    m_painter->setPen(pen);
 
     QPainterPath topLeftWorkspace, topRightWorkspace, bottomRightWorkspace, bottomLeftWorkspace;
-    // QPainterPath topLeftWorkspaceWindow, topRightWorkspaceWindow, bottomRightWorkspaceWindow, bottomLeftWorkspaceWindow;
+    QRectF topLeftWorkspaceRect, topRightWorkspaceRect, bottomRightWorkspaceRect, bottomLeftWorkspaceRect;
 
-    topLeftWorkspace.addRect(QRectF(snapToNearestPixel(QPointF(3, 4)), snapToNearestPixel(QPointF(8, 8))));
-    // topLeftWorkspaceWindow.addRect(QRectF(snapToNearestPixel(QPointF(4,5)),snapToNearestPixel(QPointF(6,6))));
-    // topLeftWorkspace = topLeftWorkspace.subtracted(topLeftWorkspaceWindow);
+    topLeftWorkspaceRect = QRectF(snapToNearestPixel(QPointF(3, 4)), snapToNearestPixel(QPointF(8, 8)));
 
-    topRightWorkspace.addRect(QRectF(snapToNearestPixel(QPointF(10, 4)), snapToNearestPixel(QPointF(15, 8))));
-    // topRightWorkspaceWindow.addRect(QRectF(snapToNearestPixel(QPointF(11,5)),snapToNearestPixel(QPointF(13,6))));
-    // topRightWorkspace = topRightWorkspace.subtracted(topRightWorkspaceWindow);
+    topRightWorkspaceRect = QRectF(snapToNearestPixel(QPointF(10, 4)), snapToNearestPixel(QPointF(15, 8)));
 
-    bottomRightWorkspace.addRect(QRectF(snapToNearestPixel(QPointF(10, 10)), snapToNearestPixel(QPointF(15, 14))));
-    // bottomRightWorkspaceWindow.addRect(QRectF(snapToNearestPixel(QPointF(11,11)),snapToNearestPixel(QPointF(13,12))));
-    // bottomRightWorkspace = bottomRightWorkspace.subtracted(bottomRightWorkspaceWindow);
+    bottomRightWorkspaceRect = QRectF(snapToNearestPixel(QPointF(10, 10)), snapToNearestPixel(QPointF(15, 14)));
 
-    bottomLeftWorkspace.addRect(QRectF(snapToNearestPixel(QPointF(3, 10)), snapToNearestPixel(QPointF(8, 14))));
-    // bottomLeftWorkspaceWindow.addRect(QRectF(snapToNearestPixel(QPointF(4,11)),snapToNearestPixel(QPointF(6,12))));
-    // bottomLeftWorkspace = bottomLeftWorkspace.subtracted(bottomLeftWorkspaceWindow);
+    bottomLeftWorkspaceRect = QRectF(snapToNearestPixel(QPointF(3, 10)), snapToNearestPixel(QPointF(8, 14)));
 
-    m_painter->drawPath(topLeftWorkspace);
-    m_painter->drawPath(topRightWorkspace);
-    m_painter->drawPath(bottomRightWorkspace);
-    m_painter->drawPath(bottomLeftWorkspace);
+    qreal workspaceWidth = topLeftWorkspaceRect.right() - topLeftWorkspaceRect.left();
+    qreal workspaceHeight = topLeftWorkspaceRect.bottom() - topLeftWorkspaceRect.top();
+    qreal workspaceSpacing =
+        std::min(topRightWorkspaceRect.left() - topLeftWorkspaceRect.right(), bottomLeftWorkspaceRect.top() - topLeftWorkspaceRect.bottom());
+
+    // make adjustments to correct snapping distortions
+    topRightWorkspaceRect.setTopLeft(topLeftWorkspaceRect.topRight() + QPointF(workspaceSpacing, 0));
+    topRightWorkspaceRect.setBottomRight(topLeftWorkspaceRect.bottomRight() + QPointF(workspaceSpacing + workspaceWidth, 0));
+
+    bottomLeftWorkspaceRect.setTopLeft(topLeftWorkspaceRect.bottomLeft() + QPointF(0, workspaceSpacing));
+    bottomLeftWorkspaceRect.setBottomRight(topLeftWorkspaceRect.bottomRight() + QPointF(0, workspaceSpacing + workspaceHeight));
+
+    bottomRightWorkspaceRect.setTopLeft(topRightWorkspaceRect.bottomLeft() + QPointF(0, workspaceSpacing));
+    bottomRightWorkspaceRect.setBottomRight(topRightWorkspaceRect.bottomRight() + QPointF(0, workspaceSpacing + workspaceHeight));
+
+    topLeftWorkspace.addRect(topLeftWorkspaceRect);
+    topRightWorkspace.addRect(topRightWorkspaceRect);
+    bottomLeftWorkspace.addRect(bottomLeftWorkspaceRect);
+    bottomRightWorkspace.addRect(bottomRightWorkspaceRect);
+
+    std::unique_ptr<QGraphicsScene> desktops = std::unique_ptr<QGraphicsScene>(new QGraphicsScene(0, 0, 18, 18));
+    QGraphicsItemGroup *desktopsGroup = new QGraphicsItemGroup;
+
+    desktops->addItem(desktopsGroup);
+    QGraphicsPathItem *topLeft = new QGraphicsPathItem;
+    QGraphicsPathItem *topRight = new QGraphicsPathItem;
+    QGraphicsPathItem *bottomLeft = new QGraphicsPathItem;
+    QGraphicsPathItem *bottomRight = new QGraphicsPathItem;
+    desktopsGroup->addToGroup(topLeft);
+    desktopsGroup->addToGroup(topRight);
+    desktopsGroup->addToGroup(bottomLeft);
+    desktopsGroup->addToGroup(bottomRight);
+    topLeft->setPen(pen);
+    topLeft->setBrush(brush);
+    topLeft->setPath(topLeftWorkspace);
+    topRight->setPen(pen);
+    topRight->setBrush(brush);
+    topRight->setPath(topRightWorkspace);
+    bottomLeft->setPen(pen);
+    bottomLeft->setBrush(brush);
+    bottomLeft->setPath(bottomLeftWorkspace);
+    bottomRight->setPen(pen);
+    bottomRight->setBrush(brush);
+    bottomRight->setPath(bottomRightWorkspace);
+
+    // centre -- centre the result, then snap centred position to a pixel boundary
+    QPointF centerTranslate =
+        QPointF(9, 9) - desktopsGroup->childrenBoundingRect().center(); // must use childrenBoundingRect as boundingRect does not update unless you add an item
+    if (centerTranslate != QPointF(0, 0)) {
+        QPointF centrePixelRealignmentOffset;
+
+        // realign to pixel grid after centering -- use P1 of top to sample
+        centrePixelRealignmentOffset =
+            snapToNearestPixel(topLeft->path().elementAt(0) + centerTranslate, SnapPixel::ToWhole, SnapPixel::ToWhole) - topLeft->path().elementAt(0);
+        QTransform transformToAlignedCenter;
+        transformToAlignedCenter.translate(centrePixelRealignmentOffset.x(), centrePixelRealignmentOffset.y());
+        desktopsGroup->setTransform(transformToAlignedCenter);
+    }
+
+    desktops->render(m_painter, QRectF(0, 0, 18, 18), QRectF(0, 0, 18, 18));
 }
 
 void RenderDecorationButtonIcon18By18::renderShadeIcon()
