@@ -1534,7 +1534,71 @@ void RenderDecorationButtonIcon18By18::renderExcludeFromCaptureIcon()
 
 void RenderDecorationButtonIcon18By18::renderAppMenuBarOverflowIcon()
 {
-    renderApplicationMenuIcon();
+    QPen pen = Qt::PenStyle::NoPen;
+    QBrush brush(m_painter->pen().color());
+    m_painter->setBrush(brush);
+    m_painter->setPen(pen);
+
+    QRectF topRect, middleRect, bottomRect;
+
+    topRect = {snapToNearestPixel(QPointF(8, 2), SnapPixel::ToWhole, SnapPixel::ToWhole),
+               snapToNearestPixel(QPointF(10, 4), SnapPixel::ToWhole, SnapPixel::ToWhole)};
+
+    middleRect = {snapToNearestPixel(QPointF(8, 8), SnapPixel::ToWhole, SnapPixel::ToWhole),
+                  snapToNearestPixel(QPointF(10, 10), SnapPixel::ToWhole, SnapPixel::ToWhole)};
+
+    bottomRect = {snapToNearestPixel(QPointF(8, 14), SnapPixel::ToWhole, SnapPixel::ToWhole),
+                  snapToNearestPixel(QPointF(10, 16), SnapPixel::ToWhole, SnapPixel::ToWhole)};
+
+    qreal width = topRect.right() - topRect.left();
+    topRect.setBottomRight(topRect.topLeft() + QPointF(width, width));
+    middleRect.setBottomRight(middleRect.topLeft() + QPointF(width, width));
+    bottomRect.setBottomRight(bottomRect.topLeft() + QPointF(width, width));
+    qreal verticalSpacing = std::min(middleRect.y() - topRect.y(), bottomRect.y() - middleRect.y());
+    middleRect.moveTop(topRect.top() + verticalSpacing);
+    bottomRect.moveTop(middleRect.top() + verticalSpacing);
+
+    std::unique_ptr<QGraphicsScene> overflowMenu = std::unique_ptr<QGraphicsScene>(new QGraphicsScene(0, 0, 18, 18));
+
+    QGraphicsItemGroup *overflowMenuGroup = new QGraphicsItemGroup;
+
+    overflowMenu->addItem(overflowMenuGroup);
+    QGraphicsPathItem *top = new QGraphicsPathItem;
+    QGraphicsPathItem *middle = new QGraphicsPathItem;
+    QGraphicsPathItem *bottom = new QGraphicsPathItem;
+    overflowMenuGroup->addToGroup(top);
+    overflowMenuGroup->addToGroup(middle);
+    overflowMenuGroup->addToGroup(bottom);
+
+    QPainterPath topPath, middlePath, bottomPath;
+    topPath.addRect(topRect);
+    middlePath.addRect(middleRect);
+    middlePath.addRect(bottomRect);
+    top->setPath(topPath);
+    middle->setPath(middlePath);
+    bottom->setPath(bottomPath);
+    top->setPen(pen);
+    middle->setPen(pen);
+    bottom->setPen(pen);
+    top->setBrush(brush);
+    middle->setBrush(brush);
+    bottom->setBrush(brush);
+
+    // centre -- centre the result, then snap centred position to a pixel boundary
+    QPointF centerTranslate = QPointF(9, 9)
+        - overflowMenuGroup->childrenBoundingRect().center(); // must use childrenBoundingRect as boundingRect does not update unless you add an item
+    if (centerTranslate != QPointF(0, 0)) {
+        QPointF centrePixelRealignmentOffset;
+
+        // realign to pixel grid after centering -- use P1 of top to sample
+        centrePixelRealignmentOffset =
+            snapToNearestPixel(top->path().elementAt(0) + centerTranslate, SnapPixel::ToWhole, SnapPixel::ToWhole) - top->path().elementAt(0);
+        QTransform transformToAlignedCenter;
+        transformToAlignedCenter.translate(centrePixelRealignmentOffset.x(), centrePixelRealignmentOffset.y());
+        overflowMenuGroup->setTransform(transformToAlignedCenter);
+    }
+
+    overflowMenu->render(m_painter, QRectF(0, 0, 18, 18), QRectF(0, 0, 18, 18));
 }
 
 void RenderDecorationButtonIcon18By18::renderAppMenuBarSearchIcon()
