@@ -20,6 +20,10 @@
 #include <KIconLoader>
 #include <KWindowSystem>
 
+#include <QDBusConnection>
+#include <QDBusMessage>
+#include <QHoverEvent>
+#include <QMouseEvent>
 #include <QPainter>
 #include <QPainterPath>
 #include <QVariantAnimation>
@@ -36,7 +40,11 @@ Button::Button(KDecoration3::DecorationButtonType type, Decoration *decoration, 
     , m_d(qobject_cast<Decoration *>(decoration))
     , m_animation(new QVariantAnimation(this))
     , m_isGtkCsdButton(false)
+    , m_holdTimer(new QTimer(this))
 {
+    m_holdTimer->setSingleShot(true);
+    connect(m_holdTimer, &QTimer::timeout, this, &Button::handleHoldTimeout);
+
     auto c = decoration->window();
 
     // setup animation
@@ -74,6 +82,18 @@ Button::Button(KDecoration3::DecorationButtonType type, Decoration *decoration, 
     });
     connect(this, &KDecoration3::DecorationButton::hoveredChanged, this, &Button::updateWindowOutlineWithButtonColor);
     connect(this, &KDecoration3::DecorationButton::pressedChanged, this, &Button::updateWindowOutlineWithButtonColor);
+    connect(this, &Button::pressedChanged, this, [this, decoration]() {
+        if (decoration
+            && ((decoration->internalSettings()->longPressCloseMinimizeToTray() && this->type() == KDecoration3::DecorationButtonType::Close)
+                || (decoration->internalSettings()->longPressMinimizeAllOthers() && this->type() == KDecoration3::DecorationButtonType::Minimize))) {
+            if (isPressed()) {
+                m_longPressTriggered = false;
+                m_holdTimer->start(750);
+            } else {
+                m_holdTimer->stop();
+            }
+        }
+    });
 
     // for unison hovering
     connect(decoration, &Decoration::buttonUnisonHoveredChanged, this, [this, decoration](bool v) {
@@ -1172,6 +1192,68 @@ bool Button::isCheckable() const
     return (type() == KDecoration3::DecorationButtonType::KeepBelow || type() == KDecoration3::DecorationButtonType::KeepAbove
             || type() == KDecoration3::DecorationButtonType::Shade || (type() == KDecoration3::DecorationButtonType::ExcludeFromCapture)
             || (type() == KDecoration3::DecorationButtonType::OnAllDesktops && !m_titlebarTextPinnedInversion));
+}
+
+void Button::forceUnpress()
+{
+    // There is no public API to set the pressed state of a
+    // KDecoration3::DecorationButton. This works around the issue by toggling
+    // the enabled state, which has the side effect of resetting the
+    // button's internal pressed state.
+    const bool wasEnabled = isEnabled();
+    setEnabled(!wasEnabled);
+    setEnabled(wasEnabled);
+}
+
+void Button::handleHoldTimeout()
+{
+    m_longPressTriggered = true;
+    switch (type()) {
+    case KDecoration3::DecorationButtonType::Close:
+        onCloseHold();
+        break;
+    case KDecoration3::DecorationButtonType::Minimize:
+        onMinimizeHold();
+        break;
+    default:
+        break;
+    }
+}
+
+void Button::onCloseHold()
+{
+    QDBusMessage message = QDBusMessage::createMethodCall(QStringLiteral("org.kde.kglobalaccel"),
+                                                          QStringLiteral("/component/kwin"),
+                                                          QStringLiteral("org.kde.kglobalaccel.Component"),
+                                                          QStringLiteral("invokeShortcut"));
+    message << QStringLiteral("Minimize to tray");
+    QDBusConnection::sessionBus().send(message);
+}
+
+void Button::onMinimizeHold()
+{
+    QDBusMessage message = QDBusMessage::createMethodCall(QStringLiteral("org.kde.kglobalaccel"),
+                                                          QStringLiteral("/component/kwin"),
+                                                          QStringLiteral("org.kde.kglobalaccel.Component"),
+                                                          QStringLiteral("invokeShortcut"));
+    message << QStringLiteral("minimizeAllOthersActiveScreen");
+    QDBusConnection::sessionBus().send(message);
+}
+
+void Button::mouseReleaseEvent(QMouseEvent *event)
+{
+    if (m_longPressTriggered) {
+        m_longPressTriggered = false;
+        forceUnpress();
+
+        // Refresh hover state, simulate a mouse HoverMove.
+        const QPointF decoPos = event->position();
+        QHoverEvent hoverEvent(QEvent::HoverMove, decoPos, event->globalPosition(), decoPos, event->modifiers());
+        QCoreApplication::sendEvent(decoration(), &hoverEvent);
+
+        return;
+    }
+    KDecoration3::DecorationButton::mouseReleaseEvent(event);
 }
 
 bool Button::hovered() const // for unison hovering

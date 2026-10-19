@@ -14,6 +14,7 @@
 
 #include <QHash>
 #include <QImage>
+#include <QTimer>
 
 class QVariantAnimation;
 
@@ -237,6 +238,12 @@ private:
     //* Whether to invert the pinned-on-all-desktops icon like in Breeze
     bool titlebarTextPinnedInversion() const;
 
+    void handleHoldTimeout();
+    void onCloseHold();
+    void onMinimizeHold();
+    void mouseReleaseEvent(QMouseEvent *event) override;
+    void forceUnpress();
+
     //* Pointer to the decoration
     Decoration *m_d;
 
@@ -289,6 +296,9 @@ private:
     qreal m_standardScaledCosmeticPenWidth = 1.0;
     mutable qreal m_standardScaledNonCosmeticPenWidth = 1.0;
     bool m_titlebarTextPinnedInversion = false;
+
+    QTimer *m_holdTimer = nullptr;
+    bool m_longPressTriggered = false;
 
     // for unison hovering
     bool hovered() const;

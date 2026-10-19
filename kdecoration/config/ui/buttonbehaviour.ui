@@ -700,6 +700,21 @@
        </widget>
       </item>
       <item>
+       <widget class="QCheckBox" name="longPressCloseMinimizeToTray">
+        <property name="text">
+         <string>Long-press close button to minimize window to system tray
+(kwin-minimize2tray plugin required)</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="longPressMinimizeAllOthers">
+        <property name="text">
+         <string>Long-press minimize button to minimize all other windows</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QCheckBox" name="unisonHovering">
         <property name="text">
          <string>Unison hovering</string>

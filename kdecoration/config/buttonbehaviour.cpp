@@ -393,6 +393,8 @@ ButtonBehaviour::ButtonBehaviour(KSharedConfig::Ptr config, KSharedConfig::Ptr p
     connect(m_ui->lockCloseButtonBehaviourActive, &QAbstractButton::toggled, this, &ButtonBehaviour::copyCheckedStatusFromActiveToInactive);
     connect(m_ui->lockCloseButtonBehaviourInactive, &QAbstractButton::toggled, this, &ButtonBehaviour::copyCheckedStatusFromInactiveToActive);
 
+    connect(m_ui->longPressCloseMinimizeToTray, &QAbstractButton::toggled, this, &ButtonBehaviour::updateChanged, Qt::ConnectionType::DirectConnection);
+    connect(m_ui->longPressMinimizeAllOthers, &QAbstractButton::toggled, this, &ButtonBehaviour::updateChanged, Qt::ConnectionType::DirectConnection);
     connect(m_ui->unisonHovering, &QAbstractButton::toggled, this, &ButtonBehaviour::updateChanged, Qt::ConnectionType::DirectConnection);
 
     connect(m_ui->buttonBox->button(QDialogButtonBox::RestoreDefaults), &QAbstractButton::clicked, this, &ButtonBehaviour::defaults);
@@ -481,6 +483,8 @@ void ButtonBehaviour::loadMain(const bool assignUiValuesOnly)
     m_ui->lockCloseButtonBehaviourInactive->setChecked(m_internalSettings->lockCloseButtonBehaviour(false));
     m_ui->lockButtonBehaviourActive->setChecked(m_internalSettings->lockButtonBehaviourActiveInactive());
 
+    m_ui->longPressCloseMinimizeToTray->setChecked(m_internalSettings->longPressCloseMinimizeToTray());
+    m_ui->longPressMinimizeAllOthers->setChecked(m_internalSettings->longPressMinimizeAllOthers());
     m_ui->unisonHovering->setChecked(m_internalSettings->unisonHovering());
 
     if (!assignUiValuesOnly) {
@@ -566,6 +570,8 @@ void ButtonBehaviour::save(const bool reloadKwinConfig)
     m_internalSettings->setLockCloseButtonBehaviour(false, m_ui->lockCloseButtonBehaviourInactive->isChecked());
     m_internalSettings->setLockButtonBehaviourActiveInactive(m_ui->lockButtonBehaviourActive->isChecked());
 
+    m_internalSettings->setLongPressCloseMinimizeToTray(m_ui->longPressCloseMinimizeToTray->isChecked());
+    m_internalSettings->setLongPressMinimizeAllOthers(m_ui->longPressMinimizeAllOthers->isChecked());
     m_internalSettings->setUnisonHovering(m_ui->unisonHovering->isChecked());
 
     m_internalSettings->save();
@@ -774,6 +780,10 @@ void ButtonBehaviour::updateChanged()
     else if (m_ui->lockButtonBehaviourActive->isChecked() != m_internalSettings->lockButtonBehaviourActiveInactive())
         modified = true;
 
+    else if (m_ui->longPressCloseMinimizeToTray->isChecked() != m_internalSettings->longPressCloseMinimizeToTray())
+        modified = true;
+    else if (m_ui->longPressMinimizeAllOthers->isChecked() != m_internalSettings->longPressMinimizeAllOthers())
+        modified = true;
     else if (m_ui->unisonHovering->isChecked() != m_internalSettings->unisonHovering())
         modified = true;
 
