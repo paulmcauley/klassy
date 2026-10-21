@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Klassy\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2026-08-19 05:57+0100\n"
-"PO-Revision-Date: 2026-02-03 22:00+0100\n"
+"POT-Creation-Date: 2026-10-21 12:01+0100\n"
+"PO-Revision-Date: 2026-10-21 20:21+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 3.5\n"
+"X-Generator: Poedit 3.9\n"
 
 #: main.cpp:55
 #, kde-format
@@ -414,35 +414,42 @@ msgstr "Hauteur minim&um :"
 #. i18n: ectx: attribute (title), widget (QWidget, tab_Transparency)
 #: ui/breezestyleconfig.ui:808
 #, kde-format
-msgid "Transparency"
-msgstr "Transparence"
+msgid "Menus"
+msgstr "Menus"
+
+#. i18n: ectx: property (text), widget (QLabel, _menuGroupDescription)
+#: ui/breezestyleconfig.ui:845
+#, kde-format
+msgid "Menu transparency:"
+msgstr "Transparence :"
 
 #. i18n: ectx: property (text), widget (QLabel, _menuOpacityTransparentLabel)
-#: ui/breezestyleconfig.ui:829
+#: ui/breezestyleconfig.ui:890
 #, kde-format
 msgid "Transparent"
 msgstr "Transparent"
 
 #. i18n: ectx: property (text), widget (QLabel, _menuOpacityOpaqueLabel)
-#: ui/breezestyleconfig.ui:855
+#: ui/breezestyleconfig.ui:916
 #, kde-format
 msgid "Opaque"
 msgstr "Opaque"
 
-#. i18n: ectx: property (text), widget (QLabel, _menuGroupDescription)
-#: ui/breezestyleconfig.ui:866
-#, kde-format
-msgid "Menu:"
-msgstr "Menu :"
-
 #. i18n: ectx: property (toolTip), widget (QCheckBox, _menuUsePlasmaTheme)
-#: ui/breezestyleconfig.ui:909
+#: ui/breezestyleconfig.ui:941
 #, kde-format
-msgid "Only affects Plasma's own menus, such as the panel's global menu (Application Menu) widget. Menus of application windows always use the KDE application colour scheme."
-msgstr "N'affecte que les menus propres à Plasma, comme le widget de menu global (Menu d'application) du panneau. Les menus des fenêtres d'application utilisent toujours le jeu de couleurs de l'application KDE."
+msgid ""
+"<html><head/><body><p>Only affects Plasma's own menus, such as the panel's "
+"global menu (Application Menu) widget. Menus of application windows always "
+"use the KDE application colour scheme.</p></body></html>"
+msgstr ""
+"<html><head/><body><p>N'affecte que les menus propres à Plasma, comme le "
+"widget de menu global (Menu d'application) du panneau. Les menus des "
+"fenêtres d'application utilisent toujours le jeu de couleurs de "
+"l'application KDE.</p></body></html>"
 
 #. i18n: ectx: property (text), widget (QCheckBox, _menuUsePlasmaTheme)
-#: ui/breezestyleconfig.ui:912
+#: ui/breezestyleconfig.ui:944
 #, kde-format
 msgid "Use Plasma Theme colours for Plasma's own menus"
 msgstr "Utiliser les couleurs du thème Plasma pour les menus de Plasma"
