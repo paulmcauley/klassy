@@ -8,6 +8,9 @@
   <group name="Global">
     <!-- used to indicate that Klassy settings have been set for the specified look-and-feel global theme -->
     <entry name="LookAndFeelSet" type="String" />
+    <entry name="MigratedPre674" type = "Bool">
+        <default>false</default>
+    </entry>
   </group>
 
   <group name="Windeco">

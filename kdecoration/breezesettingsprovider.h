@@ -40,6 +40,9 @@ private:
     //* constructor
     SettingsProvider();
 
+    void migratePre674();
+    void exitMigratePre674();
+
     //* default configuration
     InternalSettingsPtr m_defaultSettings;
 

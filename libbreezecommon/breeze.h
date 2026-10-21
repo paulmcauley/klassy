@@ -7,7 +7,7 @@
 
 #pragma once
 
-#define KLASSY_DECORATION_DEBUG_MODE 0
+#define KLASSY_DECORATION_DEBUG_MODE 1
 #define KLASSY_STYLE_DEBUG_MODE 0
 #define KLASSY_QDEBUG_OUTPUT_PATH_RELATIVE_HOME "/Desktop/klassy_debug.txt"
 
