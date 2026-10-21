@@ -8,70 +8,70 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2026-09-02 17:27+0100\n"
+"POT-Creation-Date: 2026-10-21 12:01+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: config/breezeconfigwidget.cpp:71
+#: config/breezeconfigwidget.cpp:73
 #, kde-format
 msgid "&Presets..."
 msgstr ""
 
-#: config/breezeconfigwidget.cpp:560
+#: config/breezeconfigwidget.cpp:562
 #, kde-format
-msgid "Button Colours - Klassy Settings"
+msgid "Button Colours — Klassy Settings"
 msgstr ""
 
-#: config/breezeconfigwidget.cpp:567
+#: config/breezeconfigwidget.cpp:569
 #, kde-format
-msgid "Button Behaviour - Klassy Settings"
+msgid "Button Behaviour — Klassy Settings"
 msgstr ""
 
-#: config/breezeconfigwidget.cpp:573
+#: config/breezeconfigwidget.cpp:575
 #, kde-format
-msgid "Titlebar Spacing - Klassy Settings"
+msgid "Titlebar Spacing — Klassy Settings"
 msgstr ""
 
-#: config/breezeconfigwidget.cpp:579
+#: config/breezeconfigwidget.cpp:581
 #, kde-format
-msgid "Titlebar Opacity - Klassy Settings"
+msgid "Titlebar Opacity — Klassy Settings"
 msgstr ""
 
-#: config/breezeconfigwidget.cpp:585
+#: config/breezeconfigwidget.cpp:587
 #, kde-format
-msgid "Shadow Style - Klassy Settings"
+msgid "Shadow Style — Klassy Settings"
 msgstr ""
 
-#: config/breezeconfigwidget.cpp:591
+#: config/breezeconfigwidget.cpp:593
 #, kde-format
-msgid "Window Outline Style - Klassy Settings"
+msgid "Window Outline Style — Klassy Settings"
 msgstr ""
 
-#: config/breezeconfigwidget.cpp:597
+#: config/breezeconfigwidget.cpp:599
 #, kde-format
-msgid "Presets - Klassy Settings"
+msgid "Presets — Klassy Settings"
 msgstr ""
 
 #: config/breezeexceptionlistwidget.cpp:90
 #, kde-format
-msgid "New Exception - Klassy Settings"
+msgid "New Exception — Klassy Settings"
 msgstr ""
 
 #: config/breezeexceptionlistwidget.cpp:138
 #, kde-format
-msgid "Edit Exception - Klassy Settings"
+msgid "Edit Exception — Klassy Settings"
 msgstr ""
 
 #: config/breezeexceptionlistwidget.cpp:169
 #: config/loadpreset.cpp:82 config/loadpreset.cpp:131 config/loadpreset.cpp:156
 #: config/loadpreset.cpp:179
 #, kde-format
-msgid "Question - Klassy Settings"
+msgid "Question — Klassy Settings"
 msgstr ""
 
 #: config/breezeexceptionlistwidget.cpp:170
@@ -91,7 +91,7 @@ msgstr ""
 #: config/breezeexceptionlistwidget.cpp:308
 #: config/loadpreset.cpp:70
 #, kde-format
-msgid "Warning - Klassy Settings"
+msgid "Warning — Klassy Settings"
 msgstr ""
 
 #: config/breezeexceptionlistwidget.cpp:306
@@ -473,7 +473,7 @@ msgid "Outline pressed"
 msgstr ""
 
 #. i18n: ectx: property (text), item, widget (QComboBox, buttonCornerRadius)
-#: config/buttoncolors.h:200 config/ui/buttonsizing.ui:870
+#: config/buttoncolors.h:200 config/ui/buttonsizing.ui:876
 #, kde-format
 msgid "Custom"
 msgstr ""
@@ -608,9 +608,9 @@ msgstr ""
 msgid "Window shadow, inactive"
 msgstr ""
 
-#: config/buttonsizing.cpp:128 config/buttonsizing.cpp:175
+#: config/buttonsizing.cpp:128 config/buttonsizing.cpp:189
 #, kde-format
-msgid "Button Sizing & Spacing - Klassy Settings"
+msgid "Button Sizing & Spacing — Klassy Settings"
 msgstr ""
 
 #: config/buttonsizing.cpp:129
@@ -618,25 +618,55 @@ msgstr ""
 msgid "Full-height Rectangle Sizing && Spacing"
 msgstr ""
 
+#: config/buttonsizing.cpp:136 config/buttonsizing.cpp:197
+#, kde-format
+msgid ""
+"Right-hand buttons'\n"
+":Width margins"
+msgstr ""
+
+#: config/buttonsizing.cpp:144 config/buttonsizing.cpp:205
+#, kde-format
+msgid ""
+"Left-hand buttons'\n"
+":Width margins"
+msgstr ""
+
+#: config/buttonsizing.cpp:155 config/buttonsizing.cpp:216
+#: config/buttonsizing.cpp:278
+#, kde-format
+msgid ""
+"Spacing between\n"
+":Right-hand buttons"
+msgstr ""
+
+#: config/buttonsizing.cpp:162 config/buttonsizing.cpp:223
+#: config/buttonsizing.cpp:285
+#, kde-format
+msgid ""
+"Spacing between\n"
+":Left-hand buttons"
+msgstr ""
+
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox)
-#: config/buttonsizing.cpp:176 config/ui/buttonsizing.ui:20
+#: config/buttonsizing.cpp:190 config/ui/buttonsizing.ui:26
 #, kde-format
 msgid "Integrated Rounded Rectangle Sizing && Spacing"
 msgstr ""
 
-#: config/buttonsizing.cpp:221
+#: config/buttonsizing.cpp:249
 #, kde-format
-msgid "Button Size & Spacing - Klassy Settings"
+msgid "Button Size & Spacing — Klassy Settings"
 msgstr ""
 
-#: config/buttonsizing.cpp:222
+#: config/buttonsizing.cpp:250
 #, kde-format
 msgid "Button Size && Spacing"
 msgstr ""
 
 #: config/loadpreset.cpp:60 config/loadpreset.cpp:71
 #, kde-format
-msgid "Add Preset - Klassy Settings"
+msgid "Add Preset — Klassy Settings"
 msgstr ""
 
 #: config/loadpreset.cpp:70
@@ -729,23 +759,23 @@ msgstr ""
 
 #: config/systemicongeneration.cpp:26
 #, kde-format
-msgid "System Icon Generation - Klassy Settings"
+msgid "System Icon Generation — Klassy Settings"
 msgstr ""
 
 #. i18n: ectx: property (windowTitle), widget (QDialog, AddPreset)
 #. i18n: ectx: property (windowTitle), widget (QDialog, LoadPreset)
-#. i18n: ectx: property (windowTitle), widget (QDialog, TitleBarOpacity)
 #. i18n: ectx: property (windowTitle), widget (QDialog, SystemIconGeneration)
-#. i18n: ectx: property (windowTitle), widget (QDialog, ButtonBehaviour)
 #. i18n: ectx: property (windowTitle), widget (QDialog, ButtonColors)
 #. i18n: ectx: property (windowTitle), widget (QDialog, ButtonSizing)
 #. i18n: ectx: property (windowTitle), widget (QDialog, ShadowStyle)
-#. i18n: ectx: property (windowTitle), widget (QDialog, BreezeExceptionDialog)
-#. i18n: ectx: property (windowTitle), widget (QDialog, TitleBarSpacing)
+#. i18n: ectx: property (windowTitle), widget (QDialog, TitleBarOpacity)
 #. i18n: ectx: property (windowTitle), widget (QDialog, WindowOutlineStyle)
+#. i18n: ectx: property (windowTitle), widget (QDialog, ButtonBehaviour)
+#. i18n: ectx: property (windowTitle), widget (QDialog, TitleBarSpacing)
+#. i18n: ectx: property (windowTitle), widget (QDialog, KlassyExceptionDialog)
 #: config/ui/addpreset.ui:14 config/ui/breezeexceptiondialog.ui:14
 #: config/ui/buttonbehaviour.ui:14 config/ui/buttoncolors.ui:14
-#: config/ui/buttonsizing.ui:14 config/ui/loadpreset.ui:14
+#: config/ui/buttonsizing.ui:20 config/ui/loadpreset.ui:14
 #: config/ui/shadowstyle.ui:14 config/ui/systemicongeneration.ui:14
 #: config/ui/titlebaropacity.ui:14 config/ui/titlebarspacing.ui:14
 #: config/ui/windowoutlinestyle.ui:14
@@ -1128,7 +1158,7 @@ msgstr ""
 #. i18n: ectx: property (text), widget (QCheckBox, matchTitleBarToApplicationColor)
 #. i18n: ectx: property (text), widget (QCheckBox, exceptionMatchTitleBarToApplicationColor)
 #: config/ui/breezeconfigurationui.ui:1050
-#: config/ui/breezeexceptiondialog.ui:178
+#: config/ui/breezeexceptiondialog.ui:171
 #, kde-format
 msgid "Match titlebar to application colour"
 msgstr ""
@@ -1285,16 +1315,24 @@ msgstr ""
 msgid "Window-Specific Overrides"
 msgstr ""
 
-#. i18n: ectx: property (text), widget (QLabel, defaultExceptionsLabel)
+#. i18n: ectx: property (text), widget (QLabel, bundledExceptionsLabel)
 #: config/ui/breezeconfigurationui.ui:1624
 #, kde-format
-msgid "Default overrides (can be enabled/disabled only):"
+msgid "Bundled overrides (can be enabled/disabled only):"
 msgstr ""
 
 #. i18n: ectx: property (text), widget (QLabel, userExceptionsLabel)
 #: config/ui/breezeconfigurationui.ui:1681
 #, kde-format
 msgid "User-specified overrides:"
+msgstr ""
+
+#. i18n: ectx: property (text), widget (QLabel, label_3)
+#: config/ui/breezeconfigurationui.ui:1710
+#, kde-format
+msgid ""
+"Rules are evaluated from top to bottom; the first matching rule will be "
+"applied."
 msgstr ""
 
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox)
@@ -1339,137 +1377,131 @@ msgstr ""
 msgid "Window Decoration Options"
 msgstr ""
 
+#. i18n: ectx: property (text), widget (QCheckBox, borderSizeCheckBox)
+#: config/ui/breezeexceptiondialog.ui:105
+#, kde-format
+msgid "Border size:"
+msgstr ""
+
+#. i18n: ectx: property (text), widget (QCheckBox, exceptionPresetCheckBox)
+#: config/ui/breezeexceptiondialog.ui:112
+#, kde-format
+msgid "Preset:"
+msgstr ""
+
 #. i18n: ectx: property (text), item, widget (QComboBox, borderSizeComboBox)
-#: config/ui/breezeexceptiondialog.ui:116
+#: config/ui/breezeexceptiondialog.ui:123
 #, kde-format
 msgctxt "@item:inlistbox Border size:"
 msgid "No Border"
 msgstr ""
 
 #. i18n: ectx: property (text), item, widget (QComboBox, borderSizeComboBox)
-#: config/ui/breezeexceptiondialog.ui:121
+#: config/ui/breezeexceptiondialog.ui:128
 #, kde-format
 msgctxt "@item:inlistbox Border size:"
 msgid "No Side Borders"
 msgstr ""
 
 #. i18n: ectx: property (text), item, widget (QComboBox, borderSizeComboBox)
-#: config/ui/breezeexceptiondialog.ui:126
+#: config/ui/breezeexceptiondialog.ui:133
 #, kde-format
 msgctxt "@item:inlistbox Border size:"
 msgid "Tiny"
 msgstr ""
 
 #. i18n: ectx: property (text), item, widget (QComboBox, borderSizeComboBox)
-#: config/ui/breezeexceptiondialog.ui:131
+#: config/ui/breezeexceptiondialog.ui:138
 #, kde-format
 msgctxt "@item:inlistbox Border size:"
 msgid "Normal"
 msgstr ""
 
 #. i18n: ectx: property (text), item, widget (QComboBox, borderSizeComboBox)
-#: config/ui/breezeexceptiondialog.ui:136
+#: config/ui/breezeexceptiondialog.ui:143
 #, kde-format
 msgctxt "@item:inlistbox Border size:"
 msgid "Large"
 msgstr ""
 
 #. i18n: ectx: property (text), item, widget (QComboBox, borderSizeComboBox)
-#: config/ui/breezeexceptiondialog.ui:141
+#: config/ui/breezeexceptiondialog.ui:148
 #, kde-format
 msgctxt "@item:inlistbox Border size:"
 msgid "Very Large"
 msgstr ""
 
 #. i18n: ectx: property (text), item, widget (QComboBox, borderSizeComboBox)
-#: config/ui/breezeexceptiondialog.ui:146
+#: config/ui/breezeexceptiondialog.ui:153
 #, kde-format
 msgctxt "@item:inlistbox Border size:"
 msgid "Huge"
 msgstr ""
 
 #. i18n: ectx: property (text), item, widget (QComboBox, borderSizeComboBox)
-#: config/ui/breezeexceptiondialog.ui:151
+#: config/ui/breezeexceptiondialog.ui:158
 #, kde-format
 msgctxt "@item:inlistbox Border size:"
 msgid "Very Huge"
 msgstr ""
 
 #. i18n: ectx: property (text), item, widget (QComboBox, borderSizeComboBox)
-#: config/ui/breezeexceptiondialog.ui:156
+#: config/ui/breezeexceptiondialog.ui:163
 #, kde-format
 msgctxt "@item:inlistbox Border size:"
 msgid "Oversized"
 msgstr ""
 
-#. i18n: ectx: property (text), widget (QCheckBox, exceptionPresetCheckBox)
-#: config/ui/breezeexceptiondialog.ui:164
-#, kde-format
-msgid "Preset:"
-msgstr ""
-
-#. i18n: ectx: property (text), widget (QCheckBox, borderSizeCheckBox)
-#: config/ui/breezeexceptiondialog.ui:171
-#, kde-format
-msgid "Border size:"
-msgstr ""
-
 #. i18n: ectx: property (text), widget (QCheckBox, opaqueTitleBar)
-#: config/ui/breezeexceptiondialog.ui:185
+#: config/ui/breezeexceptiondialog.ui:178
 #, kde-format
 msgid "&Opaque titlebar"
 msgstr ""
 
-#. i18n: ectx: property (text), widget (QLabel, label_4)
-#: config/ui/breezeexceptiondialog.ui:192
-#, kde-format
-msgid "       Hide window titlebar:"
-msgstr ""
-
 #. i18n: ectx: property (text), item, widget (QComboBox, hideTitleBar)
-#: config/ui/breezeexceptiondialog.ui:203
-#, kde-format
-msgid "Never"
-msgstr ""
-
-#. i18n: ectx: property (text), item, widget (QComboBox, hideTitleBar)
-#: config/ui/breezeexceptiondialog.ui:208
+#: config/ui/breezeexceptiondialog.ui:189
 #, kde-format
 msgid "Always"
 msgstr ""
 
 #. i18n: ectx: property (text), item, widget (QComboBox, hideTitleBar)
-#: config/ui/breezeexceptiondialog.ui:213
+#: config/ui/breezeexceptiondialog.ui:194
 #, kde-format
 msgid "On maximized windows"
 msgstr ""
 
 #. i18n: ectx: property (text), item, widget (QComboBox, hideTitleBar)
-#: config/ui/breezeexceptiondialog.ui:218
+#: config/ui/breezeexceptiondialog.ui:199
 #, kde-format
 msgid "On any maximization"
 msgstr ""
 
 #. i18n: ectx: property (text), item, widget (QComboBox, hideTitleBar)
-#: config/ui/breezeexceptiondialog.ui:223
+#: config/ui/breezeexceptiondialog.ui:204
 #, kde-format
 msgid "On windows kept behind"
 msgstr ""
 
 #. i18n: ectx: property (text), item, widget (QComboBox, hideTitleBar)
-#: config/ui/breezeexceptiondialog.ui:228
+#: config/ui/breezeexceptiondialog.ui:209
 #, kde-format
 msgid "On any maximization or windows kept behind"
 msgstr ""
 
+#. i18n: ectx: property (text), widget (QCheckBox, exceptionHideTitleBarCheckBox)
+#: config/ui/breezeexceptiondialog.ui:217
+#, kde-format
+msgid "Hide window titlebar:"
+msgstr ""
+
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox_3)
-#: config/ui/breezeexceptiondialog.ui:252
+#: config/ui/breezeexceptiondialog.ui:247
 #, kde-format
 msgid "Application Style Options"
 msgstr ""
 
 #. i18n: ectx: property (text), widget (QLabel, label_3)
-#: config/ui/breezeexceptiondialog.ui:258
+#: config/ui/breezeexceptiondialog.ui:253
 #, kde-format
 msgid ""
 "<html><head/><body><p><span style=\"font-style:italic;\">Application name</"
@@ -1477,7 +1509,7 @@ msgid ""
 msgstr ""
 
 #. i18n: ectx: property (text), widget (QCheckBox, preventApplyOpacityToHeader)
-#: config/ui/breezeexceptiondialog.ui:274
+#: config/ui/breezeexceptiondialog.ui:269
 #, kde-format
 msgid "Opaque &header"
 msgstr ""
@@ -1506,8 +1538,8 @@ msgstr ""
 msgid "Edit"
 msgstr ""
 
-#. i18n: ectx: attribute (title), widget (QWidget, activeWindowButtonBehaviour)
 #. i18n: ectx: attribute (title), widget (QWidget, activeWindowButtonColors)
+#. i18n: ectx: attribute (title), widget (QWidget, activeWindowButtonBehaviour)
 #: config/ui/buttonbehaviour.ui:30 config/ui/buttoncolors.ui:30
 #, kde-format
 msgid "Active window"
@@ -1562,22 +1594,36 @@ msgstr ""
 msgid "Close Button Behaviour"
 msgstr ""
 
-#. i18n: ectx: attribute (title), widget (QWidget, tab_2)
 #. i18n: ectx: attribute (title), widget (QWidget, inactiveWindowButtonColors)
+#. i18n: ectx: attribute (title), widget (QWidget, tab_2)
 #: config/ui/buttonbehaviour.ui:366 config/ui/buttoncolors.ui:816
 #, kde-format
 msgid "Inactive window"
 msgstr ""
 
-#. i18n: ectx: property (text), widget (QLabel, label_2)
 #. i18n: ectx: property (text), widget (QLabel, label_3)
+#. i18n: ectx: property (text), widget (QLabel, label_2)
 #: config/ui/buttonbehaviour.ui:387 config/ui/buttoncolors.ui:844
 #, kde-format
 msgid "Lock active:"
 msgstr ""
 
+#. i18n: ectx: property (text), widget (QCheckBox, longPressCloseMinimizeToTray)
+#: config/ui/buttonbehaviour.ui:706
+#, kde-format
+msgid ""
+"Long-press close button to minimize window to system tray\n"
+"(kwin-minimize2tray plugin required)"
+msgstr ""
+
+#. i18n: ectx: property (text), widget (QCheckBox, longPressMinimizeAllOthers)
+#: config/ui/buttonbehaviour.ui:713
+#, kde-format
+msgid "Long-press minimize button to minimize all other windows"
+msgstr ""
+
 #. i18n: ectx: property (text), widget (QCheckBox, unisonHovering)
-#: config/ui/buttonbehaviour.ui:705
+#: config/ui/buttonbehaviour.ui:720
 #, kde-format
 msgid "Unison hovering"
 msgstr ""
@@ -1645,12 +1691,12 @@ msgstr ""
 msgid "Accent colour with traffic lights"
 msgstr ""
 
-#. i18n: ectx: property (text), widget (QLabel, _menuOpacityTransparentLabel)
-#. i18n: ectx: property (text), widget (QLabel, _menuOpacityTransparentLabel_4)
 #. i18n: ectx: property (text), widget (QLabel, opacitySliderLabel_1_Active_2)
 #. i18n: ectx: property (text), widget (QLabel, opacitySliderLabel_1_Active)
 #. i18n: ectx: property (text), widget (QLabel, opacitySliderLabel_1_Inactive_2)
 #. i18n: ectx: property (text), widget (QLabel, opacitySliderLabel_1_Inactive)
+#. i18n: ectx: property (text), widget (QLabel, _menuOpacityTransparentLabel)
+#. i18n: ectx: property (text), widget (QLabel, _menuOpacityTransparentLabel_4)
 #. i18n: ectx: property (text), widget (QLabel, _menuOpacityTransparentLabel_3)
 #. i18n: ectx: property (text), widget (QLabel, _menuOpacityTransparentLabel_27)
 #. i18n: ectx: property (text), widget (QLabel, _menuOpacityTransparentLabel_29)
@@ -1676,12 +1722,12 @@ msgstr ""
 msgid "Transparent"
 msgstr ""
 
-#. i18n: ectx: property (text), widget (QLabel, _menuOpacityTransparentLabel_2)
-#. i18n: ectx: property (text), widget (QLabel, _menuOpacityTransparentLabel_3)
 #. i18n: ectx: property (text), widget (QLabel, opacitySliderLabel_2_Active_2)
 #. i18n: ectx: property (text), widget (QLabel, opacitySliderLabel_2_Active)
 #. i18n: ectx: property (text), widget (QLabel, opacitySliderLabel_2_Inactive_2)
 #. i18n: ectx: property (text), widget (QLabel, opacitySliderLabel_2_Inactive)
+#. i18n: ectx: property (text), widget (QLabel, _menuOpacityTransparentLabel_2)
+#. i18n: ectx: property (text), widget (QLabel, _menuOpacityTransparentLabel_3)
 #. i18n: ectx: property (text), widget (QLabel, _menuOpacityTransparentLabel_4)
 #. i18n: ectx: property (text), widget (QLabel, _menuOpacityTransparentLabel_28)
 #. i18n: ectx: property (text), widget (QLabel, _menuOpacityTransparentLabel_30)
@@ -1821,25 +1867,24 @@ msgid "Close icon colour :"
 msgstr ""
 
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox_2)
-#: config/ui/buttonsizing.ui:41
+#: config/ui/buttonsizing.ui:47
 #, kde-format
 msgid "Button sizing"
 msgstr ""
 
 #. i18n: ectx: property (text), widget (QLabel, scaleBackgroundPercentLabel)
-#: config/ui/buttonsizing.ui:70
+#: config/ui/buttonsizing.ui:76
 #, kde-format
 msgid "Scale b&utton background: "
 msgstr ""
 
-#. i18n: ectx: property (suffix), widget (QSpinBox, activeTitleBarOpacity_2)
-#. i18n: ectx: property (suffix), widget (QSpinBox, inactiveTitleBarOpacity_2)
 #. i18n: ectx: property (suffix), widget (QSpinBox, scaleBackgroundPercent)
 #. i18n: ectx: property (suffix), widget (QSpinBox, spacerButtonWidthRelative)
 #. i18n: ectx: property (suffix), widget (QSpinBox, closeFullHeightButtonWidthMarginRelative)
 #. i18n: ectx: property (suffix), widget (QSpinBox, shadowStrengthActive)
 #. i18n: ectx: property (suffix), widget (QSpinBox, shadowStrengthInactive)
-#. i18n: ectx: property (suffix), widget (QSpinBox, percentMaximizedTopBottomMargins)
+#. i18n: ectx: property (suffix), widget (QSpinBox, titleBarOpacityActive_2)
+#. i18n: ectx: property (suffix), widget (QSpinBox, titleBarOpacityInactive_2)
 #. i18n: ectx: property (suffix), widget (QSpinBox, windowOutlineShadowColorOpacity)
 #. i18n: ectx: property (suffix), widget (QSpinBox, windowOutlineContrastOpacityActive)
 #. i18n: ectx: property (suffix), widget (QSpinBox, windowOutlineAccentColorOpacityActive)
@@ -1852,8 +1897,9 @@ msgstr ""
 #. i18n: ectx: property (suffix), widget (QSpinBox, windowOutlineAccentWithContrastOpacityInactive)
 #. i18n: ectx: property (suffix), widget (QSpinBox, windowOutlineCustomColorOpacityInactive)
 #. i18n: ectx: property (suffix), widget (QSpinBox, windowOutlineCustomWithContrastOpacityInactive)
-#: config/ui/buttonsizing.ui:83 config/ui/buttonsizing.ui:216
-#: config/ui/buttonsizing.ui:399 config/ui/shadowstyle.ui:93
+#. i18n: ectx: property (suffix), widget (QSpinBox, percentMaximizedTopBottomMargins)
+#: config/ui/buttonsizing.ui:89 config/ui/buttonsizing.ui:222
+#: config/ui/buttonsizing.ui:405 config/ui/shadowstyle.ui:93
 #: config/ui/shadowstyle.ui:198 config/ui/titlebaropacity.ui:99
 #: config/ui/titlebaropacity.ui:156 config/ui/titlebarspacing.ui:574
 #: config/ui/windowoutlinestyle.ui:172 config/ui/windowoutlinestyle.ui:384
@@ -1867,7 +1913,7 @@ msgid " %"
 msgstr ""
 
 #. i18n: ectx: property (text), widget (QLabel, fullHeightButtonWidthMarginLeftLabel)
-#: config/ui/buttonsizing.ui:172
+#: config/ui/buttonsizing.ui:178
 #, kde-format
 msgid ""
 "&Left-hand buttons'\n"
@@ -1875,13 +1921,13 @@ msgid ""
 msgstr ""
 
 #. i18n: ectx: property (text), widget (QLabel, spacerButtonWidthRelativeLabel)
-#: config/ui/buttonsizing.ui:203
+#: config/ui/buttonsizing.ui:209
 #, kde-format
 msgid "Spacer button width:"
 msgstr ""
 
 #. i18n: ectx: property (text), widget (QLabel, fullHeightButtonWidthMarginRightLabel)
-#: config/ui/buttonsizing.ui:284
+#: config/ui/buttonsizing.ui:290
 #, kde-format
 msgid ""
 "&Right-hand buttons'\n"
@@ -1889,7 +1935,7 @@ msgid ""
 msgstr ""
 
 #. i18n: ectx: property (toolTip), widget (QPushButton, lockFullHeightButtonWidthMargins)
-#: config/ui/buttonsizing.ui:319
+#: config/ui/buttonsizing.ui:325
 #, kde-format
 msgid ""
 "Lock to make Left-hand button width margin and Right-hand button width "
@@ -1897,19 +1943,19 @@ msgid ""
 msgstr ""
 
 #. i18n: ectx: property (text), widget (QLabel, closeFullHeightButtonWidthMarginRelativeLabel)
-#: config/ui/buttonsizing.ui:386
+#: config/ui/buttonsizing.ui:392
 #, kde-format
 msgid "&Close button width-margins:"
 msgstr ""
 
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox_3)
-#: config/ui/buttonsizing.ui:441
+#: config/ui/buttonsizing.ui:447
 #, kde-format
 msgid "Button spacing"
 msgstr ""
 
 #. i18n: ectx: property (text), widget (QLabel, fullHeightButtonSpacingRightLabel)
-#: config/ui/buttonsizing.ui:500
+#: config/ui/buttonsizing.ui:506
 #, kde-format
 msgid ""
 "Spacin&g between\n"
@@ -1917,7 +1963,7 @@ msgid ""
 msgstr ""
 
 #. i18n: ectx: property (text), widget (QLabel, buttonSpacingLeftLabel)
-#: config/ui/buttonsizing.ui:527
+#: config/ui/buttonsizing.ui:533
 #, kde-format
 msgid ""
 "Spacing between\n"
@@ -1925,7 +1971,7 @@ msgid ""
 msgstr ""
 
 #. i18n: ectx: property (text), widget (QLabel, buttonSpacingRightLabel)
-#: config/ui/buttonsizing.ui:538
+#: config/ui/buttonsizing.ui:544
 #, kde-format
 msgid ""
 "S&pacing between\n"
@@ -1933,7 +1979,7 @@ msgid ""
 msgstr ""
 
 #. i18n: ectx: property (text), widget (QLabel, fullHeightButtonSpacingLeftLabel)
-#: config/ui/buttonsizing.ui:579
+#: config/ui/buttonsizing.ui:585
 #, kde-format
 msgid ""
 "&Spacing between\n"
@@ -1942,7 +1988,7 @@ msgstr ""
 
 #. i18n: ectx: property (toolTip), widget (QPushButton, lockFullHeightButtonSpacingLeftRight)
 #. i18n: ectx: property (toolTip), widget (QPushButton, lockButtonSpacingLeftRight)
-#: config/ui/buttonsizing.ui:638 config/ui/buttonsizing.ui:687
+#: config/ui/buttonsizing.ui:644 config/ui/buttonsizing.ui:693
 #, kde-format
 msgid ""
 "Lock to make Left-hand button spacing and Right-hand button spacing have the "
@@ -1950,19 +1996,19 @@ msgid ""
 msgstr ""
 
 #. i18n: ectx: property (text), widget (QLabel, integratedRoundedRectangleBottomPaddingLabel)
-#: config/ui/buttonsizing.ui:771
+#: config/ui/buttonsizing.ui:777
 #, kde-format
 msgid "Botto&m padding:"
 msgstr ""
 
 #. i18n: ectx: property (text), widget (QLabel, cornerRadiusLabel)
-#: config/ui/buttonsizing.ui:845
+#: config/ui/buttonsizing.ui:851
 #, kde-format
 msgid "Button corner rad&ius:"
 msgstr ""
 
 #. i18n: ectx: property (text), item, widget (QComboBox, buttonCornerRadius)
-#: config/ui/buttonsizing.ui:865
+#: config/ui/buttonsizing.ui:871
 #, kde-format
 msgid "Same as window"
 msgstr ""
@@ -2109,20 +2155,20 @@ msgstr ""
 msgid "Active window:"
 msgstr ""
 
-#. i18n: ectx: property (text), widget (QLabel, activeTitleBarOpacityFromColorSchemeLabel)
+#. i18n: ectx: property (text), widget (QLabel, titleBarOpacityActiveFromColorSchemeLabel)
 #: config/ui/titlebaropacity.ui:251
 #, kde-format
 msgid "        Active opacity set by colour scheme"
 msgstr ""
 
-#. i18n: ectx: property (text), widget (QCheckBox, overrideActiveTitleBarOpacity)
-#. i18n: ectx: property (text), widget (QCheckBox, overrideInactiveTitleBarOpacity)
+#. i18n: ectx: property (text), widget (QCheckBox, overrideTitleBarOpacityActive)
+#. i18n: ectx: property (text), widget (QCheckBox, overrideTitleBarOpacityInactive)
 #: config/ui/titlebaropacity.ui:258 config/ui/titlebaropacity.ui:272
 #, kde-format
 msgid "Override colour scheme"
 msgstr ""
 
-#. i18n: ectx: property (text), widget (QLabel, inactiveTitleBarOpacityFromColorSchemeLabel)
+#. i18n: ectx: property (text), widget (QLabel, titleBarOpacityInactiveFromColorSchemeLabel)
 #: config/ui/titlebaropacity.ui:265
 #, kde-format
 msgid "        Inactive opacity set by colour scheme"
