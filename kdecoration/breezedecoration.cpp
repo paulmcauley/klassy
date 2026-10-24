@@ -487,7 +487,7 @@ void Decoration::updateOverrideWindowOutlineFromButtonAnimationState()
 void Decoration::setScaledBorderSizes(const bool nextScale)
 {
     if (style() == KDecoration3::Style::Shadow) {
-        return 0;
+        return;
     }
 
     auto c = window();
