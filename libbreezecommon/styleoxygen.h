@@ -13,10 +13,10 @@
 namespace Klassy
 {
 
-class RenderStyleOxygen18By18 : public RenderDecorationButtonIcon18By18
+class RenderOxygen18By18 : public RenderDecorationButtonIcon18By18
 {
 public:
-    RenderStyleOxygen18By18(QPainter *painter)
+    RenderOxygen18By18(QPainter *painter)
         : RenderDecorationButtonIcon18By18(painter) { };
 
     void renderCloseIcon() override;

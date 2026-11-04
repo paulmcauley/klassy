@@ -122,10 +122,10 @@ void ButtonSizing::setVisibleUiElements()
     int buttonShape = static_cast<ConfigWidget *>(m_parent)->currentButtonShape();
 
     switch (buttonShape) {
-    case InternalSettings::EnumButtonShape::ShapeFullHeightRectangle:
-    case InternalSettings::EnumButtonShape::ShapeFullHeightRoundedRectangle:
+    case InternalSettings::EnumButtonShape::FullHeightRectangle:
+    case InternalSettings::EnumButtonShape::FullHeightRoundedRectangle:
 
-        setWindowTitle(i18n("Button Sizing & Spacing - Klassy Settings"));
+        setWindowTitle(i18n("Button Sizing & Spacing — Klassy Settings"));
         m_ui.groupBox->setTitle(i18n("Full-height Rectangle Sizing && Spacing"));
 
         m_ui.scaleBackgroundPercentLabel->setVisible(false);
@@ -184,9 +184,9 @@ void ButtonSizing::setVisibleUiElements()
         setMinimumHeight(625);
         break;
 
-    case InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangle:
-    case InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangleGrouped:
-        setWindowTitle(i18n("Button Sizing & Spacing - Klassy Settings"));
+    case InternalSettings::EnumButtonShape::IntegratedRoundedRectangle:
+    case InternalSettings::EnumButtonShape::IntegratedRoundedRectangleGrouped:
+        setWindowTitle(i18n("Button Sizing & Spacing — Klassy Settings"));
         m_ui.groupBox->setTitle(i18n("Integrated Rounded Rectangle Sizing && Spacing"));
 
         m_ui.scaleBackgroundPercentLabel->setVisible(false);
@@ -246,7 +246,7 @@ void ButtonSizing::setVisibleUiElements()
         break;
 
     default:
-        setWindowTitle(i18n("Button Size & Spacing - Klassy Settings"));
+        setWindowTitle(i18n("Button Size & Spacing — Klassy Settings"));
         m_ui.groupBox->setTitle(i18n("Button Size && Spacing"));
 
         m_ui.scaleBackgroundPercentLabel->setVisible(true);
@@ -302,10 +302,10 @@ void ButtonSizing::setVisibleUiElements()
     }
 
     // set corner radius options
-    if (buttonShape == InternalSettings::EnumButtonShape::ShapeFullHeightRoundedRectangle
-        || buttonShape == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangle
-        || buttonShape == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangleGrouped
-        || buttonShape == InternalSettings::EnumButtonShape::ShapeSmallRoundedSquare) {
+    if (buttonShape == InternalSettings::EnumButtonShape::FullHeightRoundedRectangle
+        || buttonShape == InternalSettings::EnumButtonShape::IntegratedRoundedRectangle
+        || buttonShape == InternalSettings::EnumButtonShape::IntegratedRoundedRectangleGrouped
+        || buttonShape == InternalSettings::EnumButtonShape::SmallRoundedSquare) {
         m_ui.cornerRadiusIcon->setPixmap(QIcon::fromTheme(QStringLiteral("tool_curve")).pixmap(16, 16));
         m_ui.cornerRadiusIcon->setVisible(true);
         m_ui.cornerRadiusLabel->setVisible(true);

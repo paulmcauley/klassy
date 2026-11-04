@@ -10,6 +10,7 @@ panel.addWidget("org.kde.plasma.pager");
 var taskmanager = panel.addWidget("org.kde.plasma.icontasks");
 taskmanager.currentConfigGroup = ["General"];
 taskmanager.writeConfig('launchers', 'preferred://filemanager,preferred://browser');
+taskmanager.writeConfig('highlightWindows', true); //enable "Hide other windows when hovering over previews" (a.k.a. "Aero peek")
 taskmanager.reloadConfig();
 
 /* Next up is determining whether to add the Input Method Panel

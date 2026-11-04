@@ -14,6 +14,7 @@
 
 #include <QHash>
 #include <QImage>
+#include <QTimer>
 
 class QVariantAnimation;
 
@@ -145,15 +146,15 @@ public:
     }
 
     //* set small button padded size
-    void setSmallButtonPaddedSize(const QSizeF &value)
+    void setScaledSmallButtonPaddedSize(const QSizeF &value)
     {
-        m_smallButtonPaddedSize = value;
+        m_scaledSmallButtonPaddedSize = value;
     }
 
     //* set icon size
-    void setIconSize(const QSizeF &value)
+    void setScaledIconSize(const QSizeF &value)
     {
-        m_iconSize = value;
+        m_scaledIconSize = value;
     }
 
     //*@name active state change animation
@@ -237,6 +238,12 @@ private:
     //* Whether to invert the pinned-on-all-desktops icon like in Breeze
     bool titlebarTextPinnedInversion() const;
 
+    void handleHoldTimeout();
+    void onCloseHold();
+    void onMinimizeHold();
+    void mouseReleaseEvent(QMouseEvent *event) override;
+    void forceUnpress();
+
     //* Pointer to the decoration
     Decoration *m_d;
 
@@ -271,10 +278,10 @@ private:
     QSizeF m_backgroundVisibleSize = QSizeF();
 
     //* small button size (icon + padding)
-    QSizeF m_smallButtonPaddedSize = QSizeF();
+    QSizeF m_scaledSmallButtonPaddedSize = QSizeF();
 
     //* icon size
-    QSizeF m_iconSize = QSizeF();
+    QSizeF m_scaledIconSize = QSizeF();
 
     //* active state change opacity
     qreal m_opacity = 0;
@@ -289,6 +296,9 @@ private:
     qreal m_standardScaledCosmeticPenWidth = 1.0;
     mutable qreal m_standardScaledNonCosmeticPenWidth = 1.0;
     bool m_titlebarTextPinnedInversion = false;
+
+    QTimer *m_holdTimer = nullptr;
+    bool m_longPressTriggered = false;
 
     // for unison hovering
     bool hovered() const;

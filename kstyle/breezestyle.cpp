@@ -240,7 +240,6 @@ ToolButtonMenuArrowStyle toolButtonMenuArrowStyle(const QStyleOption *option)
 
     return ToolButtonMenuArrowStyle::None;
 }
-
 }
 
 namespace Klassy
@@ -298,6 +297,16 @@ Style::Style()
                  this,
                  SLOT(configurationChanged()));
 
+    // notified when the Plasma desktop theme changes, to refresh menus using the Plasma theme palette
+    if (qApp->applicationName() == QStringLiteral("plasmashell")) {
+        dbus.connect(QString(),
+                     QStringLiteral("/plasmarc"),
+                     QStringLiteral("org.kde.kconfig.notify"),
+                     QStringLiteral("ConfigChanged"),
+                     this,
+                     SLOT(updatePlasmaThemeMenuPalette()));
+    }
+
     connect(&g_dBusUpdateNotifier, &DBusUpdateNotifier::decorationSettingsUpdate, this, &Style::generateDecorationColorsOnDecorationColorSettingsUpdate);
 
     // dbus.connect(QString(), QStringLiteral("/KWin"), QStringLiteral("org.kde.KWin"), QStringLiteral("reloadConfig"), this, SLOT(configurationChanged()));
@@ -318,7 +327,7 @@ Style::Style()
             &DBusUpdateNotifier::systemIconsUpdate,
             this,
             [this]() { // call this after loadConfiguration() as _helper->decorationConfig() needs to be initialized properly first
-                if (_helper->decorationConfig()->buttonIconStyle() == InternalSettings::EnumButtonIconStyle::StyleSystemIconTheme) {
+                if (_helper->decorationConfig()->buttonIconStyle() == InternalSettings::EnumButtonIconStyle::SystemIconTheme) {
                     loadConfiguration();
                 }
             });
@@ -2293,6 +2302,14 @@ void Style::configurationChanged()
 
     // reload configuration
     loadConfiguration();
+}
+
+//_____________________________________________________________________
+void Style::updatePlasmaThemeMenuPalette()
+{
+    if (StyleConfigData::menuUsePlasmaTheme()) {
+        _helper->loadPlasmaPalette();
+    }
 }
 
 //_____________________________________________________________________
@@ -5013,7 +5030,7 @@ bool Style::drawPanelMenuPrimitive(const QStyleOption *option, QPainter *painter
         return true;
     }
 
-    const auto &palette(option->palette);
+    const auto palette(_helper->plasmaThemeMenuPalette(option->palette));
     const bool hasAlpha(_helper->hasAlphaChannel(widget));
     const auto seamlessEdges = _helper->menuSeamlessEdges(widget);
     auto background(_helper->frameBackgroundColor(palette));
@@ -6260,7 +6277,7 @@ bool Style::drawMenuItemControl(const QStyleOption *option, QPainter *painter, c
     // but with width set to the widest menu item width.
     // see QMenuPrivate::updateActionRects()
     const auto &rect = option->rect;
-    const auto &palette = option->palette;
+    const auto palette = _helper->plasmaThemeMenuPalette(option->palette);
 
     // store state
     const State &state = option->state;
@@ -6410,7 +6427,7 @@ bool Style::drawMenuItemControl(const QStyleOption *option, QPainter *painter, c
         // icon state
         const QIcon::State iconState(sunken ? QIcon::On : QIcon::Off);
         const qreal dpr = painter->device() ? painter->device()->devicePixelRatioF() : qApp->devicePixelRatio();
-        const QPixmap pixmap = _helper->coloredIcon(menuItemOption->icon, menuItemOption->palette, iconRect.size(), dpr, mode, iconState);
+        const QPixmap pixmap = _helper->coloredIcon(menuItemOption->icon, palette, iconRect.size(), dpr, mode, iconState);
         drawItemPixmap(painter, iconRect, Qt::AlignCenter, pixmap);
     }
 
@@ -8891,6 +8908,8 @@ QIcon Style::titleBarButtonIcon(StandardPixmap standardPixmap, const QStyleOptio
         palette = QApplication::palette();
     }
 
+    auto decorationConfig = _helper->decorationConfig();
+
     // generate a different DecorationColors for buttons on a toolbar. These set the titlebar background to the toolbar background, and use the inactive button
     // states
     DecorationColors decorationColorsToolbar(false, true);
@@ -8898,9 +8917,9 @@ QIcon Style::titleBarButtonIcon(StandardPixmap standardPixmap, const QStyleOptio
     const QColor toolbarBase(palette.color(QPalette::Window));
     const QColor toolbarText(KColorUtils::mix(toolbarBase, palette.color(QPalette::WindowText), 0.7));
     // generate inactive decoration colours only
-    decorationColorsToolbar.generateDecorationColors(palette, _helper->decorationConfig(), QColor(), QColor(), toolbarText, toolbarBase, "", true, false);
+    decorationColorsToolbar.generateDecorationColors(palette, decorationConfig, QColor(), QColor(), toolbarText, toolbarBase, "", true, false);
     DecorationButtonPalette decorationButtonPaletteToolbar(buttonType);
-    decorationButtonPaletteToolbar.generate(_helper->decorationConfig(),
+    decorationButtonPaletteToolbar.generate(decorationConfig,
                                             _helper->decorationColors()->active(),
                                             decorationColorsToolbar.inactive(),
                                             true,
@@ -8908,7 +8927,7 @@ QIcon Style::titleBarButtonIcon(StandardPixmap standardPixmap, const QStyleOptio
 
     // active button states which are used for MDI titlebars only
     DecorationButtonPalette decorationButtonPaletteMdi(buttonType);
-    decorationButtonPaletteMdi.generate(_helper->decorationConfig(),
+    decorationButtonPaletteMdi.generate(decorationConfig,
                                         _helper->decorationColors()->active(),
                                         decorationColorsToolbar.inactive(),
                                         true,
@@ -8918,6 +8937,7 @@ QIcon Style::titleBarButtonIcon(StandardPixmap standardPixmap, const QStyleOptio
     struct IconData {
         QIcon::Mode _mode;
         QIcon::State _state;
+        bool _bold;
         QColor _foregroundColor;
         bool _cutOutForeground;
         QColor _backgroundColor;
@@ -8929,6 +8949,7 @@ QIcon Style::titleBarButtonIcon(StandardPixmap standardPixmap, const QStyleOptio
         // state off icons
         {QIcon::Normal, // used for standard widgets and inactive MDI window titlebars (hence using inactive colours)
          QIcon::Off,
+         false,
          decorationButtonPaletteToolbar.inactive()->foregroundNormal,
          decorationButtonPaletteToolbar.inactive()->cutOutForegroundNormal,
          decorationButtonPaletteToolbar.inactive()->backgroundNormal,
@@ -8936,6 +8957,7 @@ QIcon Style::titleBarButtonIcon(StandardPixmap standardPixmap, const QStyleOptio
 
         {QIcon::Selected, // used for active MDI window titlebars
          QIcon::Off,
+         false,
          decorationButtonPaletteMdi.active()->foregroundNormal,
          decorationButtonPaletteMdi.active()->cutOutForegroundNormal,
          decorationButtonPaletteMdi.active()->backgroundNormal,
@@ -8943,6 +8965,7 @@ QIcon Style::titleBarButtonIcon(StandardPixmap standardPixmap, const QStyleOptio
 
         {QIcon::Active, // hover colours, standard widgets and inactive MDI titlebars
          QIcon::Off,
+         true,
          decorationButtonPaletteToolbar.inactive()->foregroundHover,
          decorationButtonPaletteToolbar.inactive()->cutOutForegroundHover,
          decorationButtonPaletteToolbar.inactive()->backgroundHover,
@@ -8950,6 +8973,7 @@ QIcon Style::titleBarButtonIcon(StandardPixmap standardPixmap, const QStyleOptio
 
         {QIcon::Disabled,
          QIcon::Off,
+         false,
          ColorTools::alphaMix(decorationButtonPaletteToolbar.inactive()->foregroundNormal, 0.2),
          false,
          ColorTools::alphaMix(decorationButtonPaletteToolbar.inactive()->backgroundNormal, 0.2),
@@ -8958,6 +8982,7 @@ QIcon Style::titleBarButtonIcon(StandardPixmap standardPixmap, const QStyleOptio
         // state on icons
         {QIcon::Normal, // Pressed colours on a standard widget / inactive
          QIcon::On,
+         true,
          decorationButtonPaletteToolbar.inactive()->foregroundPress,
          decorationButtonPaletteToolbar.inactive()->cutOutForegroundPress,
          decorationButtonPaletteToolbar.inactive()->backgroundPress,
@@ -8965,6 +8990,7 @@ QIcon Style::titleBarButtonIcon(StandardPixmap standardPixmap, const QStyleOptio
 
         {QIcon::Selected, // Pressed colours on MDI active titlebar
          QIcon::On,
+         true,
          decorationButtonPaletteMdi.active()->foregroundPress,
          decorationButtonPaletteMdi.active()->cutOutForegroundPress,
          decorationButtonPaletteMdi.active()->backgroundPress,
@@ -8972,6 +8998,7 @@ QIcon Style::titleBarButtonIcon(StandardPixmap standardPixmap, const QStyleOptio
 
         {QIcon::Active, // Same as Normal::On -- needed like this for compatibility in drawToolButtonLabelControl
          QIcon::On,
+         true,
          decorationButtonPaletteToolbar.inactive()->foregroundPress,
          decorationButtonPaletteToolbar.inactive()->cutOutForegroundPress,
          decorationButtonPaletteToolbar.inactive()->backgroundPress,
@@ -8980,6 +9007,7 @@ QIcon Style::titleBarButtonIcon(StandardPixmap standardPixmap, const QStyleOptio
         // This is unused elsewhere, so use instead for Hovered on an active MDI titlebar (drawTitleBarComplexControl modified to use this in Klassy)
         {QIcon::Disabled,
          QIcon::On,
+         true,
          decorationButtonPaletteMdi.active()->foregroundHover,
          decorationButtonPaletteMdi.active()->cutOutForegroundHover,
          decorationButtonPaletteMdi.active()->backgroundHover,
@@ -8996,6 +9024,12 @@ QIcon Style::titleBarButtonIcon(StandardPixmap standardPixmap, const QStyleOptio
     const auto direction = option ? option->direction : (widget ? widget->layoutDirection() : QGuiApplication::layoutDirection());
     bool rightToLeft = direction == Qt::LayoutDirection::RightToLeft;
 
+    auto boldIconConfig = decorationConfig->boldButtonIcons();
+    bool forceFine = boldIconConfig == InternalSettings::EnumBoldButtonIcons::Fine
+        || (qApp->devicePixelRatio() < 1.2
+            && (boldIconConfig == InternalSettings::EnumBoldButtonIcons::BoldActiveHiDpi
+                || boldIconConfig == InternalSettings::EnumBoldButtonIcons::BoldHiDpiOnly));
+
     for (const IconData &iconData : iconTypes) {
         for (const int &iconSize : iconSizes) {
             // create pixmap
@@ -9008,6 +9042,7 @@ QIcon Style::titleBarButtonIcon(StandardPixmap standardPixmap, const QStyleOptio
                                             pixmap.rect(),
                                             buttonType,
                                             buttonChecked,
+                                            iconData._bold && !forceFine,
                                             iconData._foregroundColor,
                                             iconData._cutOutForeground,
                                             iconData._backgroundColor,

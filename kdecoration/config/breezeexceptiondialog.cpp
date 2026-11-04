@@ -25,7 +25,7 @@ ExceptionDialog::ExceptionDialog(KSharedConfig::Ptr config, KSharedConfig::Ptr p
 
     // disable controls if this is the default exceptions list
     QWidget *parentExceptionListWidget = parentWidget();
-    if (parentExceptionListWidget && parentExceptionListWidget->objectName() == "defaultExceptions") {
+    if (parentExceptionListWidget && parentExceptionListWidget->objectName() == "bundledExceptions") {
         m_ui.borderSizeCheckBox->setDisabled(true);
         m_ui.borderSizeComboBox->setDisabled(true);
         m_ui.detectDialogButton->setDisabled(true);
@@ -33,6 +33,7 @@ ExceptionDialog::ExceptionDialog(KSharedConfig::Ptr config, KSharedConfig::Ptr p
         m_ui.exceptionProgramNameEditor->setDisabled(true);
         m_ui.exceptionWindowPropertyEditor->setDisabled(true);
         m_ui.exceptionWindowPropertyType->setDisabled(true);
+        m_ui.exceptionHideTitleBarCheckBox->setDisabled(true);
         m_ui.hideTitleBar->setDisabled(true);
         m_ui.opaqueTitleBar->setDisabled(true);
         m_ui.exceptionMatchTitleBarToApplicationColor->setDisabled(true);
@@ -63,6 +64,7 @@ ExceptionDialog::ExceptionDialog(KSharedConfig::Ptr config, KSharedConfig::Ptr p
     connect(m_ui.exceptionWindowPropertyEditor, &QLineEdit::textChanged, this, &ExceptionDialog::updateChanged, Qt::ConnectionType::DirectConnection);
     connect(m_ui.borderSizeComboBox, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
     connect(m_ui.borderSizeCheckBox, &QAbstractButton::clicked, this, &ExceptionDialog::updateChanged, Qt::ConnectionType::DirectConnection);
+    connect(m_ui.exceptionHideTitleBarCheckBox, &QAbstractButton::clicked, this, &ExceptionDialog::updateChanged, Qt::ConnectionType::DirectConnection);
     connect(m_ui.hideTitleBar, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
     connect(m_ui.opaqueTitleBar, &QAbstractButton::clicked, this, &ExceptionDialog::updateChanged, Qt::ConnectionType::DirectConnection);
     connect(m_ui.exceptionMatchTitleBarToApplicationColor,
@@ -101,6 +103,7 @@ void ExceptionDialog::setException(InternalSettingsPtr exception)
     }
 
     m_ui.borderSizeComboBox->setCurrentIndex(m_exception->borderSize());
+    m_ui.exceptionHideTitleBarCheckBox->setChecked(m_exception->hideTitleBarChecked());
     m_ui.hideTitleBar->setCurrentIndex(m_exception->hideTitleBar());
     m_ui.opaqueTitleBar->setChecked(m_exception->opaqueTitleBar());
     m_ui.exceptionMatchTitleBarToApplicationColor->setChecked(m_exception->exceptionMatchTitleBarToApplicationColor());
@@ -125,6 +128,7 @@ void ExceptionDialog::save()
     }
 
     m_exception->setBorderSize(m_ui.borderSizeComboBox->currentIndex());
+    m_exception->setHideTitleBarChecked(m_ui.exceptionHideTitleBarCheckBox->isChecked());
     m_exception->setHideTitleBar(m_ui.hideTitleBar->currentIndex());
     m_exception->setOpaqueTitleBar(m_ui.opaqueTitleBar->isChecked());
     m_exception->setExceptionMatchTitleBarToApplicationColor(m_ui.exceptionMatchTitleBarToApplicationColor->isChecked());
@@ -148,6 +152,8 @@ void ExceptionDialog::updateChanged()
     else if (m_exception->exceptionWindowPropertyPattern() != m_ui.exceptionWindowPropertyEditor->text())
         modified = true;
     else if (m_exception->borderSize() != m_ui.borderSizeComboBox->currentIndex())
+        modified = true;
+    else if (m_exception->hideTitleBarChecked() != m_ui.exceptionHideTitleBarCheckBox->isChecked())
         modified = true;
     else if (m_exception->hideTitleBar() != m_ui.hideTitleBar->currentIndex())
         modified = true;

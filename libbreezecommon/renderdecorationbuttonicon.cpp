@@ -29,33 +29,33 @@ std::pair<std::unique_ptr<RenderDecorationButtonIcon>, int> RenderDecorationButt
                                                                                                 QPainter *painter)
 {
     switch (internalSettings->buttonIconStyle()) {
-    case InternalSettings::EnumButtonIconStyle::StyleMaterialDynamic:
+    case InternalSettings::EnumButtonIconStyle::MaterialDynamic:
     default:
-        return {std::make_unique<RenderStyleMaterialDynamic18By18>(painter), 18};
-    case InternalSettings::EnumButtonIconStyle::StyleMaterialCentered:
-        return {std::make_unique<RenderStyleMaterialCentered18By18>(painter), 18};
-    case InternalSettings::EnumButtonIconStyle::StyleMaterial:
-        return {std::make_unique<RenderStyleMaterial18By18>(painter), 18};
-    case InternalSettings::EnumButtonIconStyle::StyleOxygen:
-        return {std::make_unique<RenderStyleOxygen18By18>(painter), 18};
-    case InternalSettings::EnumButtonIconStyle::StyleKiteDynamic:
-        return {std::make_unique<RenderStyleKiteDynamic18By18>(painter), 18};
-    case InternalSettings::EnumButtonIconStyle::StyleKite:
-        return {std::make_unique<RenderStyleKite18By18>(painter), 18};
-    case InternalSettings::EnumButtonIconStyle::StyleTraditionalDynamic:
-        return {std::make_unique<RenderStyleTraditionalDynamic18By18>(painter), 18};
-    case InternalSettings::EnumButtonIconStyle::StyleTraditional:
-        return {std::make_unique<RenderStyleTraditional18By18>(painter), 18};
-    case InternalSettings::EnumButtonIconStyle::StyleMetro:
-        return {std::make_unique<RenderStyleMetro18By18>(painter), 18};
-    case InternalSettings::EnumButtonIconStyle::StyleFluent:
-        return {std::make_unique<RenderStyleFluent18By18>(painter), 18};
-    case InternalSettings::EnumButtonIconStyle::StyleArk:
-        return {std::make_unique<RenderStyleArk18By18>(painter), 18};
-    case InternalSettings::EnumButtonIconStyle::StyleKisweetDynamic:
-        return {std::make_unique<RenderStyleKisweetDynamic18By18>(painter), 18};
-    case InternalSettings::EnumButtonIconStyle::StyleKisweet:
-        return {std::make_unique<RenderStyleKisweet18By18>(painter), 18};
+        return {std::make_unique<RenderMaterialDynamic18By18>(painter), 18};
+    case InternalSettings::EnumButtonIconStyle::MaterialCentered:
+        return {std::make_unique<RenderMaterialCentered18By18>(painter), 18};
+    case InternalSettings::EnumButtonIconStyle::Material:
+        return {std::make_unique<RenderMaterial18By18>(painter), 18};
+    case InternalSettings::EnumButtonIconStyle::Oxygen:
+        return {std::make_unique<RenderOxygen18By18>(painter), 18};
+    case InternalSettings::EnumButtonIconStyle::KiteDynamic:
+        return {std::make_unique<RenderKiteDynamic18By18>(painter), 18};
+    case InternalSettings::EnumButtonIconStyle::Kite:
+        return {std::make_unique<RenderKite18By18>(painter), 18};
+    case InternalSettings::EnumButtonIconStyle::TraditionalDynamic:
+        return {std::make_unique<RenderTraditionalDynamic18By18>(painter), 18};
+    case InternalSettings::EnumButtonIconStyle::Traditional:
+        return {std::make_unique<RenderTraditional18By18>(painter), 18};
+    case InternalSettings::EnumButtonIconStyle::Metro:
+        return {std::make_unique<RenderMetro18By18>(painter), 18};
+    case InternalSettings::EnumButtonIconStyle::Fluent:
+        return {std::make_unique<RenderFluent18By18>(painter), 18};
+    case InternalSettings::EnumButtonIconStyle::Ark:
+        return {std::make_unique<RenderArk18By18>(painter), 18};
+    case InternalSettings::EnumButtonIconStyle::KisweetDynamic:
+        return {std::make_unique<RenderKisweetDynamic18By18>(painter), 18};
+    case InternalSettings::EnumButtonIconStyle::Kisweet:
+        return {std::make_unique<RenderKisweet18By18>(painter), 18};
     }
 }
 

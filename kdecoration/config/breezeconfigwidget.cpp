@@ -65,7 +65,7 @@ ConfigWidget::ConfigWidget(QObject *parent, const KPluginMetaData &data, const Q
     // configuration
     m_ui.setupUi(widget());
 
-    m_ui.defaultExceptions->setKConfig(m_configuration, m_presetsConfiguration);
+    m_ui.bundledExceptions->setKConfig(m_configuration, m_presetsConfiguration);
     m_ui.exceptions->setKConfig(m_configuration, m_presetsConfiguration);
 
     // add the "Presets..." button
@@ -90,14 +90,14 @@ ConfigWidget::ConfigWidget(QObject *parent, const KPluginMetaData &data, const Q
         }
     }
 
-    // hide the push buttons for default exceptions
-    QList<QPushButton *> defaultPushButtons = m_ui.defaultExceptions->findChildren<QPushButton *>();
-    for (QPushButton *defaultPushButton : defaultPushButtons) {
-        QSizePolicy spRetain = defaultPushButton->sizePolicy();
+    // hide the push buttons for bundled exceptions
+    QList<QPushButton *> bundledPushButtons = m_ui.bundledExceptions->findChildren<QPushButton *>();
+    for (QPushButton *bundledPushButton : bundledPushButtons) {
+        QSizePolicy spRetain = bundledPushButton->sizePolicy();
         spRetain.setRetainSizeWhenHidden(true);
-        defaultPushButton->setSizePolicy(spRetain);
+        bundledPushButton->setSizePolicy(spRetain);
 
-        defaultPushButton->hide();
+        bundledPushButton->hide();
     }
 
     m_unlockedIcon.addFile(QStringLiteral(":/klassy_config_icons/object-unlocked-symbolic.svg"), QSize(16, 16));
@@ -178,7 +178,7 @@ ConfigWidget::ConfigWidget(QObject *parent, const KPluginMetaData &data, const Q
     connect(m_ui.colorizeWindowOutlineWithButton, &QAbstractButton::toggled, this, &ConfigWidget::updateChanged, Qt::ConnectionType::DirectConnection);
 
     // track exception changes
-    connect(m_ui.defaultExceptions, &ExceptionListWidget::changed, this, &ConfigWidget::updateChanged, Qt::ConnectionType::DirectConnection);
+    connect(m_ui.bundledExceptions, &ExceptionListWidget::changed, this, &ConfigWidget::updateChanged, Qt::ConnectionType::DirectConnection);
     connect(m_ui.exceptions, &ExceptionListWidget::changed, this, &ConfigWidget::updateChanged, Qt::ConnectionType::DirectConnection);
 
     QApplication::instance()->installEventFilter(this); // to monitor palette changes in the app (can't get them from this)
@@ -240,12 +240,12 @@ void ConfigWidget::load()
     // load exceptions
     DecorationExceptionList exceptions;
     exceptions.readConfig(m_configuration);
-    if (exceptions.numberDefaults()) {
-        m_ui.defaultExceptions->setExceptions(exceptions.getDefault());
+    if (exceptions.numberBundled()) {
+        m_ui.bundledExceptions->setExceptions(exceptions.getBundled());
     } else {
-        m_ui.defaultExceptions->hide();
-        m_ui.defaultExceptionsLabel->hide();
-        m_ui.defaultExceptionsSpacer->setGeometry(QRect());
+        m_ui.bundledExceptions->hide();
+        m_ui.bundledExceptionsLabel->hide();
+        m_ui.bundledExceptionsSpacer->setGeometry(QRect());
     }
     m_ui.exceptions->setExceptions(exceptions.get());
     setNeedsSave(false);
@@ -298,7 +298,7 @@ void ConfigWidget::saveMain(QString saveAsPresetName)
 
     // get list of exceptions and write
     InternalSettingsList exceptions(m_ui.exceptions->exceptions());
-    InternalSettingsList defaultExceptions(m_ui.defaultExceptions->exceptions());
+    InternalSettingsList defaultExceptions(m_ui.bundledExceptions->exceptions());
     DecorationExceptionList(exceptions, defaultExceptions).writeConfig(m_configuration);
 
     // sync configuration for exceptions
@@ -370,13 +370,13 @@ void ConfigWidget::defaults()
 
     updateWindowControlPreviewIcons();
 
-    // load default exceptions and refresh (leave user-set exceptions alone)
+    // load bundled exceptions and refresh default enabled states (leave user-set exceptions alone)
     DecorationExceptionList exceptions;
     exceptions.readConfig(m_configuration, true);
-    if (exceptions.numberDefaults()) {
-        m_ui.defaultExceptions->setExceptions(exceptions.getDefault());
+    if (exceptions.numberBundled()) {
+        m_ui.bundledExceptions->setExceptions(exceptions.getBundled());
     } else {
-        m_ui.defaultExceptions->hide();
+        m_ui.bundledExceptions->hide();
     }
 
     onIconsChanged();
@@ -505,7 +505,7 @@ void ConfigWidget::updateChanged()
         modified = true;
 
     // exceptions
-    else if (m_ui.defaultExceptions->isChanged())
+    else if (m_ui.bundledExceptions->isChanged())
         modified = true;
     else if (m_ui.exceptions->isChanged())
         modified = true;
@@ -532,7 +532,7 @@ void ConfigWidget::setEnabledAnimationsSpeed()
 
 void ConfigWidget::onIconsChanged()
 {
-    if (m_ui.buttonIconStyle->currentIndex() == InternalSettings::EnumButtonIconStyle::StyleSystemIconTheme) {
+    if (m_ui.buttonIconStyle->currentIndex() == InternalSettings::EnumButtonIconStyle::SystemIconTheme) {
         m_ui.iconSizeStackedWidget->setCurrentIndex(1);
         m_ui.iconOptionsStackedWidget->setCurrentIndex(1);
     } else {
@@ -559,44 +559,44 @@ void ConfigWidget::buttonSizingButtonClicked()
 
 void ConfigWidget::buttonColorsButtonClicked()
 {
-    m_buttonColorsDialog->setWindowTitle(i18n("Button Colours - Klassy Settings"));
+    m_buttonColorsDialog->setWindowTitle(i18n("Button Colours — Klassy Settings"));
     m_buttonColorsDialog->setWindowIcon(QIcon::fromTheme(QStringLiteral("color-management")));
     m_buttonColorsDialog->show();
 }
 
 void ConfigWidget::buttonBehaviourButtonClicked()
 {
-    m_buttonBehaviourDialog->setWindowTitle(i18n("Button Behaviour - Klassy Settings"));
+    m_buttonBehaviourDialog->setWindowTitle(i18n("Button Behaviour — Klassy Settings"));
     m_buttonBehaviourDialog->show();
 }
 
 void ConfigWidget::titleBarSpacingButtonClicked()
 {
-    m_titleBarSpacingDialog->setWindowTitle(i18n("Titlebar Spacing - Klassy Settings"));
+    m_titleBarSpacingDialog->setWindowTitle(i18n("Titlebar Spacing — Klassy Settings"));
     m_titleBarSpacingDialog->show();
 }
 
 void ConfigWidget::titleBarOpacityButtonClicked()
 {
-    m_titleBarOpacityDialog->setWindowTitle(i18n("Titlebar Opacity - Klassy Settings"));
+    m_titleBarOpacityDialog->setWindowTitle(i18n("Titlebar Opacity — Klassy Settings"));
     m_titleBarOpacityDialog->show();
 }
 
 void ConfigWidget::shadowStyleButtonClicked()
 {
-    m_shadowStyleDialog->setWindowTitle(i18n("Shadow Style - Klassy Settings"));
+    m_shadowStyleDialog->setWindowTitle(i18n("Shadow Style — Klassy Settings"));
     m_shadowStyleDialog->show();
 }
 
 void ConfigWidget::windowOutlineStyleButtonClicked()
 {
-    m_windowOutlineStyleDialog->setWindowTitle(i18n("Window Outline Style - Klassy Settings"));
+    m_windowOutlineStyleDialog->setWindowTitle(i18n("Window Outline Style — Klassy Settings"));
     m_windowOutlineStyleDialog->show();
 }
 
 void ConfigWidget::presetsButtonClicked()
 {
-    m_loadPresetDialog->setWindowTitle(i18n("Presets - Klassy Settings"));
+    m_loadPresetDialog->setWindowTitle(i18n("Presets — Klassy Settings"));
     m_loadPresetDialog->initPresetsList();
     m_loadPresetDialog->show();
 }
@@ -660,10 +660,10 @@ void ConfigWidget::updateWindowControlPreviewIcons()
     PlasmaTools::taskManagerTypeAndSide(m_taskManagerType, m_taskManagerSide);
 
     for (int i = 0; i < InternalSettings::EnumButtonIconStyle::COUNT; i++) {
-        if (i != static_cast<int>(InternalSettings::EnumButtonIconStyle::StyleSystemIconTheme)) {
+        if (i != static_cast<int>(InternalSettings::EnumButtonIconStyle::SystemIconTheme)) {
             generateWindowControlPreviewIcon(size, static_cast<InternalSettings::EnumButtonIconStyle::type>(i));
         } else {
-            m_ui.buttonIconStyle->setItemIcon(static_cast<int>(InternalSettings::EnumButtonIconStyle::StyleSystemIconTheme),
+            m_ui.buttonIconStyle->setItemIcon(static_cast<int>(InternalSettings::EnumButtonIconStyle::SystemIconTheme),
                                               QIcon::fromTheme(QStringLiteral("preferences-desktop-icons")));
         }
     }
@@ -699,10 +699,10 @@ void ConfigWidget::generateWindowControlPreviewIcon(QSize size, InternalSettings
     iconRenderer->setTaskManagerType(m_taskManagerType);
     iconRenderer->setTaskManagerSide(m_taskManagerSide);
 
-    bool boldIcons = (m_ui.boldButtonIcons->currentIndex() == InternalSettings::EnumBoldButtonIcons::BoldIconsBold
-                      || (m_ui.boldButtonIcons->currentIndex() == InternalSettings::EnumBoldButtonIcons::BoldIconsHiDpiOnly && dpr >= 1.2)
-                      || m_ui.boldButtonIcons->currentIndex() == InternalSettings::EnumBoldButtonIcons::BoldIconsActive)
-        || (m_ui.boldButtonIcons->currentIndex() == InternalSettings::EnumBoldButtonIcons::BoldIconsActiveHiDpi && dpr >= 1.2);
+    bool boldIcons = (m_ui.boldButtonIcons->currentIndex() == InternalSettings::EnumBoldButtonIcons::Bold
+                      || (m_ui.boldButtonIcons->currentIndex() == InternalSettings::EnumBoldButtonIcons::BoldHiDpiOnly && dpr >= 1.2)
+                      || m_ui.boldButtonIcons->currentIndex() == InternalSettings::EnumBoldButtonIcons::BoldActive)
+        || (m_ui.boldButtonIcons->currentIndex() == InternalSettings::EnumBoldButtonIcons::BoldActiveHiDpi && dpr >= 1.2);
     iconRenderer->setBoldButtonIcons(boldIcons);
     iconRenderer->setLeftButtonGroup(m_isRightToLeft);
 
@@ -936,7 +936,9 @@ void ConfigWidget::getButtonsOrderFromKwinConfig()
 
     m_allCustomizableButtonsOrder = m_visibleButtonsOrder + m_hiddenButtons;
 
-    m_visibleButtonsOrder.insert(indexOfCustom,
-                                 DecorationButtonType::Custom); // dummy Custom button inserted for illustrating colour palettes in icons
+    if (indexOfCustom >= 0) {
+        m_visibleButtonsOrder.insert(indexOfCustom,
+                                     DecorationButtonType::Custom); // dummy Custom button inserted for illustrating colour palettes in icons
+    }
 }
 }

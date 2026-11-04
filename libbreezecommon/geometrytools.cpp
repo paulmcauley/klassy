@@ -9,7 +9,14 @@ namespace Klassy
 {
 
 // from breezehelper.cpp
-QPainterPath GeometryTools::roundedPath(const QRectF &rect, Corners corners, qreal radius, Sides sides, qreal penProtrusion)
+QPainterPath GeometryTools::roundedPath(const QRectF &rect,
+                                        const Corners corners,
+                                        const qreal radius,
+                                        const Sides sides,
+                                        const qreal subtractTopLeft,
+                                        const qreal subtractTopRight,
+                                        const qreal subtractBottomRight,
+                                        const qreal subtractBottomLeft)
 {
     QPainterPath path;
 
@@ -36,7 +43,7 @@ QPainterPath GeometryTools::roundedPath(const QRectF &rect, Corners corners, qre
         if (sides & SideTop) {
             path.moveTo(rect.topLeft());
         } else {
-            path.moveTo(rect.topLeft() + QPointF(0, penProtrusion));
+            path.moveTo(rect.topLeft() + QPointF(0, subtractTopLeft));
         }
     }
 
@@ -50,10 +57,10 @@ QPainterPath GeometryTools::roundedPath(const QRectF &rect, Corners corners, qre
             if (sides & SideBottom) {
                 path.lineTo(rect.bottomLeft());
             } else {
-                path.lineTo(rect.bottomLeft() - QPointF(0, penProtrusion));
+                path.lineTo(rect.bottomLeft() - QPointF(0, subtractBottomLeft));
             }
         } else {
-            path.moveTo(rect.bottomLeft() + QPointF(penProtrusion, 0));
+            path.moveTo(rect.bottomLeft() + QPointF(subtractBottomLeft, 0));
         }
     }
 
@@ -67,10 +74,10 @@ QPainterPath GeometryTools::roundedPath(const QRectF &rect, Corners corners, qre
             if (sides & SideRight) {
                 path.lineTo(rect.bottomRight());
             } else {
-                path.lineTo(rect.bottomRight() - QPointF(penProtrusion, 0));
+                path.lineTo(rect.bottomRight() - QPointF(subtractBottomRight, 0));
             }
         } else {
-            path.moveTo(rect.bottomRight() - QPointF(0, penProtrusion));
+            path.moveTo(rect.bottomRight() - QPointF(0, subtractBottomRight));
         }
     }
 
@@ -84,10 +91,10 @@ QPainterPath GeometryTools::roundedPath(const QRectF &rect, Corners corners, qre
             if (sides & SideTop) {
                 path.lineTo(rect.topRight());
             } else {
-                path.lineTo(rect.topRight() + QPointF(0, penProtrusion));
+                path.lineTo(rect.topRight() + QPointF(0, subtractTopRight));
             }
         } else {
-            path.moveTo(rect.topRight() - QPointF(penProtrusion, 0));
+            path.moveTo(rect.topRight() - QPointF(subtractTopRight, 0));
         }
     }
 
@@ -98,7 +105,7 @@ QPainterPath GeometryTools::roundedPath(const QRectF &rect, Corners corners, qre
             if (sides & SideLeft) {
                 path.lineTo(rect.topLeft());
             } else {
-                path.lineTo(rect.topLeft() + QPointF(penProtrusion, 0));
+                path.lineTo(rect.topLeft() + QPointF(subtractTopLeft, 0));
             }
         }
     }

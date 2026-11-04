@@ -90,7 +90,10 @@ bool PresetsModel::loadPreset(KCoreConfigSkeleton *skeleton, KConfig *presetsCon
             continue;
         }
         item->setGroup(groupName);
-        item->readConfig(presetsConfig);
+        auto presetsConfigGroup = presetsConfig->group(groupName);
+        if (presetsConfigGroup.hasKey(item->key())) {
+            item->readConfig(presetsConfig);
+        }
         item->setGroup(originalGroup);
     }
 
@@ -360,9 +363,9 @@ bool PresetsModel::isKeyValid(const QString &key)
         }
     }
 
-    if (key == "KwinBorderSize" || key == "KwinButtonsOnLeft" || key == "KwinButtonsOnRight")
+    if (key == "KwinBorderSize" || key == "KwinButtonsOnLeft" || key == "KwinButtonsOnRight") {
         return true; // additional valid key containing KWin border size setting from kwinrc
-
+    }
     return false;
 }
 

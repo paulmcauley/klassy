@@ -156,6 +156,9 @@ protected Q_SLOTS:
     void globalConfigurationChanged(int type, int arg);
     void loadGlobalAnimationSettings();
 
+    //* reload the Plasma desktop theme palette used for plasmashell menus, on Plasma theme change
+    void updatePlasmaThemeMenuPalette();
+
     //* standard icons
     QIcon standardIconImplementation(StandardPixmap, const QStyleOption *, const QWidget *) const;
 

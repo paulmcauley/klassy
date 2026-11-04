@@ -99,6 +99,7 @@ StyleConfig::StyleConfig(QWidget *parent)
 
     connect(_windowDragMode, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()));
     connect(_menuOpacity, &QAbstractSlider::valueChanged, this, &StyleConfig::updateChanged);
+    connect(_menuUsePlasmaTheme, &QAbstractButton::toggled, this, &StyleConfig::updateChanged);
 
     // only enable _autoHideArrows when an arrow button is selected to be displayed
     connect(_scrollBarAddLineButtons, SIGNAL(currentIndexChanged(int)), SLOT(setEnabledAutoHideArrows()));
@@ -135,6 +136,7 @@ void StyleConfig::save()
     StyleConfigData::setScrollBarMinSliderHeight(_scrollBarMinSliderHeight->value());
     StyleConfigData::setWindowDragMode(_windowDragMode->currentIndex());
     StyleConfigData::setMenuOpacity(_menuOpacity->value());
+    StyleConfigData::setMenuUsePlasmaTheme(_menuUsePlasmaTheme->isChecked());
 
     StyleConfigData::self()->save();
     _configuration->sync();
@@ -239,6 +241,8 @@ void StyleConfig::updateChanged()
         modified = true;
     else if (_menuOpacity->value() != StyleConfigData::menuOpacity())
         modified = true;
+    else if (_menuUsePlasmaTheme->isChecked() != StyleConfigData::menuUsePlasmaTheme())
+        modified = true;
 
     emit changed(modified);
 }
@@ -275,6 +279,7 @@ void StyleConfig::load()
     _scrollBarMinSliderHeight->setValue(StyleConfigData::scrollBarMinSliderHeight());
     _windowDragMode->setCurrentIndex(StyleConfigData::windowDragMode());
     _menuOpacity->setValue(StyleConfigData::menuOpacity());
+    _menuUsePlasmaTheme->setChecked(StyleConfigData::menuUsePlasmaTheme());
 }
 
 void StyleConfig::kPageWidgetChanged(KPageWidgetItem *current, KPageWidgetItem *before)

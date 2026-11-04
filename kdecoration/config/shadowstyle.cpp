@@ -54,16 +54,16 @@ void ShadowStyle::loadMain(const bool assignUiValuesOnly)
     }
 
     // load shadows
-    if (m_internalSettings->shadowSize(true) <= InternalSettings::EnumShadowSize::ShadowVeryLarge) {
+    if (m_internalSettings->shadowSize(true) <= InternalSettings::EnumShadowSize::VeryLarge) {
         m_ui->shadowSizeActive->setCurrentIndex(m_internalSettings->shadowSize(true));
     } else {
-        m_ui->shadowSizeActive->setCurrentIndex(InternalSettings::EnumShadowSize::ShadowLarge);
+        m_ui->shadowSizeActive->setCurrentIndex(InternalSettings::EnumShadowSize::Large);
     }
 
-    if (m_internalSettings->shadowSize(false) <= InternalSettings::EnumShadowSize::ShadowVeryLarge) {
+    if (m_internalSettings->shadowSize(false) <= InternalSettings::EnumShadowSize::VeryLarge) {
         m_ui->shadowSizeInactive->setCurrentIndex(m_internalSettings->shadowSize(false));
     } else {
-        m_ui->shadowSizeInactive->setCurrentIndex(InternalSettings::EnumShadowSize::ShadowLarge);
+        m_ui->shadowSizeInactive->setCurrentIndex(InternalSettings::EnumShadowSize::Large);
     }
 
     m_ui->shadowStrengthActive->setValue(qRound(qreal(m_internalSettings->shadowStrength(true) * 100) / 255));

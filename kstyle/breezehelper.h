@@ -59,6 +59,12 @@ public:
 
     KSharedConfigPtr colorSchemeConfig() const;
 
+    //* palette built from the current Plasma desktop theme colors and used for menus belonging to plasmashell
+    QPalette plasmaThemeMenuPalette(const QPalette &fallbackPalette) const;
+
+    //* (re)reads the Plasma desktop theme colors file and caches the resulting palette in _plasmaPalette
+    void loadPlasmaPalette();
+
     //*@name color utilities
     //@{
     void setGenerateDecorationColorsOnDecorationColorSettingsUpdateFlag(QByteArray *uuid)
@@ -340,6 +346,7 @@ public:
                                 const QRectF &rect,
                                 DecorationButtonType buttonType,
                                 const bool buttonChecked,
+                                const bool bold,
                                 const QColor &foregroundColor,
                                 const bool cutOutForeground,
                                 const QColor &backgroundColor,
@@ -452,6 +459,12 @@ private:
     mutable bool _cachedAutoValid = false;
 
     qreal _contrastBias;
+
+    //*@name Plasma theme palette, cached by loadPlasmaPalette() and used by plasmaThemeMenuPalette()
+    //@{
+    QPalette _plasmaPalette;
+    bool _isPlasmaPalette = false;
+    //@}
 
     friend class ToolsAreaManager;
 };

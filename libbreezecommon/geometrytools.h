@@ -21,7 +21,14 @@ namespace Klassy
 class KLASSYCOMMON_EXPORT GeometryTools
 {
 public:
-    static QPainterPath roundedPath(const QRectF &rect, Corners corners, qreal radius, Sides sides = AllSides, qreal penProtrusion = 0);
+    static QPainterPath roundedPath(const QRectF &rect,
+                                    const Corners corners,
+                                    const qreal radius,
+                                    const Sides sides = AllSides,
+                                    const qreal subtractTopLeft = 0,
+                                    const qreal subtractTopRight = 0,
+                                    const qreal subtractBottomRight = 0,
+                                    const qreal subtractBottomLeft = 0);
 };
 
 }

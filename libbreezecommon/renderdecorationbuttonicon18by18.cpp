@@ -228,32 +228,82 @@ void RenderDecorationButtonIcon18By18::renderOnAllDesktopsIcon()
     QPen pen = m_painter->pen();
     QColor color = pen.color();
     color.setAlphaF(color.alphaF() * 0.8);
-    m_painter->setBrush(color);
-    m_painter->setPen(Qt::NoPen);
+    QBrush brush(color);
+    pen = Qt::PenStyle::NoPen;
+    m_painter->setBrush(brush);
+    m_painter->setPen(pen);
 
     QPainterPath topLeftWorkspace, topRightWorkspace, bottomRightWorkspace, bottomLeftWorkspace;
-    // QPainterPath topLeftWorkspaceWindow, topRightWorkspaceWindow, bottomRightWorkspaceWindow, bottomLeftWorkspaceWindow;
+    QRectF topLeftWorkspaceRect, topRightWorkspaceRect, bottomRightWorkspaceRect, bottomLeftWorkspaceRect;
 
-    topLeftWorkspace.addRect(QRectF(snapToNearestPixel(QPointF(3, 4)), snapToNearestPixel(QPointF(8, 8))));
-    // topLeftWorkspaceWindow.addRect(QRectF(snapToNearestPixel(QPointF(4,5)),snapToNearestPixel(QPointF(6,6))));
-    // topLeftWorkspace = topLeftWorkspace.subtracted(topLeftWorkspaceWindow);
+    topLeftWorkspaceRect = QRectF(snapToNearestPixel(QPointF(3, 4)), snapToNearestPixel(QPointF(8, 8)));
 
-    topRightWorkspace.addRect(QRectF(snapToNearestPixel(QPointF(10, 4)), snapToNearestPixel(QPointF(15, 8))));
-    // topRightWorkspaceWindow.addRect(QRectF(snapToNearestPixel(QPointF(11,5)),snapToNearestPixel(QPointF(13,6))));
-    // topRightWorkspace = topRightWorkspace.subtracted(topRightWorkspaceWindow);
+    topRightWorkspaceRect = QRectF(snapToNearestPixel(QPointF(10, 4)), snapToNearestPixel(QPointF(15, 8)));
 
-    bottomRightWorkspace.addRect(QRectF(snapToNearestPixel(QPointF(10, 10)), snapToNearestPixel(QPointF(15, 14))));
-    // bottomRightWorkspaceWindow.addRect(QRectF(snapToNearestPixel(QPointF(11,11)),snapToNearestPixel(QPointF(13,12))));
-    // bottomRightWorkspace = bottomRightWorkspace.subtracted(bottomRightWorkspaceWindow);
+    bottomRightWorkspaceRect = QRectF(snapToNearestPixel(QPointF(10, 10)), snapToNearestPixel(QPointF(15, 14)));
 
-    bottomLeftWorkspace.addRect(QRectF(snapToNearestPixel(QPointF(3, 10)), snapToNearestPixel(QPointF(8, 14))));
-    // bottomLeftWorkspaceWindow.addRect(QRectF(snapToNearestPixel(QPointF(4,11)),snapToNearestPixel(QPointF(6,12))));
-    // bottomLeftWorkspace = bottomLeftWorkspace.subtracted(bottomLeftWorkspaceWindow);
+    bottomLeftWorkspaceRect = QRectF(snapToNearestPixel(QPointF(3, 10)), snapToNearestPixel(QPointF(8, 14)));
 
-    m_painter->drawPath(topLeftWorkspace);
-    m_painter->drawPath(topRightWorkspace);
-    m_painter->drawPath(bottomRightWorkspace);
-    m_painter->drawPath(bottomLeftWorkspace);
+    qreal workspaceWidth = topLeftWorkspaceRect.right() - topLeftWorkspaceRect.left();
+    qreal workspaceHeight = topLeftWorkspaceRect.bottom() - topLeftWorkspaceRect.top();
+    qreal workspaceSpacing =
+        std::min(topRightWorkspaceRect.left() - topLeftWorkspaceRect.right(), bottomLeftWorkspaceRect.top() - topLeftWorkspaceRect.bottom());
+
+    // make adjustments to correct snapping distortions
+    topRightWorkspaceRect.setTopLeft(topLeftWorkspaceRect.topRight() + QPointF(workspaceSpacing, 0));
+    topRightWorkspaceRect.setBottomRight(topLeftWorkspaceRect.bottomRight() + QPointF(workspaceSpacing + workspaceWidth, 0));
+
+    bottomLeftWorkspaceRect.setTopLeft(topLeftWorkspaceRect.bottomLeft() + QPointF(0, workspaceSpacing));
+    bottomLeftWorkspaceRect.setBottomRight(topLeftWorkspaceRect.bottomRight() + QPointF(0, workspaceSpacing + workspaceHeight));
+
+    bottomRightWorkspaceRect.setTopLeft(topRightWorkspaceRect.bottomLeft() + QPointF(0, workspaceSpacing));
+    bottomRightWorkspaceRect.setBottomRight(topRightWorkspaceRect.bottomRight() + QPointF(0, workspaceSpacing + workspaceHeight));
+
+    topLeftWorkspace.addRect(topLeftWorkspaceRect);
+    topRightWorkspace.addRect(topRightWorkspaceRect);
+    bottomLeftWorkspace.addRect(bottomLeftWorkspaceRect);
+    bottomRightWorkspace.addRect(bottomRightWorkspaceRect);
+
+    std::unique_ptr<QGraphicsScene> desktops = std::unique_ptr<QGraphicsScene>(new QGraphicsScene(0, 0, 18, 18));
+    QGraphicsItemGroup *desktopsGroup = new QGraphicsItemGroup;
+
+    desktops->addItem(desktopsGroup);
+    QGraphicsPathItem *topLeft = new QGraphicsPathItem;
+    QGraphicsPathItem *topRight = new QGraphicsPathItem;
+    QGraphicsPathItem *bottomLeft = new QGraphicsPathItem;
+    QGraphicsPathItem *bottomRight = new QGraphicsPathItem;
+    desktopsGroup->addToGroup(topLeft);
+    desktopsGroup->addToGroup(topRight);
+    desktopsGroup->addToGroup(bottomLeft);
+    desktopsGroup->addToGroup(bottomRight);
+    topLeft->setPen(pen);
+    topLeft->setBrush(brush);
+    topLeft->setPath(topLeftWorkspace);
+    topRight->setPen(pen);
+    topRight->setBrush(brush);
+    topRight->setPath(topRightWorkspace);
+    bottomLeft->setPen(pen);
+    bottomLeft->setBrush(brush);
+    bottomLeft->setPath(bottomLeftWorkspace);
+    bottomRight->setPen(pen);
+    bottomRight->setBrush(brush);
+    bottomRight->setPath(bottomRightWorkspace);
+
+    // centre -- centre the result, then snap centred position to a pixel boundary
+    QPointF centerTranslate =
+        QPointF(9, 9) - desktopsGroup->childrenBoundingRect().center(); // must use childrenBoundingRect as boundingRect does not update unless you add an item
+    if (centerTranslate != QPointF(0, 0)) {
+        QPointF centrePixelRealignmentOffset;
+
+        // realign to pixel grid after centering -- use P1 of top to sample
+        centrePixelRealignmentOffset =
+            snapToNearestPixel(topLeft->path().elementAt(0) + centerTranslate, SnapPixel::ToWhole, SnapPixel::ToWhole) - topLeft->path().elementAt(0);
+        QTransform transformToAlignedCenter;
+        transformToAlignedCenter.translate(centrePixelRealignmentOffset.x(), centrePixelRealignmentOffset.y());
+        desktopsGroup->setTransform(transformToAlignedCenter);
+    }
+
+    desktops->render(m_painter, QRectF(0, 0, 18, 18), QRectF(0, 0, 18, 18));
 }
 
 void RenderDecorationButtonIcon18By18::renderShadeIcon()
@@ -263,17 +313,15 @@ void RenderDecorationButtonIcon18By18::renderShadeIcon()
         pen.setCapStyle(Qt::FlatCap); // prevents lobsided arrow at loDPI
 
     bool isOddPenWidth = true;
-    if (!m_fromKstyle) {
-        qreal roundedBoldPenWidth = 1;
-        if (m_boldButtonIcons) {
-            // thicker pen in titlebar
-            isOddPenWidth = roundedPenWidthIsOdd(pen, roundedBoldPenWidth, 1.3);
-        } else {
-            isOddPenWidth = roundedPenWidthIsOdd(pen, roundedBoldPenWidth, 1);
-        }
-        pen.setWidthF(roundedBoldPenWidth);
-        m_painter->setPen(pen);
+    qreal roundedBoldPenWidth = 1;
+    if (m_boldButtonIcons) {
+        // thicker pen in titlebar
+        isOddPenWidth = roundedPenWidthIsOdd(pen, roundedBoldPenWidth, 1.3);
+    } else {
+        isOddPenWidth = roundedPenWidthIsOdd(pen, roundedBoldPenWidth, 1);
     }
+    pen.setWidthF(roundedBoldPenWidth);
+    m_painter->setPen(pen);
 
     QVector<QPointF> line1, line2;
 
@@ -312,17 +360,15 @@ void RenderDecorationButtonIcon18By18::renderUnShadeIcon()
         pen.setCapStyle(Qt::FlatCap); // prevents lobsided arrow at loDPI
 
     bool isOddPenWidth = true;
-    if (!m_fromKstyle) {
-        qreal roundedBoldPenWidth = 1;
-        if (m_boldButtonIcons) {
-            // thicker pen in titlebar
-            isOddPenWidth = roundedPenWidthIsOdd(pen, roundedBoldPenWidth, 1.3);
-        } else {
-            isOddPenWidth = roundedPenWidthIsOdd(pen, roundedBoldPenWidth, 1);
-        }
-        pen.setWidthF(roundedBoldPenWidth);
-        m_painter->setPen(pen);
+    qreal roundedBoldPenWidth = 1;
+    if (m_boldButtonIcons) {
+        // thicker pen in titlebar
+        isOddPenWidth = roundedPenWidthIsOdd(pen, roundedBoldPenWidth, 1.3);
+    } else {
+        isOddPenWidth = roundedPenWidthIsOdd(pen, roundedBoldPenWidth, 1);
     }
+    pen.setWidthF(roundedBoldPenWidth);
+    m_painter->setPen(pen);
 
     QVector<QPointF> line1, line2;
 
@@ -377,21 +423,21 @@ void RenderDecorationButtonIcon18By18::renderKeepBehindIcon()
 
     QPainterPath innerX;
 
-    // Commented out is a larger inner X touching the circle:
-    // qreal innerXSquareWidth = std::sqrt(std::pow(outerRing.boundingRect().width(), 2) / 2); //pythagoras
-    // QRectF innerXSquare(0, 0, innerXSquareWidth, innerXSquareWidth);
-    // centerTranslate = (outerRing.boundingRect().center() - innerXSquare.center());
-    // pen.setCapStyle(Qt::PenCapStyle::FlatCap);
-    // innerX.moveTo(innerXSquare.topLeft());
-    // innerX.lineTo(innerXSquare.bottomRight());
-    // innerX.moveTo(innerXSquare.topRight());
-    // innerX.lineTo(innerXSquare.bottomLeft());
+    // larger inner X touching the circle:
+    qreal innerXSquareWidth = std::sqrt(std::pow(outerRing.boundingRect().width(), 2) / 2); // pythagoras
+    QRectF innerXSquare(0, 0, innerXSquareWidth, innerXSquareWidth);
+    centerTranslate = (outerRing.boundingRect().center() - innerXSquare.center());
+    pen.setCapStyle(Qt::PenCapStyle::FlatCap);
+    innerX.moveTo(innerXSquare.topLeft());
+    innerX.lineTo(innerXSquare.bottomRight());
+    innerX.moveTo(innerXSquare.topRight());
+    innerX.lineTo(innerXSquare.bottomLeft());
 
     // Small inner X:
-    innerX.moveTo(7, 7);
-    innerX.lineTo(11, 11);
-    innerX.moveTo(11, 7);
-    innerX.lineTo(7, 11);
+    // innerX.moveTo(7, 7);
+    // innerX.lineTo(11, 11);
+    // innerX.moveTo(11, 7);
+    // innerX.lineTo(7, 11);
 
     innerX.translate(centerTranslate);
     pen = m_painter->pen();
@@ -538,21 +584,6 @@ void RenderDecorationButtonIcon18By18::renderApplicationMenuIcon()
     appMenu->render(m_painter, QRectF(0, 0, 18, 18), QRectF(0, 0, 18, 18));
 }
 
-void RenderDecorationButtonIcon18By18::renderKlassyOriginalContextHelpIcon()
-{
-    QPainterPath path;
-    path.moveTo(5, 6);
-    path.arcTo(QRectF(5, 3.5, 8, 5), 180, -180);
-    path.cubicTo(QPointF(12.5, 9.5), QPointF(9, 7.5), QPointF(9, 11.5));
-
-    QPainterPath dot;
-    dot.addRect(QRectF(9, 15, 0.5, 0.5));
-
-    m_painter->drawPath(path);
-    m_painter->drawPath(dot);
-    // NB: m_strokeToFilledPath not added as this is not currently used
-}
-
 void RenderDecorationButtonIcon18By18::renderCloseIconAtSquareMaximizeSize()
 {
     // first determine the size of the maximize icon so the close icon can match in size
@@ -562,6 +593,10 @@ void RenderDecorationButtonIcon18By18::renderCloseIconAtSquareMaximizeSize()
     pen.setWidthF(maximizePenWidth);
 
     m_painter->setPen(pen);
+    if (m_shrinkCloseIcon) { // render smaller close icon with thicker width from here
+        RenderDecorationButtonIcon18By18::renderCloseIcon();
+        return;
+    }
 
     QVector<QPointF> line1{maximizeRect.topLeft(), maximizeRect.bottomRight()};
     QVector<QPointF> line2{maximizeRect.topRight(), maximizeRect.bottomLeft()};
@@ -592,15 +627,13 @@ std::pair<QRectF, qreal> RenderDecorationButtonIcon18By18::renderSquareMaximizeI
     qreal origOpacity = pen.color().alphaF();
 
     bool isOddPenWidth = true;
-    if (!m_fromKstyle) {
-        qreal roundedBoldPenWidth = 1;
-        if (m_boldButtonIcons) {
-            isOddPenWidth = roundedPenWidthIsOdd(pen, roundedBoldPenWidth, m_squareMaximizeBoldPenWidthFactor);
-        } else {
-            isOddPenWidth = roundedPenWidthIsOdd(pen, roundedBoldPenWidth, 1);
-        }
-        pen.setWidthF(roundedBoldPenWidth);
+    qreal roundedBoldPenWidth = 1;
+    if (m_boldButtonIcons) {
+        isOddPenWidth = roundedPenWidthIsOdd(pen, roundedBoldPenWidth, m_squareMaximizeBoldPenWidthFactor);
+    } else {
+        isOddPenWidth = roundedPenWidthIsOdd(pen, roundedBoldPenWidth, 1);
     }
+    pen.setWidthF(roundedBoldPenWidth);
 
     QRectF rect(QPointF(4.5, 4.5), QPointF(13.5, 13.5));
     qreal adjustmentOffset = 0;
@@ -1162,7 +1195,7 @@ void RenderDecorationButtonIcon18By18::renderTinySquareMinimizeIcon(bool showArr
 }
 
 // For consistency with breeze icon set
-void RenderDecorationButtonIcon18By18::renderKeepBehindIconAsFromKlassyIcons()
+void RenderDecorationButtonIcon18By18::renderKeepBehindIconAsFromBreezeIcons()
 {
     QPen pen = m_painter->pen();
 
@@ -1173,17 +1206,15 @@ void RenderDecorationButtonIcon18By18::renderKeepBehindIconAsFromKlassyIcons()
     }
 
     bool isOddPenWidth = true;
-    if (!m_fromKstyle) {
-        qreal roundedBoldPenWidth = 1;
-        if (m_boldButtonIcons) {
-            isOddPenWidth = roundedPenWidthIsOdd(pen, roundedBoldPenWidth, 1.2);
-        } else {
-            isOddPenWidth = roundedPenWidthIsOdd(pen, roundedBoldPenWidth, 1);
-        }
-
-        // thicker pen in titlebar
-        pen.setWidthF(roundedBoldPenWidth);
+    qreal roundedBoldPenWidth = 1;
+    if (m_boldButtonIcons) {
+        isOddPenWidth = roundedPenWidthIsOdd(pen, roundedBoldPenWidth, 1.2);
+    } else {
+        isOddPenWidth = roundedPenWidthIsOdd(pen, roundedBoldPenWidth, 1);
     }
+
+    // thicker pen in titlebar
+    pen.setWidthF(roundedBoldPenWidth);
     m_painter->setPen(pen);
 
     QVector<QPointF> top, middle, bottom, arrowBody, arrowHead;
@@ -1296,7 +1327,7 @@ void RenderDecorationButtonIcon18By18::renderKeepBehindIconAsFromKlassyIcons()
     }
 }
 
-void RenderDecorationButtonIcon18By18::renderKeepInFrontIconAsFromKlassyIcons()
+void RenderDecorationButtonIcon18By18::renderKeepInFrontIconAsFromBreezeIcons()
 {
     QPen pen = m_painter->pen();
 
@@ -1307,17 +1338,15 @@ void RenderDecorationButtonIcon18By18::renderKeepInFrontIconAsFromKlassyIcons()
     }
 
     bool isOddPenWidth = true;
-    if (!m_fromKstyle) {
-        qreal roundedBoldPenWidth = 1;
-        if (m_boldButtonIcons) {
-            isOddPenWidth = roundedPenWidthIsOdd(pen, roundedBoldPenWidth, 1.2);
-        } else {
-            isOddPenWidth = roundedPenWidthIsOdd(pen, roundedBoldPenWidth, 1);
-        }
-
-        // thicker pen in titlebar
-        pen.setWidthF(roundedBoldPenWidth);
+    qreal roundedBoldPenWidth = 1;
+    if (m_boldButtonIcons) {
+        isOddPenWidth = roundedPenWidthIsOdd(pen, roundedBoldPenWidth, 1.2);
+    } else {
+        isOddPenWidth = roundedPenWidthIsOdd(pen, roundedBoldPenWidth, 1);
     }
+
+    // thicker pen in titlebar
+    pen.setWidthF(roundedBoldPenWidth);
     m_painter->setPen(pen);
 
     QVector<QPointF> top, middle, bottom, arrowBody, arrowHead;
@@ -1431,7 +1460,7 @@ void RenderDecorationButtonIcon18By18::renderContextHelpIcon()
 {
     QPen pen = m_painter->pen();
 
-    if ((!m_fromKstyle) && m_boldButtonIcons) {
+    if (m_boldButtonIcons) {
         // thicker pen in titlebar
         pen.setWidthF(pen.widthF() * 1.6);
     }
@@ -1456,7 +1485,7 @@ void RenderDecorationButtonIcon18By18::renderContextHelpIcon()
     // dot of question mark
     m_painter->setPen(Qt::NoPen);
     m_painter->setBrush(pen.color());
-    if ((!m_fromKstyle) && m_boldButtonIcons)
+    if (m_boldButtonIcons)
         m_painter->drawEllipse(QRectF(8, 14, 2, 2));
     else
         m_painter->drawEllipse(QRectF(8.25, 14.25, 1.5, 1.5));
@@ -1465,7 +1494,7 @@ void RenderDecorationButtonIcon18By18::renderContextHelpIcon()
 void RenderDecorationButtonIcon18By18::renderExcludeFromCaptureIcon()
 {
     QPen pen = m_painter->pen();
-    if ((!m_fromKstyle) && m_boldButtonIcons) {
+    if (m_boldButtonIcons) {
         // thicker pen in titlebar
         pen.setWidthF(pen.widthF() * 1.6);
     }

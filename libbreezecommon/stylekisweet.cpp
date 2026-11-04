@@ -9,22 +9,22 @@
 namespace Klassy
 {
 
-void RenderStyleKisweet18By18::renderCloseIcon()
+void RenderKisweet18By18::renderCloseIcon()
 {
     renderCloseIconAtSquareMaximizeSize();
 }
 
-void RenderStyleKisweet18By18::renderMaximizeIcon()
+void RenderKisweet18By18::renderMaximizeIcon()
 {
     renderSquareMaximizeIcon(false, 0.025, true);
 }
 
-void RenderStyleKisweet18By18::renderFloatIcon()
+void RenderKisweet18By18::renderFloatIcon()
 {
     renderOverlappingWindowsIcon(true);
 }
 
-void RenderStyleKisweet18By18::renderMinimizeIcon()
+void RenderKisweet18By18::renderMinimizeIcon()
 {
     renderTinySquareMinimizeIcon(true);
 }

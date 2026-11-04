@@ -9,12 +9,12 @@
 namespace Klassy
 {
 
-void RenderStyleFluent18By18::renderMaximizeIcon()
+void RenderFluent18By18::renderMaximizeIcon()
 {
     renderSquareMaximizeIcon(false, 20);
 }
 
-void RenderStyleFluent18By18::renderFloatIcon()
+void RenderFluent18By18::renderFloatIcon()
 {
     renderOverlappingWindowsIcon(false, 20);
 }

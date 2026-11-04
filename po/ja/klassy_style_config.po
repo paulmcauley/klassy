@@ -429,3 +429,15 @@ msgstr "不透明"
 #, kde-format
 msgid "Menu:"
 msgstr "メニュー:"
+
+#. i18n: ectx: property (toolTip), widget (QCheckBox, _menuUsePlasmaTheme)
+#: ui/breezestyleconfig.ui:909
+#, kde-format
+msgid "Only affects Plasma's own menus, such as the panel's global menu (Application Menu) widget. Menus of application windows always use the KDE application colour scheme."
+msgstr ""
+
+#. i18n: ectx: property (text), widget (QCheckBox, _menuUsePlasmaTheme)
+#: ui/breezestyleconfig.ui:912
+#, kde-format
+msgid "Use Plasma Theme colours for Plasma's own menus"
+msgstr ""

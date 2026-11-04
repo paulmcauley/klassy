@@ -27,9 +27,9 @@ class KLASSYCOMMON_EXPORT DecorationExceptionList
 public:
     //! constructor from list
     explicit DecorationExceptionList(const InternalSettingsList &exceptions = InternalSettingsList(),
-                                     const InternalSettingsList &defaultExceptions = InternalSettingsList())
+                                     const InternalSettingsList &bundledExceptions = InternalSettingsList())
         : _exceptions(exceptions)
-        , _defaultExceptions(defaultExceptions)
+        , _bundledExceptions(bundledExceptions)
     {
     }
 
@@ -39,17 +39,17 @@ public:
         return _exceptions;
     }
 
-    //! default exceptions
-    const InternalSettingsList &getDefault(void) const
+    //! bundled exceptions
+    const InternalSettingsList &getBundled(void) const
     {
-        return _defaultExceptions;
+        return _bundledExceptions;
     }
 
     //! read from KConfig
     void readConfig(KSharedConfig::Ptr, const bool readDefaults = false);
 
-    //! return the number of default exceptions (call afer calling readConfig)
-    int numberDefaults();
+    //! return the number of bundled exceptions (call afer calling readConfig)
+    int numberBundled();
 
     //! write to kconfig
     void writeConfig(KSharedConfig::Ptr);
@@ -58,8 +58,8 @@ protected:
     //! generate exception group name for given exception index
     static QString exceptionGroupName(int index);
 
-    //! generate exception group name for given default exception index
-    static QString defaultExceptionGroupName(int index);
+    //! generate exception group name for given bundled exception index
+    static QString bundledExceptionGroupName(int index);
 
     //! read configuration
     static void readConfig(KCoreConfigSkeleton *, KConfig *, const QString &);
@@ -67,8 +67,8 @@ protected:
     //! write configuration
     static void writeConfig(KCoreConfigSkeleton *, KConfig *, const QString &);
 
-    //! wrrite configuration for defaults (enabled key only)
-    void writeDefaultsConfig(KCoreConfigSkeleton *skeleton, KConfig *config, const QString &groupName);
+    //! write configuration for defaults (enabled key only)
+    void writeBundledConfig(KCoreConfigSkeleton *skeleton, KConfig *config, const QString &groupName);
 
 private:
     void readIndividualExceptionFromConfig(KSharedConfig::Ptr config, QString &groupName, InternalSettingsList &appendTo);
@@ -77,7 +77,7 @@ private:
     //! exceptions
     InternalSettingsList _exceptions;
 
-    //! default exceptions
-    InternalSettingsList _defaultExceptions;
+    //! bundled exceptions
+    InternalSettingsList _bundledExceptions;
 };
 }

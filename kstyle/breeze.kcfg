@@ -231,6 +231,10 @@
         <default>100</default>
     </entry>
 
+    <entry name="MenuUsePlasmaTheme" type="Bool">
+      <default>false</default>
+    </entry>
+
   </group>
 
 </kcfg>

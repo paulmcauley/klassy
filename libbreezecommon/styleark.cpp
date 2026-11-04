@@ -11,7 +11,7 @@
 namespace Klassy
 {
 
-void RenderStyleArk18By18::renderMinimizeIcon()
+void RenderArk18By18::renderMinimizeIcon()
 {
     m_painter->setBrush(m_painter->pen().color());
     m_painter->setPen(Qt::PenStyle::NoPen);
@@ -19,7 +19,7 @@ void RenderStyleArk18By18::renderMinimizeIcon()
     m_painter->drawRect(rect);
 }
 
-void RenderStyleArk18By18::renderMaximizeIcon()
+void RenderArk18By18::renderMaximizeIcon()
 {
     m_painter->setBrush(m_painter->pen().color());
     m_painter->setPen(Qt::PenStyle::NoPen);
@@ -51,7 +51,7 @@ void RenderStyleArk18By18::renderMaximizeIcon()
     m_painter->drawPath(topRightArrow);
 }
 
-void RenderStyleArk18By18::renderFloatIcon()
+void RenderArk18By18::renderFloatIcon()
 {
     m_painter->setBrush(m_painter->pen().color());
     m_painter->setPen(Qt::PenStyle::NoPen);
@@ -83,7 +83,7 @@ void RenderStyleArk18By18::renderFloatIcon()
     m_painter->drawPath(topRightArrow);
 }
 
-void RenderStyleArk18By18::renderCloseIcon()
+void RenderArk18By18::renderCloseIcon()
 {
     QPainterPath x;
     x.moveTo(6, 6);
