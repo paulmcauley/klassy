@@ -811,7 +811,7 @@ void Decoration::setGlobalLookAndFeelOptions(QString lookAndFeelPackageName)
         // load Klassy preset if it is first time applying Klassy Global Theme
         if (klassyLookAndFeels.contains(lookAndFeelPackageName)) {
             if (!klassyLookAndFeels.contains(lookAndFeelSet)) {
-                presetToLoad = QStringLiteral("Klassy");
+                presetToLoad = QStringLiteral("Cairn");
             } else if (lookAndFeelPackageName.contains(QStringLiteral("bottom"))) {
                 if (lookAndFeelSet.contains(QStringLiteral("left"))) {
                     regenerateIconsOnly = true;
