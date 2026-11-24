@@ -719,6 +719,48 @@ std::pair<QRectF, qreal> RenderDecorationButtonIcon18By18::renderSquareMaximizeI
     return {rect, pen.widthF()};
 }
 
+void RenderDecorationButtonIcon18By18::renderRectangleMaximizeIcon(const bool dynamicMinimize)
+{
+    if (dynamicMinimize) {
+        renderSquareMaximizeIcon(false, 0);
+        return;
+    }
+
+    QRectF squareMaximizeRect;
+    qreal maximizePenWidth;
+    // first determine the size of the maximize icon so the minimize icon can align with it
+    std::tie(squareMaximizeRect, maximizePenWidth) = renderSquareMaximizeIcon(true);
+
+    QPen pen = m_painter->pen();
+    pen.setWidthF(maximizePenWidth);
+    bool isOddPenWidth(roundedPenWidthIsOdd(pen));
+
+    QRectF rect(QPointF(3.5, 4.5), QPointF(14.5, 13.5));
+    SnapPixel snapType = isOddPenWidth ? SnapPixel::ToHalf : SnapPixel::ToWhole;
+
+    rect.moveCenter(squareMaximizeRect.center());
+    rect = QRectF(snapToNearestPixel(rect.topLeft(), snapType, snapType), snapToNearestPixel(rect.bottomRight(), snapType, snapType));
+
+    qreal opacity = straightLineOpacity();
+    QColor penColor = pen.color();
+    penColor.setAlphaF(penColor.alphaF() * opacity);
+    pen.setColor(penColor);
+
+    // convert strokes to paths needed as otherwise GTK apps fill the square in generated icons
+    if (m_strokeToFilledPath) {
+        QPainterPath path;
+        path.addRect(rect);
+        QPainterPathStroker stroker(pen);
+        path = stroker.createStroke(path);
+        m_painter->setBrush(pen.color());
+        m_painter->setPen(Qt::NoPen);
+        m_painter->drawPath(path);
+    } else {
+        m_painter->setPen(pen);
+        m_painter->drawRect(rect);
+    }
+}
+
 void RenderDecorationButtonIcon18By18::renderTinySquareMinimizeIcon(bool showArrows)
 {
     // first determine the size of the maximize icon so the minimize icon can align with it
@@ -764,11 +806,11 @@ void RenderDecorationButtonIcon18By18::renderTinySquareMinimizeIcon(bool showArr
     qreal halfDevicePixelInLocal = convertDevicePixelsToLocal(0.5);
     do {
         if (isOddPenWidth) {
-            rect = QRectF(snapToNearestPixel(rect.topLeft(), SnapPixel::ToHalf, SnapPixel::ToHalf, ThresholdRound::Up, ThresholdRound::Down),
-                          snapToNearestPixel(rect.bottomRight(), SnapPixel::ToHalf, SnapPixel::ToHalf, ThresholdRound::Up, ThresholdRound::Down));
+            rect = QRectF(snapToNearestPixel(rect.topLeft(), SnapPixel::ToHalf, SnapPixel::ToHalf),
+                          snapToNearestPixel(rect.bottomRight(), SnapPixel::ToHalf, SnapPixel::ToHalf));
         } else {
-            rect = QRectF(snapToNearestPixel(rect.topLeft(), SnapPixel::ToWhole, SnapPixel::ToWhole, ThresholdRound::Up, ThresholdRound::Down),
-                          snapToNearestPixel(rect.bottomRight(), SnapPixel::ToWhole, SnapPixel::ToWhole, ThresholdRound::Up, ThresholdRound::Down));
+            rect = QRectF(snapToNearestPixel(rect.topLeft(), SnapPixel::ToWhole, SnapPixel::ToWhole),
+                          snapToNearestPixel(rect.bottomRight(), SnapPixel::ToWhole, SnapPixel::ToWhole));
         }
         qreal maxSide =
             qMax(rect.width(), rect.height()); // ensure width and height are the same -- they are sometimes not on display scales which are not a factor of 0.5

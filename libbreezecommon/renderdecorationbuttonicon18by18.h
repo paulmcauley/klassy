@@ -36,6 +36,7 @@ protected:
 
     void renderCloseIconAtSquareMaximizeSize();
     std::pair<QRectF, qreal> renderSquareMaximizeIcon(bool returnSizeOnly = false, qreal cornerRelativePercent = 0.025);
+    void renderRectangleMaximizeIcon(const bool dynamicMinimize);
 
     void renderTinySquareMinimizeIcon(bool showArrows = false);
     void renderCenteredLineMinimizeIcon(bool smaller = false);

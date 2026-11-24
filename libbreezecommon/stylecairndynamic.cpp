@@ -17,7 +17,8 @@ void RenderCairnDynamic18By18::renderCloseIcon()
 
 void RenderCairnDynamic18By18::renderMaximizeIcon()
 {
-    renderSquareMaximizeIcon(false, 0);
+    bool dynamicMinimize = m_taskManagerType == TaskManagerType::IconsOnlyTaskManager && (m_taskManagerSide == SideLeft || m_taskManagerSide == SideRight);
+    renderRectangleMaximizeIcon(dynamicMinimize);
 }
 
 void RenderCairnDynamic18By18::renderFloatIcon()
