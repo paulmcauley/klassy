@@ -12,14 +12,8 @@ set(breezecommon_LIB_SRCS
     renderdecorationbuttonicon.cpp
     renderdecorationbuttonicon18by18.cpp
     styleark.cpp
-    stylekisweet.cpp
-    stylekisweetdynamic.cpp
-    stylekitedynamic.cpp
-    stylematerialdynamic.cpp
+    stylecairndynamic.cpp
     styleoxygen.cpp
-    styletraditional.cpp
-    stylemetro.cpp
-    stylefluent.cpp
     systemicontheme.cpp
 )
 

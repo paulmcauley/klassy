@@ -4,23 +4,23 @@
  * SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
  */
 
-#include "stylematerialdynamic.h"
+#include "stylecairndynamic.h"
 #include <QPainterPathStroker>
 
 namespace Klassy
 {
 
-void RenderMaterialDynamic18By18::renderCloseIcon()
+void RenderCairnDynamic18By18::renderCloseIcon()
 {
     renderCloseIconAtSquareMaximizeSize();
 }
 
-void RenderMaterialDynamic18By18::renderMaximizeIcon()
+void RenderCairnDynamic18By18::renderMaximizeIcon()
 {
     renderSquareMaximizeIcon(false, 0);
 }
 
-void RenderMaterialDynamic18By18::renderFloatIcon()
+void RenderCairnDynamic18By18::renderFloatIcon()
 {
     // first determine the size of the maximize icon so the restore icon can align with it
     auto [maximizeRect, maximizePenWidth] = renderSquareMaximizeIcon(true);
@@ -113,7 +113,7 @@ void RenderMaterialDynamic18By18::renderFloatIcon()
     m_painter->drawPath(arrowPath);
 }
 
-void RenderMaterialDynamic18By18::renderMinimizeIcon()
+void RenderCairnDynamic18By18::renderMinimizeIcon()
 {
     renderDynamicMinimizeIcon(true);
 }

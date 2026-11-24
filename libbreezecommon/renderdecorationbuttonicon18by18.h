@@ -35,30 +35,12 @@ protected:
     virtual void renderExcludeFromCaptureIcon() override;
 
     void renderCloseIconAtSquareMaximizeSize();
-    std::pair<QRectF, qreal> renderSquareMaximizeIcon(bool returnSizeOnly = false, qreal cornerRelativePercent = 0.025, bool showArrows = false);
-
-    void renderOverlappingWindowsIcon(bool showArrows, qreal cornerRelativePercent = -1, bool highlightInFront = false, bool highlightBehind = false);
-    /**
-     * @param shiftOffsetX How much to separate the two squares to prevent blurriness
-     * @param shiftOffsetY How much to separate the two squares to prevent blurriness
-     * @param overlappingWindowsGroup A pointer to output pointing to a group item representing the overlapping windows
-     * @param foregroundSquareItem A pointer to output pointing to an item representing the foreground squares
-     * @param backgroundSquareItem A pointer to output pointing to an item representing the background square path
-     */
-    void calculateBackgroundSquareGeometry(const qreal shiftOffsetX,
-                                           const qreal shiftOffsetY,
-                                           QGraphicsItemGroup *overlappingWindowsGroup,
-                                           QGraphicsPathItem *foregroundSquareItem,
-                                           QGraphicsPathItem *&backgroundSquareItem,
-                                           QGraphicsPathItem *&backgroundSquareFillItem,
-                                           qreal halfPenWidthLocal);
+    std::pair<QRectF, qreal> renderSquareMaximizeIcon(bool returnSizeOnly = false, qreal cornerRelativePercent = 0.025);
 
     void renderTinySquareMinimizeIcon(bool showArrows = false);
     void renderCenteredLineMinimizeIcon(bool smaller = false);
     void renderDynamicMinimizeIcon(bool dynamicMinimize = true);
     void renderOnAllDesktopsIcon();
-    void renderKeepBehindIconAsFromBreezeIcons();
-    void renderKeepInFrontIconAsFromBreezeIcons();
 };
 
 }

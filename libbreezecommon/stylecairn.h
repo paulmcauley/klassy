@@ -6,14 +6,14 @@
 
 #pragma once
 
-#include "stylematerialdynamic.h"
+#include "stylecairndynamic.h"
 
 #include <QPainter>
 
 namespace Klassy
 {
 
-class RenderMaterial18By18 : public RenderMaterialDynamic18By18
+class RenderCairn18By18 : public RenderCairnDynamic18By18
 {
 public:
     /**
@@ -23,8 +23,8 @@ public:
      * @param fromKstyle Indicates that button is not to be drawn in the title bar, but somewhere else in the UI -- ususally means will be smaller
      * @param boldButtonIcons When in titlebar this will draw bolder button icons if true
      */
-    RenderMaterial18By18(QPainter *painter)
-        : RenderMaterialDynamic18By18(painter) { };
+    RenderCairn18By18(QPainter *painter)
+        : RenderCairnDynamic18By18(painter) { };
 
     void renderMinimizeIcon() override
     {

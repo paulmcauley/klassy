@@ -18,21 +18,13 @@
     <entry name="ButtonIconStyle" type="Enum">
       <choices>
           <choice name="SystemIconTheme" />
-          <choice name="MaterialDynamic" />
-          <choice name="MaterialCentered" />
-          <choice name="Material" />
+          <choice name="CairnDynamic" />
+          <choice name="CairnCentered" />
+          <choice name="Cairn" />
           <choice name="Oxygen" />
-          <choice name="KiteDynamic" />
-          <choice name="Kite" />
-          <choice name="TraditionalDynamic" />
-          <choice name="Traditional" />
-          <choice name="Metro" />
-          <choice name="Fluent" />
           <choice name="Ark" />
-          <choice name="KisweetDynamic" />
-          <choice name="Kisweet" />
       </choices>
-      <default>MaterialDynamic</default>
+      <default>CairnDynamic</default>
     </entry>
 
     <!-- button size -->

@@ -1,7 +1,7 @@
 [Klassy Window Decoration Preset File]
 version=6.7.4.git
 
-[Windeco Preset Klassy]
+[Windeco Preset Cairn]
 AdjustBackgroundColorOnPoorContrastActive=true
 AdjustBackgroundColorOnPoorContrastInactive=true
 AnimationsEnabled=true
@@ -21,7 +21,7 @@ ButtonIconColorsActive=TitleBarText
 ButtonIconColorsInactive=TitleBarText
 ButtonIconOpacityActive=100
 ButtonIconOpacityInactive=100
-ButtonIconStyle=MaterialDynamic
+ButtonIconStyle=CairnDynamic
 ButtonOverrideColorsActiveApplicationMenu=
 ButtonOverrideColorsActiveClose=
 ButtonOverrideColorsActiveContextHelp=

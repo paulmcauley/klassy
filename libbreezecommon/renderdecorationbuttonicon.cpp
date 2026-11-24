@@ -1,23 +1,15 @@
 /*
- * SPDX-FileCopyrightText: 2022-2024 Paul A McAuley <kde@paulmcauley.com>
+ * SPDX-FileCopyrightText: 2022-2026 Paul A McAuley <kde@paulmcauley.com>
  *
  * SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
  */
 
 #include "renderdecorationbuttonicon.h"
 #include "styleark.h"
-#include "stylefluent.h"
-#include "stylekisweet.h"
-#include "stylekisweetdynamic.h"
-#include "stylekite.h"
-#include "stylekitedynamic.h"
-#include "stylematerial.h"
-#include "stylematerialcentered.h"
-#include "stylematerialdynamic.h"
-#include "stylemetro.h"
+#include "stylecairn.h"
+#include "stylecairncentered.h"
+#include "stylecairndynamic.h"
 #include "styleoxygen.h"
-#include "styletraditional.h"
-#include "styletraditionaldynamic.h"
 #include "systemicontheme.h"
 #include <algorithm>
 #include <cmath>
@@ -29,33 +21,17 @@ std::pair<std::unique_ptr<RenderDecorationButtonIcon>, int> RenderDecorationButt
                                                                                                 QPainter *painter)
 {
     switch (internalSettings->buttonIconStyle()) {
-    case InternalSettings::EnumButtonIconStyle::MaterialDynamic:
+    case InternalSettings::EnumButtonIconStyle::CairnDynamic:
     default:
-        return {std::make_unique<RenderMaterialDynamic18By18>(painter), 18};
-    case InternalSettings::EnumButtonIconStyle::MaterialCentered:
-        return {std::make_unique<RenderMaterialCentered18By18>(painter), 18};
-    case InternalSettings::EnumButtonIconStyle::Material:
-        return {std::make_unique<RenderMaterial18By18>(painter), 18};
+        return {std::make_unique<RenderCairnDynamic18By18>(painter), 18};
+    case InternalSettings::EnumButtonIconStyle::CairnCentered:
+        return {std::make_unique<RenderCairnCentered18By18>(painter), 18};
+    case InternalSettings::EnumButtonIconStyle::Cairn:
+        return {std::make_unique<RenderCairn18By18>(painter), 18};
     case InternalSettings::EnumButtonIconStyle::Oxygen:
         return {std::make_unique<RenderOxygen18By18>(painter), 18};
-    case InternalSettings::EnumButtonIconStyle::KiteDynamic:
-        return {std::make_unique<RenderKiteDynamic18By18>(painter), 18};
-    case InternalSettings::EnumButtonIconStyle::Kite:
-        return {std::make_unique<RenderKite18By18>(painter), 18};
-    case InternalSettings::EnumButtonIconStyle::TraditionalDynamic:
-        return {std::make_unique<RenderTraditionalDynamic18By18>(painter), 18};
-    case InternalSettings::EnumButtonIconStyle::Traditional:
-        return {std::make_unique<RenderTraditional18By18>(painter), 18};
-    case InternalSettings::EnumButtonIconStyle::Metro:
-        return {std::make_unique<RenderMetro18By18>(painter), 18};
-    case InternalSettings::EnumButtonIconStyle::Fluent:
-        return {std::make_unique<RenderFluent18By18>(painter), 18};
     case InternalSettings::EnumButtonIconStyle::Ark:
         return {std::make_unique<RenderArk18By18>(painter), 18};
-    case InternalSettings::EnumButtonIconStyle::KisweetDynamic:
-        return {std::make_unique<RenderKisweetDynamic18By18>(painter), 18};
-    case InternalSettings::EnumButtonIconStyle::Kisweet:
-        return {std::make_unique<RenderKisweet18By18>(painter), 18};
     }
 }
 

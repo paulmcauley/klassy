@@ -561,17 +561,17 @@
              </item>
              <item>
               <property name="text">
-               <string>  Material (dynamic minimize)</string>
+               <string>  Cairn (dynamic minimize)</string>
               </property>
              </item>
              <item>
               <property name="text">
-               <string>  Material (centred minimize)</string>
+               <string>  Cairn (centred minimize)</string>
               </property>
              </item>
              <item>
               <property name="text">
-               <string>  Material</string>
+               <string>  Cairn</string>
               </property>
              </item>
              <item>
@@ -585,63 +585,7 @@
              </item>
              <item>
               <property name="text">
-               <string>  Kite (dynamic minimize)</string>
-              </property>
-              <property name="icon">
-               <iconset>
-                <normaloff>:/klassy_config_icons/Kite.png</normaloff>:/klassy_config_icons/Kite.png</iconset>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>  Kite</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>  Traditional (dynamic minimize)</string>
-              </property>
-              <property name="icon">
-               <iconset>
-                <normaloff>:/klassy_config_icons/Klassy.png</normaloff>:/klassy_config_icons/Klassy.png</iconset>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>  Traditional</string>
-              </property>
-              <property name="icon">
-               <iconset>
-                <normaloff>:/klassy_config_icons/Redmond.png</normaloff>:/klassy_config_icons/Redmond.png</iconset>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>  Metro</string>
-              </property>
-              <property name="icon">
-               <iconset>
-                <normaloff>:/klassy_config_icons/Redmond10.png</normaloff>:/klassy_config_icons/Redmond10.png</iconset>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>  Fluent</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
                <string>  Ark</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>  Kisweet (dynamic minimize)</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>  Kisweet</string>
               </property>
              </item>
             </widget>
