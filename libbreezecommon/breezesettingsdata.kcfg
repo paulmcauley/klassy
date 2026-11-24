@@ -844,13 +844,13 @@
 
   <group name="TitleBarSpacing">
     <entry name="TitleBarTopMargin" type = "Double">
-       <default>3.6</default>
+       <default>4</default>
        <min>0</min>
        <max>50</max>
     </entry>
 
     <entry name="TitleBarBottomMargin" type = "Double">
-       <default>3.6</default>
+       <default>4</default>
        <min>0</min>
        <max>50</max>
     </entry>
