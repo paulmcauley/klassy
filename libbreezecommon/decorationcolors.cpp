@@ -195,6 +195,9 @@ void DecorationColors::generateDecorationPaletteGroup(const QPalette &palette,
     (*decorationPaletteGroup)->shadow.setAlphaF(decorationSettings->shadowStrength(active) / 255.0);
 
     // set windowOutline
+    const QColor activeApplicationBackground = palette.color(QPalette::ColorGroup::Active, QPalette::ColorRole::Window);
+    const bool isDarkTheme = activeApplicationBackground.isValid() && (activeApplicationBackground.lightnessF() < 0.5);
+
     switch (decorationSettings->windowOutlineStyle(active)) {
     case InternalSettings::EnumWindowOutlineStyle::None:
         (*decorationPaletteGroup)->windowOutline = QColor();
@@ -217,14 +220,18 @@ void DecorationColors::generateDecorationPaletteGroup(const QPalette &palette,
         (*decorationPaletteGroup)->windowOutline = fontMixedAccentWindowOutlineColor((*decorationPaletteGroup).get(), decorationSettings, active);
         break;
     case InternalSettings::EnumWindowOutlineStyle::CustomColor:
-        (*decorationPaletteGroup)->windowOutline =
-            accentedWindowOutlineColor((*decorationPaletteGroup).get(), decorationSettings, active, decorationSettings->windowOutlineCustomColor(active));
+        (*decorationPaletteGroup)->windowOutline = accentedWindowOutlineColor((*decorationPaletteGroup).get(),
+                                                                              decorationSettings,
+                                                                              active,
+                                                                              isDarkTheme ? decorationSettings->windowOutlineCustomColorDark(active)
+                                                                                          : decorationSettings->windowOutlineCustomColor(active));
         break;
     case InternalSettings::EnumWindowOutlineStyle::CustomWithContrast:
         (*decorationPaletteGroup)->windowOutline = fontMixedAccentWindowOutlineColor((*decorationPaletteGroup).get(),
                                                                                      decorationSettings,
                                                                                      active,
-                                                                                     decorationSettings->windowOutlineCustomColor(active));
+                                                                                     isDarkTheme ? decorationSettings->windowOutlineCustomColorDark(active)
+                                                                                                 : decorationSettings->windowOutlineCustomColor(active));
         break;
     case InternalSettings::EnumWindowOutlineStyle::ShadowColor:
         (*decorationPaletteGroup)->windowOutline =

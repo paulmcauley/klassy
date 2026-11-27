@@ -986,6 +986,16 @@
        <default>0, 0, 0</default>
     </entry>
 
+    <entry name="WindowOutlineCustomColorDark$(WindowOutlineCustomColorDarkActive)" type = "Color">
+        <parameter name="WindowOutlineCustomColorDarkActive" type="Enum">
+            <values>
+                <value>Inactive</value>
+                <value>Active</value>
+            </values>
+        </parameter>
+       <default>255, 255, 255</default>
+    </entry>
+
     <entry name="LockWindowOutlineCustomColorActiveInactive" type = "Bool">
         <default>true</default>
     </entry>
