@@ -47,6 +47,8 @@ private Q_SLOTS:
     void windowOutlineStyleInactiveChanged();
     void windowOutlineCustomColorActiveChanged();
     void windowOutlineCustomColorInactiveChanged();
+    void windowOutlineCustomColorDarkActiveChanged();
+    void windowOutlineCustomColorDarkInactiveChanged();
     void contrastFromColorSchemeActiveUpdated();
     void contrastFromColorSchemeInactiveUpdated();
     void updateLockIcons();
@@ -59,6 +61,10 @@ private:
     bool isDefaults();
 
     Ui_WindowOutlineStyle *m_ui;
+    KColorButton *m_windowOutlineCustomColorDarkActive = nullptr;
+    KColorButton *m_windowOutlineCustomColorDarkActive_2 = nullptr;
+    KColorButton *m_windowOutlineCustomColorDarkInactive = nullptr;
+    KColorButton *m_windowOutlineCustomColorDarkInactive_2 = nullptr;
 
     InternalSettingsPtr m_internalSettings;
     KSharedConfig::Ptr m_configuration;

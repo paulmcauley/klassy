@@ -10,6 +10,8 @@
 #include "presetsmodel.h"
 #include <KColorButton>
 #include <KColorScheme>
+#include <KLocalizedString>
+#include <QLabel>
 #include <QPushButton>
 
 namespace Klassy
@@ -23,6 +25,22 @@ WindowOutlineStyle::WindowOutlineStyle(KSharedConfig::Ptr config, KSharedConfig:
     , m_parent(parent)
 {
     m_ui->setupUi(this);
+
+    auto addLightDarkColorWidgets = [this](QHBoxLayout *layout) -> KColorButton * {
+        auto *lightLabel = new QLabel(i18n("Light:"), this);
+        auto *darkLabel = new QLabel(i18n("Dark:"), this);
+        auto *darkButton = new KColorButton(this);
+        darkButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+        layout->insertWidget(0, lightLabel);
+        layout->insertWidget(2, darkLabel);
+        layout->insertWidget(3, darkButton);
+        return darkButton;
+    };
+
+    m_windowOutlineCustomColorDarkActive = addLightDarkColorWidgets(m_ui->horizontalLayout_3);
+    m_windowOutlineCustomColorDarkActive_2 = addLightDarkColorWidgets(m_ui->horizontalLayout_5);
+    m_windowOutlineCustomColorDarkInactive = addLightDarkColorWidgets(m_ui->horizontalLayout_4);
+    m_windowOutlineCustomColorDarkInactive_2 = addLightDarkColorWidgets(m_ui->horizontalLayout_6);
 
     // track ui changes
     // direct connections are used in several places so the slot can detect the immediate m_loading status (not available in a queued connection)
@@ -82,6 +100,22 @@ WindowOutlineStyle::WindowOutlineStyle(KSharedConfig::Ptr config, KSharedConfig:
             Qt::ConnectionType::DirectConnection);
     connect(m_ui->windowOutlineCustomColorInactive, &KColorButton::changed, m_ui->windowOutlineCustomColorInactive_2, &KColorButton::setColor);
     connect(m_ui->windowOutlineCustomColorInactive_2, &KColorButton::changed, m_ui->windowOutlineCustomColorInactive, &KColorButton::setColor);
+    connect(m_windowOutlineCustomColorDarkActive, &KColorButton::changed, this, &WindowOutlineStyle::updateChanged, Qt::ConnectionType::DirectConnection);
+    connect(m_windowOutlineCustomColorDarkActive,
+            &KColorButton::changed,
+            this,
+            &WindowOutlineStyle::windowOutlineCustomColorDarkActiveChanged,
+            Qt::ConnectionType::DirectConnection);
+    connect(m_windowOutlineCustomColorDarkActive, &KColorButton::changed, m_windowOutlineCustomColorDarkActive_2, &KColorButton::setColor);
+    connect(m_windowOutlineCustomColorDarkActive_2, &KColorButton::changed, m_windowOutlineCustomColorDarkActive, &KColorButton::setColor);
+    connect(m_windowOutlineCustomColorDarkInactive, &KColorButton::changed, this, &WindowOutlineStyle::updateChanged, Qt::ConnectionType::DirectConnection);
+    connect(m_windowOutlineCustomColorDarkInactive,
+            &KColorButton::changed,
+            this,
+            &WindowOutlineStyle::windowOutlineCustomColorDarkInactiveChanged,
+            Qt::ConnectionType::DirectConnection);
+    connect(m_windowOutlineCustomColorDarkInactive, &KColorButton::changed, m_windowOutlineCustomColorDarkInactive_2, &KColorButton::setColor);
+    connect(m_windowOutlineCustomColorDarkInactive_2, &KColorButton::changed, m_windowOutlineCustomColorDarkInactive, &KColorButton::setColor);
     connect(m_ui->lockWindowOutlineCustomColorActive,
             &QAbstractButton::toggled,
             this,
@@ -142,6 +176,10 @@ void WindowOutlineStyle::loadMain(const bool assignUiValuesOnly)
     m_ui->windowOutlineCustomColorActive_2->setColor(m_ui->windowOutlineCustomColorActive->color());
     m_ui->windowOutlineCustomColorInactive->setColor(m_internalSettings->windowOutlineCustomColor(false));
     m_ui->windowOutlineCustomColorInactive_2->setColor(m_ui->windowOutlineCustomColorInactive->color());
+    m_windowOutlineCustomColorDarkActive->setColor(m_internalSettings->windowOutlineCustomColorDark(true));
+    m_windowOutlineCustomColorDarkActive_2->setColor(m_windowOutlineCustomColorDarkActive->color());
+    m_windowOutlineCustomColorDarkInactive->setColor(m_internalSettings->windowOutlineCustomColorDark(false));
+    m_windowOutlineCustomColorDarkInactive_2->setColor(m_windowOutlineCustomColorDarkInactive->color());
     m_ui->lockWindowOutlineCustomColorActive->setChecked(m_internalSettings->lockWindowOutlineCustomColorActiveInactive());
     m_ui->lockWindowOutlineCustomColorActive_2->setChecked(m_internalSettings->lockWindowOutlineCustomColorActiveInactive());
     m_ui->lockWindowOutlineCustomColorInactive->setChecked(m_internalSettings->lockWindowOutlineCustomColorActiveInactive());
@@ -188,6 +226,8 @@ void WindowOutlineStyle::save(const bool reloadKwinConfig)
     m_internalSettings->setWindowOutlineCustomWithContrastOpacity(false, qreal(m_ui->windowOutlineCustomWithContrastOpacityInactive->value()));
     m_internalSettings->setWindowOutlineCustomColor(true, m_ui->windowOutlineCustomColorActive->color());
     m_internalSettings->setWindowOutlineCustomColor(false, m_ui->windowOutlineCustomColorInactive->color());
+    m_internalSettings->setWindowOutlineCustomColorDark(true, m_windowOutlineCustomColorDarkActive->color());
+    m_internalSettings->setWindowOutlineCustomColorDark(false, m_windowOutlineCustomColorDarkInactive->color());
     m_internalSettings->setLockWindowOutlineCustomColorActiveInactive(m_ui->lockWindowOutlineCustomColorActive->isChecked());
 
     m_internalSettings->save();
@@ -302,6 +342,10 @@ void WindowOutlineStyle::updateChanged()
         modified = true;
     else if (m_ui->windowOutlineCustomColorInactive->color() != m_internalSettings->windowOutlineCustomColor(false))
         modified = true;
+    else if (m_windowOutlineCustomColorDarkActive->color() != m_internalSettings->windowOutlineCustomColorDark(true))
+        modified = true;
+    else if (m_windowOutlineCustomColorDarkInactive->color() != m_internalSettings->windowOutlineCustomColorDark(false))
+        modified = true;
     else if (m_ui->lockWindowOutlineCustomColorActive->isChecked() != m_internalSettings->lockWindowOutlineCustomColorActiveInactive())
         modified = true;
 
@@ -335,6 +379,18 @@ void WindowOutlineStyle::windowOutlineCustomColorInactiveChanged()
 {
     if (m_ui->lockWindowOutlineCustomColorInactive->isChecked() && !m_processingDefaults && !m_loading)
         m_ui->windowOutlineCustomColorActive->setColor(m_ui->windowOutlineCustomColorInactive->color());
+}
+
+void WindowOutlineStyle::windowOutlineCustomColorDarkActiveChanged()
+{
+    if (m_ui->lockWindowOutlineCustomColorActive->isChecked() && !m_processingDefaults && !m_loading)
+        m_windowOutlineCustomColorDarkInactive->setColor(m_windowOutlineCustomColorDarkActive->color());
+}
+
+void WindowOutlineStyle::windowOutlineCustomColorDarkInactiveChanged()
+{
+    if (m_ui->lockWindowOutlineCustomColorInactive->isChecked() && !m_processingDefaults && !m_loading)
+        m_windowOutlineCustomColorDarkActive->setColor(m_windowOutlineCustomColorDarkInactive->color());
 }
 
 void WindowOutlineStyle::contrastFromColorSchemeActiveUpdated()
